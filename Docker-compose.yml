@@ -1,0 +1,16 @@
+version: "3.5"
+services:
+ react-app:
+  build:
+   context: .
+   dockerfile: Dockerfile.dev
+   
+  ports:
+   - "3000:3000"
+  volumes:
+   - ./src:/app/src
+  environment:
+   - WATCHPACK_POLLING=true
+   - REACT_APP_NAME=Hello 
+  #env_file:
+  # - ./.env 

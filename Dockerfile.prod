@@ -1,0 +1,11 @@
+FROM node
+WORKDIR /app as build
+COPY package.json .
+RUN npm install
+COPY . . 
+EXPOSE 3000
+ENV REACT_APP_NAME=myName
+RUN npm run build
+
+FROM nginx
+COPY --from=build /app/build /usr/share/nginx/html
