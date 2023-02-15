@@ -1,7 +1,7 @@
 import './Sign_up.css';
 
 import React,{ useState } from 'react';
-import LoadingSpinner from '../Components/LoadingSpinner'
+import LoadingSpinner from '../../components/LoadingSpinner'
 import {
   MDBBtn,
   MDBContainer,
@@ -59,6 +59,7 @@ function App() {
       else
       JsonString+="\""+props.target[i].name+"\": "+"\""+props.target[i].value+"\"}"
     }
+    console.log(JsonString)
  JsonObject=JSON.parse(JSON.stringify(JsonString))
  //Sending a POST HTTP To the API with the Json Object
  let url=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_REGISTERAPINAME

@@ -1,7 +1,7 @@
 import './Sign_in.css';
 import React,{ useState,useEffect} from 'react';
 import {MDBContainer, MDBCol, MDBRow, MDBBtn, MDBIcon, MDBInput, MDBCheckbox } from 'mdb-react-ui-kit';
-import LoadingSpinner from '../Components/LoadingSpinner'
+import LoadingSpinner from '../../components/LoadingSpinner'
 function App() {
   let [LoadingSpinnerStatus, setLoadingSpinnerStatus] = useState(false);
   let [UserNameDontExist, setUserNameDontExist] = useState(false);
@@ -56,7 +56,7 @@ function App() {
    let APIResult=CALLAPI(url,JsonObject)
   
    APIResult.then(result=>{
-   console.log(result)
+  
     for( var property in result)
         {
           if( property=="JWT_AccessToken")
@@ -95,7 +95,7 @@ function App() {
       <MDBRow>
 
         <MDBCol col='10' md='6'>
-          <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp" class="img-fluid" alt="Sample image" />
+          <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp" className="img-fluid" alt="Sample image" />
         </MDBCol>
 
         <MDBCol col='4' md='6'>
