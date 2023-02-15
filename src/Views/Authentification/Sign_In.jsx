@@ -1,12 +1,25 @@
 import './Sign_in.css';
-import React,{ useState,useEffect} from 'react';
+import React,{ useState,useEffect,useRef } from 'react';
 import {MDBContainer, MDBCol, MDBRow, MDBBtn, MDBIcon, MDBInput, MDBCheckbox } from 'mdb-react-ui-kit';
 import LoadingSpinner from '../../components/LoadingSpinner'
+import { useToast } from '@chakra-ui/react'
+import { ChakraProvider } from '@chakra-ui/react'
+import { PasswordRecovery } from './PasswordRecovery';
 function App() {
   let [LoadingSpinnerStatus, setLoadingSpinnerStatus] = useState(false);
-  let [UserNameDontExist, setUserNameDontExist] = useState(false);
-  let [WrongPassStatus, setUserWrongPassStatus] = useState(false);
-  let [UserAuthentificated, setUserAuthentificated] = useState(false);
+  let [PasswordRecoveryStatus, setPasswordRecoveryStatus] = useState(false);
+  let UserNameDontExist= useRef(false);
+  let UserWrongPassStatus= useRef(false);
+  let UserAuthentificated= useRef(false);
+  let APIError = useRef(false);
+  const toast = useToast()
+
+//This methode update the parent that the pop up closed
+  const HandleRecoveryClosure=()=>{
+   
+setPasswordRecoveryStatus(false)
+  }
+
   //This is an Async method which will call our API, url is the API path, data is the json data, the format should follow our User.DTO in the backend.
   const CALLAPI = async (url,data)=>
   {
@@ -21,10 +34,20 @@ function App() {
         body: data
       });
       
-      const json = await response.json();     
+      const json = await response.json();  
+      APIError.current=false;
       return(json)
     } catch (error) {
-      console.log("error", error);
+      console.log(" DEVELOPER ONLY : ERROR", error);
+
+      toast({
+        title: 'Connection Error!',
+        description: "There is an Error with our server, please retry again",
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      })
+      APIError.current=true;
       return(error);
     }
   }
@@ -33,9 +56,9 @@ function App() {
   {
     props.preventDefault()
     setLoadingSpinnerStatus(true)
-    setUserAuthentificated(false)
-    setUserNameDontExist(false)
-    setUserWrongPassStatus(false)
+    UserAuthentificated.current=false
+    UserNameDontExist.current=false
+    UserWrongPassStatus.current=false
     //Converting Form Data to a Json object
     let JsonObject
     let JsonString="{"
@@ -61,42 +84,69 @@ function App() {
         {
           if( property=="JWT_AccessToken")
           {
-                setUserAuthentificated(true)
-                console.log("Verfied!")
+                UserAuthentificated.current=true
+                toast({
+                  title: 'Login',
+                  description: "You logged in successfully!",
+                  status: 'success',
+                  duration: 3000,
+                  isClosable: true,
+                })
           }
           else if(property=="UserNotFound")
           {
-                 setUserNameDontExist(true)
-                 console.log("Wrong name")
+                 UserNameDontExist.current=true
+                 
+                 toast({
+                  
+                  title: 'Login',
+                  description: "The username you inserted doesn't exist.",
+                  status: 'info',
+                  duration: 3000,
+                  isClosable: true,
+                })
           }
           else if(property=="WrongPassword")
           {
-            
-            setUserWrongPassStatus(true)
+            UserWrongPassStatus.current=true
+            toast({
+              title: 'Login',
+              description: "You typed the wrong password, Check if you have CAPS on.",
+              status: 'info',
+              duration: 3000,
+              isClosable: true,
+            })
           }
         
         }
         
-        setLoadingSpinnerStatus(false)  
+        setLoadingSpinnerStatus(false) 
+        if(UserAuthentificated.current==true)
+        setTimeout(() => {
+          window.location.replace('/index')
+        }, 1000);
+        
+      
    }).catch(error=>{
     console.log(error)
    })}
 
-
-   useEffect(() => {
-    setTimeout(() => {
-                if(UserAuthentificated==true)
-      window.location.replace('/index')
-    }, 1); 
-  }, [UserAuthentificated]); 
+  
   return (
+    <ChakraProvider>
     <MDBContainer fluid className="p-3 my-5 h-custom">
 
       <MDBRow>
 
         <MDBCol col='10' md='6'>
+        <h1 className="my-1 display-3 fw-bold ls-tight px-3" style={{color: '#0a4275'}}>
+            Social Post <br />
+            
+          </h1>
           <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp" className="img-fluid" alt="Sample image" />
+          
         </MDBCol>
+        
 
         <MDBCol col='4' md='6'>
 
@@ -127,17 +177,21 @@ function App() {
 
           <div className="d-flex justify-content-between mb-4">
             <MDBCheckbox name='flexCheck' value='' id='flexCheckDefault' label='Remember me' />
-            <a href="!#">Forgot password?</a>
+            <a href='' onClick={(props)=>{setPasswordRecoveryStatus(true)
+            props.preventDefault()
+            
+            }}>Forgot password?</a>
+            
           </div>
-
+          {PasswordRecoveryStatus&&<PasswordRecovery passedhandleclose={HandleRecoveryClosure} Open={PasswordRecoveryStatus} />}  
           <div className='text-center text-md-start mt-4 pt-2'>
             <MDBBtn className="mb-0 px-5" size='lg'>Login</MDBBtn>
             <div className='d-flex justify-content-center mb-4'>
                 {LoadingSpinnerStatus&&<LoadingSpinner id="Spinner"/>}       
               </div> 
               <div className='d-flex justify-content-center mb-4'>
-                {WrongPassStatus&&<p>You Typed the wrong password, please try again!</p>}  
-                {UserNameDontExist&&<p> You Typed a username that doesn't exist, use an other one!</p>}            
+                 
+                          
               </div> 
             <p className="small fw-bold mt-2 pt-1 mb-2">Don't have an account? <a href="/Register" className="link-danger">Register</a></p>
           </div>
@@ -150,6 +204,8 @@ function App() {
       
 
     </MDBContainer>
+    
+    </ChakraProvider>
   );
 }
 

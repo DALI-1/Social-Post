@@ -17,10 +17,11 @@ root.render(
     
     
     <header>
-      
     </header>
     
     <App/>
+    
+    
     <footer>
   <FooterComp/>
 </footer>

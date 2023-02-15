@@ -10,8 +10,8 @@ import {
 
 export default function App() {
   return (
-    <MDBFooter className='bg-light text-center text-white'>
-      <MDBContainer className='p-4 pb-0'>
+    <MDBFooter className='bg-light text-center text-white' >
+      <MDBContainer className='p-4 pb-0' >
         <section className='mb-4'>
           <MDBBtn
             floating
@@ -74,7 +74,7 @@ export default function App() {
         </section>
       </MDBContainer>
 
-      <div className='text-center p-3' style={{ backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
+      <div className='text-center p-3' style={{ backgroundColor: '#0a4275' }}>
         © 2020 Copyright:
         <a className='text-white' href='https://mdbootstrap.com/'>
           MDBootstrap.com
