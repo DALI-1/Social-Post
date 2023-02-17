@@ -26,8 +26,9 @@ export const PasswordRecovery=(props)=> {
     let [onOpen, setonOpen] = useState(props.Close);
     const [input, setInput] = useState('')
     const form = useRef();
-
-
+    const Email = useRef();
+    const token = useRef();
+    let EmailFoundStatus = useRef(false);
   const handleInputChange = (e) => setInput(e.target.value)
 
   const isError = input === ''
@@ -71,12 +72,74 @@ export const PasswordRecovery=(props)=> {
   const handleEmailsubmit=(props)=>
   {
     props.preventDefault()
-    emailjs.sendForm('service_z9p6g6b', 'template_ypuv019', form.current, 'Th956W69Ljmfmz7sP')
-    .then((result) => {
-        console.log(result.text);
-    }, (error) => {
-        console.log(error.text);
-    });
+  
+    
+    
+   
+    let url=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_FORGOTPWAPINAME
+    let JsonString="{\"Email\": "+"\""+Email.current.value+"\"}"
+
+  let JsonObject=JSON.parse(JSON.stringify(JsonString))
+  
+    let APIResult=CALLAPI(url,JsonObject)
+   
+    APIResult.then(result=>{
+    EmailFoundStatus.current=false
+     for( var property in result)
+         {
+          
+           if( property=="token")
+           {
+            EmailFoundStatus.current=true;
+            token.current.value=result[property]
+           }
+         
+          
+         
+         }
+         
+         if(EmailFoundStatus.current==false && APIError==false)
+         {
+          toast({
+                  
+            title: 'Password Recovery',
+            description: "The Email you entered doesn't exist please check your email",
+            status: 'info',
+            duration: 3000,
+            isClosable: true,
+          })
+         }
+         else
+         {
+           if(APIError==false)
+           {
+            emailjs.sendForm('service_z9p6g6b', 'template_ypuv019', form.current, 'Th956W69Ljmfmz7sP')
+            .then((result) => {
+                console.log(result.text);
+            }, (error) => {
+                console.log(error.text);
+            });
+                 
+        
+                  toast({
+                          
+                    title: 'Password Recovery',
+                    description: "A link was sent to your Email successfully!",
+                    status: 'success',
+                    duration: 3000,
+                    isClosable: true,
+                  })
+                 }
+           }
+          
+         
+    }).catch(error=>{
+    console.log(error)
+    })
+
+ 
+
+   
    
   }
     return (
@@ -97,7 +160,9 @@ export const PasswordRecovery=(props)=> {
       <form ref={form}>
 
       
-      <Input type='email' name="email" value={input} onChange={handleInputChange} />
+      <Input ref={Email} type='email' name="email" value={input} onChange={handleInputChange} />
+      <Input ref={token} type='text' name="token"  hidden={true} />
+      <Input  type='text' name="BackLink" value={process.env.REACT_APP_FRONTENDURL+"/ChangePassword"}  hidden={true} />
       </form>
       {!isError ? (
         <FormHelperText>
