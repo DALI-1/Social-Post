@@ -15,6 +15,7 @@ function App() {
     <Route exact path="/Register" element={<RegisterPage/>}/>
     <Route exact path="/index" element={<Dashboard/>}/>
     <Route exact path="/ChangePassword" element={<ChangePW/>}/>
+    <Route exact path="/" element={<LoginPage/>}/>
      </Routes>
    
  </Router>

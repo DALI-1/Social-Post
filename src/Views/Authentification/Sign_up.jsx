@@ -16,7 +16,8 @@ import {
 from 'mdb-react-ui-kit';
 import { ChakraProvider } from '@chakra-ui/react'
 import { useToast } from '@chakra-ui/react'
-
+import logo from '../../Assets/SocialPost-Logo.png';
+import {CALLAPI} from './APIAccessAndVerification'
 function App() {
 
   let [LoadingSpinnerStatus, setLoadingSpinnerStatus] = useState(false);
@@ -27,36 +28,14 @@ function App() {
   let APIError = useRef(false);
 
   const toast = useToast()
-  //This is an Async method which will call our API, url is the API path, data is the json data, the format should follow our User.DTO in the backend.
-  const CALLAPI = async (url,data)=>
+ 
+  const UpdateAPIError=(error)=>
   {
     
-    try {
-      const response = await fetch(url,{
-        method: "POST",
-        
-        headers: { 
-          "Content-Type": "application/json"  
-        },
-        body: data
-      });
-      
-      const json = await response.json();  
-      APIError.current=false;
-      return(json)
-    } catch (error) {
-      console.log(" DEVELOPER ONLY : ERROR", error);
-
-      toast({
-        title: 'Connection Error!',
-        description: "There is an Error with our server, please retry again",
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      })
-      APIError.current=true;
-      return(error);
-    }
+    if(error==true)
+    APIError.current=true
+    else
+    APIError.current=false
   }
   const handlesubmit=(props)=>
 {
@@ -66,21 +45,40 @@ function App() {
   UserExistStatus.current=false
   //Converting Form Data to a Json object
   let JsonObject
+  let ConfirmPassword=""
+  let Password=""
   let JsonString="{"
-  for(let i=0;i<8;i++)
+  for(let i=0;i<9;i++)
     {
+      if(i==8)
+      {
+        ConfirmPassword=props.target[i].value
+        JsonString+="}"
+      }
+     
+      if(i==7)
+      {
+      JsonString+="\""+props.target[i].name+"\": "+"\""+props.target[i].value+"\""
+      Password=props.target[i].value
+      }
+      else 
+         if(i!=8)
+         {
+          JsonString+="\""+props.target[i].name+"\": "+"\""+props.target[i].value+"\","
+         } 
       
-      if(i!=7)
-      JsonString+="\""+props.target[i].name+"\": "+"\""+props.target[i].value+"\","
-      else
-      JsonString+="\""+props.target[i].name+"\": "+"\""+props.target[i].value+"\"}"
     }
-    console.log(JsonString)
+   
  JsonObject=JSON.parse(JSON.stringify(JsonString))
  //Sending a POST HTTP To the API with the Json Object
  let url=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_REGISTERAPINAME
-
- let APIResult=CALLAPI(url,JsonObject)
+ if(ConfirmPassword==Password)
+ {
+  console.log(Password.length)
+  if(Password.length>5)
+ {
+ 
+ let APIResult=CALLAPI(url,JsonObject,UpdateAPIError)
 
  APIResult.then(result=>{
  if(APIError.current==false)
@@ -161,6 +159,14 @@ function App() {
         }
       }
     }
+    if(APIError.current==true)
+    toast({
+      title: 'Server Internal Error',
+      description: "Its Either the Server is down or you lost connection",
+      status: 'error',
+      duration: 3000,
+      isClosable: true,
+    })
     
       setLoadingSpinnerStatus(false)
       //Changing to Login Page Only if the API threw no errors, User existflag is false and Groupflag is false
@@ -181,6 +187,31 @@ function App() {
  }).catch(error=>{
   console.log(error)
  })
+}
+else
+{
+  
+  setLoadingSpinnerStatus(false)
+  toast({
+    title: 'Register',
+    description: "The Password should contain at least six character",
+    status: 'info',
+    duration: 3000,
+    isClosable: true,
+  }) 
+}
+ }
+else
+{
+  setLoadingSpinnerStatus(false)
+  toast({
+    title: 'Register',
+    description: "Your confirm password doesn't match your password",
+    status: 'info',
+    duration: 3000,
+    isClosable: true,
+  })
+}
 
 
 
@@ -189,16 +220,15 @@ function App() {
 
   return (
     <ChakraProvider>
-    <MDBContainer fluid className='p-4 background-radial-gradient overflow-hidden' style={{backgroundImage: `url("https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp")`,backgroundRepeat:"no-repeat"}}>
+    <MDBContainer fluid className=' background-radial-gradient overflow-hidden' style={{backgroundImage: `url("https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp")`,backgroundRepeat:"no-repeat"}}>
 
       <MDBRow>
 
-        <MDBCol md='6' className='text-center text-md-start d-flex flex-column justify-content-center'>
+        <MDBCol md='5' className='text-center text-md-start d-flex flex-column justify-content-center'>
 
-          <h1 className="my-5 display-3 fw-bold ls-tight px-3" style={{color: '#0a4275'}}>
-            Social Post <br />
-            <span style={{color: '#0a4275'}}>for your business</span>
-          </h1>
+        <div className="container-sm">
+        <img src={logo} className="img-fluid" alt="Sample image" />
+        </div>
 
           
 
@@ -227,7 +257,7 @@ function App() {
               <MDBInput wrapperClass='mb-4' label='Campaign Name' id='form6' name="CampaignName" type='text' required={true}/>
               <MDBInput wrapperClass='mb-4' label='Phone Number' id='form7' name="PhoneNumber" type='number' required={true}/>
               <MDBInput wrapperClass='mb-4' label='Password' id='form8' name="Password" type='password' required={true}/>
-
+              <MDBInput wrapperClass='mb-4' label='Confirm Password' id='form9' name="CPassword" type='password' required={true}/>
               <div className='d-flex justify-content-center mb-4'>
                 {/*<MDBCheckbox name='flexCheck' value='' id='flexCheckDefault' label='Subscribe to our newsletter' />*/}
                 <p className="small fw-bold mt-2 pt-1">You Already have an account?  <a href="/Login" className="link-danger">Sign In</a></p>

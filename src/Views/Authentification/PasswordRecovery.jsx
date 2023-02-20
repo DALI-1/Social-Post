@@ -19,6 +19,7 @@ import {
   } from '@chakra-ui/react'
   import {Helmet} from "react-helmet";
   import { useToast } from '@chakra-ui/react'
+  import {CALLAPI} from './APIAccessAndVerification'
 export const PasswordRecovery=(props)=> {
     //let { isOpen, onOpen, onClose } = useDisclosure()
     let [isOpen, setisOpen] = useState(props.Open);
@@ -37,53 +38,34 @@ export const PasswordRecovery=(props)=> {
 
   const toast = useToast()
 
-  
-  //This is an Async method which will call our API, url is the API path, data is the json data, the format should follow our User.DTO in the backend.
-  const CALLAPI = async (url,data)=>
+  const UpdateAPIError=(error)=>
   {
     
-    try {
-      const response = await fetch(url,{
-        method: "POST",
-        
-        headers: { 
-          "Content-Type": "application/json"  
-        },
-        body: data
-      });
-      
-      const json = await response.json();  
-      APIError.current=false;
-      return(json)
-    } catch (error) {
-      console.log(" DEVELOPER ONLY : ERROR", error);
-
-      toast({
-        title: 'Connection Error!',
-        description: "There is an Error with our server, please retry again",
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      })
-      APIError.current=true;
-      return(error);
-    }
+    if(error==true)
+    APIError.current=true
+    else
+    APIError.current=false
   }
+ 
   const handleEmailsubmit=(props)=>
   {
     props.preventDefault()
-  
     
     
+    
+   if(Email.current.value!='')
+   {
+
    
     let url=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_FORGOTPWAPINAME
     let JsonString="{\"Email\": "+"\""+Email.current.value+"\"}"
 
   let JsonObject=JSON.parse(JSON.stringify(JsonString))
   
-    let APIResult=CALLAPI(url,JsonObject)
+    let APIResult=CALLAPI(url,JsonObject,UpdateAPIError)
    
     APIResult.then(result=>{
+    
     EmailFoundStatus.current=false
      for( var property in result)
          {
@@ -91,15 +73,17 @@ export const PasswordRecovery=(props)=> {
            if( property=="token")
            {
             EmailFoundStatus.current=true;
+           
             token.current.value=result[property]
            }
          
           
          
          }
-         
-         if(EmailFoundStatus.current==false && APIError==false)
+          
+         if(EmailFoundStatus.current==false && APIError.current==false)
          {
+          
           toast({
                   
             title: 'Password Recovery',
@@ -111,7 +95,8 @@ export const PasswordRecovery=(props)=> {
          }
          else
          {
-           if(APIError==false)
+          
+           if(APIError.current==false)
            {
             emailjs.sendForm('service_z9p6g6b', 'template_ypuv019', form.current, 'Th956W69Ljmfmz7sP')
             .then((result) => {
@@ -130,18 +115,40 @@ export const PasswordRecovery=(props)=> {
                     isClosable: true,
                   })
                  }
+                 else
+                 {
+                  toast({
+                    title: 'Server Internal Error',
+                    description: "Its Either the Server is down or you lost connection",
+                    status: 'error',
+                    duration: 3000,
+                    isClosable: true,
+                  })
+                 }
            }
           
          
     }).catch(error=>{
     console.log(error)
     })
-
- 
-
+   }
+   else
+   {
+    toast({
+                          
+      title: 'Password Recovery',
+      description: "The email cannot be empty!",
+      status: 'error',
+      duration: 3000,
+      isClosable: true,
+    })
+   }
+   }
+  
+  
    
    
-  }
+  
     return (
       <>
      
@@ -160,9 +167,9 @@ export const PasswordRecovery=(props)=> {
       <form ref={form}>
 
       
-      <Input ref={Email} type='email' name="email" value={input} onChange={handleInputChange} />
+      <Input ref={Email} type='email' name="email" defaultValue={input} onChange={handleInputChange} />
       <Input ref={token} type='text' name="token"  hidden={true} />
-      <Input  type='text' name="BackLink" value={process.env.REACT_APP_FRONTENDURL+"/ChangePassword"}  hidden={true} />
+      <Input  type='text' name="BackLink" defaultValue={process.env.REACT_APP_FRONTENDURL+"/ChangePassword"}  hidden={true} />
       </form>
       {!isError ? (
         <FormHelperText>

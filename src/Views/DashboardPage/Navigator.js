@@ -14,37 +14,59 @@ import PermMediaOutlinedIcon from '@mui/icons-material/PhotoSizeSelectActual';
 import PublicIcon from '@mui/icons-material/Public';
 import SettingsEthernetIcon from '@mui/icons-material/SettingsEthernet';
 import SettingsInputComponentIcon from '@mui/icons-material/SettingsInputComponent';
+import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
+import LoginIcon from '@mui/icons-material/Login';
 import TimerIcon from '@mui/icons-material/Timer';
 import SettingsIcon from '@mui/icons-material/Settings';
 import PhonelinkSetupIcon from '@mui/icons-material/PhonelinkSetup';
-
+import PreviewRoundedIcon from '@mui/icons-material/PreviewRounded';
+import logo from '../../Assets/SocialPost-Logo.png';
 const categories = [
   {
-    id: 'Build',
+    id: 'Publish Managmeent',
+    children: [
+      { id: 'Manage Posts', icon: <SettingsIcon /> },
+      { id: 'View Posts', icon: <PreviewRoundedIcon /> },
+      
+    ],
+  },
+  {
+    id: 'Group Managmeent',
+    children: [
+      { id: 'Manage Groups', icon: <SettingsIcon /> },
+      { id: 'View Groups', icon: <PreviewRoundedIcon/> },
+      /*{ id: 'Test Lab', icon: <PhonelinkSetupIcon /> },*/
+    ],
+  },
+  {
+    id: 'Page Managmeent',
+    children: [
+      { id: 'Manage Pages', icon: <SettingsIcon /> },
+      { id: 'View Pages', icon: <PreviewRoundedIcon/> },
+      
+    ],
+  },
+  
+  {
+    id: 'Account Management',
     children: [
       {
-        id: 'Authentication',
-        icon: <PeopleIcon />,
-        active: true,
+        id: 'Manage Personal informatons',
+        icon: <AccountCircleRoundedIcon />,
+        active: false,
       },
-      { id: 'Database', icon: <DnsRoundedIcon /> },
+      { id: 'Logout', icon: <LoginIcon/> }
+      /*{ id: 'Database', icon: <DnsRoundedIcon /> },
       { id: 'Storage', icon: <PermMediaOutlinedIcon /> },
       { id: 'Hosting', icon: <PublicIcon /> },
       { id: 'Functions', icon: <SettingsEthernetIcon /> },
       {
         id: 'Machine learning',
         icon: <SettingsInputComponentIcon />,
-      },
+      },*/
     ],
   },
-  {
-    id: 'Quality',
-    children: [
-      { id: 'Analytics', icon: <SettingsIcon /> },
-      { id: 'Performance', icon: <TimerIcon /> },
-      { id: 'Test Lab', icon: <PhonelinkSetupIcon /> },
-    ],
-  },
+  
 ];
 
 const item = {
@@ -62,34 +84,64 @@ const itemCategory = {
   px: 3,
 };
 
+const HandleLogOut=()=>
+{
+ console.log("Test")
+  window.localStorage.removeItem("AuthToken")
+  window.localStorage.setItem("IsLoggedIn",false)
+  setTimeout(() => 
+  window.location.replace('/login')
+, 1000)
+}
+
 export default function Navigator(props) {
   const { ...other } = props;
 
   return (
     <Drawer variant="permanent" {...other}>
       <List disablePadding>
-        <ListItem sx={{ ...item, ...itemCategory, fontSize: 22, color: '#fff' }}>
-          Social Post
+        <ListItem sx={{ ...item, ...itemCategory, fontSize: 22, color: '#ffff' }}>
+        
+        <img src={logo} className="img-fluid" alt="Sample image" />
+       
+        
+        
         </ListItem>
         <ListItem sx={{ ...item, ...itemCategory }}>
           <ListItemIcon>
             <HomeIcon />
           </ListItemIcon>
-          <ListItemText>Project Overview</ListItemText>
+          <ListItemText>Social Post Overview</ListItemText>
         </ListItem>
         {categories.map(({ id, children }) => (
           <Box key={id} sx={{ bgcolor: '#101F33' }}>
             <ListItem sx={{ py: 2, px: 3 }}>
               <ListItemText sx={{ color: '#fff' }}>{id}</ListItemText>
             </ListItem>
-            {children.map(({ id: childId, icon, active }) => (
-              <ListItem disablePadding key={childId}>
-                <ListItemButton selected={active} sx={item}>
-                  <ListItemIcon>{icon}</ListItemIcon>
-                  <ListItemText>{childId}</ListItemText>
-                </ListItemButton>
-              </ListItem>
-            ))}
+            {children.map(({ id: childId, icon, active }) =>{
+               
+              if(childId=="Logout")
+              {
+                
+                return( <ListItem disablePadding key={childId}>
+                  <ListItemButton selected={active} sx={item} onClick={HandleLogOut} >
+                    <ListItemIcon>{icon}</ListItemIcon>
+                    <ListItemText>{childId}</ListItemText>
+                  </ListItemButton>
+                </ListItem>)
+              }
+              else
+              {
+                return( <ListItem disablePadding key={childId}>
+                  <ListItemButton selected={active} sx={item}>
+                    <ListItemIcon>{icon}</ListItemIcon>
+                    <ListItemText>{childId}</ListItemText>
+                  </ListItemButton>
+                </ListItem>)
+              }
+              
+            }   
+            )}
 
             <Divider sx={{ mt: 2 }} />
           </Box>

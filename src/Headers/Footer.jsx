@@ -75,9 +75,9 @@ export default function App() {
       </MDBContainer>
 
       <div className='text-center p-3' style={{ backgroundColor: '#0a4275' }}>
-        © 2020 Copyright:
+        © 2023 Copyright: 
         <a className='text-white' href='https://mdbootstrap.com/'>
-          MDBootstrap.com
+            Social Post
         </a>
       </div>
     </MDBFooter>

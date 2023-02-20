@@ -5,13 +5,17 @@ import LoadingSpinner from '../../components/LoadingSpinner'
 import { useToast } from '@chakra-ui/react'
 import { ChakraProvider } from '@chakra-ui/react'
 import { PasswordRecovery } from './PasswordRecovery';
+import {CALLAPI,CALL_API_With_JWTToken} from './APIAccessAndVerification'
+import logo from '../../Assets/SocialPost-Logo.png';
 function App() {
   let [LoadingSpinnerStatus, setLoadingSpinnerStatus] = useState(false);
   let [PasswordRecoveryStatus, setPasswordRecoveryStatus] = useState(false);
-  let UserNameDontExist= useRef(false);
-  let UserWrongPassStatus= useRef(false);
-  let UserAuthentificated= useRef(false);
+  const queryParameters = new URLSearchParams(window.location.search)
+  let ConfirmPasswordMatch= useRef(false);
   let APIError = useRef(false);
+  let Email = useRef(queryParameters.get("Email") );
+  let Password = useRef("");
+  let ConfirmPassword = useRef("");
   const toast = useToast()
 
 //This methode update the parent that the pop up closed
@@ -20,45 +24,30 @@ function App() {
 setPasswordRecoveryStatus(false)
   }
 
-  //This is an Async method which will call our API, url is the API path, data is the json data, the format should follow our User.DTO in the backend.
-  const CALLAPI = async (url,data)=>
+  const UpdateAPIError=(error)=>
   {
     
-    try {
-      const response = await fetch(url,{
-        method: "POST",
-        
-        headers: { 
-          "Content-Type": "application/json"  
-        },
-        body: data
-      });
-      
-      const json = await response.json();  
-      APIError.current=false;
-      return(json)
-    } catch (error) {
-      console.log(" DEVELOPER ONLY : ERROR", error);
-
-      toast({
-        title: 'Connection Error!',
-        description: "There is an Error with our server, please retry again",
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      })
-      APIError.current=true;
-      return(error);
-    }
+    if(error==true)
+    APIError.current=true
+    else
+    APIError.current=false
   }
 
   const handlesubmit=(props)=>
   {
     props.preventDefault()
-    setLoadingSpinnerStatus(true)
-    UserAuthentificated.current=false
-    UserNameDontExist.current=false
-    UserWrongPassStatus.current=false
+    
+
+   
+    
+    if(Password.current.value==ConfirmPassword.current.value)
+    {
+      if(Password.current.value!='' &&ConfirmPassword.current.value!=null)
+      {
+
+      
+      setLoadingSpinnerStatus(true)
+    
     //Converting Form Data to a Json object
     let JsonObject
     let JsonString="{"
@@ -74,16 +63,99 @@ setPasswordRecoveryStatus(false)
       
    JsonObject=JSON.parse(JSON.stringify(JsonString))
    //Sending a POST HTTP To the API with the Json Object
-   let url=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_LOGINAPINAME
+   
+   let url=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_CHANGEPWAPINAME
   
-   let APIResult=CALLAPI(url,JsonObject)
+   let APIResult=CALL_API_With_JWTToken(url,JsonObject,queryParameters.get("token"),UpdateAPIError)
   
    APIResult.then(result=>{
-  
-    
+    for( var property in result)
+         {
+          
+           if( property=="PasswordChanged")
+           {
+            
+                      toast({
+                        title: 'Password',
+                        description: "Your Password Has changed successfully!",
+                        status: 'success',
+                        duration: 3000,
+                        isClosable: true,
+                      })
+                      setLoadingSpinnerStatus(false)
+                      setTimeout(() => {
+                        window.location.replace('/login')
+                      }, 1000);
+                      break
+           }
+           if(property=="UserNotFound")
+           {
+
+                    toast({
+                      title: 'Password',
+                      description: "Password hasn't been changed, User not found",
+                      status: 'error',
+                      duration: 3000,
+                      isClosable: true,
+                    })
+                    setLoadingSpinnerStatus(false)
+                    break
+           }
+         
+          
+         
+         }
+         if( APIError.current=true)
+         {
+                toast({
+                  title: 'Server Internal Error',
+                  description: "Its Either the Server is down or you lost connection",
+                  status: 'error',
+                  duration: 3000,
+                  isClosable: true,
+                })
+         }
+         setLoadingSpinnerStatus(false)
    }).catch(error=>{
     console.log(error)
-   })}
+    toast({
+      title: 'Password',
+      description: "The was an internal error"+error,
+      status: 'error',
+      duration: 3000,
+      isClosable: true,
+    })
+    setLoadingSpinnerStatus(false)
+   })
+  
+  
+  }
+  else
+  {
+    
+    toast({
+      title: 'Password Error',
+      description: "The Password you typed cannot be empty!",
+      status: 'error',
+      duration: 3000,
+      isClosable: true,
+    })
+    setLoadingSpinnerStatus(false)
+  }
+  }
+   else
+   {
+    toast({
+      title: 'Password Error',
+      description: "The Password you typed doesn't match the confirm password",
+      status: 'error',
+      duration: 3000,
+      isClosable: true,
+    })
+    setLoadingSpinnerStatus(false)
+   }
+  
+  }
 
   
   return (
@@ -93,10 +165,9 @@ setPasswordRecoveryStatus(false)
       <MDBRow>
 
         <MDBCol col='10' md='6'>
-        <h1 className="my-1 display-3 fw-bold ls-tight px-3" style={{color: '#0a4275'}}>
-            Social Post <br />
-            
-          </h1>
+        <div className="container-sm">
+        <img src={logo} className="img-fluid" alt="Sample image" />
+        </div>
           <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp" className="img-fluid" alt="Sample image" />
           
         </MDBCol>
@@ -126,9 +197,9 @@ setPasswordRecoveryStatus(false)
             <p className="text-center fw-bold mx-3 mb-0">Or</p>
           </div>
           <form onSubmit={handlesubmit}>  
-          <MDBInput wrapperClass='mb-4' label='Email' name="Email" id='formControl1' type='text' size="lg"/>
-          <MDBInput wrapperClass='mb-4' label='Password' name="Password" id='formControl2' type='password' size="lg"/>
-          <MDBInput wrapperClass='mb-4' label='Confirm Password' name="Password" id='formControl2' type='password' size="lg"/>
+          <MDBInput wrapperClass='mb-4' label='Email' name="Email" id='formControl1' type='text' size="lg" value={Email.current}/>
+          <MDBInput ref={Password} wrapperClass='mb-4' label='Password' name="Password" id='formControl2' type='password' size="lg"/>
+          <MDBInput ref={ConfirmPassword} wrapperClass='mb-4' label='Confirm Password' name="CPassword" id='formControl3' type='password' size="lg"/>
           
            
           <div className='text-center text-md-start mt-4 pt-2'>
