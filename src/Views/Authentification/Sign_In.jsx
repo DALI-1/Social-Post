@@ -7,7 +7,7 @@ import { ChakraProvider } from '@chakra-ui/react'
 import { PasswordRecovery } from './PasswordRecovery';
 import logo from '../../Assets/SocialPost-Logo.png';
 
-import {CALLAPI} from './APIAccessAndVerification'
+import {CALLAPI} from '../../libs/APIAccessAndVerification'
 function App() {
   let [LoadingSpinnerStatus, setLoadingSpinnerStatus] = useState(false);
   let [PasswordRecoveryStatus, setPasswordRecoveryStatus] = useState(false);
@@ -32,13 +32,16 @@ setPasswordRecoveryStatus(false)
     APIError.current=false
   }
   
- if(window.localStorage.getItem("IsLoggedIn").match(true))
+ if(window.localStorage.getItem("IsRemembered")!=null)
  {
-  setTimeout(() => {
-    window.location.replace('/index')
-  }, 0);
+   if(window.localStorage.getItem("IsRemembered").match(true))
+          {
+            setTimeout(() => {
+              window.location.replace('/index')
+            }, 0);
+          }
  }
-  //This is an Async method which will call our API, url is the API path, data is the json data, the format should follow our User.DTO in the backend.
+
 
   const handlesubmit=(props)=>
   {
@@ -83,10 +86,16 @@ setPasswordRecoveryStatus(false)
                   isClosable: true,
                 })
                     
+
                 if(RememberMe.current==true)
                 {
                   window.localStorage.setItem('AuthToken', result[property])
-                  window.localStorage.setItem('IsLoggedIn', true)
+                  window.localStorage.setItem('IsRemembered', true)
+                }
+                else
+                {
+                  window.localStorage.setItem('AuthToken', result[property])
+                  window.localStorage.setItem('IsRemembered', false)
                 }
           }
           else if(property=="UserNotFound")

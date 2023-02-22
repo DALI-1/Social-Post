@@ -5,7 +5,7 @@ import LoadingSpinner from '../../components/LoadingSpinner'
 import { useToast } from '@chakra-ui/react'
 import { ChakraProvider } from '@chakra-ui/react'
 import { PasswordRecovery } from './PasswordRecovery';
-import {CALLAPI,CALL_API_With_JWTToken} from './APIAccessAndVerification'
+import {CALLAPI,CALL_API_With_JWTToken} from '../../libs/APIAccessAndVerification'
 import logo from '../../Assets/SocialPost-Logo.png';
 function App() {
   let [LoadingSpinnerStatus, setLoadingSpinnerStatus] = useState(false);
@@ -83,9 +83,9 @@ setPasswordRecoveryStatus(false)
                         isClosable: true,
                       })
                       setLoadingSpinnerStatus(false)
-                      setTimeout(() => {
+                     
                         window.location.replace('/login')
-                      }, 1000);
+                      
                       break
            }
            if(property=="UserNotFound")
@@ -105,7 +105,7 @@ setPasswordRecoveryStatus(false)
           
          
          }
-         if( APIError.current=true)
+         if( APIError.current==true)
          {
                 toast({
                   title: 'Server Internal Error',

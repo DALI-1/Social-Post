@@ -49,7 +49,7 @@ export default function Content() {
           </Grid>
         </Toolbar>
       </AppBar>
-      <Typography sx={{ my: 5, mx: 2 }} color="text.secondary" align="center">
+      <Typography component={'span'} sx={{ my: 5, mx: 2 }} color="text.secondary" align="center">
         No users for this project yet
       </Typography>
     </Paper>

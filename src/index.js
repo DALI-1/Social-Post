@@ -9,7 +9,7 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 
 import FooterComp from './Headers/Footer'
 import NavComp from './Headers/Navigation'
-
+import {GlobalContext} from "./context/Context"
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   
@@ -18,8 +18,10 @@ root.render(
     
     <header>
     </header>
-    
+    <GlobalContext>
     <App/>
+    </GlobalContext>
+    
     
     
     <footer>

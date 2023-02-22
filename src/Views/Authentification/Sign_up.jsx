@@ -17,7 +17,7 @@ from 'mdb-react-ui-kit';
 import { ChakraProvider } from '@chakra-ui/react'
 import { useToast } from '@chakra-ui/react'
 import logo from '../../Assets/SocialPost-Logo.png';
-import {CALLAPI} from './APIAccessAndVerification'
+import {CALLAPI} from '../../libs/APIAccessAndVerification'
 function App() {
 
   let [LoadingSpinnerStatus, setLoadingSpinnerStatus] = useState(false);

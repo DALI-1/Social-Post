@@ -14,12 +14,15 @@ import Tabs from '@mui/material/Tabs';
 import Toolbar from '@mui/material/Toolbar';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
-
+import {AppContext} from "../../context/Context"
+import { ProfileSelectedTabActions } from '../../variables/variables';
 const lightColor = 'rgba(255, 255, 255, 0.7)';
+
 
 function Header(props) {
   const { onDrawerToggle } = props;
-
+  const {GlobalState,Dispatch}=React.useContext(AppContext)
+  let [TabMenu,SetTabMenu]=React.useState(0)
   return (
     <React.Fragment>
       <AppBar color="primary" position="sticky" elevation={0}>
@@ -36,23 +39,7 @@ function Header(props) {
               </IconButton>
             </Grid>
             <Grid item xs />
-            <Grid item>
-              <Link
-                href="/"
-                variant="body2"
-                sx={{
-                  textDecoration: 'none',
-                  color: lightColor,
-                  '&:hover': {
-                    color: 'common.white',
-                  },
-                }}
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                Go to docs
-              </Link>
-            </Grid>
+            
             <Grid item>
               <Tooltip title="Alerts • No alerts">
                 <IconButton color="inherit">
@@ -79,19 +66,10 @@ function Header(props) {
           <Grid container alignItems="center" spacing={1}>
             <Grid item xs>
               <Typography color="inherit" variant="h5" component="h1">
-                Authentication
+                Profile Management
               </Typography>
             </Grid>
-            <Grid item>
-              <Button
-                sx={{ borderColor: lightColor }}
-                variant="outlined"
-                color="inherit"
-                size="small"
-              >
-                Web setup
-              </Button>
-            </Grid>
+           
             <Grid item>
               <Tooltip title="Help">
                 <IconButton color="inherit">
@@ -103,19 +81,19 @@ function Header(props) {
         </Toolbar>
       </AppBar>
       <AppBar component="div" position="static" elevation={0} sx={{ zIndex: 0 }}>
-        <Tabs value={0} textColor="inherit">
-          <Tab label="Users" />
-          <Tab label="Sign-in method" />
-          <Tab label="Templates" />
-          <Tab label="Usage" />
+        <Tabs  value={TabMenu} textColor="inherit">
+          <Tab  label="Profile"  onClick={(e)=>{Dispatch({type:ProfileSelectedTabActions.SelectProfile})
+          SetTabMenu(0)
+        }}/>
+          <Tab label="Security"onClick={()=>{Dispatch({type:ProfileSelectedTabActions.SelectSecurity})
+        SetTabMenu(1)
+        }} />
         </Tabs>
       </AppBar>
     </React.Fragment>
   );
 }
 
-Header.propTypes = {
-  onDrawerToggle: PropTypes.func.isRequired,
-};
+
 
 export default Header;

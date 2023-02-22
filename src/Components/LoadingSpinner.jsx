@@ -1,10 +1,14 @@
 import React from 'react';
 import { MDBSpinner } from 'mdb-react-ui-kit';
-
+import { Spinner } from '@chakra-ui/react'
 export default function App() {
   return (
-    <MDBSpinner role='status'>
-      <span className='visually-hidden'>Loading...</span>
-    </MDBSpinner>
+    <Spinner
+  thickness='4px'
+  speed='0.65s'
+  emptyColor='gray.200'
+  color='blue.500'
+  size='xl'
+/>
   );
 }

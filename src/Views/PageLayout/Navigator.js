@@ -21,53 +21,12 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import PhonelinkSetupIcon from '@mui/icons-material/PhonelinkSetup';
 import PreviewRoundedIcon from '@mui/icons-material/PreviewRounded';
 import logo from '../../Assets/SocialPost-Logo.png';
-const categories = [
-  {
-    id: 'Publish Managmeent',
-    children: [
-      { id: 'Manage Posts', icon: <SettingsIcon /> },
-      { id: 'View Posts', icon: <PreviewRoundedIcon /> },
-      
-    ],
-  },
-  {
-    id: 'Group Managmeent',
-    children: [
-      { id: 'Manage Groups', icon: <SettingsIcon /> },
-      { id: 'View Groups', icon: <PreviewRoundedIcon/> },
-      /*{ id: 'Test Lab', icon: <PhonelinkSetupIcon /> },*/
-    ],
-  },
-  {
-    id: 'Page Managmeent',
-    children: [
-      { id: 'Manage Pages', icon: <SettingsIcon /> },
-      { id: 'View Pages', icon: <PreviewRoundedIcon/> },
-      
-    ],
-  },
-  
-  {
-    id: 'Account Management',
-    children: [
-      {
-        id: 'Manage Personal informatons',
-        icon: <AccountCircleRoundedIcon />,
-        active: false,
-      },
-      { id: 'Logout', icon: <LoginIcon/> }
-      /*{ id: 'Database', icon: <DnsRoundedIcon /> },
-      { id: 'Storage', icon: <PermMediaOutlinedIcon /> },
-      { id: 'Hosting', icon: <PublicIcon /> },
-      { id: 'Functions', icon: <SettingsEthernetIcon /> },
-      {
-        id: 'Machine learning',
-        icon: <SettingsInputComponentIcon />,
-      },*/
-    ],
-  },
-  
-];
+
+import {AppContext} from "../../context/Context"
+import { NavigatorTabs,NavigatorSelectedTabActions} from '../../variables/variables';
+
+
+
 
 const item = {
   py: '2px',
@@ -84,19 +43,87 @@ const itemCategory = {
   px: 3,
 };
 
-const HandleLogOut=()=>
-{
- console.log("Test")
-  window.localStorage.removeItem("AuthToken")
-  window.localStorage.setItem("IsLoggedIn",false)
-  setTimeout(() => 
-  window.location.replace('/login')
-, 1000)
-}
+
 
 export default function Navigator(props) {
-  const { ...other } = props;
 
+  const { ...other } = props;
+  const {GlobalState,Dispatch}=React.useContext(AppContext)
+
+          const HandleLogOut=()=>
+        {
+          Dispatch({type:NavigatorSelectedTabActions.SelectLogout})
+          window.localStorage.removeItem("AuthToken")
+          window.localStorage.setItem("IsRemembered",false)
+          setTimeout(() => 
+          window.location.replace('/login')
+        , 1)
+        }
+
+        const HandleProfile=()=>
+        {
+          Dispatch({type:NavigatorSelectedTabActions.SelectManageProfilInformations})
+         
+         
+        }
+        const HandlePost=()=>
+        {
+          Dispatch({type:NavigatorSelectedTabActions.SelectManagePosts})
+         
+         
+        }
+  const categories = [
+    {
+      id: 'Publish Managmeent',
+      children: [
+        { id: 'Manage Posts', icon: <SettingsIcon />,refrence:NavigatorTabs.ManagePostsTab, clickmethod:()=>{HandlePost()} },
+        /*{ id: 'View Posts', icon: <PreviewRoundedIcon /> },*/
+        
+      ],
+    },
+    {
+      id: 'Group Managmeent',
+      children: [
+        { id: 'Manage Groups', icon: <SettingsIcon />,refrence:NavigatorTabs.ManageGroupsTab, clickmethod:()=>{} },
+        /*{ id: 'View Groups', icon: <PreviewRoundedIcon/> },*/
+        /*{ id: 'Test Lab', icon: <PhonelinkSetupIcon /> },*/
+      ],
+    },
+    {
+      id: 'Page Managmeent',
+      children: [
+        { id: 'Manage Pages', icon: <SettingsIcon />,refrence:NavigatorTabs.ManagePagesTab, clickmethod:()=>{} },
+       /* { id: 'View Pages', icon: <PreviewRoundedIcon/> },*/
+        
+      ],
+    },
+    
+    {
+      id: 'Account Management',
+      children: [
+        {
+          id: 'Manage Personal informatons',
+          icon: <AccountCircleRoundedIcon />,
+          refrence:NavigatorTabs.ManageProfilInformationsTab,
+          active: false,
+          clickmethod:()=>{HandleProfile()}
+        },
+        { id: 'Logout', icon: <LoginIcon/>
+         ,refrence:NavigatorTabs.LogoutTab
+         , clickmethod:()=>{HandleLogOut()}
+           }
+        /*{ id: 'Database', icon: <DnsRoundedIcon /> },
+        { id: 'Storage', icon: <PermMediaOutlinedIcon /> },
+        { id: 'Hosting', icon: <PublicIcon /> },
+        { id: 'Functions', icon: <SettingsEthernetIcon /> },
+        {
+          id: 'Machine learning',
+          icon: <SettingsInputComponentIcon />,
+        },*/
+      ],
+    },
+    
+  ];
   return (
     <Drawer variant="permanent" {...other}>
       <List disablePadding>
@@ -118,27 +145,19 @@ export default function Navigator(props) {
             <ListItem sx={{ py: 2, px: 3 }}>
               <ListItemText sx={{ color: '#fff' }}>{id}</ListItemText>
             </ListItem>
-            {children.map(({ id: childId, icon, active }) =>{
+            {children.map(({ id: childId, icon, active,clickmethod,refrence }) =>{
                
-              if(childId=="Logout")
-              {
+              
                 
                 return( <ListItem disablePadding key={childId}>
-                  <ListItemButton selected={active} sx={item} onClick={HandleLogOut} >
+                  <ListItemButton selected={GlobalState.NavigatorSelectedTab==refrence?true:false} sx={item} onClick={clickmethod}
+                    
+                 >
                     <ListItemIcon>{icon}</ListItemIcon>
                     <ListItemText>{childId}</ListItemText>
                   </ListItemButton>
                 </ListItem>)
-              }
-              else
-              {
-                return( <ListItem disablePadding key={childId}>
-                  <ListItemButton selected={active} sx={item}>
-                    <ListItemIcon>{icon}</ListItemIcon>
-                    <ListItemText>{childId}</ListItemText>
-                  </ListItemButton>
-                </ListItem>)
-              }
+              
               
             }   
             )}
