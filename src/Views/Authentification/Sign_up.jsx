@@ -18,6 +18,7 @@ import { ChakraProvider } from '@chakra-ui/react'
 import { useToast } from '@chakra-ui/react'
 import logo from '../../Assets/SocialPost-Logo.png';
 import {CALLAPI} from '../../libs/APIAccessAndVerification'
+import { ToastContainer, toast } from 'react-toastify';
 function App() {
 
   let [LoadingSpinnerStatus, setLoadingSpinnerStatus] = useState(false);
@@ -221,7 +222,18 @@ else
   return (
     <ChakraProvider>
     <MDBContainer fluid className=' background-radial-gradient overflow-hidden' style={{backgroundImage: `url("https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp")`,backgroundRepeat:"no-repeat"}}>
-
+    <ToastContainer
+            position="bottom-left"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+            />
       <MDBRow>
 
         <MDBCol md='5' className='text-center text-md-start d-flex flex-column justify-content-center'>

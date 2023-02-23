@@ -1,7 +1,6 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import AppBar from '@mui/material/AppBar';
-import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import HelpIcon from '@mui/icons-material/Help';
@@ -16,13 +15,23 @@ import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import {AppContext} from "../../context/Context"
 import { ProfileSelectedTabActions } from '../../variables/variables';
+
+
+    
 const lightColor = 'rgba(255, 255, 255, 0.7)';
 
 
 function Header(props) {
+  
   const { onDrawerToggle } = props;
   const {GlobalState,Dispatch}=React.useContext(AppContext)
   let [TabMenu,SetTabMenu]=React.useState(0)
+  let ProfilePicture=React.useRef("")
+  React.useEffect(()=>{
+    console.log("Update request")
+    ProfilePicture.current.src=GlobalState.UserProfilePicture
+    console.log(GlobalState.UserProfilePicture)
+  },[GlobalState])
   return (
     <React.Fragment>
       <AppBar color="primary" position="sticky" elevation={0}>
@@ -49,7 +58,9 @@ function Header(props) {
             </Grid>
             <Grid item>
               <IconButton color="inherit" sx={{ p: 0.5 }}>
-                <Avatar src="/static/images/avatar/1.jpg" alt="My Avatar" />
+              <img  ref={ProfilePicture}className="img-accountAvatar-profile rounded-circle"  alt=""/>
+                    
+              
               </IconButton>
             </Grid>
           </Grid>

@@ -3,7 +3,12 @@ body{margin-top:20px;
     color:#69707a;
     }
     .img-account-profile {
-        height: 10rem;
+        height: 12rem;
+        width: 12rem;
+    }
+    .img-accountAvatar-profile {
+        height: 2.5rem;
+        width: 2.5rem;
     }
     .rounded-circle {
         border-radius: 50% !important;

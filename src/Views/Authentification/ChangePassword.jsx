@@ -6,6 +6,7 @@ import { useToast } from '@chakra-ui/react'
 import { ChakraProvider } from '@chakra-ui/react'
 import { PasswordRecovery } from './PasswordRecovery';
 import {CALLAPI,CALL_API_With_JWTToken} from '../../libs/APIAccessAndVerification'
+import { ToastContainer, toast } from 'react-toastify';
 import logo from '../../Assets/SocialPost-Logo.png';
 function App() {
   let [LoadingSpinnerStatus, setLoadingSpinnerStatus] = useState(false);
@@ -161,7 +162,18 @@ setPasswordRecoveryStatus(false)
   return (
     <ChakraProvider>
     <MDBContainer fluid className="p-3 my-5 h-custom">
-
+    <ToastContainer
+            position="bottom-left"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+            />
       <MDBRow>
 
         <MDBCol col='10' md='6'>

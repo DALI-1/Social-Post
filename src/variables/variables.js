@@ -28,3 +28,10 @@ export const NavigatorSelectedTabActions=
     SelectManageGroups:"SwitchToManageGroups",
     SelectManagePages:"SwitchToManagePages"
 }
+export const UserActions=
+{
+   UpdateUsername:"UpdateUserName",
+   UpdateFirstName:"UpdateFirstName",
+   UpdateLastName:"UpdateLastName",
+   UpdateProfilPicture:"UpdateProfilePicture"
+}

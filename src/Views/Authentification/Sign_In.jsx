@@ -6,7 +6,7 @@ import { useToast } from '@chakra-ui/react'
 import { ChakraProvider } from '@chakra-ui/react'
 import { PasswordRecovery } from './PasswordRecovery';
 import logo from '../../Assets/SocialPost-Logo.png';
-
+import { ToastContainer, toast } from 'react-toastify';
 import {CALLAPI} from '../../libs/APIAccessAndVerification'
 function App() {
   let [LoadingSpinnerStatus, setLoadingSpinnerStatus] = useState(false);
@@ -16,7 +16,7 @@ function App() {
   let UserAuthentificated= useRef(false);
   let APIError = useRef(false);
   let RememberMe=useRef(false)
-  const toast = useToast()
+ 
   
 
 //This methode update the parent that the pop up closed
@@ -78,13 +78,17 @@ setPasswordRecoveryStatus(false)
           if( property=="JWT_AccessToken")
           {
                 UserAuthentificated.current=true
-                toast({
-                  title: 'Login',
-                  description: "You logged in successfully!",
-                  status: 'success',
-                  duration: 3000,
-                  isClosable: true,
-                })
+                
+                toast.success('You logged in successfully!"', {
+                  position: "bottom-left",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "light",
+                  });
                     
 
                 if(RememberMe.current==true)
@@ -102,37 +106,50 @@ setPasswordRecoveryStatus(false)
           {
                  UserNameDontExist.current=true
                  
-                 toast({
-                  
-                  title: 'Login',
-                  description: "The username you inserted doesn't exist.",
-                  status: 'info',
-                  duration: 3000,
-                  isClosable: true,
-                })
+               
+                toast.info('The username you inserted doesnt exist.', {
+                  position: "bottom-left",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "light",
+                  });
           }
           else if(property=="WrongPassword")
           {
             UserWrongPassStatus.current=true
-            toast({
-              title: 'Login',
-              description: "You typed the wrong password, Check if you have CAPS on.",
-              status: 'info',
-              duration: 3000,
-              isClosable: true,
-            })
+            
+            toast.info('You typed the wrong password, Check if you have CAPS on.', {
+              position: "bottom-left",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+              });
           }
         
         }
          if(APIError.current==true)
          {
-          toast({
-            title: 'Server Internal Error',
-            description: "Its Either the Server is down or you lost connection",
-            status: 'error',
-            duration: 3000,
-            isClosable: true,
-          })
+          
+          toast.error('Its Either the Server is down or you lost connection', {
+            position: "bottom-left",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            });
+          
+          
          }
         
         setLoadingSpinnerStatus(false) 
@@ -144,20 +161,36 @@ setPasswordRecoveryStatus(false)
       
    }).catch(error=>{
    
-    toast({
-      title: 'Server internal Error',
-      description: "Contact Dev team, there is an internal error within the server",
-      status: 'error',
-      duration: 3000,
-      isClosable: true,
-    })
+  
+    toast.error('Contact Dev team, there is an internal error within the server', {
+      position: "bottom-left",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      });
+    
    })}
 
   
   return (
     <ChakraProvider>
     <MDBContainer fluid className="p-3 my-5 h-custom">
-
+    <ToastContainer
+            position="bottom-left"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+            />
       <MDBRow>
       
         <MDBCol col='10' md='6'>

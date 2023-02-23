@@ -45,6 +45,7 @@ export  const  CALLAPI = async (url,data, UpdateAPIError)=>
       
       const json = await response.json();  
       UpdateAPIError(false) 
+      
       return(json)
     } catch (error) {
       console.log(" DEVELOPER ONLY : ERROR", error);
@@ -75,6 +76,32 @@ export  const  CALLAPI = async (url,data, UpdateAPIError)=>
       console.log(" DEVELOPER ONLY : ERROR", error);
 
       UpdateAuthStatus(false) 
+      return(error);
+    }
+  }
+
+
+  export const CALL_API_With_JWTToken_GET = async (url,token,UpdateAPIError)=>
+  {
+    
+    try {
+      const response = await fetch(url,{
+        method: "GET",
+        
+        headers: { 
+          "Content-Type": "application/json",
+          'Authorization': `Bearer ${token}` 
+        }
+        
+      });
+      
+      const json = await response.json();  
+      UpdateAPIError(false) 
+      return(json)
+    } catch (error) {
+      console.log(" DEVELOPER ONLY : ERROR", error);
+        
+      UpdateAPIError(true) 
       return(error);
     }
   }

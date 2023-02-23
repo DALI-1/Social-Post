@@ -20,6 +20,7 @@ import {
   import {Helmet} from "react-helmet";
   import { useToast } from '@chakra-ui/react'
   import {CALLAPI} from '../../libs/APIAccessAndVerification'
+  import { ToastContainer, toast } from 'react-toastify';
 export const PasswordRecovery=(props)=> {
     //let { isOpen, onOpen, onClose } = useDisclosure()
     let [isOpen, setisOpen] = useState(props.Open);

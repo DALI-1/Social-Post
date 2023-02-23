@@ -1,5 +1,5 @@
 import { useReducer,createContext,useContext } from "react";
-import {ProfileTabs,ProfileSelectedTabActions,NavigatorTabs,NavigatorSelectedTabActions} from "../variables/variables"
+import * as variables from "../variables/variables"
 export const AppContext=createContext(null);
 
 
@@ -8,40 +8,60 @@ const reducer=(GlobalState,action)=>
        switch(action.type)
        {
                     //Profile Tab actions
-            case ProfileSelectedTabActions.SelectProfile:
+            case variables.ProfileSelectedTabActions.SelectProfile:
                 {       
-                    return({...GlobalState,ProfileSelectedTab:ProfileTabs.ProfileTab})
+                    return({...GlobalState,ProfileSelectedTab:variables.ProfileTabs.ProfileTab})
                 }
              
-            case ProfileSelectedTabActions.SelectSecurity:
+            case variables.ProfileSelectedTabActions.SelectSecurity:
                 {
-              return({...GlobalState,ProfileSelectedTab:ProfileTabs.SecurityTab})
+              return({...GlobalState,ProfileSelectedTab:variables.ProfileTabs.SecurityTab})
                 }
                         //Navigator actions
-            case NavigatorSelectedTabActions.SelectLogout:
+            case variables.NavigatorSelectedTabActions.SelectLogout:
                 {
-                return({...GlobalState,NavigatorSelectedTab:NavigatorTabs.LogoutTab})
+                return({...GlobalState,NavigatorSelectedTab:variables.NavigatorTabs.LogoutTab})
                 }
-            case NavigatorSelectedTabActions.SelectManageProfilInformations:
+            case variables.NavigatorSelectedTabActions.SelectManageProfilInformations:
                 {
                     
-                return({...GlobalState,NavigatorSelectedTab:NavigatorTabs.ManageProfilInformationsTab})
+                return({...GlobalState,NavigatorSelectedTab:variables.NavigatorTabs.ManageProfilInformationsTab})
                 }
                 
-            case NavigatorSelectedTabActions.SelectManageGroups:
+            case variables.NavigatorSelectedTabActions.SelectManageGroups:
                 {
-                return({...GlobalState,NavigatorSelectedTab:NavigatorTabs.ManageGroupsTab})
+                return({...GlobalState,NavigatorSelectedTab:variables.NavigatorTabs.ManageGroupsTab})
                 }  
-            case NavigatorSelectedTabActions.SelectManagePages:
+            case variables.NavigatorSelectedTabActions.SelectManagePages:
                 {
-                return({...GlobalState,NavigatorSelectedTab:NavigatorTabs.ManagePagesTab})
+                return({...GlobalState,NavigatorSelectedTab:variables.NavigatorTabs.ManagePagesTab})
                 }  
-            case NavigatorSelectedTabActions.SelectManagePosts:
+            case variables.NavigatorSelectedTabActions.SelectManagePosts:
                 {
-                return({...GlobalState,NavigatorSelectedTab:NavigatorTabs.ManagePostsTab})
+                return({...GlobalState,NavigatorSelectedTab:variables.NavigatorTabs.ManagePostsTab})
                 } 
 
+                //Personal Info Actions
+                case variables.UserActions.UpdateFirstName:
+                {
+                return({...GlobalState,FirstName:action.value})
+                } 
+                case variables.UserActions.UpdateLastName:
+                {
+                return({...GlobalState,LastName:action.value})
+                } 
+                case variables.UserActions.UpdateUsername:
+                {
+                return({...GlobalState,Username:action.value})
+                } 
+                case variables.UserActions.UpdateProfilPicture:
+                    {
+                        
+                    return({...GlobalState,UserProfilePicture:action.value})
+                    } 
+               
             default:
+                
               return (GlobalState)  
 
        }
@@ -49,8 +69,12 @@ const reducer=(GlobalState,action)=>
 
 const InitialGlobalState=
 {
-    NavigatorSelectedTab:NavigatorTabs.ManagePostsTab,
-    ProfileSelectedTab:ProfileTabs.ProfileTab
+    NavigatorSelectedTab:variables.NavigatorTabs.ManagePostsTab,
+    ProfileSelectedTab:variables.ProfileTabs.ProfileTab,
+    Username:null,
+    FirstName:null,
+    LastName:null,
+    UserProfilePicture:"NoPictureYet"
 }
 
 export const GlobalContext=({children})=>
