@@ -72,6 +72,13 @@ export default function Navigator(props) {
          
          
         }
+
+        const HandleGroup=()=>
+        {
+          Dispatch({type:NavigatorSelectedTabActions.SelectManageGroups})
+         
+         
+        }
   const categories = [
     {
       id: 'Publish Managmeent',
@@ -84,7 +91,7 @@ export default function Navigator(props) {
     {
       id: 'Group Managmeent',
       children: [
-        { id: 'Manage Groups', icon: <SettingsIcon />,refrence:NavigatorTabs.ManageGroupsTab, clickmethod:()=>{} },
+        { id: 'Manage Groups', icon: <SettingsIcon />,refrence:NavigatorTabs.ManageGroupsTab, clickmethod:()=>{HandleGroup()} },
         /*{ id: 'View Groups', icon: <PreviewRoundedIcon/> },*/
         /*{ id: 'Test Lab', icon: <PhonelinkSetupIcon /> },*/
       ],

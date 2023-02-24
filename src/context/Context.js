@@ -20,6 +20,16 @@ const reducer=(GlobalState,action)=>
                 {
               return({...GlobalState,ProfileSelectedTab:variables.ProfileTabs.SecurityTab})
                 }
+                       //Group Tab actions
+            case variables.GroupSelectedTabActions.SelectAddGroup:
+                {       
+                    return({...GlobalState,GroupSelectedTab:variables.GroupTabs.AddGroup})
+                }
+             
+            case variables.GroupSelectedTabActions.SelectEditGroup:
+                {
+              return({...GlobalState,GroupSelectedTab:variables.GroupTabs.EditGroupTab})
+                }
                         //Navigator actions
             case variables.NavigatorSelectedTabActions.SelectLogout:
                 {
@@ -89,6 +99,7 @@ const InitialGlobalState=
 {
     NavigatorSelectedTab:variables.NavigatorTabs.ManagePostsTab,
     ProfileSelectedTab:variables.ProfileTabs.ProfileTab,
+    GroupSelectedTab:variables.GroupTabs.AddGroup,
     Username:null,
     FirstName:null,
     LastName:null,

@@ -12,6 +12,18 @@ export const ProfileSelectedTabActions=
     SelectSecurity:"SwitchToSecurityTab"
 }
 
+export const GroupTabs=
+{
+    AddGroup:"AddGroupTab",
+    EditGroupTab:"EditGroupTab"
+}
+
+export const GroupSelectedTabActions=
+{
+    SelectAddGroup:"SwitchToAddGroup",
+    SelectEditGroup:"SwitchToEditGroup"
+}
+
 export const NavigatorTabs=
 {
     LogoutTab:"LogoutNav",

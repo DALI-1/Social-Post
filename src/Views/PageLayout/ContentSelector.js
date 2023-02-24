@@ -12,6 +12,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import ProfilePage from '../ProfileManagement/Content';
 import PostMangementPage from '../PostManagement/Content';
+import GroupMangementPage from '../GroupManagement/Content';
 import {AppContext} from "../../context/Context"
 import {NavigatorTabs } from '../../variables/variables';
 import LoadingSpinner from "../../components/LoadingSpinner"
@@ -21,6 +22,7 @@ export default function Content() {
   <>
   {GlobalState.NavigatorSelectedTab==NavigatorTabs.ManageProfilInformationsTab&&<ProfilePage/>}
   {GlobalState.NavigatorSelectedTab==NavigatorTabs.ManagePostsTab&&<PostMangementPage/>}
+  {GlobalState.NavigatorSelectedTab==NavigatorTabs.ManageGroupsTab&&<GroupMangementPage/>}
   </>
     
   );
