@@ -14,7 +14,8 @@ import Toolbar from '@mui/material/Toolbar';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import {AppContext} from "../../context/Context"
-import { ProfileSelectedTabActions } from '../../variables/variables';
+import { ProfileSelectedTabActions,ProfileTabs } from '../../variables/variables';
+import { Avatar } from "@nextui-org/react";
 
 
     
@@ -25,18 +26,29 @@ function Header(props) {
   
   const { onDrawerToggle } = props;
   const {GlobalState,Dispatch}=React.useContext(AppContext)
-  let [TabMenu,SetTabMenu]=React.useState(0)
-  let ProfilePicture=React.useRef("")
+  let [TabMenu,SetTabMenu]=React.useState(GlobalState.ProfileSelectedTab==ProfileTabs.ProfileTab?0:1)
+  
+  let [PicStatus,SetPicStatus]=React.useState();
   React.useEffect(()=>{
-    console.log("Update request")
-    ProfilePicture.current.src=GlobalState.UserProfilePicture
-    console.log(GlobalState.UserProfilePicture)
+    if(GlobalState.UserProfilePicture=="")
+    {
+      
+      SetPicStatus("/static/images/avatar/1.jpg")
+    }
+    else
+    {
+      
+      SetPicStatus(GlobalState.UserProfilePicture)
+      
+    }
+    
   },[GlobalState])
   return (
     <React.Fragment>
       <AppBar color="primary" position="sticky" elevation={0}>
         <Toolbar>
           <Grid container spacing={1} alignItems="center">
+            
             <Grid sx={{ display: { sm: 'none', xs: 'block' } }} item>
               <IconButton
                 color="inherit"
@@ -48,7 +60,10 @@ function Header(props) {
               </IconButton>
             </Grid>
             <Grid item xs />
-            
+            <Grid item style={{marginTop:"1rem"}}>
+             <p>{GlobalState.FirstName+" "} {GlobalState.LastName}</p>
+           
+            </Grid>
             <Grid item>
               <Tooltip title="Alerts • No alerts">
                 <IconButton color="inherit">
@@ -58,12 +73,21 @@ function Header(props) {
             </Grid>
             <Grid item>
               <IconButton color="inherit" sx={{ p: 0.5 }}>
-              <img  ref={ProfilePicture}className="img-accountAvatar-profile rounded-circle"  alt=""/>
-                    
+          
+        <Avatar
+          size="lg"
+          src={PicStatus} 
+          color="primary"
+          bordered
+          squared
+        />
               
               </IconButton>
             </Grid>
+           
+
           </Grid>
+          
         </Toolbar>
       </AppBar>
       <AppBar

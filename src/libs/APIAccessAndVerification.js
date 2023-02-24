@@ -1,10 +1,11 @@
 import React,{ useState,useEffect,useRef } from 'react';
 import { useToast } from '@chakra-ui/react'
-
+import { APIStatuses } from '../variables/variables';
+import  {APIStatus}from "../variables/variables"
+import { ToastContainer, toast } from 'react-toastify';
 //This is an Async method which will call our API, url is the API path, data is the json data, the format should follow our DTO format in the backend
-export  const  CALLAPI = async (url,data, UpdateAPIError)=>
+export  const  CALLAPI = async (url,data)=>
   {
-    
    
     try {
       const response = await fetch(url,{
@@ -17,19 +18,29 @@ export  const  CALLAPI = async (url,data, UpdateAPIError)=>
       });
       
       const json = await response.json(); 
-      UpdateAPIError(false) 
-      
+     
+      APIStatus.Status=APIStatuses.APICallSuccess
       return(json)
-    } catch (error) {
-      console.log(" DEVELOPER ONLY : ERROR", error);
 
-      UpdateAPIError(true) 
-      
+    } catch (error) {
+      APIStatus.Status=APIStatuses.ConnectionLost
+        toast.error('Connection Lost, please try again...', {
+          position: "bottom-left",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          });
+       
+
       return(error);
     }
   }
 //This is an Async method which will call our API, url is the API path, data is the json data and also requires a valid JWT token
-  export const CALL_API_With_JWTToken = async (url,data,token,UpdateAPIError)=>
+  export const CALL_API_With_JWTToken = async (url,data,token)=>
   {
     
     try {
@@ -44,18 +55,27 @@ export  const  CALLAPI = async (url,data, UpdateAPIError)=>
       });
       
       const json = await response.json();  
-      UpdateAPIError(false) 
       
+      APIStatus.Status=APIStatuses.APICallSuccess
       return(json)
     } catch (error) {
-      console.log(" DEVELOPER ONLY : ERROR", error);
-
-      UpdateAPIError(true) 
+      console.log("Test")
+      APIStatus.Status=APIStatuses.ConnectionLost
+      toast.error('Connection Lost, please try again...', {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        });
       return(error);
     }
   }
   
-  export const VerifyAuth = async (url,data,token,UpdateAuthStatus)=>
+  export const VerifyAuth = async (url,data,token)=>
   {
     
     try {
@@ -70,18 +90,26 @@ export  const  CALLAPI = async (url,data, UpdateAPIError)=>
       });
       
       const json = await response.json();  
-      UpdateAuthStatus(true) 
+      APIStatus.Status=APIStatuses.APICallSuccess
       return(json)
     } catch (error) {
-      console.log(" DEVELOPER ONLY : ERROR", error);
-
-      UpdateAuthStatus(false) 
+      APIStatus.Status=APIStatuses.ConnectionLost
+      toast.error('Connection Lost, please try again...', {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        });
       return(error);
     }
   }
 
 
-  export const CALL_API_With_JWTToken_GET = async (url,token,UpdateAPIError)=>
+  export const CALL_API_With_JWTToken_GET = async (url,token)=>
   {
     
     try {
@@ -96,12 +124,22 @@ export  const  CALLAPI = async (url,data, UpdateAPIError)=>
       });
       
       const json = await response.json();  
-      UpdateAPIError(false) 
+      APIStatus.Status=APIStatuses.APICallSuccess
       return(json)
     } catch (error) {
-      console.log(" DEVELOPER ONLY : ERROR", error);
+      APIStatus.Status=APIStatuses.ConnectionLost
+        toast.error('Connection Lost, please try again...', {
+          position: "bottom-left",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          });
         
-      UpdateAPIError(true) 
+    
       return(error);
     }
   }

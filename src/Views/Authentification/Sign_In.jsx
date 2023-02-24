@@ -7,6 +7,7 @@ import { ChakraProvider } from '@chakra-ui/react'
 import { PasswordRecovery } from './PasswordRecovery';
 import logo from '../../Assets/SocialPost-Logo.png';
 import { ToastContainer, toast } from 'react-toastify';
+import {AppContext} from "../../context/Context"
 import {CALLAPI} from '../../libs/APIAccessAndVerification'
 function App() {
   let [LoadingSpinnerStatus, setLoadingSpinnerStatus] = useState(false);
@@ -14,31 +15,20 @@ function App() {
   let UserNameDontExist= useRef(false);
   let UserWrongPassStatus= useRef(false);
   let UserAuthentificated= useRef(false);
-  let APIError = useRef(false);
-  let RememberMe=useRef(false)
- 
   
-
+  let RememberMe=useRef(false)
 //This methode update the parent that the pop up closed
   const HandleRecoveryClosure=()=>{
 setPasswordRecoveryStatus(false)
   }
-  const UpdateAPIError=(error)=>
-  {
-    
-    if(error==true)
-    APIError.current=true
-    else
-    APIError.current=false
-  }
-  
+
  if(window.localStorage.getItem("IsRemembered")!=null)
  {
    if(window.localStorage.getItem("IsRemembered").match(true))
           {
-            setTimeout(() => {
+           
               window.location.replace('/index')
-            }, 0);
+           
           }
  }
 
@@ -69,7 +59,7 @@ setPasswordRecoveryStatus(false)
    //Sending a POST HTTP To the API with the Json Object
    let url=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_LOGINAPINAME
    
-   let APIResult=CALLAPI(url,JsonObject,UpdateAPIError)
+   let APIResult=CALLAPI(url,JsonObject)
   
    APIResult.then(result=>{
    
@@ -135,33 +125,9 @@ setPasswordRecoveryStatus(false)
           }
         
         }
-         if(APIError.current==true)
-         {
-          
-          toast.error('Its Either the Server is down or you lost connection', {
-            position: "bottom-left",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-            });
-          
-          
-         }
-        
-        setLoadingSpinnerStatus(false) 
         if(UserAuthentificated.current==true)
-        setTimeout(() => 
-          window.location.replace('/index')
-        , 1000)
-        
-      
+          window.location.replace('/index') 
    }).catch(error=>{
-   
-  
     toast.error('Contact Dev team, there is an internal error within the server', {
       position: "bottom-left",
       autoClose: 5000,
@@ -172,25 +138,16 @@ setPasswordRecoveryStatus(false)
       progress: undefined,
       theme: "light",
       });
-    
-   })}
+  
+   })
+   setLoadingSpinnerStatus(false) 
+  }
 
   
   return (
     <ChakraProvider>
     <MDBContainer fluid className="p-3 my-5 h-custom">
-    <ToastContainer
-            position="bottom-left"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="light"
-            />
+   
       <MDBRow>
       
         <MDBCol col='10' md='6'>

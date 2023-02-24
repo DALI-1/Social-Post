@@ -33,5 +33,22 @@ export const UserActions=
    UpdateUsername:"UpdateUserName",
    UpdateFirstName:"UpdateFirstName",
    UpdateLastName:"UpdateLastName",
-   UpdateProfilPicture:"UpdateProfilePicture"
+   UpdateProfilPicture:"UpdateProfilePicture",
+   UpdateEmail:"UpdateEmail"
+}
+
+export const APIStatuses=
+{
+   ConnectionLost:"ConnectionLost",
+   APICallSuccess:"APISucceeded",
+   NoAPICall:"NoAPICall"
+}
+export let APIStatus=
+{
+    Status:APIStatuses.NoAPICall
+}
+
+export var UserInformations=
+{
+ info:null
 }

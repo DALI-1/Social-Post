@@ -8,7 +8,9 @@ import Link from '@mui/material/Link';
 import Navigator from './Navigator';
 import ContentSelector from './ContentSelector';
 import HeaderSelector from './HeaderSelector';
-
+import {AppContext} from "../../context/Context"
+import {APIStatus,APIStatuses,UserInformations,UserActions}  from '../../variables/variables'
+import {CALL_API_With_JWTToken,CALL_API_With_JWTToken_GET} from '../../libs/APIAccessAndVerification'
 function Copyright() {
   return (
     <Typography variant="body2" color="text.secondary" align="center">
@@ -167,12 +169,35 @@ theme = {
 const drawerWidth = 256;
 
 export default function Paperbase() {
+  const {GlobalState,Dispatch}=React.useContext(AppContext)
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const isSmUp = useMediaQuery(theme.breakpoints.up('sm'));
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
+      // This is executed only at the first render
+  React.useEffect(() => {
+    //Sending a GET HTTP request To the API to get the User informations
+ let url=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_GETPERSONALINFO
+ let UserToken=window.localStorage.getItem("AuthToken")
+ let APIResult=CALL_API_With_JWTToken_GET(url,UserToken)
+ APIResult.then(result=>{
+    if(APIStatus.Status==APIStatuses.APICallSuccess)
+    {
+          UserInformations.info=result
+          UserInformations.info.passwordHash=null
+          UserInformations.info.passwordSalt=null
+    } 
+    console.log(UserInformations)
+     // Intializing the state values with the ones fetched from the API
+    Dispatch({type:UserActions.UpdateFirstName,value:UserInformations.info.firstName}) 
+    Dispatch({type:UserActions.UpdateLastName,value:UserInformations.info.lastName})
+    Dispatch({type:UserActions.UpdateUsername,value:UserInformations.info.userName})
+    Dispatch({type:UserActions.UpdateEmail,value:UserInformations.info.email})
+    Dispatch({type:UserActions.UpdateProfilPicture,value:UserInformations.info.profilePictureURL})
+ })
+  },[]);
   
   return (
     <ThemeProvider theme={theme}>

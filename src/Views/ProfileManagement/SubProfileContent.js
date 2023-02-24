@@ -18,10 +18,11 @@ import { MDBFile } from 'mdb-react-ui-kit';
 import {storage} from '../../libs/FireBase'
 import {getDownloadURL,ref, uploadBytesResumable,deleteObject} from 'firebase/storage'
 import {hashString,hashRandom } from 'react-hash-string'
-import DefaultProfilePicture from '../../Assets/DefaultProfilePicture.png';
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import {AppContext} from "../../context/Context"
 import * as variables from "../../variables/variables"
+import {APIStatus,APIStatuses}  from '../../variables/variables';
+import { Avatar } from "@nextui-org/react";
 export default function Content() {
 
     const {GlobalState,Dispatch}=React.useContext(AppContext)
@@ -32,65 +33,19 @@ export default function Content() {
     let Age=React.useRef()
     let PhoneNumber=React.useRef()
     let Email=React.useRef()
-    let APIError = React.useRef(false);
-    let UserProfilePicture= React.useRef("NoPictureYet");
+    let UserProfilePicture= React.useRef();
     let uploadTask=React.useRef(null)
     const [UploadProgress,setUploadProgress]=React.useState(0)
-    const UpdateAPIError=(error)=>
-    {
-      
-      if(error==true)
-      APIError.current=true
-      else
-      APIError.current=false
-    }
-
-   
     React.useEffect(() => {
-        //Sending a GET HTTP request To the API to get the User informations
-     let url=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_GETPERSONALINFO
-     let UserToken=window.localStorage.getItem("AuthToken")
-     let APIResult=CALL_API_With_JWTToken_GET(url,UserToken,UpdateAPIError)
-     APIResult.then(result=>{
-        if(APIError.current==false)
-        {
-            OriginalUserinfo.current=result
-            //Updating the new personal info to the UI after success                  
-                       Email.current.value=result["email"]    
-                        FirstName.current.value=result["firstName"]
-                         LastName.current.value=result["lastName"]  
-                        PhoneNumber.current.value=result["phoneNumber"]               
-                        Username.current.value=result["userName"]
-                         Age.current.value=result["age"]
-                         UserProfilePicture.current.src=result["profilePictureURL"]
-                        /* Dispatch({type:variables.UserActions.UpdateUsername,value:result["userName"]}) 
-                         Dispatch({type:variables.UserActions.UpdateFirstName,value:result["lastName"]})
-                         Dispatch({type:variables.UserActions.UpdateLastName,value:result["lastName"]})*/
-                         Dispatch({type:variables.UserActions.UpdateProfilPicture,value:result["profilePictureURL"]})
                         
-                         
-                
-        }
-        else
-        {
-            
-            toast.error('There is an Error with our server or you lost connection, please try again or contact our Dev team!', {
-                position: "bottom-left",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-                });
-        } 
-        
-     })
-     .catch(error=>{
-        console.log(error)
-     })  
-
+                       Email.current.value=variables.UserInformations.info.email   
+                        FirstName.current.value=variables.UserInformations.info.firstName
+                         LastName.current.value= variables.UserInformations.info.lastName
+                        PhoneNumber.current.value= variables.UserInformations.info.phoneNumber             
+                        Username.current.value=variables.UserInformations.info.userName
+                         Age.current.value=variables.UserInformations.info.age
+                         UserProfilePicture.current.src=variables.UserInformations.info.profilePictureURL 
+     
       },[]);
 
     
@@ -101,10 +56,12 @@ export default function Content() {
         let file=props.target[0].files[0]
         let HashedFileName=hashRandom()
         const storageRef=ref(storage,`/ProfileImages/${HashedFileName}`)
+        UserProfilePicture.current.src=variables.UserInformations.info.profilePictureURL
         //Deleting the old picture from FireBase
-        if(UserProfilePicture.current.src!="NoPictureYet")
-        {
-            const fileRef = ref(storage, UserProfilePicture.current.src);
+        if(variables.UserInformations.info.profilePictureURL!="")
+        { 
+            
+            const fileRef = ref(storage,variables.UserInformations.info.profilePictureURL);
             deleteObject(fileRef).then()
         }
         //Uploading the new image to FireBase
@@ -130,10 +87,10 @@ export default function Content() {
                  let JsonObject=JSON.parse(JSON.stringify(`{"ProfilePictureURL": "${url}"}`)) 
                 let url2=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_CHANGEUSERIMAGE
                 let UserToken=window.localStorage.getItem("AuthToken")
-                let APIResult=CALL_API_With_JWTToken(url2,JsonObject,UserToken,UpdateAPIError)
+                let APIResult=CALL_API_With_JWTToken(url2,JsonObject,UserToken)
                 APIResult.then(result=>{
                     setUploadProgress(0)
-                    if(APIError.current==false)
+                    if(APIStatus.Status==APIStatuses.APICallSuccess)
                     {
                             for( var property in result)
                             {
@@ -152,6 +109,7 @@ export default function Content() {
                                         theme: "light",
                                         });
                                         UserProfilePicture.current.src=url
+                                        
                                         Dispatch({type:variables.UserActions.UpdateProfilPicture,value:url})    
                                     break
                                 }
@@ -171,21 +129,6 @@ export default function Content() {
                                 }
                                 
                             }
-                    }
-                    else
-                    {
-                        
-                        toast.error('There is an Error with our server or you lost connection, please try again or contact our Dev team!', {
-                            position: "bottom-left",
-                            autoClose: 5000,
-                            hideProgressBar: false,
-                            closeOnClick: true,
-                            pauseOnHover: true,
-                            draggable: true,
-                            progress: undefined,
-                            theme: "light",
-                            });
-                        
                     }
 
                 })
@@ -257,15 +200,22 @@ export default function Content() {
      //Sending a POST HTTP To the API with the Json Object
      let url=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_CHANGEPERSONALINFO
      let UserToken=window.localStorage.getItem("AuthToken")
-     let APIResult=CALL_API_With_JWTToken(url,JsonObject,UserToken,UpdateAPIError)
+     let APIResult=CALL_API_With_JWTToken(url,JsonObject,UserToken)
     
      APIResult.then(result=>{
-            if(APIError.current==false)
+            if(APIStatus.Status==APIStatuses.APICallSuccess)
             {
                     for( var property in result)
                     {
                     if( property=="UserInfoUpdated")
                     {
+                        Dispatch({type:variables.UserActions.UpdateFirstName,value:FirstName.current.value}) 
+                        Dispatch({type:variables.UserActions.UpdateLastName,value:LastName.current.value})
+                        Dispatch({type:variables.UserActions.UpdateUsername,value:Username.current.value})
+                        Dispatch({type:variables.UserActions.UpdateEmail,value:Email.current.value})
+                        PhoneNumber.current.value= variables.UserInformations.info.phoneNumber               
+                        Age.current.value=variables.UserInformations.info.age
+                        
                         toast.success('Personal Informations updated successfully!', {
                             position: "bottom-left",
                             autoClose: 5000,
@@ -337,39 +287,12 @@ export default function Content() {
 
                     }
             }
-            else
-            {
-                toast.error('There is an Error with our server or you lost connection, please try again or contact our Dev team!', {
-                    position: "bottom-left",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                    });
-            }  
+ 
     })
 }
   return (
     
       <div className="container-xl px-4 mt-4">
-  
-            <ToastContainer
-            position="bottom-left"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="light"
-            />
-    
-    
     <div className="row">
         <div className="col-xl-4">
             
@@ -377,7 +300,8 @@ export default function Content() {
                 <div className="card-header">Profile Picture</div>
                 <div className="card-body text-center">
                     {/*Test if User has a profile picture if not show default*/}
-                    <img  ref={UserProfilePicture}className="img-account-profile rounded-circle mb-2" src={DefaultProfilePicture} alt=""/>
+                    
+                    <img  ref={UserProfilePicture}className="img-account-profile rounded-circle mb-2"  alt=""/>
                     
                     
                     <form onSubmit={handleImageUpdate}>

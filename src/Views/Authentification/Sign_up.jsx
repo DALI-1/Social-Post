@@ -14,30 +14,21 @@ import {
   MDBIcon
 }
 from 'mdb-react-ui-kit';
+import {AppContext} from "../../context/Context"
 import { ChakraProvider } from '@chakra-ui/react'
-import { useToast } from '@chakra-ui/react'
 import logo from '../../Assets/SocialPost-Logo.png';
 import {CALLAPI} from '../../libs/APIAccessAndVerification'
 import { ToastContainer, toast } from 'react-toastify';
+import {APIStatus}  from '../../variables/variables';
+import {APIStatuses}  from '../../variables/variables';
 function App() {
-
+  const {GlobalState,Dispatch}=React.useContext(AppContext)
   let [LoadingSpinnerStatus, setLoadingSpinnerStatus] = useState(false);
   let UserExistStatus= useRef(false); //Flag indicated if the User exist or not
   let GroupExistStatus = useRef(false); //flag indicate if the default group name exist or not
   let EmailExistStatus = useRef(false); //flag indicated if the Email used or not
   let PhoneNumberExistStatus = useRef(false); //flag indicated if the PhoneNumber used or not
-  let APIError = useRef(false);
 
-  const toast = useToast()
- 
-  const UpdateAPIError=(error)=>
-  {
-    
-    if(error==true)
-    APIError.current=true
-    else
-    APIError.current=false
-  }
   const handlesubmit=(props)=>
 {
   props.preventDefault()
@@ -75,15 +66,15 @@ function App() {
  let url=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_REGISTERAPINAME
  if(ConfirmPassword==Password)
  {
-  console.log(Password.length)
+  
   if(Password.length>5)
  {
  
- let APIResult=CALLAPI(url,JsonObject,UpdateAPIError)
+ let APIResult=CALLAPI(url,JsonObject)
 
  APIResult.then(result=>{
- if(APIError.current==false)
- {
+ if(APIStatus.Status==APIStatuses.APICallSuccess)
+ { 
   for( var property in result)
       {
         
@@ -91,14 +82,16 @@ function App() {
         {  
             
           UserExistStatus.current=true
-          toast({
-                  
-            title: 'Register',
-            description: "The Username you used exist, please pick an other Username",
-            status: 'info',
-            duration: 3000,
-            isClosable: true,
-          })
+          toast.info('The Username you used exist, please pick an other Username', {
+            position: "bottom-left",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            });
         }
         else
         {
@@ -109,14 +102,18 @@ function App() {
         {  
             
           GroupExistStatus.current=true
-          toast({
-                  
-            title: 'Register',
-            description: "The Campaign Name you're trying to use already exist, please pick an other one!",
-            status: 'info',
-            duration: 3000,
-            isClosable: true,
-          })
+          
+
+          toast.info('The Campaign Name you re trying to use already exist, please pick an other one!', {
+            position: "bottom-left",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            });
         }
         else
         {
@@ -127,14 +124,17 @@ function App() {
         {  
             
           PhoneNumberExistStatus.current=true
-          toast({
-                  
-            title: 'Register',
-            description: "The Phone Number you typed already used in an other account.",
-            status: 'info',
-            duration: 3000,
-            isClosable: true,
-          })
+          toast.info('The Phone Number you typed already used in an other account.', {
+            position: "bottom-left",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            });
+          
         }
         else
         {
@@ -145,73 +145,74 @@ function App() {
         {  
             
           EmailExistStatus.current=true
-          toast({
-                  
-            title: 'Register',
-            description: "The Email is already used in an other account!",
-            status: 'info',
-            duration: 3000,
-            isClosable: true,
-          })
+          toast.info('The Email is already used in an other account!', {
+            position: "bottom-left",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            });
         }
         else
         {
           EmailExistStatus.current=false
         }
       }
-    }
-    if(APIError.current==true)
-    toast({
-      title: 'Server Internal Error',
-      description: "Its Either the Server is down or you lost connection",
-      status: 'error',
-      duration: 3000,
-      isClosable: true,
-    })
-    
-      setLoadingSpinnerStatus(false)
-      //Changing to Login Page Only if the API threw no errors, User existflag is false and Groupflag is false
-      if(UserExistStatus.current==false && GroupExistStatus.current==false &&APIError.current==false && EmailExistStatus.current==false &&PhoneNumberExistStatus.current==false)
+
+       
+    if(UserExistStatus.current==false && GroupExistStatus.current==false &&APIStatus.Status==APIStatuses.APICallSuccess && EmailExistStatus.current==false &&PhoneNumberExistStatus.current==false)
     { 
-      toast({
-        title: 'Register',
-        description: "You registered successfully!",
-        status: 'success',
-        duration: 3000,
-        isClosable: true,
-      })
-      setTimeout(() => {
+     
+      toast.success('You registered successfully!', {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        });
         window.location.replace('/login')
-      }, 1000); 
     }
+    }
+      setLoadingSpinnerStatus(false) 
      
  }).catch(error=>{
   console.log(error)
  })
 }
 else
-{
-  
+{ 
   setLoadingSpinnerStatus(false)
-  toast({
-    title: 'Register',
-    description: "The Password should contain at least six character",
-    status: 'info',
-    duration: 3000,
-    isClosable: true,
-  }) 
+  toast.info('The Password should contain at least six character', {
+    position: "bottom-left",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    });
 }
  }
 else
 {
   setLoadingSpinnerStatus(false)
-  toast({
-    title: 'Register',
-    description: "Your confirm password doesn't match your password",
-    status: 'info',
-    duration: 3000,
-    isClosable: true,
-  })
+  toast.info('Your confirm password doesnt match your password', {
+    position: "bottom-left",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    });
 }
 
 
@@ -222,18 +223,6 @@ else
   return (
     <ChakraProvider>
     <MDBContainer fluid className=' background-radial-gradient overflow-hidden' style={{backgroundImage: `url("https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp")`,backgroundRepeat:"no-repeat"}}>
-    <ToastContainer
-            position="bottom-left"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="light"
-            />
       <MDBRow>
 
         <MDBCol md='5' className='text-center text-md-start d-flex flex-column justify-content-center'>

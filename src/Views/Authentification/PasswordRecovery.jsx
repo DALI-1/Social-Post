@@ -21,11 +21,11 @@ import {
   import { useToast } from '@chakra-ui/react'
   import {CALLAPI} from '../../libs/APIAccessAndVerification'
   import { ToastContainer, toast } from 'react-toastify';
+
+  import { APIStatus,APIStatuses} from '../../variables/variables';
 export const PasswordRecovery=(props)=> {
     //let { isOpen, onOpen, onClose } = useDisclosure()
     let [isOpen, setisOpen] = useState(props.Open);
-    let [onClose, setonClose] = useState(props.Close);
-    let [onOpen, setonOpen] = useState(props.Close);
     const [input, setInput] = useState('')
     const form = useRef();
     const Email = useRef();
@@ -34,36 +34,18 @@ export const PasswordRecovery=(props)=> {
   const handleInputChange = (e) => setInput(e.target.value)
 
   const isError = input === ''
-    
-  let APIError = useRef(false);
 
-  const toast = useToast()
-
-  const UpdateAPIError=(error)=>
-  {
-    
-    if(error==true)
-    APIError.current=true
-    else
-    APIError.current=false
-  }
- 
   const handleEmailsubmit=(props)=>
   {
     props.preventDefault()
-    
-    
-    
    if(Email.current.value!='')
    {
-
-   
     let url=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_FORGOTPWAPINAME
     let JsonString="{\"Email\": "+"\""+Email.current.value+"\"}"
 
   let JsonObject=JSON.parse(JSON.stringify(JsonString))
   
-    let APIResult=CALLAPI(url,JsonObject,UpdateAPIError)
+    let APIResult=CALLAPI(url,JsonObject)
    
     APIResult.then(result=>{
     
@@ -77,55 +59,46 @@ export const PasswordRecovery=(props)=> {
            
             token.current.value=result[property]
            }
-         
-          
-         
          }
           
-         if(EmailFoundStatus.current==false && APIError.current==false)
+         if(EmailFoundStatus.current==false && APIStatus.Status==APIStatuses.APICallSuccess)
          {
           
-          toast({
-                  
-            title: 'Password Recovery',
-            description: "The Email you entered doesn't exist please check your email",
-            status: 'info',
-            duration: 3000,
-            isClosable: true,
-          })
+          
+          toast.info('The Email you entered doesnt exist please check your email', {
+            position: "bottom-left",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            });
          }
          else
          {
           
-           if(APIError.current==false)
+           if(APIStatus.Status==APIStatuses.APICallSuccess)
            {
             emailjs.sendForm('service_z9p6g6b', 'template_ypuv019', form.current, 'Th956W69Ljmfmz7sP')
             .then((result) => {
-                console.log(result.text);
+              toast.success('A link was sent to your Email successfully!', {
+                position: "bottom-left",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                });
             }, (error) => {
                 console.log(error.text);
             });
+            
+          }
                  
-        
-                  toast({
-                          
-                    title: 'Password Recovery',
-                    description: "A link was sent to your Email successfully!",
-                    status: 'success',
-                    duration: 3000,
-                    isClosable: true,
-                  })
-                 }
-                 else
-                 {
-                  toast({
-                    title: 'Server Internal Error',
-                    description: "Its Either the Server is down or you lost connection",
-                    status: 'error',
-                    duration: 3000,
-                    isClosable: true,
-                  })
-                 }
            }
           
          
@@ -135,14 +108,16 @@ export const PasswordRecovery=(props)=> {
    }
    else
    {
-    toast({
-                          
-      title: 'Password Recovery',
-      description: "The email cannot be empty!",
-      status: 'error',
-      duration: 3000,
-      isClosable: true,
-    })
+    toast.info('The email cannot be empty!"', {
+      position: "bottom-left",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      });
    }
    }
   

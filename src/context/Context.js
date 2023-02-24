@@ -1,10 +1,13 @@
-import { useReducer,createContext,useContext } from "react";
+import { useReducer,createContext,useContext,useEffect } from "react";
 import * as variables from "../variables/variables"
+import { ToastContainer, toast } from 'react-toastify';
 export const AppContext=createContext(null);
+
 
 
 const reducer=(GlobalState,action)=>
 {
+    
        switch(action.type)
        {
                     //Profile Tab actions
@@ -42,23 +45,38 @@ const reducer=(GlobalState,action)=>
                 } 
 
                 //Personal Info Actions
+
+            
+                       
                 case variables.UserActions.UpdateFirstName:
                 {
+                    variables.UserInformations.info.firstName=action.value  
                 return({...GlobalState,FirstName:action.value})
                 } 
                 case variables.UserActions.UpdateLastName:
                 {
+                    variables.UserInformations.info.lastName=action.value
                 return({...GlobalState,LastName:action.value})
                 } 
                 case variables.UserActions.UpdateUsername:
                 {
+                    variables.UserInformations.info.userName=action.value
                 return({...GlobalState,Username:action.value})
                 } 
                 case variables.UserActions.UpdateProfilPicture:
-                    {
-                        
-                    return({...GlobalState,UserProfilePicture:action.value})
-                    } 
+                {     
+                    variables.UserInformations.info.profilePictureURL=action.value  
+                return({...GlobalState,UserProfilePicture:action.value})
+                } 
+                case variables.UserActions.UpdateEmail:
+                {   
+                    
+                    variables.UserInformations.info.email=action.value 
+                    
+                return({...GlobalState,Email:action.value})
+                }
+              
+               
                
             default:
                 
@@ -74,14 +92,17 @@ const InitialGlobalState=
     Username:null,
     FirstName:null,
     LastName:null,
-    UserProfilePicture:"NoPictureYet"
+    Email:null,
+    UserProfilePicture:null
+    
 }
 
 export const GlobalContext=({children})=>
 {
      
     const [GlobalState,Dispatch]= useReducer(reducer,InitialGlobalState)
-     
+   
+
     return (<AppContext.Provider value={{GlobalState,Dispatch}}>{children}</AppContext.Provider>)
 
 }

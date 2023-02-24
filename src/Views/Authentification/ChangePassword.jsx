@@ -2,51 +2,33 @@ import './Sign_in.css';
 import React,{ useState,useEffect,useRef } from 'react';
 import {MDBContainer, MDBCol, MDBRow, MDBBtn, MDBIcon, MDBInput, MDBCheckbox } from 'mdb-react-ui-kit';
 import LoadingSpinner from '../../components/LoadingSpinner'
-import { useToast } from '@chakra-ui/react'
 import { ChakraProvider } from '@chakra-ui/react'
-import { PasswordRecovery } from './PasswordRecovery';
 import {CALLAPI,CALL_API_With_JWTToken} from '../../libs/APIAccessAndVerification'
 import { ToastContainer, toast } from 'react-toastify';
+import { APIStatus,APIStatuses} from '../../variables/variables';
 import logo from '../../Assets/SocialPost-Logo.png';
 function App() {
   let [LoadingSpinnerStatus, setLoadingSpinnerStatus] = useState(false);
   let [PasswordRecoveryStatus, setPasswordRecoveryStatus] = useState(false);
   const queryParameters = new URLSearchParams(window.location.search)
   let ConfirmPasswordMatch= useRef(false);
-  let APIError = useRef(false);
+ 
   let Email = useRef(queryParameters.get("Email") );
   let Password = useRef("");
   let ConfirmPassword = useRef("");
-  const toast = useToast()
 
 //This methode update the parent that the pop up closed
   const HandleRecoveryClosure=()=>{
    
 setPasswordRecoveryStatus(false)
   }
-
-  const UpdateAPIError=(error)=>
-  {
-    
-    if(error==true)
-    APIError.current=true
-    else
-    APIError.current=false
-  }
-
   const handlesubmit=(props)=>
   {
     props.preventDefault()
-    
-
-   
-    
     if(Password.current.value==ConfirmPassword.current.value)
     {
       if(Password.current.value!='' &&ConfirmPassword.current.value!=null)
       {
-
-      
       setLoadingSpinnerStatus(true)
     
     //Converting Form Data to a Json object
@@ -66,8 +48,7 @@ setPasswordRecoveryStatus(false)
    //Sending a POST HTTP To the API with the Json Object
    
    let url=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_CHANGEPWAPINAME
-  
-   let APIResult=CALL_API_With_JWTToken(url,JsonObject,queryParameters.get("token"),UpdateAPIError)
+   let APIResult=CALL_API_With_JWTToken(url,JsonObject,queryParameters.get("token"))
   
    APIResult.then(result=>{
     for( var property in result)
@@ -75,30 +56,34 @@ setPasswordRecoveryStatus(false)
           
            if( property=="PasswordChanged")
            {
-            
-                      toast({
-                        title: 'Password',
-                        description: "Your Password Has changed successfully!",
-                        status: 'success',
-                        duration: 3000,
-                        isClosable: true,
-                      })
+                      toast.success('Your Password Has changed successfully!', {
+                        position: "bottom-left",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "light",
+                        });
                       setLoadingSpinnerStatus(false)
-                     
                         window.location.replace('/login')
-                      
                       break
            }
            if(property=="UserNotFound")
            {
 
-                    toast({
-                      title: 'Password',
-                      description: "Password hasn't been changed, User not found",
-                      status: 'error',
-                      duration: 3000,
-                      isClosable: true,
-                    })
+            toast.error('Password hasnt been changed, User not found', {
+              position: "bottom-left",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+              });
+                 
                     setLoadingSpinnerStatus(false)
                     break
            }
@@ -106,53 +91,40 @@ setPasswordRecoveryStatus(false)
           
          
          }
-         if( APIError.current==true)
-         {
-                toast({
-                  title: 'Server Internal Error',
-                  description: "Its Either the Server is down or you lost connection",
-                  status: 'error',
-                  duration: 3000,
-                  isClosable: true,
-                })
-         }
-         setLoadingSpinnerStatus(false)
    }).catch(error=>{
     console.log(error)
-    toast({
-      title: 'Password',
-      description: "The was an internal error"+error,
-      status: 'error',
-      duration: 3000,
-      isClosable: true,
-    })
-    setLoadingSpinnerStatus(false)
    })
-  
-  
+   setLoadingSpinnerStatus(false)
   }
   else
   {
-    
-    toast({
-      title: 'Password Error',
-      description: "The Password you typed cannot be empty!",
-      status: 'error',
-      duration: 3000,
-      isClosable: true,
-    })
+    toast.info('The Password you typed cannot be empty!', {
+      position: "bottom-left",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      });
+
     setLoadingSpinnerStatus(false)
   }
   }
    else
    {
-    toast({
-      title: 'Password Error',
-      description: "The Password you typed doesn't match the confirm password",
-      status: 'error',
-      duration: 3000,
-      isClosable: true,
-    })
+    
+    toast.error('The Password you typed doesnt match the confirm password', {
+      position: "bottom-left",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      });
     setLoadingSpinnerStatus(false)
    }
   
@@ -162,18 +134,6 @@ setPasswordRecoveryStatus(false)
   return (
     <ChakraProvider>
     <MDBContainer fluid className="p-3 my-5 h-custom">
-    <ToastContainer
-            position="bottom-left"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="light"
-            />
       <MDBRow>
 
         <MDBCol col='10' md='6'>
