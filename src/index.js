@@ -8,9 +8,16 @@ import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { ToastContainer, toast } from 'react-toastify';
 import FooterComp from './Headers/Footer'
-import NavComp from './Headers/Navigation'
+import { ChakraBaseProvider, extendBaseTheme } from '@chakra-ui/react'
 import {GlobalContext} from "./context/Context"
+import chakraTheme from '@chakra-ui/theme'
+const { Button } = chakraTheme.components
 const root = ReactDOM.createRoot(document.getElementById('root'));
+const theme = extendBaseTheme({
+  components: {
+    Button,
+  },
+})
 root.render(
   
   <> 
@@ -31,13 +38,17 @@ root.render(
             pauseOnHover
             theme="light"
             />
+    <ChakraBaseProvider theme={theme}>
     <App/>
+    </ChakraBaseProvider>
+   
+  
     </GlobalContext>
     
     
     
     <footer>
-  <FooterComp/>
+  {/*<FooterComp/>*/}
 </footer>
   </>
 );

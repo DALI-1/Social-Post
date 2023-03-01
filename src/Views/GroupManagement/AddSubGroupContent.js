@@ -4,19 +4,19 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './AddSubGroupContent.css';
 import {CALL_API_With_JWTToken,CALL_API_With_JWTToken_GET} from '../../libs/APIAccessAndVerification'
+
 import {AppContext} from "../../context/Context"
 import * as variables from "../../variables/variables"
+import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/Container';
 import { Tree, TreeNode } from 'react-organizational-chart';
 import { MDBRadio,MDBContainer, MDBRow, MDBCol,MDBCheckbox } from 'mdb-react-ui-kit';
-import { Card, CardBody, CardFooter,CardHeader,Checkbox, CheckboxGroup } from '@chakra-ui/react'
+import { Card, CardBody, CardFooter,Checkbox, CheckboxGroup } from '@chakra-ui/react'
 import Groups2SharpIcon from '@mui/icons-material/Groups2Sharp';
 import AdjustSharpIcon from '@mui/icons-material/AdjustSharp';
-import SettingsSharpIcon from '@mui/icons-material/SettingsSharp';
 import {hashString,hashRandom } from 'react-hash-string'
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Form from 'react-bootstrap/Form';
 export default function Content() {
 
     const {GlobalState,Dispatch}=React.useContext(AppContext)
@@ -251,70 +251,35 @@ if(document.getElementById(RadioButton).checked)
     }
   return (
     <>
-        
-        <Row>
-          <Col>
-          
-        <div className="card mb-4 mb-xl-0" style={{margin:"2px"}}>   
-                <div className="card-header d-flex justify-content-center">
-                  Selected Group to Modify
-                </div>
+
+       <Row>
+        <Col>
+        <div className="card mb-4 mb-xl-0">
+               <form onSubmit={CreateSubGroup}>
+                <div className="card-header d-flex justify-content-center"> Sub Group Details</div>
                 <div className="card-body text-center">
                 <div className="mb-3">
                  <MDBContainer breakpoint="sm">
                 <Tree label={<p><AdjustSharpIcon/></p>}>
                    {generateList(variables.UserInformations.info.joinedGroups)}
                       </Tree> 
-   
+                            <label className="small mb-1" htmlFor="inputUsername">Sub Group Name</label>
+                            <input ref={GroupNameInput} className="form-control" name="GroupName" id="inputUsername" type="text" placeholder="Enter your Group Name" required />
                             </MDBContainer> 
                         </div>
+                    
+                    <div className="small font-italic text-muted mb-4">
+                    </div>
+                    <input className="btn btn-primary" type="submit" value="Add Sub Group"/>
+                    
                 </div>
+                </form>
             </div>
-            </Col>
-            <Col>
-          
-          <div className="card mb-4 mb-xl-0" style={{margin:"2px"}}>   
-                  <div className="card-header d-flex justify-content-center">
-                    Move Group To
-                  </div>
-                  <div className="card-body text-center">
-                  <div className="mb-3">
-                   <MDBContainer breakpoint="sm">
-                  <Tree label={<p><AdjustSharpIcon/></p>}>
-                     {generateList(variables.UserInformations.info.joinedGroups)}
-                        </Tree> 
-     
-                              </MDBContainer> 
-                          </div>
-                  </div>
-              </div>
-              </Col>
-            <Col>
-            <div className="card mb-4 mb-xl-0 " style={{margin:"2px"}}>   
-                <div className="card-header d-flex justify-content-center">
-                  Change Group Name
-                </div>
-                <div className="card-body text-center">
-                <div className="mb-3">
-
-                 <label className="small mb-1" htmlFor="inputUsername">Modify Group Name</label>
-                 <input  className="form-control" name="GroupName" id="inputUsername" type="text" placeholder="Enter your Group Name" required />           
-                    <input className="btn btn-primary"style={{marginTop:"1rem"}} type="submit" value="Change Group Name"/>
-                    <input className="btn btn-primary"style={{marginTop:"1rem"}} type="submit" value="Move Group"/>
-                        </div>
-             
-                </div>
-            </div>
-            
-            </Col>
-        
-      </Row>
-
-      <Row>
-      <Col>
-            <div className="card mb-4 mt-5">
+        </Col>
+        <Col>
+        <div className="card mb-4">
                <div className="card-header d-flex justify-content-center"> Sub Group permissions</div>
-               <div className="card-body ">
+               <div className="card-body">
                    <Container>
                    <Row>
                    {ListOfViewsToShow.length==0&&<p className='d-flex justify-content-center'>Select a group to view the possible permissions under that group</p>}
@@ -325,7 +290,7 @@ if(document.getElementById(RadioButton).checked)
                        <div className="card mb-4">
                        <div className="card-header d-flex justify-content-center" style={{minWidth:"250px"}}>{view.menuItemName}</div>
                        <div className="card-body">
-                       
+                        {ListOfPermToShow.length==0&&<p>Select a group to view the possible permissions under that group</p>}
 
                         {ListOfPermToShow.map((action)=>{
                           
@@ -368,7 +333,14 @@ if(document.getElementById(RadioButton).checked)
                
            </div>
         </Col>
+      
+      </Row>  
+  
+
+      <Row>
+      
       </Row>
+ 
 
   
 

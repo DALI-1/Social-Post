@@ -22,22 +22,20 @@ export default function Content() {
     const {GlobalState,Dispatch}=React.useContext(AppContext)
     
   return (
-    <Paper sx={{ maxWidth: 936, margin: 'auto', overflow: 'hidden' }}>
+    <>
       <AppBar
         position="static"
         color="default"
         elevation={0}
         sx={{ borderBottom: '1px solid rgba(0, 0, 0, 0.12)' }}
       >
-        <Toolbar>
-          
-        </Toolbar>
+       
       </AppBar>
-      <Typography component={'span'} sx={{ my: 5, mx: 2 }} color="text.secondary" align="center">
+      
         {GlobalState.ProfileSelectedTab==ProfileTabs.ProfileTab&&<SubProfileContent/>}
         {GlobalState.ProfileSelectedTab==ProfileTabs.SecurityTab&&<SubSecurityContent/>}
         
-      </Typography>
-    </Paper>
+        </>
+    
   );
 }

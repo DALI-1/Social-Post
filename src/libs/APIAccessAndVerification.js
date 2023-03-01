@@ -59,7 +59,7 @@ export  const  CALLAPI = async (url,data)=>
       APIStatus.Status=APIStatuses.APICallSuccess
       return(json)
     } catch (error) {
-      console.log("Test")
+      console.log(error)
       APIStatus.Status=APIStatuses.ConnectionLost
       toast.error('Connection Lost, please try again...', {
         position: "bottom-left",

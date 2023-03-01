@@ -296,12 +296,12 @@ export default function Content() {
     <div className="row">
         <div className="col-xl-4">
             
-            <div className="card mb-4 mb-xl-0">
-                <div className="card-header">Profile Picture</div>
-                <div className="card-body text-center">
+            <div className="card mb-4 mb-xl-0 ">
+                <div className="card-header d-flex justify-content-center">Profile Picture</div>
+                <div className="card-body text-center ">
                     {/*Test if User has a profile picture if not show default*/}
                     
-                    <img  ref={UserProfilePicture}className="img-account-profile rounded-circle mb-2"  alt=""/>
+                    <img  ref={UserProfilePicture} className="rounded-5 shadow-2 mb-5 border border-primary"  alt=""/>
                     
                     
                     <form onSubmit={handleImageUpdate}>

@@ -7,11 +7,12 @@ body{margin-top:20px;
         width: 12rem;
     }
     .img-accountAvatar-profile {
-        height: 2.5rem;
-        width: 2.5rem;
+        max-width: 2.5rem;
+        Max-height: 2.5rem;
+        
     }
     .rounded-circle {
-        border-radius: 50% !important;
+        border-radius: 20% !important;
     }
     .card {
         box-shadow: 0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%);
