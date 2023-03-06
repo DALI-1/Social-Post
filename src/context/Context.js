@@ -30,6 +30,11 @@ const reducer=(GlobalState,action)=>
                 {
               return({...GlobalState,GroupSelectedTab:variables.GroupTabs.EditGroupTab})
                 }
+
+                case variables.GroupSelectedTabActions.SelectManageGroup:
+                {
+              return({...GlobalState,GroupSelectedTab:variables.GroupTabs.ManageGroupTab})
+                }
                         //Navigator actions
             case variables.NavigatorSelectedTabActions.SelectLogout:
                 {
@@ -99,12 +104,14 @@ const InitialGlobalState=
 {
     NavigatorSelectedTab:variables.NavigatorTabs.ManagePostsTab,
     ProfileSelectedTab:variables.ProfileTabs.ProfileTab,
-    GroupSelectedTab:variables.GroupTabs.AddGroup,
+    GroupSelectedTab:variables.GroupTabs.ManageGroupTab,
+    PassedGroupID:null,
     Username:null,
     FirstName:null,
     LastName:null,
     Email:null,
-    UserProfilePicture:null
+    UserProfilePicture:null,
+    GroupInformations:null
     
 }
 

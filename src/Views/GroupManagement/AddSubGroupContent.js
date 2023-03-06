@@ -35,7 +35,7 @@ export default function Content() {
       let AllMenuItems=[]
       let IDOfGroup=props.target.id.replace("GROUP","")
       ListOfActions= GetPermissionList(variables.UserInformations.info.joinedGroups,IDOfGroup)
-      console.log(ListOfActions)
+      
       AllMenuItems=variables.UserInformations.info.joinedGroups[0].menuItems
      let ListOfVisibleMenuItemsForTheSelection=[]
    
@@ -137,6 +137,8 @@ export default function Content() {
       //Saving all the checkboxes Ids in the table so later we can access the checkbox buttons and know which one is selected
       //ListOfRadioButtons.current=[...ListOfRadioButtons.current,"GROUP"+variables.UserInformations.info.joinedGroups[0].id]
       GenerateRadioBoxList(variables.UserInformations.info.joinedGroups)
+      var defaultselectedGroup=document.getElementById("GROUP"+variables.Group.SelectedGroup)
+         defaultselectedGroup.click()
     },[])
     //This function update the status of the switch button if its selected
     const UpdateActionSelection=(id,clickstatus)=>{

@@ -15,13 +15,15 @@ export const ProfileSelectedTabActions=
 export const GroupTabs=
 {
     AddGroup:"AddGroupTab",
-    EditGroupTab:"EditGroupTab"
+    EditGroupTab:"EditGroupTab",
+    ManageGroupTab:"ManageGroupTab"
 }
 
 export const GroupSelectedTabActions=
 {
     SelectAddGroup:"SwitchToAddGroup",
-    SelectEditGroup:"SwitchToEditGroup"
+    SelectEditGroup:"SwitchToEditGroup",
+    SelectManageGroup:"SwitchToManageGroup"
 }
 
 export const NavigatorTabs=
@@ -63,4 +65,12 @@ export let APIStatus=
 export var UserInformations=
 {
  info:null
+}
+
+export var Group=
+{
+    SelectedGroup:null,
+    SelectedGroupName:null,
+    SelectedGroupPermissions:[],
+    GroupMenuItems:[]
 }

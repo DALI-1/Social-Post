@@ -26,7 +26,7 @@ function Header(props) {
   
   const { onDrawerToggle } = props;
   const {GlobalState,Dispatch}=React.useContext(AppContext)
-  let [TabMenu,SetTabMenu]=React.useState(GlobalState.GroupSelectedTab==GroupTabs.AddGroup?0:1)
+  let [TabMenu,SetTabMenu]=React.useState(0)
   
   let [PicStatus,SetPicStatus]=React.useState();
   React.useEffect(()=>{
@@ -40,6 +40,21 @@ function Header(props) {
       
       SetPicStatus(GlobalState.UserProfilePicture)
       
+    }
+
+    if(GlobalState.GroupSelectedTab==GroupTabs.ManageGroupTab)
+    {
+      SetTabMenu (0)
+    }
+    
+    if(GlobalState.GroupSelectedTab==GroupTabs.AddGroup)
+    {
+      SetTabMenu(1) 
+    }
+    
+    if(GlobalState.GroupSelectedTab==GroupTabs.EditGroupTab)
+    {
+      SetTabMenu(1)
     }
     
   },[GlobalState])
@@ -117,12 +132,22 @@ function Header(props) {
       </AppBar>
       <AppBar component="div" position="static" elevation={0} sx={{ zIndex: 0 }}>
         <Tabs  value={TabMenu} textColor="inherit">
-          <Tab  label="Create Sub-Group"  onClick={(e)=>{Dispatch({type:GroupSelectedTabActions.SelectAddGroup})
-          SetTabMenu(0)
-        }}/>
-          <Tab label="Edit Sub-Groups"onClick={()=>{Dispatch({type:GroupSelectedTabActions.SelectEditGroup})
-        SetTabMenu(1)
+         
+           <Tab  label="Manage groups"  onClick={(e)=>{Dispatch({type:GroupSelectedTabActions.SelectManageGroup})
+           SetTabMenu(0)
+         }}/>
+        
+     
+          {GlobalState.GroupSelectedTab==GroupTabs.AddGroup&&<Tab  label="> Create Sub-Group"  onClick={(e)=>{Dispatch({type:GroupSelectedTabActions.SelectAddGroup})
+          SetTabMenu(1)
+        }}/>}
+     
+         {
+          GlobalState.GroupSelectedTab==GroupTabs.EditGroupTab&&
+          <Tab label="> Edit Sub-Group"onClick={()=>{Dispatch({type:GroupSelectedTabActions.SelectEditGroup})
+        SetTabMenu(2)
         }} />
+}
         </Tabs>
       </AppBar>
     </React.Fragment>
