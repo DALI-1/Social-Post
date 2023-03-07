@@ -3,16 +3,10 @@ body{margin-top:20px;
     color:#69707a;
     }
     .img-account-profile {
-        height: 12rem;
-        width: 12rem;
-    }
-    .img-accountAvatar-profile {
-        max-width: 2.5rem;
-        Max-height: 2.5rem;
-        
+        height: 10rem;
     }
     .rounded-circle {
-        border-radius: 20% !important;
+        border-radius: 50% !important;
     }
     .card {
         box-shadow: 0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%);
@@ -20,7 +14,7 @@ body{margin-top:20px;
         display: flex;
         align-items: center;
         justify-content: center;
-        min-height: 150px; /* adjust as needed */
+        min-height: 700px; /* adjust as needed */
     }
     @media (max-width: 767px) {
         .card {
@@ -76,3 +70,13 @@ body{margin-top:20px;
         margin-left: 1rem;
         margin-right: 1rem;
     }
+    
+    .btn-danger-soft {
+        color: #000;
+        background-color: #f1e0e3;
+        border-color: #f1e0e3;
+    }
+    .equal-height-columns {
+        display: flex;
+        align-items: stretch;
+      }

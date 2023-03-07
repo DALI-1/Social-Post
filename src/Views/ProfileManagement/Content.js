@@ -15,27 +15,30 @@ import SubProfileContent from './SubProfileContent';
 import SubSecurityContent from './SubSecurityContent';
 
 import {AppContext} from "../../context/Context"
-import { ProfileTabs } from '../../variables/variables';
+import { ProfileTabs,UserInformations } from '../../variables/variables';
 
-
+import Container from 'react-bootstrap/Container';
 export default function Content() {
     const {GlobalState,Dispatch}=React.useContext(AppContext)
     
-  return (
-    <>
-      <AppBar
-        position="static"
-        color="default"
-        elevation={0}
-        sx={{ borderBottom: '1px solid rgba(0, 0, 0, 0.12)' }}
-      >
-       
-      </AppBar>
-      
-        {GlobalState.ProfileSelectedTab==ProfileTabs.ProfileTab&&<SubProfileContent/>}
+  return ( 
+
+<>
+{!GlobalState.HeadSpinner?<>
+
+ {UserInformations.info!=null?<>
+  <Container >
+
+  {GlobalState.ProfileSelectedTab==ProfileTabs.ProfileTab&&<SubProfileContent/>}
         {GlobalState.ProfileSelectedTab==ProfileTabs.SecurityTab&&<SubSecurityContent/>}
-        
-        </>
+</Container>
+ 
+ </>:<> <div className="card-body text-center"><p>Failed to Load Data please retry again or check your connection</p></div></>}
+ 
+</>:<><div className="card-body text-center"><p>Please wait, loading data....</p></div></>}
+ 
+ 
+</>   
     
   );
 }

@@ -16,9 +16,9 @@ import Typography from '@mui/material/Typography';
 import {AppContext} from "../../context/Context"
 import { ProfileSelectedTabActions,ProfileTabs } from '../../variables/variables';
 import { Avatar } from "@nextui-org/react";
-
-
-    
+import LinearLoadingSpinner from '../../components/LinearLoadingSpinner'
+import SecurityIcon from '@mui/icons-material/Security';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 const lightColor = 'rgba(255, 255, 255, 0.7)';
 
 
@@ -117,14 +117,17 @@ function Header(props) {
       </AppBar>
       <AppBar component="div" position="static" elevation={0} sx={{ zIndex: 0 }}>
         <Tabs  value={TabMenu} textColor="inherit">
-          <Tab  label="Profile"  onClick={(e)=>{Dispatch({type:ProfileSelectedTabActions.SelectProfile})
+          <Tab  label={<><AccountCircleIcon/> <p>Profile</p></>}  onClick={(e)=>{Dispatch({type:ProfileSelectedTabActions.SelectProfile})
           SetTabMenu(0)
         }}/>
-          <Tab label="Security"onClick={()=>{Dispatch({type:ProfileSelectedTabActions.SelectSecurity})
+        
+          <Tab label={<><SecurityIcon/> <p>Security</p></>} onClick={()=>{Dispatch({type:ProfileSelectedTabActions.SelectSecurity})
         SetTabMenu(1)
         }} />
         </Tabs>
       </AppBar>
+      {GlobalState.HeadSpinner&&<LinearLoadingSpinner/>}
+      {GlobalState.RequestSpinner&&<LinearLoadingSpinner/>}
     </React.Fragment>
   );
 }

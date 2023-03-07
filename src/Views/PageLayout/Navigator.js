@@ -55,6 +55,7 @@ export default function Navigator(props) {
           Dispatch({type:NavigatorSelectedTabActions.SelectLogout})
           window.localStorage.removeItem("AuthToken")
           window.localStorage.setItem("IsRemembered",false)
+          window.localStorage.removeItem('SelectedTab')
           setTimeout(() => 
           window.location.replace('/login')
         , 1)
@@ -62,12 +63,14 @@ export default function Navigator(props) {
 
         const HandleProfile=()=>
         {
+          window.localStorage.setItem('SelectedTab', NavigatorTabs.ManageProfilInformationsTab)
           Dispatch({type:NavigatorSelectedTabActions.SelectManageProfilInformations})
          
          
         }
         const HandlePost=()=>
         {
+          window.localStorage.setItem('SelectedTab', NavigatorTabs.ManagePostsTab)
           Dispatch({type:NavigatorSelectedTabActions.SelectManagePosts})
          
          
@@ -75,10 +78,25 @@ export default function Navigator(props) {
 
         const HandleGroup=()=>
         {
+          window.localStorage.setItem('SelectedTab', NavigatorTabs.ManageGroupsTab)
+           
           Dispatch({type:NavigatorSelectedTabActions.SelectManageGroups})
          
          
         }
+        const HandleUsers=()=>
+        {
+          window.localStorage.setItem('SelectedTab', NavigatorTabs.ManageUsersTab)
+           
+          Dispatch({type:NavigatorSelectedTabActions.SelectManageUsers})
+        }
+        const HandlePage=()=>
+        {
+          window.localStorage.setItem('SelectedTab', NavigatorTabs.ManagePagesTab)
+           
+          Dispatch({type:NavigatorSelectedTabActions.SelectManagePages})
+        }
+        
   const categories = [
     {
       id: 'Publish Managmeent',
@@ -97,9 +115,17 @@ export default function Navigator(props) {
       ],
     },
     {
+      id: 'User Managmeent',
+      children: [
+        { id: 'Manage Users', icon: <SettingsIcon />,refrence:NavigatorTabs.ManageUsersTab, clickmethod:()=>{HandleUsers()} },
+       /* { id: 'View Pages', icon: <PreviewRoundedIcon/> },*/
+        
+      ],
+    },
+    {
       id: 'Page Managmeent',
       children: [
-        { id: 'Manage Pages', icon: <SettingsIcon />,refrence:NavigatorTabs.ManagePagesTab, clickmethod:()=>{} },
+        { id: 'Manage Pages', icon: <SettingsIcon />,refrence:NavigatorTabs.ManagePagesTab, clickmethod:()=>{HandlePage()} },
        /* { id: 'View Pages', icon: <PreviewRoundedIcon/> },*/
         
       ],
@@ -154,8 +180,7 @@ export default function Navigator(props) {
             </ListItem>
             {children.map(({ id: childId, icon, active,clickmethod,refrence }) =>{
                
-              
-                
+              console.log(refrence)
                 return( <ListItem disablePadding key={childId}>
                   <ListItemButton selected={GlobalState.NavigatorSelectedTab==refrence?true:false} sx={item} onClick={clickmethod}
                     

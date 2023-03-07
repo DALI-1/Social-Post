@@ -15,7 +15,7 @@ import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import LinearLoadingSpinner from '../../components/LinearLoadingSpinner'
 import {AppContext} from "../../context/Context"
-import { ProfileSelectedTabActions,ProfileTabs,GroupSelectedTabActions,GroupTabs } from '../../variables/variables';
+import { ProfileSelectedTabActions,ProfileTabs,GroupSelectedTabActions,GroupTabs, UserTabs } from '../../variables/variables';
 import { Avatar } from "@nextui-org/react";
 import EditIcon from '@mui/icons-material/Edit';
 import TuneIcon from '@mui/icons-material/Tune';
@@ -44,17 +44,17 @@ function Header(props) {
       
     }
 
-    if(GlobalState.GroupSelectedTab==GroupTabs.ManageGroupTab)
+    if(GlobalState.UserSelectedTab==UserTabs.ManageUserTab)
     {
       SetTabMenu (0)
     }
     
-    if(GlobalState.GroupSelectedTab==GroupTabs.AddGroup)
+    if(GlobalState.UserSelectedTab==UserTabs.AddUser)
     {
       SetTabMenu(1) 
     }
     
-    if(GlobalState.GroupSelectedTab==GroupTabs.EditGroupTab)
+    if(GlobalState.UserSelectedTab==UserTabs.EditUserTab)
     {
       SetTabMenu(1)
     }
@@ -118,7 +118,7 @@ function Header(props) {
           <Grid container alignItems="center" spacing={1}>
             <Grid item xs>
               <Typography color="inherit" variant="h5" component="h1">
-                Groups Management
+                User Management
               </Typography>
             </Grid>
            
@@ -135,20 +135,14 @@ function Header(props) {
       <AppBar component="div" position="static" elevation={0} sx={{ zIndex: 0 }}>
         <Tabs  value={TabMenu} textColor="inherit">
          
-           <Tab  label={<><TuneIcon/> <p>Manage Group</p></>}  onClick={(e)=>{Dispatch({type:GroupSelectedTabActions.SelectManageGroup})
-           SetTabMenu(0)
-         }}/>
+           <Tab  label={<><TuneIcon/> <p>Manage Users</p></>} />
         
      
-          {GlobalState.GroupSelectedTab==GroupTabs.AddGroup&&<Tab  label={<><GroupAddIcon/> <p>Add SubGroup</p></>}  onClick={(e)=>{Dispatch({type:GroupSelectedTabActions.SelectAddGroup})
-          SetTabMenu(1)
-        }}/>}
+          {GlobalState.UserSelectedTab==UserTabs.AddUser&&<Tab  label={<><GroupAddIcon/> <p>Add SubGroup</p></>}  />}
      
          {
-          GlobalState.GroupSelectedTab==GroupTabs.EditGroupTab&&
-          <Tab label={<><EditIcon/> <p>Edit Group</p></>} onClick={()=>{Dispatch({type:GroupSelectedTabActions.SelectEditGroup})
-        SetTabMenu(2)
-        }} />
+          GlobalState.UserSelectedTab==UserTabs.EditUserTab&&
+          <Tab label={<><EditIcon/> <p>Edit Group</p></>}  />
 }
         </Tabs>
       </AppBar>

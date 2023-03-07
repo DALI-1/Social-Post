@@ -8,13 +8,7 @@ import {AppContext} from "../../context/Context"
 import * as variables from "../../variables/variables"
 import Container from 'react-bootstrap/Container';
 import { Tree, TreeNode } from 'react-organizational-chart';
-import { MDBRadio,MDBContainer, MDBRow, MDBCol,MDBCheckbox,MDBModal,MDBBtn,
-  MDBModalDialog,
-  MDBModalContent,
-  MDBModalHeader,
-  MDBModalTitle,
-  MDBModalBody,
-  MDBModalFooter, } from 'mdb-react-ui-kit';
+import { MDBRadio,MDBContainer, MDBRow, MDBCol,MDBCheckbox} from 'mdb-react-ui-kit';
 import { Card, CardBody, CardFooter,CardHeader,Checkbox, CheckboxGroup } from '@chakra-ui/react'
 import Groups2SharpIcon from '@mui/icons-material/Groups2Sharp';
 import AdjustSharpIcon from '@mui/icons-material/AdjustSharp';
@@ -23,39 +17,110 @@ import {hashString,hashRandom } from 'react-hash-string'
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
+import {HeaderSpinnerActions,HeaderSpinner}  from '../../variables/variables'
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+
+export function AlertDialog(props) {
+  const [open, setOpen] = React.useState(true);
+  const {GlobalState,Dispatch}=React.useContext(AppContext)
+
+  let handleGroupDelete=()=>{
+ let GroupID=props.GroupID;
 
 
+ var JsonObject={"groupId":GroupID.toString()}
 
-export  function Modal(props) {
-  const [basicModal, setBasicModal] = React.useState(true);
+        JsonObject=JSON.stringify(JsonObject)
+        
+         let url2=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_DELETEGROUP
+         let UserToken=window.localStorage.getItem("AuthToken")
+         let APIResult=CALL_API_With_JWTToken(url2,JsonObject,UserToken)
+         Dispatch({type:HeaderSpinnerActions.TurnOnRequestSpinner})
 
-  const toggleShow = () => {setBasicModal(!basicModal);
-props.DeleteState(!basicModal)
-  }
+         APIResult.then((result)=>
+         {
+           for( var property in result)
+                               {
+                                   
+                                   if( property=="GROUPDELETED")
+                                   {
+                                    toast.success("The Group and all of's childs has been deleted successfully!", {
+                                      position: "bottom-left",
+                                      autoClose: 5000,
+                                      hideProgressBar: false,
+                                      closeOnClick: true,
+                                      pauseOnHover: true,
+                                      draggable: true,
+                                      progress: undefined,
+                                      theme: "light",
+                                      });
+                                    }
+                                    if(property=="IMPOSSIBLETODELETEGROUPUNDERROOT")
+                                    {
+                                      toast.info("You cant delete the campaign group !", {
+                                        position: "bottom-left",
+                                        autoClose: 5000,
+                                        hideProgressBar: false,
+                                        closeOnClick: true,
+                                        pauseOnHover: true,
+                                        draggable: true,
+                                        progress: undefined,
+                                        theme: "light",
+                                        });
+                                    }
+                                    
+                                  }
+                               
+                                 
+                                  Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner}) 
+                                  handleClose()
+                                  
+  })
+  .catch(()=>{
+   
+Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner}) 
+  })
+}
+
+  const handleClose = () => {
+    setOpen(false);
+    props.SetDeleteModal(false)
+  };
+
   return (
-    <>
+    <div>
       
-      <MDBModal show={basicModal} setShow={setBasicModal} tabIndex='-1'>
-        <MDBModalDialog>
-          <MDBModalContent>
-            <MDBModalHeader>
-              <MDBModalTitle>Modal title</MDBModalTitle>
-              <MDBBtn className='btn-close' color='none' onClick={toggleShow}></MDBBtn>
-            </MDBModalHeader>
-            <MDBModalBody>Modal body text goes here.</MDBModalBody>
-
-            <MDBModalFooter>
-              <MDBBtn color='secondary' onClick={toggleShow}>
-                Close
-              </MDBBtn>
-              <MDBBtn>Save changes</MDBBtn>
-            </MDBModalFooter>
-          </MDBModalContent>
-        </MDBModalDialog>
-      </MDBModal>
-    </>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Delete Group"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to permanently delete the Group {props.GroupName} ?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="outlined" onClick={handleClose}>No</Button>
+          <Button variant="outlined" color="error" onClick={handleGroupDelete} autoFocus>
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
   );
 }
+
+
 export default function Content() {
 
     const {GlobalState,Dispatch}=React.useContext(AppContext)
@@ -255,10 +320,18 @@ export default function Content() {
           let url2=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_GETGROUPINFO
           let UserToken=window.localStorage.getItem("AuthToken")
           let APIResult=CALL_API_With_JWTToken(url2,JsonObjectToSend,UserToken)
+          Dispatch({type:HeaderSpinnerActions.TurnOnRequestSpinner})
+         
           APIResult.then((res)=>{
            SetSelectedParentGroupMenuItems(res[0].menuItems)
            SetSelectedParentGroupActions(res[0].menuActions)
+         
+           Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner}) 
           
+          })
+          .catch(()=>{
+      
+            Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner}) 
           })
 
 
@@ -326,6 +399,8 @@ SetListOfPermToShow([])
          let url2=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_MOVEGROUP
          let UserToken=window.localStorage.getItem("AuthToken")
          let APIResult=CALL_API_With_JWTToken(url2,JsonObject,UserToken)
+         Dispatch({type:HeaderSpinnerActions.TurnOnRequestSpinner})
+        
          APIResult.then((result)=>
          {
            for( var property in result)
@@ -424,7 +499,13 @@ SetListOfPermToShow([])
                                       theme: "light",
                                       });
                                    }
-        }
+                                   }
+       
+                               
+              Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner}) 
+      }).catch(()=>{
+       
+Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner}) 
       })
     }
         else
@@ -447,6 +528,21 @@ SetListOfPermToShow([])
     let HandlePermissionSave=()=>{
      
 
+      let destinationselected=false
+      
+      var SelectedCbox
+         CheckboxList.current.map((CB)=>{
+        
+          var Cbox=document.getElementById(CB.CheckboxID)
+          if(Cbox.checked)
+          {
+            SelectedCbox=Cbox
+            destinationselected=true
+          }})
+          if(!destinationselected)
+          {
+            
+          
       var SelectedGroupID=variables.Group.SelectedGroup
           
 
@@ -461,6 +557,8 @@ SetListOfPermToShow([])
          let url2=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_CHANGEGROUPPERMISSION
          let UserToken=window.localStorage.getItem("AuthToken")
          let APIResult=CALL_API_With_JWTToken(url2,JsonObject,UserToken)
+         Dispatch({type:HeaderSpinnerActions.TurnOnRequestSpinner})
+
          APIResult.then((result)=>
          {
            for( var property in result)
@@ -567,9 +665,34 @@ SetListOfPermToShow([])
                                       theme: "light",
                                       });
                                    }
+                                   
 
-    }
+                               } 
+  
+
+                              
+                               Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner}) 
+  }).catch(()=>{
+
+   
+    Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner}) 
   })
+}
+else
+{
+  
+   toast.error('Please Cancel the group move before saving the permissions !', {
+     position: "bottom-left",
+     autoClose: 5000,
+     hideProgressBar: false,
+     closeOnClick: true,
+     pauseOnHover: true,
+     draggable: true,
+     progress: undefined,
+     theme: "light",
+     });
+  
+}
 }
     
 const HandleChangeName=()=>{
@@ -581,6 +704,8 @@ const HandleChangeName=()=>{
          let url2=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_CHANGEGROUPNAME
          let UserToken=window.localStorage.getItem("AuthToken")
          let APIResult=CALL_API_With_JWTToken(url2,JsonObject,UserToken)
+         Dispatch({type:HeaderSpinnerActions.TurnOnRequestSpinner})
+
          APIResult.then((result)=>
          {
            for( var property in result)
@@ -614,16 +739,21 @@ const HandleChangeName=()=>{
                                      })
                                   }
                                 }
+                                
+                                Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner}) 
+         }).catch(()=>{
+         
+          Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner}) 
          })
 
 }
   return (
     <>
         
-        <Row>
-          <Col>
+        <Row className="d-flex">
+          <Col className="d-flex">
           
-        <div className="card mb-4 mb-xl-0" style={{margin:"2px"}}>   
+        <div className="card mb-4" style={{margin:"2px"}}>   
                 <div className="card-header d-flex justify-content-center">
                   Select where you wanna move the group {variables.Group.SelectedGroupName} under
                 </div>
@@ -643,179 +773,184 @@ const HandleChangeName=()=>{
             </div>
             </Col>
            
-            <Col>
+            <Col className="d-flex">
             <div className="card mb-4 ">
                <div className="card-header d-flex justify-content-center">Group permissions</div>
                <div className="card-body ">
-                   <Container>
-                   <Row>
-                   {ListOfViewsToShow.length>0&&<>
-                    {ListOfViewsToShow.map((view)=>{
+                {GlobalState.RequestSpinner==true?<p className="d-flex justify-content-center">Please wait, loading your group permissions....</p>:
+                
+                <Container>
+                <Row className="d-flex">
+                {ListOfViewsToShow.length>0&&<>
+                 {ListOfViewsToShow.map((view)=>{
 
-                      return(
-                        <Col>
-                       <div className="card mb-4">
-                       <div className="card-header d-flex justify-content-center" style={{minWidth:"250px"}}>{view.menuItemName}</div>
-                       <div className="card-body">
-                       
+                   return(
+                     <Col className="d-flex">
+                    <div className="card mb-4">
+                    <div className="card-header d-flex justify-content-center" style={{minWidth:"250px"}}>{view.menuItemName}</div>
+                    <div className="card-body">
+                    
 
-                        {ListOfPermToShow.map((action)=>{
-                          //Showing the action if the action is in the proper menu
-                          if(action.menuItemId==view.id)
-                          {
-                            let UserGotThePerm=false
-                            variables.Group.SelectedGroupPermissions.map((SelectedGroupAction)=>{
-                              if(SelectedGroupAction.id==action.id)
-                              {
-                              
-                                UserGotThePerm=true}
-                              
-                            })
-                            if(UserGotThePerm==true)
-                            {
-                              ListOfActionSelection.current[action.id]={Actionid:action.id,menuItemName:view.menuItemName,menuItemId:action.menuItemId,clicked:true}
-                              return ( 
-                              <Form.Check 
-                                key={hashRandom()}
-                                type="switch"
-                                defaultChecked={true}
-                                autoComplete="off"
-                                autoSave="off"
-                                
-                                label={action.actionName}
-                                onClick={()=>{
-                                  if(ListOfActionSelection.current[action.id].clicked==true)
-                                  {UpdateActionSelection(action.id,false)}
-                                  else
-                                  {
-                                    UpdateActionSelection(action.id,true)
-                                  }
-  
-                                }}
-                                
-                                />)
-                            }
-                            else
-                            {
-                              ListOfActionSelection.current[action.id]={Actionid:action.id,menuItemName:view.menuItemName,menuItemId:action.menuItemId,clicked:false}
-                              return ( 
-                              <Form.Check 
-                                key={hashRandom()}
-                                type="switch"
-                                defaultChecked={false}
-                                autoComplete="off"
-                                autoSave="off"
-                                label={action.actionName}
-                                onClick={()=>{
-                                  if(ListOfActionSelection.current[action.id].clicked==true)
-                                  {UpdateActionSelection(action.id,false)}
-                                  else
-                                  {
-                                    UpdateActionSelection(action.id,true)
-                                  }
-  
-                                }}
-                                
-                                />)
-                            }
+                     {ListOfPermToShow.map((action)=>{
+                       //Showing the action if the action is in the proper menu
+                       if(action.menuItemId==view.id)
+                       {
+                         let UserGotThePerm=false
+                         variables.Group.SelectedGroupPermissions.map((SelectedGroupAction)=>{
+                           if(SelectedGroupAction.id==action.id)
+                           {
                            
-                          }
-                          
-                        })}
-
-                       </div>
-                       </div>
-                       </Col>
-                      )
-                    })}
-                       </>}
-                      
-                       {ListOfViewsToShow.length==0&&<>
-                       
-                    {SelectedParentGroupMenuItems.map((view)=>{
-
-                      return(
-                        <Col>
-                       <div className="card mb-4">
-                        
-                       <div className="card-header d-flex justify-content-center" style={{minWidth:"250px"}}>{view.menuItemName}</div>
-                       <div className="card-body ">
-                          {SelectedParentGroupActions.map((action)=>{
-                            //Showing the action if the action is in the proper menu
-                            if(action.menuItemId==view.id)
-                            {
-                              let UserGotThePerm=false
-                              variables.Group.SelectedGroupPermissions.map((SelectedGroupAction)=>{
-                                if(SelectedGroupAction.id==action.id)
-                                {
-                                
-                                  UserGotThePerm=true}
-                                
-                              })
-                              if(UserGotThePerm==true)
-                              {
-                                ListOfActionSelection.current[action.id]={Actionid:action.id,menuItemName:view.menuItemName,menuItemId:action.menuItemId,clicked:true}
-                                return ( 
-                                <Form.Check 
-                                  key={hashRandom()}
-                                  type="switch"
-                                  defaultChecked={true}
-                                  autoComplete="off"
-                                  autoSave="off"
-                                  
-                                  label={action.actionName}
-                                  onClick={()=>{
-                                    if(ListOfActionSelection.current[action.id].clicked==true)
-                                    {UpdateActionSelection(action.id,false)}
-                                    else
-                                    {
-                                      UpdateActionSelection(action.id,true)
-                                    }
-    
-                                  }}
-                                  
-                                  />)
-                              }
-                              else
-                              {
-                                ListOfActionSelection.current[action.id]={Actionid:action.id,menuItemName:view.menuItemName,menuItemId:action.menuItemId,clicked:false}
-                                return ( 
-                                <Form.Check 
-                                  key={hashRandom()}
-                                  type="switch"
-                                  defaultChecked={false}
-                                  autoComplete="off"
-                                  autoSave="off"
-                                  label={action.actionName}
-                                  onClick={()=>{
-                                    if(ListOfActionSelection.current[action.id].clicked==true)
-                                    {UpdateActionSelection(action.id,false)}
-                                    else
-                                    {
-                                      UpdateActionSelection(action.id,true)
-                                    }
-    
-                                  }}
-                                  
-                                  />)
-                              }
+                             UserGotThePerm=true}
+                           
+                         })
+                         if(UserGotThePerm==true)
+                         {
+                           ListOfActionSelection.current[action.id]={Actionid:action.id,menuItemName:view.menuItemName,menuItemId:action.menuItemId,clicked:true}
+                           return ( 
+                           <Form.Check 
+                             key={hashRandom()}
+                             type="switch"
+                             defaultChecked={true}
+                             autoComplete="off"
+                             autoSave="off"
                              
-                            }
-                            
-                          
-                          
-                          })}
+                             label={action.actionName}
+                             onClick={()=>{
+                               if(ListOfActionSelection.current[action.id].clicked==true)
+                               {UpdateActionSelection(action.id,false)}
+                               else
+                               {
+                                 UpdateActionSelection(action.id,true)
+                               }
 
-                       </div>
-                       </div>
+                             }}
+                             
+                             />)
+                         }
+                         else
+                         {
+                           ListOfActionSelection.current[action.id]={Actionid:action.id,menuItemName:view.menuItemName,menuItemId:action.menuItemId,clicked:false}
+                           return ( 
+                           <Form.Check 
+                             key={hashRandom()}
+                             type="switch"
+                             defaultChecked={false}
+                             autoComplete="off"
+                             autoSave="off"
+                             label={action.actionName}
+                             onClick={()=>{
+                               if(ListOfActionSelection.current[action.id].clicked==true)
+                               {UpdateActionSelection(action.id,false)}
+                               else
+                               {
+                                 UpdateActionSelection(action.id,true)
+                               }
+
+                             }}
+                             
+                             />)
+                         }
+                        
+                       }
                        
-                       </Col>
-                      )
-                    })}
-                       </>}
-                   </Row>
+                     })}
+
+                    </div>
+                    </div>
+                    </Col>
+                   )
+                 })}
+                    </>}
                    
-                   </Container>
+                    {ListOfViewsToShow.length==0&&<>
+                    
+                 {SelectedParentGroupMenuItems.map((view)=>{
+
+                   return(
+                     <Col className="d-flex">
+                    <div className="card mb-4">
+                     
+                    <div className="card-header d-flex justify-content-center" style={{minWidth:"250px"}}>{view.menuItemName}</div>
+                    <div className="card-body ">
+                       {SelectedParentGroupActions.map((action)=>{
+                         //Showing the action if the action is in the proper menu
+                         if(action.menuItemId==view.id)
+                         {
+                           let UserGotThePerm=false
+                           variables.Group.SelectedGroupPermissions.map((SelectedGroupAction)=>{
+                             if(SelectedGroupAction.id==action.id)
+                             {
+                             
+                               UserGotThePerm=true}
+                             
+                           })
+                           if(UserGotThePerm==true)
+                           {
+                             ListOfActionSelection.current[action.id]={Actionid:action.id,menuItemName:view.menuItemName,menuItemId:action.menuItemId,clicked:true}
+                             return ( 
+                             <Form.Check 
+                               key={hashRandom()}
+                               type="switch"
+                               defaultChecked={true}
+                               autoComplete="off"
+                               autoSave="off"
+                               
+                               label={action.actionName}
+                               onClick={()=>{
+                                 if(ListOfActionSelection.current[action.id].clicked==true)
+                                 {UpdateActionSelection(action.id,false)}
+                                 else
+                                 {
+                                   UpdateActionSelection(action.id,true)
+                                 }
+ 
+                               }}
+                               
+                               />)
+                           }
+                           else
+                           {
+                             ListOfActionSelection.current[action.id]={Actionid:action.id,menuItemName:view.menuItemName,menuItemId:action.menuItemId,clicked:false}
+                             return ( 
+                             <Form.Check 
+                               key={hashRandom()}
+                               type="switch"
+                               defaultChecked={false}
+                               autoComplete="off"
+                               autoSave="off"
+                               label={action.actionName}
+                               onClick={()=>{
+                                 if(ListOfActionSelection.current[action.id].clicked==true)
+                                 {UpdateActionSelection(action.id,false)}
+                                 else
+                                 {
+                                   UpdateActionSelection(action.id,true)
+                                 }
+ 
+                               }}
+                               
+                               />)
+                           }
+                          
+                         }
+                         
+                       
+                       
+                       })}
+
+                    </div>
+                    </div>
+                    
+                    </Col>
+                   )
+                 })}
+                    </>}
+                </Row>
+                
+                </Container>
+                
+                }
+                  
                    
                </div>
                <input className="btn btn-primary"style={{margin:"1rem"}} onClick={HandlePermissionSave} type="submit" value="Save Permissions"/> 
@@ -827,7 +962,7 @@ const HandleChangeName=()=>{
       </Row>
 
       <Row>
-      <Col>
+      <Col className="d-flex">
       <div className="card mb-4 mb-xl-0 mt-2" style={{margin:"2px"}}>   
                 <div className="card-header d-flex justify-content-center">
                   Change Group Name
@@ -835,7 +970,7 @@ const HandleChangeName=()=>{
                 <div className="card-body text-center">
                 <div className="mb-3">
                  <label className="small mb-1" htmlFor="inputUsername">Modify Group Name</label>
-                 <input ref={GroupNameInput}  className="form-control" name="GroupName"  type="text" placeholder="Enter your Group Name" required />           
+                 <input ref={GroupNameInput}  className="form-control" name="GroupName"  type="text" placeholder="Enter your Group Name" required={true}/>           
                         </div>
              
                 </div>
@@ -843,7 +978,7 @@ const HandleChangeName=()=>{
             </div>
         </Col>
 
-        <Col>
+        <Col className="d-flex">
         <div className="card mb-4 mb-xl-0 mt-2" style={{margin:"2px"}}>   
                 <div className="card-header d-flex justify-content-center">
                  Delete Group
@@ -852,7 +987,7 @@ const HandleChangeName=()=>{
                 <div className="mb-3">
                 
                      <p>If you want to delete the group from the hiearchy click her, Be careful, if the group is deleted, there is no come back, this is permanent!</p>      
-                        {DeleteModal&&<Modal DeleteState={SetDeleteModal}/> }
+                        {DeleteModal&&<AlertDialog SetDeleteModal={SetDeleteModal} GroupName={variables.Group.SelectedGroupName} GroupID={variables.Group.SelectedGroup}/> }
                         </div>
                 </div>
                

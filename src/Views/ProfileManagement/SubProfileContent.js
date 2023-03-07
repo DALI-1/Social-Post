@@ -293,10 +293,10 @@ export default function Content() {
   return (
     
       <div className="container-xl px-4 mt-4">
-    <div className="row">
-        <div className="col-xl-4">
+    <div className="row d-flex" >
+        <div className="col-xl-4 d-flex">
             
-            <div className="card mb-4 mb-xl-0 ">
+            <div className="card mb-4 ">
                 <div className="card-header d-flex justify-content-center">Profile Picture</div>
                 <div className="card-body text-center ">
                     {/*Test if User has a profile picture if not show default*/}
@@ -320,9 +320,9 @@ export default function Content() {
                 </div>
             </div>
         </div>
-        <div className="col-xl-8">
+        <div className="col-xl-8 d-flex">
            
-            <div className="card mb-4">
+            <div className="card mb-4 ">
                 <div className="card-header">Account Details</div>
                 <div className="card-body">
                     <form onSubmit={handlesubmit}>
@@ -365,7 +365,7 @@ export default function Content() {
                         
                         <div className="row gx-3 mb-3">
                             
-                        <div className="col-md-6">
+                        <div className="col-md-6 ">
                                 <label className="small mb-1" htmlFor="inputPhone">Phone number</label>
                                 <input ref={PhoneNumber} className="form-control" name="phoneNumber" id="inputPhone" type="tel" placeholder="Enter your phone number" />
                             </div>

@@ -17,6 +17,7 @@ import AdjustSharpIcon from '@mui/icons-material/AdjustSharp';
 import {hashString,hashRandom } from 'react-hash-string'
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import {HeaderSpinnerActions,HeaderSpinner}  from '../../variables/variables'
 export default function Content() {
 
     const {GlobalState,Dispatch}=React.useContext(AppContext)
@@ -167,10 +168,13 @@ if(document.getElementById(RadioButton).checked)
       let url2=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_CREATESUBGROUP
       let UserToken=window.localStorage.getItem("AuthToken")
       let APIResult=CALL_API_With_JWTToken(url2,JsonObjectToSend,UserToken)
+      Dispatch({type:HeaderSpinnerActions.TurnOnRequestSpinner})
+      
       APIResult.then((result)=>
       {
         for( var property in result)
                             {
+                              
                                 
                                 if( property=="SubGroupNameAlreadyUsed")
                                 {
@@ -231,6 +235,7 @@ if(document.getElementById(RadioButton).checked)
                                         let url=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_GETPERSONALINFO
                                         let UserToken=window.localStorage.getItem("AuthToken")
                                         let APIResult=CALL_API_With_JWTToken_GET(url,UserToken)
+                                        Dispatch({type:HeaderSpinnerActions.TurnOnRequestSpinner})
                                         APIResult.then(result=>{ 
                                                  variables.UserInformations.info=result
                                                  variables.UserInformations.info.passwordHash=null
@@ -239,6 +244,7 @@ if(document.getElementById(RadioButton).checked)
                                                  ReRender(false)
                                                  else
                                                  ReRender(true)
+                                                 Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner})
                                           })
                                 }
                                 
@@ -246,16 +252,19 @@ if(document.getElementById(RadioButton).checked)
                                 
                             }
 
+                           
+                            Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner})                  
       })
       .catch((error)=>{
-
+  
+        Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner}) 
       })
     }
   return (
     <>
 
-       <Row>
-        <Col>
+       <Row className="d-flex">
+        <Col className="d-flex">
         <div className="card mb-4 mb-xl-0">
                <form onSubmit={CreateSubGroup}>
                 <div className="card-header d-flex justify-content-center"> Sub Group Details</div>
@@ -278,8 +287,8 @@ if(document.getElementById(RadioButton).checked)
                 </form>
             </div>
         </Col>
-        <Col>
-        <div className="card mb-4">
+        <Col className="d-flex">
+        <div className="card mb-4 mb-xl-0">
                <div className="card-header d-flex justify-content-center"> Sub Group permissions</div>
                <div className="card-body">
                    <Container>
@@ -288,7 +297,7 @@ if(document.getElementById(RadioButton).checked)
                     {ListOfViewsToShow.map((view)=>{
 
                       return(
-                        <Col>
+                        <Col >
                        <div className="card mb-4">
                        <div className="card-header d-flex justify-content-center" style={{minWidth:"250px"}}>{view.menuItemName}</div>
                        <div className="card-body">

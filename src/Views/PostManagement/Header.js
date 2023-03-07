@@ -1,7 +1,6 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import AppBar from '@mui/material/AppBar';
-import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import HelpIcon from '@mui/icons-material/Help';
@@ -14,17 +13,59 @@ import Tabs from '@mui/material/Tabs';
 import Toolbar from '@mui/material/Toolbar';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
-
+import LinearLoadingSpinner from '../../components/LinearLoadingSpinner'
+import {AppContext} from "../../context/Context"
+import { ProfileSelectedTabActions,ProfileTabs,GroupSelectedTabActions,GroupTabs } from '../../variables/variables';
+import { Avatar } from "@nextui-org/react";
+import EditIcon from '@mui/icons-material/Edit';
+import TuneIcon from '@mui/icons-material/Tune';
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
+    
 const lightColor = 'rgba(255, 255, 255, 0.7)';
 
-function Header(props) {
-  const { onDrawerToggle } = props;
 
+function Header(props) {
+  
+  const { onDrawerToggle } = props;
+  const {GlobalState,Dispatch}=React.useContext(AppContext)
+  let [TabMenu,SetTabMenu]=React.useState(0)
+  
+  let [PicStatus,SetPicStatus]=React.useState();
+  React.useEffect(()=>{
+    if(GlobalState.UserProfilePicture=="")
+    {
+      
+      SetPicStatus("/static/images/avatar/1.jpg")
+    }
+    else
+    {
+      
+      SetPicStatus(GlobalState.UserProfilePicture)
+      
+    }
+
+    if(GlobalState.GroupSelectedTab==GroupTabs.ManageGroupTab)
+    {
+      SetTabMenu (0)
+    }
+    
+    if(GlobalState.GroupSelectedTab==GroupTabs.AddGroup)
+    {
+      SetTabMenu(1) 
+    }
+    
+    if(GlobalState.GroupSelectedTab==GroupTabs.EditGroupTab)
+    {
+      SetTabMenu(1)
+    }
+    
+  },[GlobalState])
   return (
     <React.Fragment>
       <AppBar color="primary" position="sticky" elevation={0}>
         <Toolbar>
           <Grid container spacing={1} alignItems="center">
+            
             <Grid sx={{ display: { sm: 'none', xs: 'block' } }} item>
               <IconButton
                 color="inherit"
@@ -36,22 +77,9 @@ function Header(props) {
               </IconButton>
             </Grid>
             <Grid item xs />
-            <Grid item>
-              <Link
-                href="/"
-                variant="body2"
-                sx={{
-                  textDecoration: 'none',
-                  color: lightColor,
-                  '&:hover': {
-                    color: 'common.white',
-                  },
-                }}
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                Go to docs
-              </Link>
+            <Grid item style={{marginTop:"1rem"}}>
+             <p>{GlobalState.FirstName+" "} {GlobalState.LastName}</p>
+           
             </Grid>
             <Grid item>
               <Tooltip title="Alerts • No alerts">
@@ -62,10 +90,21 @@ function Header(props) {
             </Grid>
             <Grid item>
               <IconButton color="inherit" sx={{ p: 0.5 }}>
-                <Avatar src="/static/images/avatar/1.jpg" alt="My Avatar" />
+          
+        <Avatar
+          size="lg"
+          src={PicStatus} 
+          color="primary"
+          bordered
+          squared
+        />
+              
               </IconButton>
             </Grid>
+           
+
           </Grid>
+          
         </Toolbar>
       </AppBar>
       <AppBar
@@ -79,19 +118,10 @@ function Header(props) {
           <Grid container alignItems="center" spacing={1}>
             <Grid item xs>
               <Typography color="inherit" variant="h5" component="h1">
-                Authentication
+                Posts Management
               </Typography>
             </Grid>
-            <Grid item>
-              <Button
-                sx={{ borderColor: lightColor }}
-                variant="outlined"
-                color="inherit"
-                size="small"
-              >
-                Web setup
-              </Button>
-            </Grid>
+           
             <Grid item>
               <Tooltip title="Help">
                 <IconButton color="inherit">
@@ -103,16 +133,25 @@ function Header(props) {
         </Toolbar>
       </AppBar>
       <AppBar component="div" position="static" elevation={0} sx={{ zIndex: 0 }}>
-        <Tabs value={0} textColor="inherit">
-          <Tab label="Users" />
-          <Tab label="Sign-in method" />
-          <Tab label="Templates" />
-          <Tab label="Usage" />
+        <Tabs  value={TabMenu} textColor="inherit">
+         
+           <Tab  label={<><TuneIcon/> <p>Manage Posts</p></>} />
+        
+     
+          {GlobalState.GroupSelectedTab==GroupTabs.AddGroup&&<Tab  label={<><GroupAddIcon/> <p>Add SubGroup</p></>}  />}
+     
+         {
+          GlobalState.GroupSelectedTab==GroupTabs.EditGroupTab&&
+          <Tab label={<><EditIcon/> <p>Edit Group</p></>}  />
+}
         </Tabs>
       </AppBar>
+      {GlobalState.HeadSpinner&&<LinearLoadingSpinner/>}
+       {GlobalState.RequestSpinner&&<LinearLoadingSpinner/>}
     </React.Fragment>
   );
 }
+
 
 
 export default Header;

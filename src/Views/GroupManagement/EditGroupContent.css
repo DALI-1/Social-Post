@@ -10,7 +10,20 @@ body{margin-top:20px;
     }
     .card {
         box-shadow: 0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%);
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 150px; /* adjust as needed */
     }
+    @media (max-width: 767px) {
+        .card {
+          min-height: 100px; /* adjust as needed */
+        }
+    }
+    .d-flex {
+        display: flex !important;
+      }
     .card .card-header {
         font-weight: 500;
     }
@@ -63,3 +76,7 @@ body{margin-top:20px;
         background-color: #f1e0e3;
         border-color: #f1e0e3;
     }
+    .equal-height-columns {
+        display: flex;
+        align-items: stretch;
+      }

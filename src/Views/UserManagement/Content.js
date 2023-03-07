@@ -10,9 +10,11 @@ import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 import RefreshIcon from '@mui/icons-material/Refresh';
-import { ProfileTabs,UserInformations } from '../../variables/variables';
+import { ProfileTabs,UserInformations,UserTabs } from '../../variables/variables';
 import {AppContext} from "../../context/Context"
 import Container from 'react-bootstrap/Container';
+
+import ManageUsers from "./ManageUsersContent"
 import { Row, Col } from 'react-bootstrap';
 
 export default function Content() {
@@ -23,10 +25,7 @@ export default function Content() {
 
      {UserInformations.info!=null?<>
       <Container >
-      <div className="card-body text-center">
-        <p>This page is not ready yet, UNDER DEVELOPEMENT</p>
-      
-        </div>
+      {GlobalState.UserSelectedTab==UserTabs.ManageUserTab&&<ManageUsers/>}
 </Container>
      
      </>:<> <div className="card-body text-center"><p>Failed to Load Data please retry again or check your connection</p></div></>}

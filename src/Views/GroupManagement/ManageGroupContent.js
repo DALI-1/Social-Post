@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
+import { ToastContainer, toast } from 'react-toastify';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -11,6 +12,8 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
+import {CALL_API_With_JWTToken,CALL_API_With_JWTToken_GET} from '../../libs/APIAccessAndVerification'
+import {HeaderSpinnerActions,HeaderSpinner}  from '../../variables/variables'
 import * as ReactDOMServer from 'react-dom/server';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
@@ -26,6 +29,7 @@ import HighlightOffSharpIcon from '@mui/icons-material/HighlightOffSharp';
 import SettingsApplicationsSharpIcon from '@mui/icons-material/SettingsApplicationsSharp';
 import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/Container';
+import { MDBBtn } from 'mdb-react-ui-kit';
 import { Tree, TreeNode } from 'react-organizational-chart';
 import { MDBRadio,MDBContainer, MDBRow, MDBCol,MDBCheckbox } from 'mdb-react-ui-kit';
 import { Card, CardBody, CardFooter,Checkbox, CheckboxGroup } from '@chakra-ui/react'
@@ -39,6 +43,120 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import Stack from '@mui/material/Stack';
+
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+
+export function AlertDialog(props) {
+  const [open, setOpen] = React.useState(true);
+  const {GlobalState,Dispatch}=React.useContext(AppContext)
+
+  let handleGroupDelete=()=>{
+ let GroupID=props.GroupID;
+
+
+ var JsonObject={"groupId":GroupID.toString()}
+
+        JsonObject=JSON.stringify(JsonObject)
+        
+         let url2=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_DELETEGROUP
+         let UserToken=window.localStorage.getItem("AuthToken")
+         let APIResult=CALL_API_With_JWTToken(url2,JsonObject,UserToken)
+         Dispatch({type:HeaderSpinnerActions.TurnOnRequestSpinner})
+
+         APIResult.then((result)=>
+         {
+           for( var property in result)
+                               {
+                                   
+                                   if( property=="GROUPDELETED")
+                                   {
+                                    toast.success("The Group and all of its childs has been deleted successfully!", {
+                                      position: "bottom-left",
+                                      autoClose: 5000,
+                                      hideProgressBar: false,
+                                      closeOnClick: true,
+                                      pauseOnHover: true,
+                                      draggable: true,
+                                      progress: undefined,
+                                      theme: "light",
+                                      });
+                                    }
+
+                                    if(property=="IMPOSSIBLETODELETEGROUPUNDERROOT")
+                                    {
+                                      toast.info("You cant delete the campaign group !", {
+                                        position: "bottom-left",
+                                        autoClose: 5000,
+                                        hideProgressBar: false,
+                                        closeOnClick: true,
+                                        pauseOnHover: true,
+                                        draggable: true,
+                                        progress: undefined,
+                                        theme: "light",
+                                        });
+                                    }
+                                  }
+                               //Updating our SubGroups info
+                               let url=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_GETPERSONALINFO
+                               let UserToken=window.localStorage.getItem("AuthToken")
+                               let APIResult=CALL_API_With_JWTToken_GET(url,UserToken)
+                               Dispatch({type:HeaderSpinnerActions.TurnOnRequestSpinner})
+                               APIResult.then(result=>{ 
+                                        variables.UserInformations.info=result
+                                        variables.UserInformations.info.passwordHash=null
+                                        variables.UserInformations.info.passwordSalt=null
+                                        
+                                        Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner})
+                                 })
+                                 
+                                  Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner}) 
+                                  handleClose()
+                                  
+  })
+  .catch(()=>{
+   
+Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner}) 
+  })
+}
+
+  const handleClose = () => {
+    setOpen(false);
+    props.SetDeleteModal(!props.DeleteShow)
+    
+  };
+
+  return (
+    <div>
+      
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Delete Group"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to permanently delete the Group {props.GroupName} ?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="outlined" onClick={handleClose}>No</Button>
+          <Button variant="outlined" color="error" onClick={handleGroupDelete} autoFocus>
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  );
+}
 
 function TRow (parameter){
   let [open, setOpen] = React.useState(false);
@@ -59,22 +177,28 @@ function TRow (parameter){
                   </IconButton>
                 </TableCell>
                 
-                <TableCell align="left">{props.group_Name}
+                <TableCell align="left">
+                <Groups2SharpIcon style={{Margin:"1rem"}}/>
+                  {"                  "+props.group_Name}
                 
                
                 
                 </TableCell>
                 <TableCell align="left">
-                <IconButton color="primary" aria-label="Add sub group">
+                <IconButton color="primary" aria-label="Add sub group" onClick={()=>{parameter.HandleGroupAdd(props.id,props.group_Name)}}>
                 <AddCircleSharpIcon/>
                 </IconButton>
                
                 
                 </TableCell>  
-                <TableCell> <IconButton color="primary" aria-label="delete sub group">
+                <TableCell> <IconButton color="primary" aria-label="Edit sub group" onClick={()=>{parameter.HandleGroupEdit(props.id,props.group_Name)}}> 
                 <SettingsApplicationsSharpIcon/>
                 </IconButton></TableCell>
-                <TableCell><IconButton color="primary" aria-label="delete sub group">
+                <TableCell><IconButton color="primary" aria-label="delete sub group"onClick={()=>{
+                  parameter.SetGroupID.current=props.id
+                  parameter.SetGroupName.current=props.group_Name
+                  parameter.SetDeleteModal(true)
+                  }}>
                 <HighlightOffSharpIcon/>
                 </IconButton></TableCell>
               </TableRow>
@@ -138,10 +262,11 @@ export default function Content() {
     const [ListOfViewsToShow,SetListOfViewsToShow]=React.useState([]);
     const [ListOfPermToShow,SetListOfPermToShow]=React.useState([]);
    
-    let ListOfActionSelection=React.useRef([])
-    let GroupNameInput=React.useRef()
+    let SelectedGroupName=React.useRef("")
+    let SelectedGroupID=React.useRef("")
     let ListOfRadioButtons=React.useRef([])
    
+    let [DeleteShow,SetDeleteShow]=React.useState(false)
     let [RenderValue,ReRender]=React.useState(false)
     let[ViewMode,SetViewMode]=React.useState("Tabular");
 
@@ -183,7 +308,13 @@ export default function Content() {
                           >
                         <SettingsApplicationsSharpIcon/>
                         </IconButton>
-                        <IconButton className='m-0' id={"DELETE"+group.Id} aria-label="delete sub group">
+                        <IconButton className='m-0' id={"DELETE"+group.Id} aria-label="delete sub group" onClick={
+                          ()=>{
+                            SelectedGroupID.current=group.id
+                            SelectedGroupName.current=group.group_Name
+                            SetDeleteShow(true)
+                          }
+                        }>
                         <HighlightOffSharpIcon/>
                         </IconButton>
                         </div>}>
@@ -210,7 +341,18 @@ export default function Content() {
       variables.Group.SelectedGroup=groupid
       variables.Group.SelectedGroupName=name
       Dispatch({type:GroupSelectedTabActions.SelectEditGroup}) 
-    }  
+    } 
+    
+    let handleAddNewGroup=()=>{
+      variables.Group.SelectedGroup=variables.UserInformations.info.joinedGroups[0].id
+      variables.Group.SelectedGroupName=variables.UserInformations.info.joinedGroups[0].group_Name
+      Dispatch({type:GroupSelectedTabActions.SelectAddGroup})
+    }
+    let handleModifyParentGroup=()=>{
+      variables.Group.SelectedGroup=variables.UserInformations.info.joinedGroups[0].id
+      variables.Group.SelectedGroupName=variables.UserInformations.info.joinedGroups[0].group_Name
+      Dispatch({type:GroupSelectedTabActions.SelectEditGroup})
+    }
   return (
     <>
       
@@ -226,27 +368,63 @@ export default function Content() {
       
       
        <Row>
-       {ViewMode=="Tabular"&&
+       {ViewMode=="Tabular"&&<>
+       <div style={{ textAlign: "center", margin:"1rem" }}>
+       <Groups2SharpIcon style={{Margin:"1rem"}}/>
+        <h1>{variables.UserInformations.info.joinedGroups[0].group_Name}</h1>
+        </div>
        <TableContainer component={Paper}>
+       <div style={{ textAlign: "right" }}>
+       <MDBBtn outline className='mx-2 m-2' color='secondary' onClick={handleAddNewGroup}>
+        Add New SubGroup
+      </MDBBtn>
+
+      <MDBBtn outline className='mx-2 m-2' color='secondary' onClick={handleModifyParentGroup}>
+        Modifty Group
+      </MDBBtn>
+      <MDBBtn outline className='mx-2 m-2' color='secondary' onClick={()=>{
+        SelectedGroupID.current=variables.UserInformations.info.joinedGroups[0].id
+        SelectedGroupName.current=variables.UserInformations.info.joinedGroups[0].group_Name
+        SetDeleteShow(true)
+      }}>
+       Delete Group
+      </MDBBtn>
+       </div>
+       
+
       <Table aria-label="collapsible table">
         <TableHead>
           <TableRow>
-            <TableCell />
+           <TableCell></TableCell> 
             <TableCell align="left">Group Name</TableCell>
             <TableCell />
             <TableCell />
             <TableCell />
+            
           </TableRow>
         </TableHead>
         <TableBody>
+        {DeleteShow&&<AlertDialog SetDeleteModal={SetDeleteShow} GroupName={SelectedGroupName.current} GroupID={SelectedGroupID.current} DeleteShow={DeleteShow}/> }
           {
+            
             variables.UserInformations.info.joinedGroups[0].subGroups.map((Group)=>{
-            return(<TRow Group={Group}/>)
+            return(<TRow HandleGroupAdd={HandleGroupAdd} HandleGroupEdit={HandleGroupEdit} Group={Group} SetGroupName={SelectedGroupName} SetGroupID={SelectedGroupID} SetDeleteModal={SetDeleteShow}/>)
             })
-          }   
+
+            
+          }  
+          {variables.UserInformations.info.joinedGroups[0].subGroups.length==0&&<><TableRow>
+            <TableCell> </TableCell>
+            
+            <TableCell><div className="card-body text-center"><p >You don't have any sub groups</p></div> </TableCell>
+            <TableCell> </TableCell>
+            
+          </TableRow></>} 
         </TableBody>
       </Table>
+      
     </TableContainer>
+    </>
 }
 
 {ViewMode=="Tree"&&
@@ -258,6 +436,7 @@ export default function Content() {
                 <Tree label={<p><AdjustSharpIcon/></p>}>
                    {(generateList(variables.UserInformations.info.joinedGroups))}
                       </Tree> 
+                      {DeleteShow&&<AlertDialog SetDeleteModal={SetDeleteShow} GroupName={SelectedGroupName.current} GroupID={SelectedGroupID.current} DeleteShow={DeleteShow}/> }
                             </MDBContainer> 
                         </div>
                     

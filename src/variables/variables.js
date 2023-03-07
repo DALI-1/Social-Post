@@ -26,13 +26,28 @@ export const GroupSelectedTabActions=
     SelectManageGroup:"SwitchToManageGroup"
 }
 
+export const UserTabs=
+{
+    AddUser:"AddUserTab",
+    EditUserTab:"EditUserTab",
+    ManageUserTab:"ManageUserTab"
+}
+
+export const UserSelectedTabActions=
+{
+    SelectAddUser:"SwitchToAddUser",
+    SelectEditUser:"SwitchToEditUser",
+    SelectManageUser:"SwitchToManageUSer"
+}
+
 export const NavigatorTabs=
 {
     LogoutTab:"LogoutNav",
     ManageProfilInformationsTab:"ProfileInfoNav",
     ManagePostsTab:"PostsNav",
     ManageGroupsTab:"GroupsNav",
-    ManagePagesTab:"PagesNav"
+    ManagePagesTab:"PagesNav",
+    ManageUsersTab:"ManageUsersTab"
 }
 export const NavigatorSelectedTabActions=
 {
@@ -40,7 +55,8 @@ export const NavigatorSelectedTabActions=
     SelectManageProfilInformations:"SwitchToManageProfile",
     SelectManagePosts:"SwitchToManagePosts",
     SelectManageGroups:"SwitchToManageGroups",
-    SelectManagePages:"SwitchToManagePages"
+    SelectManagePages:"SwitchToManagePages",
+    SelectManageUsers:"SwitchToManageUsers"
 }
 export const UserActions=
 {
@@ -73,4 +89,18 @@ export var Group=
     SelectedGroupName:null,
     SelectedGroupPermissions:[],
     GroupMenuItems:[]
+}
+
+export var HeaderSpinner=
+{
+    HeadSpinner:false,
+    RequestSpinner:false
+}
+
+export var HeaderSpinnerActions=
+{
+ TurnOnSpinner:"SpinnerON",
+ TurnOffSpinner:"SpinnerOFF",
+ TurnOnRequestSpinner:"RequestSpinnerON",
+ TurnOffRequestSpinner:"RequestSpinnerOFF"
 }

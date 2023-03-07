@@ -35,6 +35,23 @@ const reducer=(GlobalState,action)=>
                 {
               return({...GlobalState,GroupSelectedTab:variables.GroupTabs.ManageGroupTab})
                 }
+
+                //User Tab Actions
+
+                case variables.UserSelectedTabActions.SelectAddUser:
+                    {       
+                        return({...GlobalState,UserSelectedTab:variables.UserTabs.AddUser})
+                    }
+                 
+                case variables.UserSelectedTabActions.SelectEditUser:
+                    {
+                  return({...GlobalState,UserSelectedTab:variables.UserTabs.EditUserTab})
+                    }
+    
+                    case variables.UserSelectedTabActions.SelectManageUser:
+                    {
+                  return({...GlobalState,UserSelectedTab:variables.UserTabs.ManageUserTab})
+                    }
                         //Navigator actions
             case variables.NavigatorSelectedTabActions.SelectLogout:
                 {
@@ -58,6 +75,13 @@ const reducer=(GlobalState,action)=>
                 {
                 return({...GlobalState,NavigatorSelectedTab:variables.NavigatorTabs.ManagePostsTab})
                 } 
+
+                case variables.NavigatorSelectedTabActions.SelectManageUsers:
+                    {
+                        console.log("HERE")
+                    return({...GlobalState,NavigatorSelectedTab:variables.NavigatorTabs.ManageUsersTab})
+                    } 
+
 
                 //Personal Info Actions
 
@@ -90,8 +114,38 @@ const reducer=(GlobalState,action)=>
                     
                 return({...GlobalState,Email:action.value})
                 }
+
+                //Spinner actions
               
-               
+                case variables.HeaderSpinnerActions.TurnOnSpinner:
+                    {   
+                        
+                        variables.HeaderSpinner.HeadSpinner=true
+                        
+                    return({...GlobalState,HeadSpinner:true})
+                    }
+                    case variables.HeaderSpinnerActions.TurnOffSpinner:
+                        {   
+                            
+                            variables.HeaderSpinner.HeadSpinner=false
+                            
+                        return({...GlobalState,HeadSpinner:false})
+                        }
+
+                case variables.HeaderSpinnerActions.TurnOnRequestSpinner:
+                    {   
+                        
+                        variables.HeaderSpinner.RequestSpinner=true
+                        
+                    return({...GlobalState,RequestSpinner:true})
+                    }
+                    case variables.HeaderSpinnerActions.TurnOffRequestSpinner:
+                        {   
+                            
+                            variables.HeaderSpinner.RequestSpinner=false
+                            
+                        return({...GlobalState,RequestSpinner:false})
+                        }        
                
             default:
                 
@@ -100,20 +154,46 @@ const reducer=(GlobalState,action)=>
        }
 }
 
-const InitialGlobalState=
+let InitialGlobalState={}
+if(window.localStorage.getItem('SelectedTab')!=null)
 {
-    NavigatorSelectedTab:variables.NavigatorTabs.ManagePostsTab,
-    ProfileSelectedTab:variables.ProfileTabs.ProfileTab,
-    GroupSelectedTab:variables.GroupTabs.ManageGroupTab,
-    PassedGroupID:null,
-    Username:null,
-    FirstName:null,
-    LastName:null,
-    Email:null,
-    UserProfilePicture:null,
-    GroupInformations:null
-    
+     InitialGlobalState=
+    {
+        NavigatorSelectedTab:window.localStorage.getItem('SelectedTab'),
+        ProfileSelectedTab:variables.ProfileTabs.ProfileTab,
+        GroupSelectedTab:variables.GroupTabs.ManageGroupTab,
+        UserSelectedTab:variables.UserTabs.ManageUserTab,
+        PassedGroupID:null,
+        Username:null,
+        FirstName:"",
+        LastName:"",
+        Email:null,
+        UserProfilePicture:null,
+        GroupInformations:null,
+        HeadSpinner:false
+        
+    }
 }
+else
+{
+    InitialGlobalState=
+    {
+        NavigatorSelectedTab:variables.NavigatorTabs.ManagePostsTab,
+        ProfileSelectedTab:variables.ProfileTabs.ProfileTab,
+        GroupSelectedTab:variables.GroupTabs.ManageGroupTab,
+        PassedGroupID:null,
+        Username:null,
+        FirstName:"",
+        LastName:"",
+        Email:null,
+        UserProfilePicture:null,
+        GroupInformations:null,
+        HeadSpinner:false,
+        RequestSpinner:false
+        
+    }
+}
+
 
 export const GlobalContext=({children})=>
 {
