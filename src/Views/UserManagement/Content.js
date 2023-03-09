@@ -15,6 +15,8 @@ import {AppContext} from "../../context/Context"
 import Container from 'react-bootstrap/Container';
 
 import ManageUsers from "./ManageUsersContent"
+import EditUser from "./ModifyUserContent"
+import AddUser from "./AddUserContent"
 import { Row, Col } from 'react-bootstrap';
 
 export default function Content() {
@@ -26,6 +28,8 @@ export default function Content() {
      {UserInformations.info!=null?<>
       <Container >
       {GlobalState.UserSelectedTab==UserTabs.ManageUserTab&&<ManageUsers/>}
+      {GlobalState.UserSelectedTab==UserTabs.EditUserTab&&<EditUser/>}
+      {GlobalState.UserSelectedTab==UserTabs.AddUser&&<AddUser/>}
 </Container>
      
      </>:<> <div className="card-body text-center"><p>Failed to Load Data please retry again or check your connection</p></div></>}

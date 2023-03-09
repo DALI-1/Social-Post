@@ -50,6 +50,7 @@ const reducer=(GlobalState,action)=>
     
                     case variables.UserSelectedTabActions.SelectManageUser:
                     {
+                        console.log("Here")
                   return({...GlobalState,UserSelectedTab:variables.UserTabs.ManageUserTab})
                     }
                         //Navigator actions

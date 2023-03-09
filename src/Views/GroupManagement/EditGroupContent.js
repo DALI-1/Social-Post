@@ -17,7 +17,7 @@ import {hashString,hashRandom } from 'react-hash-string'
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
-import {HeaderSpinnerActions,HeaderSpinner}  from '../../variables/variables'
+import {HeaderSpinnerActions,HeaderSpinner,GroupSelectedTabActions}  from '../../variables/variables'
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -75,10 +75,24 @@ export function AlertDialog(props) {
                                     }
                                     
                                   }
-                               
-                                 
-                                  Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner}) 
-                                  handleClose()
+                                  //Updatng our local values
+                                  let url=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_GETPERSONALINFO
+                                        let UserToken=window.localStorage.getItem("AuthToken")
+                                        let APIResult=CALL_API_With_JWTToken_GET(url,UserToken)
+                                        
+                                        APIResult.then(result=>{ 
+                                                 variables.UserInformations.info=result
+                                                 variables.UserInformations.info.passwordHash=null
+                                                 variables.UserInformations.info.passwordSalt=null
+                                                 
+                                                 Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner})
+                                                 Dispatch({type:GroupSelectedTabActions.SelectManageGroup})
+                                               handleClose()
+                                          })    
+                                  
+                                  
+                                  
+
                                   
   })
   .catch(()=>{
@@ -93,7 +107,7 @@ Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner})
   };
 
   return (
-    <div>
+    <>
       
       <Dialog
         open={open}
@@ -116,7 +130,7 @@ Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner})
           </Button>
         </DialogActions>
       </Dialog>
-    </div>
+    </>
   );
 }
 
@@ -211,11 +225,11 @@ export default function Content() {
              {
                 return (
                   <>
-                    {subGroups.map((group) => 
+                    {subGroups.map((group,index) => 
 
                     {
                       CheckboxList.current=[...CheckboxList.current,{"CheckboxID":"GROUP"+group.id}]
-                      return(<TreeNode   label={<div><Groups2SharpIcon/> <p>{group.group_Name}</p> {group.id==variables.Group.SelectedGroup?<MDBRadio disabled key={"GROUPK"+group.id} id={"GROUP"+group.id} onClick={HandlePermissionShow} name="SubGroup" style={{margin:"0px"}}/>:<MDBRadio key={"GROUPK"+group.id} id={"GROUP"+group.id} onClick={HandlePermissionShow} name="SubGroup" style={{margin:"0px"}}/>}</div>}>
+                      return(<TreeNode key={"GROUPTREEKEY"+group.id} label={<div><Groups2SharpIcon/> <p>{group.group_Name}</p> {group.id==variables.Group.SelectedGroup?<MDBRadio disabled key={"GROUPK"+group.id} id={"GROUP"+group.id} onClick={HandlePermissionShow} name="SubGroup" style={{margin:"0px"}}/>:<MDBRadio key={"GROUPK"+group.id} id={"GROUP"+group.id} onClick={HandlePermissionShow} name="SubGroup" style={{margin:"0px"}}/>}</div>}>
                       {generateList(group.subGroups)}  
                       </TreeNode>)
                     }
@@ -373,8 +387,10 @@ SetListOfPermToShow([])
          CheckboxList.current.map((CB)=>{
         
           var Cbox=document.getElementById(CB.CheckboxID)
+          
           if(Cbox.checked)
           {
+           
             SelectedCbox=Cbox
             destinationselected=true
           }})
@@ -384,17 +400,18 @@ SetListOfPermToShow([])
 
           var DestGroupID=SelectedCbox.id.replace("GROUP","")
           var SelectedGroupID=variables.Group.SelectedGroup
-          
+         
 
           var JsonObject={"parentGroupId":DestGroupID,"groupId":SelectedGroupID,"newSubGroupActions":[]}
           ListOfActionSelection.current.map((action)=>{
             if(action.clicked==true)
             {
+             
                 JsonObject.newSubGroupActions=[...JsonObject.newSubGroupActions,{id:action.Actionid.toString(),menuItemId:action.menuItemId.toString()}]
             }
           })
 
-         
+         console.log(JsonObject)
         JsonObject=JSON.stringify(JsonObject)
          let url2=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_MOVEGROUP
          let UserToken=window.localStorage.getItem("AuthToken")
@@ -751,27 +768,7 @@ const HandleChangeName=()=>{
     <>
         
         <Row className="d-flex">
-          <Col className="d-flex">
-          
-        <div className="card mb-4" style={{margin:"2px"}}>   
-                <div className="card-header d-flex justify-content-center">
-                  Select where you wanna move the group {variables.Group.SelectedGroupName} under
-                </div>
-                <div className="card-body text-center">
-                <div className="mb-3">
-                 <MDBContainer breakpoint="sm">
-                <Tree label={<p><AdjustSharpIcon/></p>}>
-                   {generateList(variables.UserInformations.info.joinedGroups)}
-                      </Tree> 
-   
-                            </MDBContainer> 
-                           
-                        </div>
-                </div>
-                <input className="btn btn-primary"style={{margin:"1rem"}} onClick={MoveGroup} type="submit" value="Move Group"/>
-                <input className="btn btn-primary"style={{margin:"1rem"}} onClick={CancelGroupMove} type="submit" value="Cancel Group Move"/>
-            </div>
-            </Col>
+         
            
             <Col className="d-flex">
             <div className="card mb-4 ">
@@ -782,10 +779,10 @@ const HandleChangeName=()=>{
                 <Container>
                 <Row className="d-flex">
                 {ListOfViewsToShow.length>0&&<>
-                 {ListOfViewsToShow.map((view)=>{
+                 {ListOfViewsToShow.map((view,index)=>{
 
                    return(
-                     <Col className="d-flex">
+                     <Col key={index} className="d-flex">
                     <div className="card mb-4">
                     <div className="card-header d-flex justify-content-center" style={{minWidth:"250px"}}>{view.menuItemName}</div>
                     <div className="card-body">
@@ -864,10 +861,10 @@ const HandleChangeName=()=>{
                    
                     {ListOfViewsToShow.length==0&&<>
                     
-                 {SelectedParentGroupMenuItems.map((view)=>{
+                 {SelectedParentGroupMenuItems.map((view,index)=>{
 
                    return(
-                     <Col className="d-flex">
+                     <Col key={index} className="d-flex">
                     <div className="card mb-4">
                      
                     <div className="card-header d-flex justify-content-center" style={{minWidth:"250px"}}>{view.menuItemName}</div>
@@ -958,6 +955,28 @@ const HandleChangeName=()=>{
             
             
             </Col>
+
+            <Col className="d-flex">
+          
+          <div className="card mb-4" style={{margin:"2px"}}>   
+                  <div className="card-header d-flex justify-content-center">
+                    Select where you wanna move the group {variables.Group.SelectedGroupName} under
+                  </div>
+                  <div className="card-body text-center">
+                  <div className="mb-3">
+                   <MDBContainer breakpoint="sm">
+                  <Tree key={"MOVETREE"} label={<p><AdjustSharpIcon/></p>}>
+                     {generateList(variables.UserInformations.info.joinedGroups)}
+                        </Tree> 
+     
+                              </MDBContainer> 
+                             
+                          </div>
+                  </div>
+                  <input className="btn btn-primary"style={{margin:"1rem"}} onClick={MoveGroup} type="submit" value="Move Group"/>
+                  <input className="btn btn-primary"style={{margin:"1rem"}} onClick={CancelGroupMove} type="submit" value="Cancel Group Move"/>
+              </div>
+              </Col>
         
       </Row>
 
@@ -978,7 +997,7 @@ const HandleChangeName=()=>{
             </div>
         </Col>
 
-        <Col className="d-flex">
+        <Col  className="d-flex">
         <div className="card mb-4 mb-xl-0 mt-2" style={{margin:"2px"}}>   
                 <div className="card-header d-flex justify-content-center">
                  Delete Group

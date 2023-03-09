@@ -99,8 +99,8 @@ export default function Content() {
              {
                 return (
                   <>
-                    {subGroups.map((group) => ( 
-                      <TreeNode   label={<div><Groups2SharpIcon/> <p>{group.group_Name}</p> <MDBRadio  key={"GROUPK"+group.id} id={"GROUP"+group.id} onClick={HandlePermissionShow} name="SubGroup" style={{margin:"0px"}}/></div>}>
+                    {subGroups.map((group,index) => ( 
+                      <TreeNode key={index}  label={<div><Groups2SharpIcon/> <p>{group.group_Name}</p> <MDBRadio  key={"GROUPK"+group.id} id={"GROUP"+group.id} onClick={HandlePermissionShow} name="SubGroup" style={{margin:"0px"}}/></div>}>
                       {generateList(group.subGroups)}  
                       </TreeNode>
                     ))}
@@ -163,8 +163,9 @@ if(document.getElementById(RadioButton).checked)
         JsonObject.subGroupActions=[...JsonObject.subGroupActions,{id:action.Actionid.toString(),menuItemId:action.menuItemId.toString()}]
       }
      }) 
-
+          
       let JsonObjectToSend=JSON.stringify(JsonObject)
+      
       let url2=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_CREATESUBGROUP
       let UserToken=window.localStorage.getItem("AuthToken")
       let APIResult=CALL_API_With_JWTToken(url2,JsonObjectToSend,UserToken)
@@ -271,9 +272,10 @@ if(document.getElementById(RadioButton).checked)
                 <div className="card-body text-center">
                 <div className="mb-3">
                  <MDBContainer breakpoint="sm">
-                <Tree label={<p><AdjustSharpIcon/></p>}>
+                <Tree key={"ADDTREE"} label={<p><AdjustSharpIcon/></p>}>
                    {generateList(variables.UserInformations.info.joinedGroups)}
                       </Tree> 
+                      {GenerateRadioBoxList(variables.UserInformations.info.joinedGroups)}
                             <label className="small mb-1" htmlFor="inputUsername">Sub Group Name</label>
                             <input ref={GroupNameInput} className="form-control" name="GroupName" id="inputUsername" type="text" placeholder="Enter your Group Name" required />
                             </MDBContainer> 
@@ -294,10 +296,10 @@ if(document.getElementById(RadioButton).checked)
                    <Container>
                    <Row>
                    {ListOfViewsToShow.length==0&&<p className='d-flex justify-content-center'>Select a group to view the possible permissions under that group</p>}
-                    {ListOfViewsToShow.map((view)=>{
+                    {ListOfViewsToShow.map((view,index)=>{
 
                       return(
-                        <Col >
+                        <Col key={index} >
                        <div className="card mb-4">
                        <div className="card-header d-flex justify-content-center" style={{minWidth:"250px"}}>{view.menuItemName}</div>
                        <div className="card-body">

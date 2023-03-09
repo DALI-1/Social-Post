@@ -15,7 +15,7 @@ import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import LinearLoadingSpinner from '../../components/LinearLoadingSpinner'
 import {AppContext} from "../../context/Context"
-import { ProfileSelectedTabActions,ProfileTabs,GroupSelectedTabActions,GroupTabs, UserTabs } from '../../variables/variables';
+import { ProfileSelectedTabActions,ProfileTabs,GroupSelectedTabActions,GroupTabs, UserTabs,UserSelectedTabActions } from '../../variables/variables';
 import { Avatar } from "@nextui-org/react";
 import EditIcon from '@mui/icons-material/Edit';
 import TuneIcon from '@mui/icons-material/Tune';
@@ -135,14 +135,21 @@ function Header(props) {
       <AppBar component="div" position="static" elevation={0} sx={{ zIndex: 0 }}>
         <Tabs  value={TabMenu} textColor="inherit">
          
-           <Tab  label={<><TuneIcon/> <p>Manage Users</p></>} />
+           <Tab  label={<><TuneIcon/> <p>Manage Users</p></>}
+           onClick={()=>{ 
+           
+            Dispatch( {type:UserSelectedTabActions.SelectManageUser})}} />
         
      
-          {GlobalState.UserSelectedTab==UserTabs.AddUser&&<Tab  label={<><GroupAddIcon/> <p>Add SubGroup</p></>}  />}
+          {GlobalState.UserSelectedTab==UserTabs.AddUser&&<Tab  label={<><GroupAddIcon/> <p>Add User</p></>} onClick={()=>{ Dispatch( {type:UserSelectedTabActions.SelectAddUser})}}  />}
      
          {
           GlobalState.UserSelectedTab==UserTabs.EditUserTab&&
-          <Tab label={<><EditIcon/> <p>Edit Group</p></>}  />
+          <Tab label={<><EditIcon/> <p>Edit User</p></>} 
+          onClick={()=>{ 
+           
+            Dispatch( {type:UserSelectedTabActions.SelectEditUser})}}
+          />
 }
         </Tabs>
       </AppBar>

@@ -131,7 +131,7 @@ Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner})
   };
 
   return (
-    <div>
+    <>
       
       <Dialog
         open={open}
@@ -154,7 +154,7 @@ Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner})
           </Button>
         </DialogActions>
       </Dialog>
-    </div>
+    </>
   );
 }
 
@@ -165,8 +165,8 @@ function TRow (parameter){
       {
        
           return (
-            <React.Fragment>
-              <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+            <>
+              <TableRow key={hashRandom()} sx={{ '& > *': { borderBottom: 'unset' } }}>
                 <TableCell>
                   <IconButton
                     aria-label="expand row"
@@ -180,9 +180,6 @@ function TRow (parameter){
                 <TableCell align="left">
                 <Groups2SharpIcon style={{Margin:"1rem"}}/>
                   {"                  "+props.group_Name}
-                
-               
-                
                 </TableCell>
                 <TableCell align="left">
                 <IconButton color="primary" aria-label="Add sub group" onClick={()=>{parameter.HandleGroupAdd(props.id,props.group_Name)}}>
@@ -204,8 +201,8 @@ function TRow (parameter){
               </TableRow>
               
               
-                  <Collapse in={open} timeout="auto" unmountOnExit>
-                  <TableRow  sx={{ '& > *': { borderBottom: 'unset' }}}>
+                  <Collapse key={hashRandom()} in={open} timeout="auto" unmountOnExit>
+                  <TableRow key={hashRandom()}  sx={{ '& > *': { borderBottom: 'unset' }}}>
               <TableCell></TableCell>
               <TableCell>
                   {props.subGroups.length>0?
@@ -218,27 +215,27 @@ function TRow (parameter){
                     
                       <TableBody>
                       {props.subGroups.map((grp)=>{
-                        return(<TRow Group={grp}/>)
+                        return(<TRow key={hashRandom()} HandleGroupAdd={parameter.HandleGroupAdd} HandleGroupEdit={parameter.HandleGroupEdit}  SetGroupName={parameter.SetGroupName} SetGroupID={parameter.SetGroupID} SetDeleteModal={parameter.SetDeleteModal} Group={grp}/>)
                       })}
                       </TableBody>
                     </Table>
                   </TableContainer>
                 </Box>
-                :<TableHead>
+                : <>
+                <TableRow key={hashRandom()}  sx={{ '& > *': { borderBottom: 'unset' }}}>
+                <p>No SubGroups found</p>
+                </TableRow>
                 
-                
-                  <p>No SubGroups found</p>
-                  
+                </>
+                 
                
-                
-              </TableHead> 
                   }
                      </TableCell>
               </TableRow>
                   </Collapse>
                   
                  
-            </React.Fragment>
+            </>
           )
 
        
@@ -294,8 +291,8 @@ export default function Content() {
              {
                 return (
                   <>
-                    {subGroups.map((group) => ( 
-                      <TreeNode   label={<div id={"DIVGROUP"+group.id}
+                    {subGroups.map((group,index) => ( 
+                      <TreeNode key={index}  label={<div id={"DIVGROUP"+group.id}
                        ><Groups2SharpIcon/> <p>{group.group_Name}</p>
 
                     <IconButton className='m-0' id={"ADD"+group.id}  aria-label="Add sub group"
@@ -369,12 +366,8 @@ export default function Content() {
       
        <Row>
        {ViewMode=="Tabular"&&<>
-       <div style={{ textAlign: "center", margin:"1rem" }}>
-       <Groups2SharpIcon style={{Margin:"1rem"}}/>
-        <h1>{variables.UserInformations.info.joinedGroups[0].group_Name}</h1>
-        </div>
-       <TableContainer component={Paper}>
-       <div style={{ textAlign: "right" }}>
+       <Paper sx={{ width: '100%', mb: 2 ,textAlign: "right" }}>
+        <div style={{ textAlign: "right" }}>
        <MDBBtn outline className='mx-2 m-2' color='secondary' onClick={handleAddNewGroup}>
         Add New SubGroup
       </MDBBtn>
@@ -390,13 +383,17 @@ export default function Content() {
        Delete Group
       </MDBBtn>
        </div>
-       
-
+       </Paper>
+       <TableContainer component={Paper}>
+       <div style={{ textAlign: "center", margin:"1rem" }}>
+       <Groups2SharpIcon style={{Margin:"1rem"}}/>
+        <h1>{"Groups Of "+variables.UserInformations.info.joinedGroups[0].group_Name}</h1>
+        </div>
       <Table aria-label="collapsible table">
         <TableHead>
           <TableRow>
            <TableCell></TableCell> 
-            <TableCell align="left">Group Name</TableCell>
+            <TableCell align="left"></TableCell>
             <TableCell />
             <TableCell />
             <TableCell />
@@ -408,7 +405,7 @@ export default function Content() {
           {
             
             variables.UserInformations.info.joinedGroups[0].subGroups.map((Group)=>{
-            return(<TRow HandleGroupAdd={HandleGroupAdd} HandleGroupEdit={HandleGroupEdit} Group={Group} SetGroupName={SelectedGroupName} SetGroupID={SelectedGroupID} SetDeleteModal={SetDeleteShow}/>)
+            return(<TRow key={hashRandom()} HandleGroupAdd={HandleGroupAdd} HandleGroupEdit={HandleGroupEdit}  SetGroupName={SelectedGroupName} SetGroupID={SelectedGroupID} SetDeleteModal={SetDeleteShow} Group={Group}/>)
             })
 
             
@@ -433,7 +430,7 @@ export default function Content() {
                 <div className="card-body text-center">
                 <div className="mb-3">
                  <MDBContainer breakpoint="sm">
-                <Tree label={<p><AdjustSharpIcon/></p>}>
+                <Tree  key={"NAVTREE"} label={<p><AdjustSharpIcon/></p>}>
                    {(generateList(variables.UserInformations.info.joinedGroups))}
                       </Tree> 
                       {DeleteShow&&<AlertDialog SetDeleteModal={SetDeleteShow} GroupName={SelectedGroupName.current} GroupID={SelectedGroupID.current} DeleteShow={DeleteShow}/> }

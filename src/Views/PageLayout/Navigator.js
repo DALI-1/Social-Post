@@ -180,7 +180,7 @@ export default function Navigator(props) {
             </ListItem>
             {children.map(({ id: childId, icon, active,clickmethod,refrence }) =>{
                
-              console.log(refrence)
+             
                 return( <ListItem disablePadding key={childId}>
                   <ListItemButton selected={GlobalState.NavigatorSelectedTab==refrence?true:false} sx={item} onClick={clickmethod}
                     
