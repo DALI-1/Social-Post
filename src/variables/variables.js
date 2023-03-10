@@ -97,6 +97,11 @@ export var HeaderSpinner=
     RequestSpinner:false
 }
 
+export var User=
+{
+    SelectedUserToModify:"",
+   
+}
 export var HeaderSpinnerActions=
 {
  TurnOnSpinner:"SpinnerON",

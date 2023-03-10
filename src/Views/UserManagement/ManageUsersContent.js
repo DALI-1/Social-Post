@@ -24,10 +24,500 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import { Row,Col,Container } from 'react-bootstrap';
 import { MDBBtn } from 'mdb-react-ui-kit';
-import {UserSelectedTabActions,UserTabs,HeaderSpinnerActions,HeaderSpinne}from "../../variables/variables"
+import DropdownTreeSelect from 'react-dropdown-tree-select'
+import {UserSelectedTabActions,UserTabs,HeaderSpinnerActions,HeaderSpinner,User}from "../../variables/variables"
 import {AppContext} from "../../context/Context"
 import {CALL_API_With_JWTToken,CALL_API_With_JWTToken_GET} from '../../libs/APIAccessAndVerification'
 import {hashString,hashRandom } from 'react-hash-string'
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import * as variables from "../../variables/variables"
+import TextField from '@mui/material/TextField';
+
+//ADD USER TO GROUP DIALOG
+export function AlertDialog(props) {
+  const [open, setOpen] = React.useState(true);
+  const {GlobalState,Dispatch}=React.useContext(AppContext)
+  let ListOfGroups=React.useRef([])
+  let [GroupsDropDownList,SetGroupsDropDownList]=React.useState({})
+  let UsersID=props.UserIDs
+  let SetAddGroupModal=props.SetAddGroupModal
+
+
+  function CreateHiearchyData(Grp) {
+    if(Grp.subGroups!=null)
+   {
+        var localres=[]
+        Grp.subGroups.map((group,index) => {  
+              var childs=CreateHiearchyData(group) 
+              localres=[...localres,{label:group.group_Name,value:group.id,children:childs}]  
+            })
+            return(localres)            
+      
+  }
+  else
+  {
+    return({label:Grp.group_Name,value:Grp.id,children:[{}]})
+  }
+}
+
+const FillData=()=>
+{
+ var res=[]
+
+ variables.UserInformations.info.joinedGroups.map((grp)=>{
+    res=[...res,{label:grp.group_Name,value:grp.id,children:CreateHiearchyData(grp)}]
+
+ }
+ )
+
+SetGroupsDropDownList(res)
+}
+  const onChange = (currentNode, selectedNodes) => {
+    console.log('onChange::', currentNode, selectedNodes)
+     
+    var res=[]
+     selectedNodes.map((n)=>{
+        res=[...res,n.value]
+     })
+    ListOfGroups.current=res
+  }
+  const onAction = (node, action) => {
+    console.log('onAction::', action, node)
+  }
+  const onNodeToggle = currentNode => {
+    console.log('onNodeToggle::', currentNode)
+  }
+
+  React.useEffect(()=>{
+    FillData()
+},[])
+
+  
+  let AddUsersToGroups=()=>{
+
+ var JsonObject=
+  {
+    "userIDs":UsersID,
+    "groupIDs":ListOfGroups.current
+  }
+ 
+
+        JsonObject=JSON.stringify(JsonObject)
+        
+         let url2=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_ADDUSERSTOGROUPS
+         let UserToken=window.localStorage.getItem("AuthToken")
+         let APIResult=CALL_API_With_JWTToken(url2,JsonObject,UserToken)
+         Dispatch({type:HeaderSpinnerActions.TurnOnRequestSpinner})
+
+         APIResult.then((result)=>
+         {
+
+          for( var property in result)
+          {
+          
+
+              if( property=="UsersMovedToGroups")
+              {
+                  toast.success('Users Successfully added to the selected Group', {
+                      position: "bottom-left",
+                      autoClose: 5000,
+                      hideProgressBar: false,
+                      closeOnClick: true,
+                      pauseOnHover: true,
+                      draggable: true,
+                      progress: undefined,
+                      theme: "light",
+                      });
+                       handleClose();
+                  break
+              }
+              else
+              {
+                if(property=="UserOrGroupsDoesntExist")
+                {
+                  toast.error('One of the users or groups you tried to selected doesnt exit anymore, it got deleted recently', {
+                      position: "bottom-left",
+                      autoClose: 5000,
+                      hideProgressBar: false,
+                      closeOnClick: true,
+                      pauseOnHover: true,
+                      draggable: true,
+                      progress: undefined,
+                      theme: "light",
+                      });
+                       
+                  break
+              }
+
+              }
+          }
+          Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner})                         
+        })
+          .catch(()=>{
+   
+Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner}) 
+  })
+}
+
+
+const handleClose = () => {
+  setOpen(false);
+  props.SetAddGroupModal(false)
+};
+
+return (
+  <>
+    <div>
+      
+      <Dialog fullWidth={true} open={open} >
+        <DialogTitle> Add Selected Users to Group</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+           Please Select the groups you want to add the users at
+          </DialogContentText>
+          
+          <br/>
+<DropdownTreeSelect data={GroupsDropDownList} onChange={onChange} onAction={onAction} onNodeToggle={onNodeToggle} /> 
+<br/>
+          <br/>
+          <br/>
+          <br/>
+          <br/>
+          <br/>
+       </DialogContent>
+
+
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={AddUsersToGroups}>Add User to the selected Groups</Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  </>
+    
+     
+);
+}
+
+
+
+//DELETE USER FROM GROUP DIALOG
+
+
+export function AlertDialog2(props) {
+  const [open, setOpen] = React.useState(true);
+  const {GlobalState,Dispatch}=React.useContext(AppContext)
+  let ListOfGroups=React.useRef([])
+  let [GroupsDropDownList,SetGroupsDropDownList]=React.useState({})
+  let UsersID=props.UserIDs
+  let SetAddGroupModal=props.SetAddGroupModal
+
+
+  function CreateHiearchyData(Grp) {
+    if(Grp.subGroups!=null)
+   {
+        var localres=[]
+        Grp.subGroups.map((group,index) => {  
+              var childs=CreateHiearchyData(group) 
+              localres=[...localres,{label:group.group_Name,value:group.id,children:childs}]  
+            })
+            return(localres)            
+      
+  }
+  else
+  {
+    return({label:Grp.group_Name,value:Grp.id,children:[{}]})
+  }
+}
+
+const FillData=()=>
+{
+ var res=[]
+
+ variables.UserInformations.info.joinedGroups.map((grp)=>{
+    res=[...res,{label:grp.group_Name,value:grp.id,children:CreateHiearchyData(grp)}]
+
+ }
+ )
+
+SetGroupsDropDownList(res)
+}
+  const onChange = (currentNode, selectedNodes) => {
+    console.log('onChange::', currentNode, selectedNodes)
+     
+    var res=[]
+     selectedNodes.map((n)=>{
+        res=[...res,n.value]
+     })
+    ListOfGroups.current=res
+  }
+  const onAction = (node, action) => {
+    console.log('onAction::', action, node)
+  }
+  const onNodeToggle = currentNode => {
+    console.log('onNodeToggle::', currentNode)
+  }
+
+  React.useEffect(()=>{
+    FillData()
+},[])
+
+  
+  let AddUsersToGroups=()=>{
+
+ var JsonObject=
+  {
+    "userIDs":UsersID,
+    "groupIDs":ListOfGroups.current
+  }
+ 
+
+        JsonObject=JSON.stringify(JsonObject)
+        
+         let url2=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_REMOVEUSERSFROMGROUPS
+         let UserToken=window.localStorage.getItem("AuthToken")
+         let APIResult=CALL_API_With_JWTToken(url2,JsonObject,UserToken)
+         Dispatch({type:HeaderSpinnerActions.TurnOnRequestSpinner})
+
+         APIResult.then((result)=>
+         {
+
+          for( var property in result)
+          {
+          
+
+              if( property=="UsersRemovedFromGroups")
+              {
+                  toast.success('Users Successfully removed from the selected Group', {
+                      position: "bottom-left",
+                      autoClose: 5000,
+                      hideProgressBar: false,
+                      closeOnClick: true,
+                      pauseOnHover: true,
+                      draggable: true,
+                      progress: undefined,
+                      theme: "light",
+                      });
+                       handleClose();
+                  break
+              }
+              
+                if(property=="UserOrGroupsDoesntExist")
+                {
+                  toast.error('One of the users/Groups you selected doesnt exit anymore, it got deleted recently', {
+                      position: "bottom-left",
+                      autoClose: 5000,
+                      hideProgressBar: false,
+                      closeOnClick: true,
+                      pauseOnHover: true,
+                      draggable: true,
+                      progress: undefined,
+                      theme: "light",
+                      });
+                       
+                  break
+              }
+
+              if(property=="GroupDoesntExist")
+              {
+                toast.error('One of the Groups you selected doesnt exit anymore, it got deleted recently', {
+                    position: "bottom-left",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    });
+                     
+                break
+            }
+
+              
+          }
+          Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner})                         
+        })
+          .catch(()=>{
+   
+Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner}) 
+  })
+}
+
+
+const handleClose = () => {
+  setOpen(false);
+  props.SetAddGroupModal(false)
+};
+
+
+
+
+
+
+return (
+  <>
+    <div>
+      
+      <Dialog fullWidth={true} open={open} >
+        <DialogTitle> Remove Users from the group</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+           Please Select the groups you want the selected users removed from
+          </DialogContentText>
+          
+          <br/>
+<DropdownTreeSelect data={GroupsDropDownList} onChange={onChange} onAction={onAction} onNodeToggle={onNodeToggle} /> 
+<br/>
+          <br/>
+          <br/>
+          <br/>
+          <br/>
+          <br/>
+       </DialogContent>
+
+
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={AddUsersToGroups}>Remove The selected users from the groups</Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  </>
+    
+     
+);
+}
+
+
+
+
+//DELETE USER DIALOG
+
+
+export function AlertDialog3(props) {
+  const [open, setOpen] = React.useState(true);
+  const {GlobalState,Dispatch}=React.useContext(AppContext)
+  let ListOfGroups=React.useRef([])
+  let [GroupsDropDownList,SetGroupsDropDownList]=React.useState({})
+  let UsersID=props.UserIDs
+
+  
+  let handleUserDelete=()=>{
+
+ var JsonObject=
+  {
+    "userIDs":UsersID,
+   
+  }
+ 
+
+        JsonObject=JSON.stringify(JsonObject)
+        
+         let url2=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_REMOVEUSERS
+         let UserToken=window.localStorage.getItem("AuthToken")
+         let APIResult=CALL_API_With_JWTToken(url2,JsonObject,UserToken)
+         Dispatch({type:HeaderSpinnerActions.TurnOnRequestSpinner})
+
+         APIResult.then((result)=>
+         {
+
+          for( var property in result)
+          {
+          
+
+              if( property=="UsersDeleted")
+              {
+                  toast.success('The Selected Users Successfully deleted!', {
+                      position: "bottom-left",
+                      autoClose: 5000,
+                      hideProgressBar: false,
+                      closeOnClick: true,
+                      pauseOnHover: true,
+                      draggable: true,
+                      progress: undefined,
+                      theme: "light",
+                      });
+                       handleClose();
+                  break
+              }
+              
+                if(property=="UserOrGroupsDoesntExist")
+                {
+                  toast.error('One of the users you selected doesnt exit anymore, it got deleted recently', {
+                      position: "bottom-left",
+                      autoClose: 5000,
+                      hideProgressBar: false,
+                      closeOnClick: true,
+                      pauseOnHover: true,
+                      draggable: true,
+                      progress: undefined,
+                      theme: "light",
+                      });
+                       
+                  break
+              }
+
+            
+              
+          }
+          Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner})                         
+        })
+          .catch(()=>{
+   
+Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner}) 
+  })
+}
+
+
+const handleClose = () => {
+  setOpen(false);
+  props.SetRemoveGroupModal(false)
+};
+
+
+
+
+
+
+return (
+  <>
+     <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Delete Group"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to permanently delete the selected Users?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="outlined" onClick={handleClose}>No</Button>
+          <Button variant="outlined" color="error" onClick={handleUserDelete} autoFocus>
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
+  </>
+    
+     
+);
+}
+
+
+
+
+
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -104,17 +594,15 @@ let rows=[{
 
 }];
 
+
+
 function EnhancedTableHead(props) {
   const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =
     props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
-const HandleAddUser=()=>
-{
- 
 
-}
   return (
     <TableHead>
       <TableRow>
@@ -166,7 +654,7 @@ EnhancedTableHead.propTypes = {
 
 function EnhancedTableToolbar(props) {
   const { numSelected } = props;
-
+ 
   return (
     <Toolbar
       sx={{
@@ -201,7 +689,7 @@ function EnhancedTableToolbar(props) {
       {numSelected > 0 ? (
         <Tooltip title="Delete">
           <IconButton>
-            <DeleteIcon />
+            <DeleteIcon onClick={props.HandleRemoveUser} />
           </IconButton>
         </Tooltip>
       ) : (
@@ -227,6 +715,10 @@ export default function EnhancedTable() {
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
+  const [RemoveGroupModal, SetRemoveGroupModal] = React.useState(false);
+  const [AddGroupModal, SetAddGroupModal] = React.useState(false);
+  const [RemoveUserModal, SetRemoveUserModal] = React.useState(false);
+  
   const {GlobalState,Dispatch}=React.useContext(AppContext)
   
 //Loading All user from DB
@@ -258,19 +750,19 @@ export default function EnhancedTable() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelected = rows.map((n) => n.name);
+      const newSelected = rows.map((n) => n.id);
       setSelected(newSelected);
       return;
     }
     setSelected([]);
   };
 
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
+  const handleClick = (event, rowid) => {
+    const selectedIndex = selected.indexOf(rowid);
     let newSelected = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
+      newSelected = newSelected.concat(selected, rowid);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -310,10 +802,113 @@ export default function EnhancedTable() {
     }
     const HandleEditUser=()=>
     {
-      Dispatch( {type:UserSelectedTabActions.SelectEditUser})
+      if(selected.length==0)
+      {
+        toast.info('You need to select at least one User to modify', {
+          position: "bottom-left",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          });
+      }
+      else
+      {
+        if(selected.length>1)
+        {
+          toast.info('Select only one user if you want to modify', {
+            position: "bottom-left",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            });
+        }
+        else
+        {
+        User.SelectedUserToModify=selected[0]
+        Dispatch( {type:UserSelectedTabActions.SelectEditUser})
+        }
+      }
+      
+      
+      
     }
 
-  return (
+    const HandleAddUserToGroup=()=>{
+
+      if(selected.length==0)
+      {
+        toast.info('You need to select at least one User!', {
+          position: "bottom-left",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          });
+      }
+      else
+      {
+        SetAddGroupModal(true)
+      }
+      
+    }
+    const HandleRemoveUserFromGroup=()=>{
+
+
+      if(selected.length==0)
+      {
+        toast.info('You need to select at least one User!', {
+          position: "bottom-left",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          });
+      }
+      else
+      {
+        SetRemoveGroupModal(true)
+      }
+    }
+
+
+
+    const HandleRemoveUser=()=>{
+
+
+      if(selected.length==0)
+      {
+        toast.info('You need to select at least one User!', {
+          position: "bottom-left",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          });
+      }
+      else
+      {
+        SetRemoveUserModal(true)
+      }
+    }
+
+    return (
     <>
 <Container>
 
@@ -322,12 +917,21 @@ export default function EnhancedTable() {
 <Col>
 <Box sx={{ width: '100%' }}>
 <Paper sx={{ width: '100%', mb: 2 ,textAlign: "right" }}>
-<MDBBtn outline className='mx-2 m-2' color='secondary' onClick={HandleAddUser} >
+
+     <MDBBtn outline className='mx-2 m-2' color='secondary' onClick={HandleAddUserToGroup} >
+        Add User to Group
+      </MDBBtn>
+
+     <MDBBtn outline className='mx-2 m-2' color='secondary' onClick={HandleAddUser} >
         Add New User
       </MDBBtn>
 
       <MDBBtn outline className='mx-2 m-2' color='secondary' onClick={HandleEditUser} >
       Modify Selected User
+      </MDBBtn>
+
+      <MDBBtn outline className='mx-2 m-2' color='secondary' onClick={HandleRemoveUserFromGroup} >
+        Remove User From Group
       </MDBBtn>
     
   </Paper>
@@ -341,7 +945,7 @@ export default function EnhancedTable() {
 
 <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar numSelected={selected.length} HandleRemoveUser={HandleRemoveUser} />
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -355,6 +959,7 @@ export default function EnhancedTable() {
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               rowCount={rows.length}
+              HandleRemoveUser={HandleRemoveUser}
             />
             <TableBody>
               {stableSort(rows, getComparator(order, orderBy))
@@ -428,6 +1033,9 @@ export default function EnhancedTable() {
 </Col>
 </Row>
 </Container>
+{AddGroupModal&&<AlertDialog SetAddGroupModal={SetAddGroupModal}  UserIDs={selected}/> }
+{RemoveGroupModal&&<AlertDialog2 SetRemoveGroupModal={SetRemoveGroupModal}  UserIDs={selected}/> }
+{RemoveUserModal&&<AlertDialog3 SetRemoveGroupModal={SetRemoveUserModal}  UserIDs={selected}/> }
 
   </>
   );

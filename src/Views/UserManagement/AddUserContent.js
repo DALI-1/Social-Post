@@ -147,6 +147,21 @@ export default function Content() {
                             break
                         }
 
+                        if(property=="EmailDoesntExist")
+                        {
+                            toast.error('The Email you chose doesnt exist, please pick a valid email', {
+                                position: "bottom-left",
+                                autoClose: 5000,
+                                hideProgressBar: false,
+                                closeOnClick: true,
+                                pauseOnHover: true,
+                                draggable: true,
+                                progress: undefined,
+                                theme: "light",
+                                });
+                            break  
+                        }
+
                     if( property=="PhoneNumberUsed")
                     {
                         toast.error('The Phone Number you choose already exist, please pick an other one!', {
