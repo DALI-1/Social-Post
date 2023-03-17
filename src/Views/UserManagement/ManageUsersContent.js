@@ -37,6 +37,73 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import * as variables from "../../variables/variables"
 import TextField from '@mui/material/TextField';
+import { letterSpacing } from '@mui/system';
+
+
+
+
+
+
+export function FilterDialog(props) {
+  const [open, setOpen] = React.useState(true);
+  const {GlobalState,Dispatch}=React.useContext(AppContext)
+  let UserText=React.useRef("")
+ 
+
+
+
+const handleClose = () => {
+  setOpen(false);
+  props.SetFilterModal(false)
+};
+
+const FilterUsers=()=>{
+
+var filteredrows=[]
+props.Rows.map((row)=>{
+  if(row.userName.includes(UserText.current.value))
+  {
+    filteredrows=[...filteredrows,row]
+  }
+
+})
+props.ChangeRows(filteredrows)
+handleClose()
+}
+
+const cancelFilter=()=>
+{
+props.RevertRows()
+handleClose()
+}
+return (
+  <>
+    <div>
+      
+      <Dialog fullWidth={true} open={open} >
+        <DialogTitle> Search User</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+           Please input the Username of the user you searching for
+          </DialogContentText>
+          <input ref={UserText} className="form-control" name="UserName" id="age" type="text" placeholder="Enter the name" />
+         
+       </DialogContent>
+
+
+        <DialogActions>
+          <Button onClick={cancelFilter}>Remove Filter</Button>
+          <Button onClick={FilterUsers}>Apply Filter</Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  </>
+    
+     
+);
+}
+
+
 
 //ADD USER TO GROUP DIALOG
 export function AlertDialog(props) {
@@ -77,6 +144,45 @@ const FillData=()=>
 
 SetGroupsDropDownList(res)
 }
+
+//This recurssive function saves the selected groups for every reload
+const UpdateData=(Grp,SelectedNode)=>
+{
+   if(Grp.children!=null)
+   {         
+       if(Grp.value==SelectedNode.value)
+       {      
+           Grp.checked=SelectedNode.checked
+           if(SelectedNode.checked==false)
+           {
+            var GroupIndex = ListOfGroups.current.indexOf(SelectedNode.value);
+            ListOfGroups.current.slice(GroupIndex,1)
+           }
+       }
+       else
+       {
+           Grp.children.map((group) => { 
+                  UpdateData(group,SelectedNode)   
+                })   
+       }
+  }
+  else
+  {
+   if(Grp.value==SelectedNode.value)
+   {
+     
+      Grp.checked=SelectedNode.checked
+      if(SelectedNode.checked==false)
+           {
+            var GroupIndex = ListOfGroups.current.indexOf(SelectedNode.value);
+            ListOfGroups.current.slice(GroupIndex,1)
+           }
+
+   }
+  }
+}
+
+
   const onChange = (currentNode, selectedNodes) => {
     console.log('onChange::', currentNode, selectedNodes)
      
@@ -85,6 +191,12 @@ SetGroupsDropDownList(res)
         res=[...res,n.value]
      })
     ListOfGroups.current=res
+       //This recurssive function saves the selected groups for every reload
+        
+       GroupsDropDownList.map((g)=>
+       {
+           UpdateData( g,currentNode)
+       })
   }
   const onAction = (node, action) => {
     console.log('onAction::', action, node)
@@ -111,7 +223,10 @@ SetGroupsDropDownList(res)
         
          let url2=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_ADDUSERSTOGROUPS
          let UserToken=window.localStorage.getItem("AuthToken")
-         let APIResult=CALL_API_With_JWTToken(url2,JsonObject,UserToken)
+
+         if(ListOfGroups.current.length!=0)
+         {
+          let APIResult=CALL_API_With_JWTToken(url2,JsonObject,UserToken)
          Dispatch({type:HeaderSpinnerActions.TurnOnRequestSpinner})
 
          APIResult.then((result)=>
@@ -133,6 +248,18 @@ SetGroupsDropDownList(res)
                       progress: undefined,
                       theme: "light",
                       });
+                        //Updating our SubGroups info
+                        let url=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_GETPERSONALINFO
+                        let UserToken=window.localStorage.getItem("AuthToken")
+                        let APIResult=CALL_API_With_JWTToken_GET(url,UserToken)
+                        Dispatch({type:HeaderSpinnerActions.TurnOnRequestSpinner})
+                        APIResult.then(result=>{ 
+                                 variables.UserInformations.info=result
+                                 variables.UserInformations.info.passwordHash=null
+                                 variables.UserInformations.info.passwordSalt=null
+                                 
+                                 Dispatch({type:variables.RerenderActions.ReRenderPage})
+                          })
                        handleClose();
                   break
               }
@@ -162,6 +289,23 @@ SetGroupsDropDownList(res)
    
 Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner}) 
   })
+         }
+         else
+         {
+
+          toast.info('You need to select at least one group you want the user to be under!', {
+            position: "bottom-left",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            });
+         }
+
+         
 }
 
 
@@ -235,6 +379,43 @@ export function AlertDialog2(props) {
   }
 }
 
+//This recurssive function saves the selected groups for every reload
+const UpdateData=(Grp,SelectedNode)=>
+{
+   if(Grp.children!=null)
+   {         
+       if(Grp.value==SelectedNode.value)
+       {      
+           Grp.checked=SelectedNode.checked
+           if(SelectedNode.checked==false)
+           {
+            var GroupIndex = ListOfGroups.current.indexOf(SelectedNode.value);
+            ListOfGroups.current.slice(GroupIndex,1)
+           }
+       }
+       else
+       {
+           Grp.children.map((group) => { 
+                  UpdateData(group,SelectedNode)   
+                })   
+       }
+  }
+  else
+  {
+   if(Grp.value==SelectedNode.value)
+   {
+     
+      Grp.checked=SelectedNode.checked
+      if(SelectedNode.checked==false)
+           {
+            var GroupIndex = ListOfGroups.current.indexOf(SelectedNode.value);
+            ListOfGroups.current.slice(GroupIndex,1)
+           }
+
+   }
+  }
+}
+
 const FillData=()=>
 {
  var res=[]
@@ -255,6 +436,13 @@ SetGroupsDropDownList(res)
         res=[...res,n.value]
      })
     ListOfGroups.current=res
+
+       //This recurssive function saves the selected groups for every reload
+        
+       GroupsDropDownList.map((g)=>
+       {
+           UpdateData( g,currentNode)
+       })
   }
   const onAction = (node, action) => {
     console.log('onAction::', action, node)
@@ -281,7 +469,10 @@ SetGroupsDropDownList(res)
         
          let url2=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_REMOVEUSERSFROMGROUPS
          let UserToken=window.localStorage.getItem("AuthToken")
-         let APIResult=CALL_API_With_JWTToken(url2,JsonObject,UserToken)
+
+         if(ListOfGroups.current.length!=0)
+         {
+          let APIResult=CALL_API_With_JWTToken(url2,JsonObject,UserToken)
          Dispatch({type:HeaderSpinnerActions.TurnOnRequestSpinner})
 
          APIResult.then((result)=>
@@ -303,6 +494,19 @@ SetGroupsDropDownList(res)
                       progress: undefined,
                       theme: "light",
                       });
+
+                       //Updating our SubGroups info
+                       let url=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_GETPERSONALINFO
+                       let UserToken=window.localStorage.getItem("AuthToken")
+                       let APIResult=CALL_API_With_JWTToken_GET(url,UserToken)
+                       Dispatch({type:HeaderSpinnerActions.TurnOnRequestSpinner})
+                       APIResult.then(result=>{ 
+                                variables.UserInformations.info=result
+                                variables.UserInformations.info.passwordHash=null
+                                variables.UserInformations.info.passwordSalt=null
+                               
+                                Dispatch({type:variables.RerenderActions.ReRenderPage})
+                         })
                        handleClose();
                   break
               }
@@ -347,6 +551,21 @@ SetGroupsDropDownList(res)
    
 Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner}) 
   })
+         }
+         else
+         {
+          toast.info('You need to select at least one group you want the user to be under!', {
+            position: "bottom-left",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            });
+         }
+         
 }
 
 
@@ -443,6 +662,18 @@ export function AlertDialog3(props) {
                       progress: undefined,
                       theme: "light",
                       });
+                       //Updating our SubGroups info
+                       let url=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_GETPERSONALINFO
+                       let UserToken=window.localStorage.getItem("AuthToken")
+                       let APIResult=CALL_API_With_JWTToken_GET(url,UserToken)
+                       Dispatch({type:HeaderSpinnerActions.TurnOnRequestSpinner})
+                       APIResult.then(result=>{ 
+                                variables.UserInformations.info=result
+                                variables.UserInformations.info.passwordHash=null
+                                variables.UserInformations.info.passwordSalt=null
+                               
+                                Dispatch({type:variables.RerenderActions.ReRenderPage})
+                         })
                        handleClose();
                   break
               }
@@ -593,7 +824,9 @@ const headCells = [
 let rows=[{
 
 }];
+let Backuprows=[{
 
+}];
 
 
 function EnhancedTableHead(props) {
@@ -695,7 +928,7 @@ function EnhancedTableToolbar(props) {
       ) : (
         <Tooltip title="Filter list">
           <IconButton>
-            <FilterListIcon />
+            <FilterListIcon onClick={()=>{props.SetFilterModal(true)}} />
           </IconButton>
         </Tooltip>
       )}
@@ -714,19 +947,17 @@ export default function EnhancedTable() {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
   const [RemoveGroupModal, SetRemoveGroupModal] = React.useState(false);
   const [AddGroupModal, SetAddGroupModal] = React.useState(false);
   const [RemoveUserModal, SetRemoveUserModal] = React.useState(false);
-  
+  const [FilterModal, SetFilterModal] = React.useState(false);
+
+  const [RowsRerender, SetRowsRerender] = React.useState(false);
   const {GlobalState,Dispatch}=React.useContext(AppContext)
   
 //Loading All user from DB
   React.useEffect(()=>{
-
-    
  var JsonObject={}
-
  JsonObject=JSON.stringify(JsonObject)
  
   let url2=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_GETSLAVEUSERS
@@ -737,10 +968,33 @@ export default function EnhancedTable() {
   APIResult.then((result)=>
   {
     rows=result;
+    Backuprows=result
 
-                           Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner})
+Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner})
   })
 },[])
+
+//This use effect is called when a modification is done to update the table
+
+React.useEffect(()=>{
+
+    
+  var JsonObject={}
+ 
+  JsonObject=JSON.stringify(JsonObject)
+  
+   let url2=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_GETSLAVEUSERS
+   let UserToken=window.localStorage.getItem("AuthToken")
+   let APIResult=CALL_API_With_JWTToken(url2,JsonObject,UserToken)
+   Dispatch({type:HeaderSpinnerActions.TurnOnRequestSpinner})
+ 
+   APIResult.then((result)=>
+   {
+     rows=result;
+ 
+ Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner})
+   })
+ },[GlobalState.Rerender])
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -908,6 +1162,18 @@ export default function EnhancedTable() {
       }
     }
 
+    const ChangeRows=(NewData)=>
+    {
+        rows=NewData;
+        SetRowsRerender(!RowsRerender)
+    }
+    const RevertRows=()=>
+    {
+    
+        rows=Backuprows;
+        SetRowsRerender(!RowsRerender)
+    }
+
     return (
     <>
 <Container>
@@ -918,12 +1184,12 @@ export default function EnhancedTable() {
 <Box sx={{ width: '100%' }}>
 <Paper sx={{ width: '100%', mb: 2 ,textAlign: "right" }}>
 
-     <MDBBtn outline className='mx-2 m-2' color='secondary' onClick={HandleAddUserToGroup} >
-        Add User to Group
+<MDBBtn outline className='mx-2 m-2' color='secondary' onClick={HandleAddUser} >
+        Add New User
       </MDBBtn>
 
-     <MDBBtn outline className='mx-2 m-2' color='secondary' onClick={HandleAddUser} >
-        Add New User
+     <MDBBtn outline className='mx-2 m-2' color='secondary' onClick={HandleAddUserToGroup} >
+        Add User to Group
       </MDBBtn>
 
       <MDBBtn outline className='mx-2 m-2' color='secondary' onClick={HandleEditUser} >
@@ -945,7 +1211,7 @@ export default function EnhancedTable() {
 
 <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} HandleRemoveUser={HandleRemoveUser} />
+        <EnhancedTableToolbar numSelected={selected.length} HandleRemoveUser={HandleRemoveUser} SetFilterModal={SetFilterModal} />
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -967,7 +1233,7 @@ export default function EnhancedTable() {
                 .map((row, index) => {
                   const isItemSelected = isSelected(row.id);
                   const labelId = `enhanced-table-checkbox-${index}`;
-
+                  
                   return (
                     <TableRow
                       hover
@@ -975,7 +1241,7 @@ export default function EnhancedTable() {
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.id}
+                      key={index}
                       selected={isItemSelected}
                     >
                       <TableCell padding="checkbox">
@@ -1036,6 +1302,8 @@ export default function EnhancedTable() {
 {AddGroupModal&&<AlertDialog SetAddGroupModal={SetAddGroupModal}  UserIDs={selected}/> }
 {RemoveGroupModal&&<AlertDialog2 SetRemoveGroupModal={SetRemoveGroupModal}  UserIDs={selected}/> }
 {RemoveUserModal&&<AlertDialog3 SetRemoveGroupModal={SetRemoveUserModal}  UserIDs={selected}/> }
+{FilterModal&&<FilterDialog SetFilterModal={SetFilterModal} Rows={rows} ChangeRows={ChangeRows} RevertRows={RevertRows} />}
+
 
   </>
   );

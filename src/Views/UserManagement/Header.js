@@ -20,7 +20,7 @@ import { Avatar } from "@nextui-org/react";
 import EditIcon from '@mui/icons-material/Edit';
 import TuneIcon from '@mui/icons-material/Tune';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
-    
+
 const lightColor = 'rgba(255, 255, 255, 0.7)';
 
 

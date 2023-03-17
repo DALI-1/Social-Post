@@ -21,6 +21,7 @@ import { Row, Col } from 'react-bootstrap';
 
 export default function Content() {
   const {GlobalState,Dispatch}=React.useContext(AppContext)
+
   return (
     <>
     {!GlobalState.HeadSpinner?<>

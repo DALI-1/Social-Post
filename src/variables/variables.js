@@ -40,6 +40,42 @@ export const UserSelectedTabActions=
     SelectManageUser:"SwitchToManageUSer"
 }
 
+
+
+export const PostTabs=
+{
+    AddPost:"AddPostTab",
+    SelectPostGroup:"SelectPostGroup",
+    EditPost:"EditPostTab",
+    ManagePostsTab:"ManagePostsTab"
+}
+
+
+export const PostSelectedTabActions=
+{
+    SelectAddPost:"SwitchToAddPost",
+    SelectPostGroup:"SelectPostGroup",
+    SelectEditPost:"SwitchToEditUser",
+    SelectManagePosts:"SwitchToManagePostsTab"
+}
+
+
+
+export const PageTabs=
+{
+    AddPage:"AddPageTab",
+    ManagePage:"ManagePageTab",
+    EditPage:"EditPageTab",
+   
+}
+export const PageTabActions=
+{
+    SelectAddPage:"SwitchToAddPageTab",
+    SelectEditPage:"SwitchToEditPageTab",
+    SelectManagePage:"SwitchToManagePageTab"
+}
+
+
 export const NavigatorTabs=
 {
     LogoutTab:"LogoutNav",
@@ -108,4 +144,29 @@ export var HeaderSpinnerActions=
  TurnOffSpinner:"SpinnerOFF",
  TurnOnRequestSpinner:"RequestSpinnerON",
  TurnOffRequestSpinner:"RequestSpinnerOFF"
+}
+
+export var RerenderActions=
+{
+ ReRenderPage:"RenderON"
+
+}
+
+export var UpdateSelectedPostGroup=
+{
+ SetPostGroup:"SetPostGroup",
+ SetPostGroupToNone:"SetPostGroupToNone"
+
+}
+
+export var Pages=
+{
+    SelectPagesList:{},
+    CurrentGroupPages:[]
+    
+}
+
+export var FacebookUser=
+{
+    LoggedFacebookUserInfo:{}
 }

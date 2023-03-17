@@ -19,7 +19,7 @@ import Profileheader from "../ProfileManagement/Header"
 import Postheader from "../PostManagement/Header"
 import Groupheader from "../GroupManagement/Header"
 import Userheader from "../UserManagement/Header"
-import Pageheader from "../PostManagement/Header"
+import Pageheader from "../PageManagement/Header"
 import {NavigatorTabs } from '../../variables/variables';
 const lightColor = 'rgba(255, 255, 255, 0.7)';
 

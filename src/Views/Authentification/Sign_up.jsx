@@ -19,8 +19,7 @@ import { ChakraProvider } from '@chakra-ui/react'
 import logo from '../../Assets/SocialPost-Logo.png';
 import {CALLAPI} from '../../libs/APIAccessAndVerification'
 import { ToastContainer, toast } from 'react-toastify';
-import {APIStatus}  from '../../variables/variables';
-import {APIStatuses}  from '../../variables/variables';
+import {APIStatus,APIStatuses}  from '../../variables/variables';
 function App() {
   const {GlobalState,Dispatch}=React.useContext(AppContext)
   let [LoadingSpinnerStatus, setLoadingSpinnerStatus] = useState(false);

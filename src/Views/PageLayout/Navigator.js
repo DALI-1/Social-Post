@@ -70,6 +70,7 @@ export default function Navigator(props) {
         }
         const HandlePost=()=>
         {
+          
           window.localStorage.setItem('SelectedTab', NavigatorTabs.ManagePostsTab)
           Dispatch({type:NavigatorSelectedTabActions.SelectManagePosts})
          
@@ -179,8 +180,6 @@ export default function Navigator(props) {
               <ListItemText sx={{ color: '#fff' }}>{id}</ListItemText>
             </ListItem>
             {children.map(({ id: childId, icon, active,clickmethod,refrence }) =>{
-               
-             
                 return( <ListItem disablePadding key={childId}>
                   <ListItemButton selected={GlobalState.NavigatorSelectedTab==refrence?true:false} sx={item} onClick={clickmethod}
                     

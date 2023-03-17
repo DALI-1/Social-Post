@@ -50,9 +50,55 @@ const reducer=(GlobalState,action)=>
     
                     case variables.UserSelectedTabActions.SelectManageUser:
                     {
-                        console.log("Here")
+                       
                   return({...GlobalState,UserSelectedTab:variables.UserTabs.ManageUserTab})
                     }
+
+                      //Post Tab Actions
+
+                case variables.PostSelectedTabActions.SelectAddPost:
+                    {       
+                        return({...GlobalState,PostSelectedTab:variables.PostTabs.AddPost})
+                    }
+                 
+                case variables.PostSelectedTabActions.SelectEditPost:
+                    {
+                  return({...GlobalState,PostSelectedTab:variables.PostTabs.EditPost})
+                    }
+    
+                    case variables.PostSelectedTabActions.SelectManagePosts:
+                    {
+                       
+                  return({...GlobalState,PostSelectedTab:variables.PostTabs.ManagePostsTab})
+                    }
+
+                    case variables.PostSelectedTabActions.SelectPostGroup:
+                    {
+                       
+                  return({...GlobalState,PostSelectedTab:variables.PostTabs.SelectPostGroup})
+                    }
+
+
+
+
+                        //Page Tab Actions
+
+                case variables.PageTabActions.SelectAddPage:
+                    {       
+                        return({...GlobalState,PageSelectedTab:variables.PageTabs.AddPage})
+                    }
+                 
+                case variables.PostSelectedTabActions.SelectEditPost:
+                    {
+                  return({...GlobalState,PageSelectedTab:variables.PageTabs.EditPage})
+                    }
+    
+                    case variables.PostSelectedTabActions.SelectManagePosts:
+                    {
+                       
+                  return({...GlobalState,PageSelectedTab:variables.PageTabs.ManagePage})
+                    }
+
                         //Navigator actions
             case variables.NavigatorSelectedTabActions.SelectLogout:
                 {
@@ -79,7 +125,7 @@ const reducer=(GlobalState,action)=>
 
                 case variables.NavigatorSelectedTabActions.SelectManageUsers:
                     {
-                        console.log("HERE")
+                      
                     return({...GlobalState,NavigatorSelectedTab:variables.NavigatorTabs.ManageUsersTab})
                     } 
 
@@ -146,8 +192,25 @@ const reducer=(GlobalState,action)=>
                             variables.HeaderSpinner.RequestSpinner=false
                             
                         return({...GlobalState,RequestSpinner:false})
-                        }        
-               
+                        } 
+                        
+                        //ReRender
+                        
+                        case variables.RerenderActions.ReRenderPage:
+                            {   
+                               if(GlobalState.Rerender==true)
+                            return({...GlobalState,Rerender:false})
+                            else
+                            return({...GlobalState,Rerender:true})
+                            } 
+                             //Post Selected Group
+                        
+                        case variables.UpdateSelectedPostGroup.SetPostGroup:
+                            {   
+                               
+                            return({...GlobalState,PostSelectedGroup:action.value})
+                           
+                            } 
             default:
                 
               return (GlobalState)  
@@ -164,6 +227,9 @@ if(window.localStorage.getItem('SelectedTab')!=null)
         ProfileSelectedTab:variables.ProfileTabs.ProfileTab,
         GroupSelectedTab:variables.GroupTabs.ManageGroupTab,
         UserSelectedTab:variables.UserTabs.ManageUserTab,
+        PostSelectedTab:variables.PostTabs.SelectPostGroup,
+        PostSelectedGroup:variables.UpdateSelectedPostGroup.SetPostGroupToNone,
+        PageSelectedTab: variables.PageTabs.ManagePage,
         PassedGroupID:null,
         Username:null,
         FirstName:"",
@@ -171,8 +237,10 @@ if(window.localStorage.getItem('SelectedTab')!=null)
         Email:null,
         UserProfilePicture:null,
         GroupInformations:null,
-        HeadSpinner:false
-        
+        HeadSpinner:false,
+        RequestSpinner:false,
+        Rerender:false
+
     }
 }
 else
@@ -182,6 +250,10 @@ else
         NavigatorSelectedTab:variables.NavigatorTabs.ManagePostsTab,
         ProfileSelectedTab:variables.ProfileTabs.ProfileTab,
         GroupSelectedTab:variables.GroupTabs.ManageGroupTab,
+        UserSelectedTab:variables.UserTabs.ManageUserTab,
+        PostSelectedTab:variables.PostTabs.SelectPostGroup,
+        PostSelectedGroup:variables.UpdateSelectedPostGroup.SetPostGroupToNone,
+        PageSelectedTab: variables.PageTabs.ManagePage,
         PassedGroupID:null,
         Username:null,
         FirstName:"",
@@ -190,8 +262,8 @@ else
         UserProfilePicture:null,
         GroupInformations:null,
         HeadSpinner:false,
-        RequestSpinner:false
-        
+        RequestSpinner:false,
+        Rerender:false
     }
 }
 

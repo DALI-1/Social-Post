@@ -114,6 +114,18 @@ export default function Content() {
                               progress: undefined,
                               theme: "light",
                               });
+                                //Updating our SubGroups info
+                                let url=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_GETPERSONALINFO
+                                let UserToken=window.localStorage.getItem("AuthToken")
+                                let APIResult=CALL_API_With_JWTToken_GET(url,UserToken)
+                                Dispatch({type:HeaderSpinnerActions.TurnOnRequestSpinner})
+                                APIResult.then(result=>{ 
+                                         variables.UserInformations.info=result
+                                         variables.UserInformations.info.passwordHash=null
+                                         variables.UserInformations.info.passwordSalt=null
+                                        
+                                         Dispatch({type:variables.UserSelectedTabActions.SelectManageUser})
+                                  })
                           break
                       }
                       if( property=="PhoneNumberUsed")

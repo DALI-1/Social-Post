@@ -50,14 +50,14 @@ export default function Content() {
             var localres=[]
             Grp.subGroups.map((group,index) => {  
                   var childs=CreateHiearchyData(group) 
-                  localres=[...localres,{label:group.group_Name,value:group.id,children:childs}]  
+                  localres=[...localres,{label:group.group_Name,value:group.id,checked:false,children:childs}]  
                 })
                 return(localres)            
           
       }
       else
       {
-        return({label:Grp.group_Name,value:Grp.id,children:[{}]})
+        return({label:Grp.group_Name,value:Grp.id,checked:false,children:[{}]})
       }
     }
     
@@ -66,13 +66,53 @@ export default function Content() {
      var res=[]
 
      variables.UserInformations.info.joinedGroups.map((grp)=>{
-        res=[...res,{label:grp.group_Name,value:grp.id,children:CreateHiearchyData(grp)}]
+        res=[...res,{label:grp.group_Name,value:grp.id,checked:false,children:CreateHiearchyData(grp)}]
     
      }
      )
     
     SetGroupsDropDownList(res)
     }
+
+//This recurssive function saves the selected groups for every reload
+     const UpdateData=(Grp,SelectedNode)=>
+     {
+        if(Grp.children!=null)
+        {         
+            if(Grp.value==SelectedNode.value)
+            {      
+                Grp.checked=SelectedNode.checked
+                        if(SelectedNode.checked==false)
+                {
+                    var GroupIndex = ListOfGroups.current.indexOf(SelectedNode.value);
+                    ListOfGroups.current.slice(GroupIndex,1)
+                }
+            }
+            else
+            {
+                Grp.children.map((group) => { 
+                       UpdateData(group,SelectedNode)   
+                     })   
+            }
+       }
+       else
+       {
+        if(Grp.value==SelectedNode.value)
+        {
+          
+           Grp.checked=SelectedNode.checked
+
+           if(SelectedNode.checked==false)
+           {
+            var GroupIndex = ListOfGroups.current.indexOf(SelectedNode.value);
+            ListOfGroups.current.slice(GroupIndex,1)
+           }
+
+        }
+       }
+     }
+
+
       const onChange = (currentNode, selectedNodes) => {
         console.log('onChange::', currentNode, selectedNodes)
          
@@ -81,6 +121,14 @@ export default function Content() {
             res=[...res,n.value]
          })
         ListOfGroups.current=res
+        //This recurssive function saves the selected groups for every reload
+        
+        GroupsDropDownList.map((g)=>
+        {
+            UpdateData( g,currentNode)
+        })
+        
+        
       }
       const onAction = (node, action) => {
         console.log('onAction::', action, node)
@@ -111,118 +159,140 @@ export default function Content() {
      //Sending a POST HTTP To the API with the Json Object
      let url=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_CREATESLAVEUSER
      let UserToken=window.localStorage.getItem("AuthToken")
-     console.log(JsonObject)
-     let APIResult=CALL_API_With_JWTToken(url,JsonObject,UserToken)
-    
-     APIResult.then(result=>{
-            
-                    for( var property in result)
-                    {
-                    
+     
+        if(ListOfGroups.current.length!=0)
+        {
+            let APIResult=CALL_API_With_JWTToken(url,JsonObject,UserToken)
+            Dispatch({type:HeaderSpinnerActions.TurnOnRequestSpinner})
+            APIResult.then(result=>{
+                   
+                           for( var property in result)
+                           {
+                           
+       
+                               if( property=="UserCreated")
+                               {
+                                   toast.success('User Successfully created and automatically added to the selected groups', {
+                                       position: "bottom-left",
+                                       autoClose: 5000,
+                                       hideProgressBar: false,
+                                       closeOnClick: true,
+                                       pauseOnHover: true,
+                                       draggable: true,
+                                       progress: undefined,
+                                       theme: "light",
+                                       });
+                                        //Updating our SubGroups info
+                                        let url=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_GETPERSONALINFO
+                                        let UserToken=window.localStorage.getItem("AuthToken")
+                                        let APIResult=CALL_API_With_JWTToken_GET(url,UserToken)
+                                        
+                                        APIResult.then(result=>{ 
+                                                 variables.UserInformations.info=result
+                                                 variables.UserInformations.info.passwordHash=null
+                                                 variables.UserInformations.info.passwordSalt=null
+                                                
+                                                 Dispatch({type:variables.UserSelectedTabActions.SelectManageUser})
+                                          })
+       
+                                        
+                                   break
+                               }
+       
+                               if(property=="EmailDoesntExist")
+                               {
+                                   toast.error('The Email you chose doesnt exist, please pick a valid email', {
+                                       position: "bottom-left",
+                                       autoClose: 5000,
+                                       hideProgressBar: false,
+                                       closeOnClick: true,
+                                       pauseOnHover: true,
+                                       draggable: true,
+                                       progress: undefined,
+                                       theme: "light",
+                                       });
+                                   break  
+                               }
+       
+                           if( property=="PhoneNumberUsed")
+                           {
+                               toast.error('The Phone Number you choose already exist, please pick an other one!', {
+                                   position: "bottom-left",
+                                   autoClose: 5000,
+                                   hideProgressBar: false,
+                                   closeOnClick: true,
+                                   pauseOnHover: true,
+                                   draggable: true,
+                                   progress: undefined,
+                                   theme: "light",
+                                   });
+                               break
+                           }
+                           if( property=="UserNameUsed")
+                           {
+                               toast.error('The Username you choosed already exist, please pick an other one!', {
+                                   position: "bottom-left",
+                                   autoClose: 5000,
+                                   hideProgressBar: false,
+                                   closeOnClick: true,
+                                   pauseOnHover: true,
+                                   draggable: true,
+                                   progress: undefined,
+                                   theme: "light",
+                                   });
+                               break
+                           }
+                           if( property=="EmailUsed")
+                           {
+                               toast.error('The Email you choosed already exist, please pick an other one!', {
+                                   position: "bottom-left",
+                                   autoClose: 5000,
+                                   hideProgressBar: false,
+                                   closeOnClick: true,
+                                   pauseOnHover: true,
+                                   draggable: true,
+                                   progress: undefined,
+                                   theme: "light",
+                                   });
+                                   break
+                           }
+                           if( property=="UserDoesntExist")
+                           {
+                               toast.error('Your account doesnt exist, your account must be deleted recently while you re on', {
+                                   position: "bottom-left",
+                                   autoClose: 5000,
+                                   hideProgressBar: false,
+                                   closeOnClick: true,
+                                   pauseOnHover: true,
+                                   draggable: true,
+                                   progress: undefined,
+                                   theme: "light",
+                                   });
+                                   break
+                           }
+       
+                           }
+                   
+                           Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner})
+           })
 
-                        if( property=="UserCreated")
-                        {
-                            toast.success('User Successfully created and automatically added to the selected groups', {
-                                position: "bottom-left",
-                                autoClose: 5000,
-                                hideProgressBar: false,
-                                closeOnClick: true,
-                                pauseOnHover: true,
-                                draggable: true,
-                                progress: undefined,
-                                theme: "light",
-                                });
-                                 //Updating our SubGroups info
-                                 let url=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_GETPERSONALINFO
-                                 let UserToken=window.localStorage.getItem("AuthToken")
-                                 let APIResult=CALL_API_With_JWTToken_GET(url,UserToken)
-                                 Dispatch({type:HeaderSpinnerActions.TurnOnRequestSpinner})
-                                 APIResult.then(result=>{ 
-                                          variables.UserInformations.info=result
-                                          variables.UserInformations.info.passwordHash=null
-                                          variables.UserInformations.info.passwordSalt=null
-                                         
-                                         
-                                   })
-                            break
-                        }
-
-                        if(property=="EmailDoesntExist")
-                        {
-                            toast.error('The Email you chose doesnt exist, please pick a valid email', {
-                                position: "bottom-left",
-                                autoClose: 5000,
-                                hideProgressBar: false,
-                                closeOnClick: true,
-                                pauseOnHover: true,
-                                draggable: true,
-                                progress: undefined,
-                                theme: "light",
-                                });
-                            break  
-                        }
-
-                    if( property=="PhoneNumberUsed")
-                    {
-                        toast.error('The Phone Number you choose already exist, please pick an other one!', {
-                            position: "bottom-left",
-                            autoClose: 5000,
-                            hideProgressBar: false,
-                            closeOnClick: true,
-                            pauseOnHover: true,
-                            draggable: true,
-                            progress: undefined,
-                            theme: "light",
-                            });
-                        break
-                    }
-                    if( property=="UserNameUsed")
-                    {
-                        toast.error('The Username you choosed already exist, please pick an other one!', {
-                            position: "bottom-left",
-                            autoClose: 5000,
-                            hideProgressBar: false,
-                            closeOnClick: true,
-                            pauseOnHover: true,
-                            draggable: true,
-                            progress: undefined,
-                            theme: "light",
-                            });
-                        break
-                    }
-                    if( property=="EmailUsed")
-                    {
-                        toast.error('The Email you choosed already exist, please pick an other one!', {
-                            position: "bottom-left",
-                            autoClose: 5000,
-                            hideProgressBar: false,
-                            closeOnClick: true,
-                            pauseOnHover: true,
-                            draggable: true,
-                            progress: undefined,
-                            theme: "light",
-                            });
-                            break
-                    }
-                    if( property=="UserDoesntExist")
-                    {
-                        toast.error('Your account doesnt exist, your account must be deleted recently while you re on', {
-                            position: "bottom-left",
-                            autoClose: 5000,
-                            hideProgressBar: false,
-                            closeOnClick: true,
-                            pauseOnHover: true,
-                            draggable: true,
-                            progress: undefined,
-                            theme: "light",
-                            });
-                            break
-                    }
-
-                    }
-            
-                    Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner})
-    })
+        }
+        else
+        {
+            toast.info('You need to select at least one group you want the user to be under!', {
+                position: "bottom-left",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                });
+               
+        }
+     
+     
   
     }
 
@@ -287,12 +357,12 @@ React.useEffect(()=>{
 
                         <div className="mb-3">
                         <label className="small mb-1" htmlFor="inputPhone"> Groups </label>
-                                <DropdownTreeSelect data={GroupsDropDownList} onChange={onChange} onAction={onAction} onNodeToggle={onNodeToggle} />
+                                <DropdownTreeSelect key={"DropDownList"} data={GroupsDropDownList} onChange={onChange} onAction={onAction} onNodeToggle={onNodeToggle} />
                         </div>
                                 
                             
                         
-                        <input type="submit" value="Save Changes" className="btn btn-primary"/>
+                        <input type="submit" value="Add User" className="btn btn-primary"/>
                     </form>
                 </div>
             </div>

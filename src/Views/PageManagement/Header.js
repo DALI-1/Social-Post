@@ -45,17 +45,17 @@ function Header(props) {
       
     }
 
-    if(GlobalState.PostSelectedTab==variables.PostTabs.ManagePostsTab)
+    if(GlobalState.PageSelectedTab==variables.PageTabs.ManagePage)
     {
       SetTabMenu (0)
     }
     
-    if(GlobalState.PostSelectedTab==variables.PostTabs.AddPost)
+    if(GlobalState.PageSelectedTab==variables.PageTabs.AddPage)
     {
       SetTabMenu(1) 
     }
     
-    if(GlobalState.PostSelectedTab==variables.PostTabs.EditPost)
+    if(GlobalState.PageSelectedTab==variables.PageTabs.EditPage)
     {
       SetTabMenu(1)
     }
@@ -136,14 +136,14 @@ function Header(props) {
       <AppBar component="div" position="static" elevation={0} sx={{ zIndex: 0 }}>
         <Tabs  value={TabMenu} textColor="inherit">
          
-           <Tab  label={<><TuneIcon/> <p>Manage Posts</p></>} />
+           <Tab  label={<><TuneIcon/> <p>Manage Pages</p></>} />
         
      
-          {GlobalState.PostSelectedTab==variables.PostTabs.AddPost&&<Tab  label={<><GroupAddIcon/> <p>Add Post</p></>}  />}
+          {GlobalState.PageSelectedTab==variables.PageTabs.AddPage&&<Tab  label={<><GroupAddIcon/> <p>Add Pages</p></>}  />}
      
          {
-          GlobalState.PostSelectedTab==variables.PostTabs.EditPost&&
-          <Tab label={<><EditIcon/> <p>Edit Post</p></>}  />
+          GlobalState.PageSelectedTab==variables.PageTabs.EditPage&&
+          <Tab label={<><EditIcon/> <p>Edit Page</p></>}  />
 }
         </Tabs>
       </AppBar>

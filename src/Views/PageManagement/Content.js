@@ -15,10 +15,11 @@ import * as variables from '../../variables/variables';
 import {AppContext} from "../../context/Context"
 import Container from 'react-bootstrap/Container';
 import { Row, Col } from 'react-bootstrap';
-import SelectGroup from "./SelectGroupContent";
-import ManagePostContent from "./ManagePostContent";
+import ManagePageContent from "./ManagePageContent";
+
 export default function Content() {
   const {GlobalState,Dispatch}=React.useContext(AppContext)
+
   return (
 
  <>
@@ -26,12 +27,11 @@ export default function Content() {
 
      {UserInformations.info!=null?<>
       <Container>
-{GlobalState.PostSelectedTab==variables.PostTabs.SelectPostGroup&&
-<>
-{GlobalState.PostSelectedGroup==variables.UpdateSelectedPostGroup.SetPostGroupToNone?        
-  <SelectGroup/>:
-<ManagePostContent/>}
-</>}
+{GlobalState.NavigatorSelectedTab==variables.NavigatorTabs.ManagePagesTab&&<ManagePageContent/>}
+
+
+
+
 
 
 

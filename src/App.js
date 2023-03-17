@@ -6,7 +6,7 @@ import RegisterPage from './Views/Authentification/Sign_up';
 import IndexPage from './Views/PageLayout/PageLayout';
 import ChangePW from './Views/Authentification/ChangePassword';
 import PasswordRecovery from './Views/Authentification/PasswordRecovery.jsx';
-import { ToastContainer, toast } from 'react-toastify';
+import '@progress/kendo-theme-default/dist/all.css';
 
 function App() {
   return (
