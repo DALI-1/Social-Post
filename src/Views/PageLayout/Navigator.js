@@ -15,18 +15,23 @@ import PublicIcon from '@mui/icons-material/Public';
 import SettingsEthernetIcon from '@mui/icons-material/SettingsEthernet';
 import SettingsInputComponentIcon from '@mui/icons-material/SettingsInputComponent';
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormHelperText from '@mui/material/FormHelperText';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 import LoginIcon from '@mui/icons-material/Login';
 import TimerIcon from '@mui/icons-material/Timer';
 import SettingsIcon from '@mui/icons-material/Settings';
 import PhonelinkSetupIcon from '@mui/icons-material/PhonelinkSetup';
 import PreviewRoundedIcon from '@mui/icons-material/PreviewRounded';
 import logo from '../../Assets/SocialPost-Logo.png';
-
+import { MDBDropdown, MDBDropdownMenu, MDBDropdownToggle, MDBDropdownItem } from 'mdb-react-ui-kit';
 import {AppContext} from "../../context/Context"
 import { NavigatorTabs,NavigatorSelectedTabActions} from '../../variables/variables';
+import * as variables from '../../variables/variables';
 
-
-
+import GroupIcon from '@mui/icons-material/Group';
 
 const item = {
   py: '2px',
@@ -50,6 +55,14 @@ export default function Navigator(props) {
   const { ...other } = props;
   const {GlobalState,Dispatch}=React.useContext(AppContext)
 
+
+  const handleGroupSelect=(index)=>
+  {
+    
+    
+    Dispatch({type:variables.SelectGroupActions.SetSelectedGroup,value:index})
+   
+  }
           const HandleLogOut=()=>
         {
           Dispatch({type:NavigatorSelectedTabActions.SelectLogout})
@@ -168,12 +181,47 @@ export default function Navigator(props) {
         
         
         </ListItem>
+
+        
+
+        
+
+
         <ListItem sx={{ ...item, ...itemCategory }}>
           <ListItemIcon>
             <HomeIcon />
           </ListItemIcon>
           <ListItemText>Social Post Overview</ListItemText>
         </ListItem>
+
+       
+        <Box  sx={{ bgcolor: '#101F33',display: "flex",justifyContent: "center", alignItemsn: "center" }}>
+        <ListItem sx={{ py: 2, px: 3 }}>
+              <ListItemText sx={{ color: '#fff' }}><GroupIcon /></ListItemText>
+            </ListItem>
+           
+        <ListItem disablePadding sx={{marginLeft:"-130px"}}>   
+        
+          <MDBDropdown>
+        <MDBDropdownToggle color='secondary'>{GlobalState.SelectedGroup.group_Name}</MDBDropdownToggle>
+        <MDBDropdownMenu dark>
+           
+        {
+        variables.UserInformations.info!=null&&
+        variables.UserInformations.info.joinedGroups.map((grp,index)=>{
+            return(
+              <MDBDropdownItem key={index}  onClick={()=>{handleGroupSelect(index)}} link>{grp.group_Name}</MDBDropdownItem>
+            )
+          })}
+        
+        </MDBDropdownMenu>
+      </MDBDropdown>
+            
+     
+        </ListItem>
+        </Box>
+        
+        
         {categories.map(({ id, children }) => (
           <Box key={id} sx={{ bgcolor: '#101F33' }}>
             <ListItem sx={{ py: 2, px: 3 }}>

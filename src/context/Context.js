@@ -203,14 +203,21 @@ const reducer=(GlobalState,action)=>
                             else
                             return({...GlobalState,Rerender:true})
                             } 
-                             //Post Selected Group
+                             //Selected Group
                         
-                        case variables.UpdateSelectedPostGroup.SetPostGroup:
+                        case variables.SelectGroupActions.SetSelectedGroup:
                             {   
                                
-                            return({...GlobalState,PostSelectedGroup:action.value})
+                            return({...GlobalState,SelectedGroup:variables.UserInformations.info.joinedGroups[action.value]})
                            
                             } 
+
+                            case variables.SelectGroupActions.SetSelectedGroupToDefault:
+                            {   
+                               
+                            return({...GlobalState,SelectedGroup:0})
+                           
+                            }
             default:
                 
               return (GlobalState)  
@@ -227,9 +234,11 @@ if(window.localStorage.getItem('SelectedTab')!=null)
         ProfileSelectedTab:variables.ProfileTabs.ProfileTab,
         GroupSelectedTab:variables.GroupTabs.ManageGroupTab,
         UserSelectedTab:variables.UserTabs.ManageUserTab,
-        PostSelectedTab:variables.PostTabs.SelectPostGroup,
-        PostSelectedGroup:variables.UpdateSelectedPostGroup.SetPostGroupToNone,
+        PostSelectedTab:variables.PostTabs.ManagePostsTab,
+        SelectedGroup:{group_Name:"Loading..."},
         PageSelectedTab: variables.PageTabs.ManagePage,
+        
+
         PassedGroupID:null,
         Username:null,
         FirstName:"",
@@ -251,9 +260,10 @@ else
         ProfileSelectedTab:variables.ProfileTabs.ProfileTab,
         GroupSelectedTab:variables.GroupTabs.ManageGroupTab,
         UserSelectedTab:variables.UserTabs.ManageUserTab,
-        PostSelectedTab:variables.PostTabs.SelectPostGroup,
-        PostSelectedGroup:variables.UpdateSelectedPostGroup.SetPostGroupToNone,
+        PostSelectedTab:variables.PostTabs.ManagePostsTab,
+        
         PageSelectedTab: variables.PageTabs.ManagePage,
+        SelectedGroup:{group_Name:"Loading..."},
         PassedGroupID:null,
         Username:null,
         FirstName:"",

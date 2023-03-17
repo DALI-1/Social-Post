@@ -25,6 +25,7 @@ import Paper from '@mui/material/Paper';
 import SelectPageModal from "../../components/FacebookComps/SelectPageModal"
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import { useEffect } from 'react';
+import SelectPlatformModal from "../../components/PlatformModal/SelectPlatformModal"
 export default function Content() {
 
     const {GlobalState,Dispatch}=React.useContext(AppContext)
@@ -63,8 +64,10 @@ export default function Content() {
     };
 
    useEffect (()=>{
+   if(GlobalState.SelectedGroup.group_Name!="Loading...") 
+   {
     var JsonObject={
-      "groupID": variables.UserInformations.info.joinedGroups[0].id
+      "groupID": GlobalState.SelectedGroup.id
     }
     let JsonObjectToSend=JSON.stringify(JsonObject)  
     let url2=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_GETGROUPPAGES
@@ -76,14 +79,13 @@ export default function Content() {
     {
       console.log(result)
                   variables.Pages.CurrentGroupPages=[]
-                     
-                    result.result.map((Page)=>{
+                    
+                  
+                  result.result[0].map((Page,index)=>{
 
-                      variables.Pages.CurrentGroupPages=[...variables.Pages.CurrentGroupPages,Page.value]
-                    })
-                              
-                                  
-                                  
+                      variables.Pages.CurrentGroupPages=[...variables.Pages.CurrentGroupPages,{"PageDetails":Page.value ,"PageOwnerDetails":result.result[1][0].value}] 
+                    })    
+
                     SetDataLoaded(true)                                    
     })
     .catch((e)=>{
@@ -92,6 +94,8 @@ export default function Content() {
     })
     
     Dispatch({type:variables.HeaderSpinnerActions.TurnOffRequestSpinner})
+   }
+   
    },[])
 
   
@@ -101,8 +105,8 @@ export default function Content() {
       <Paper sx={{ width: '100%', mb: 2 ,textAlign: "right" }}>
         <div style={{ textAlign: "right" }}>
        <MDBBtn outline className='mx-2 m-2' color='secondary' onClick={()=>{
-        FacebookLoginRefButton.current.click()
-        
+        //FacebookLoginRefButton.current.click()
+        SetSelectPageModalFlag(true)
        }}>
         Add New Page
       </MDBBtn>
@@ -146,8 +150,8 @@ export default function Content() {
         )}
         
       />
-
-{SelectPageModalFlag&&<SelectPageModal SetSelectPageModalFlag={SetSelectPageModalFlag} data={variables.Pages.SelectPagesList}/>}
+{SelectPageModalFlag&&<SelectPlatformModal/>}
+{/*SelectPageModalFlag&&<SelectPageModal SetSelectPageModalFlag={SetSelectPageModalFlag} data={variables.Pages.SelectPagesList}/>*/}
 </>
   );
 }

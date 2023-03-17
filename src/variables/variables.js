@@ -152,10 +152,10 @@ export var RerenderActions=
 
 }
 
-export var UpdateSelectedPostGroup=
+export var SelectGroupActions=
 {
- SetPostGroup:"SetPostGroup",
- SetPostGroupToNone:"SetPostGroupToNone"
+ SetSelectedGroup:"SetSelectedGroup",
+ SetSelectedGroupToDefault:"SetSelectedGroupToDefault"
 
 }
 

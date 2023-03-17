@@ -14,8 +14,12 @@ import caGregorian from 'cldr-dates-full/main/es/ca-gregorian.json';
 import dateFields from 'cldr-dates-full/main/es/dateFields.json';
 import timeZoneNames from 'cldr-dates-full/main/es/timeZoneNames.json';
 import { process } from '@progress/kendo-data-query';
-
+import { Avatar } from "@nextui-org/react";
 import esMessages from './es.json';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container';
+import { Checkbox } from "@nextui-org/react";
 load(likelySubtags, currencyData, weekData, numbers, currencies, caGregorian, dateFields, timeZoneNames);
 
 loadMessages(esMessages, 'es-ES');
@@ -33,14 +37,15 @@ const DetailComponent = props => {
       width: "200px",
       float: "left"
     }}>
-              <p><strong>Street:</strong> {dataItem.shipAddress.street}</p>
-              <p><strong>City:</strong> {dataItem.shipAddress.city}</p>
-              <p><strong>Country:</strong> {dataItem.shipAddress.country}</p>
-              <p><strong>Postal Code:</strong> {dataItem.shipAddress.postalCode}</p>
+              <p><strong>Page Category:</strong>{dataItem.PageDetails.category} </p>
+              <p><strong>Page followers:</strong> {dataItem.PageDetails.followers_count}</p>
+              <p><strong>Page fans:</strong>{dataItem.PageDetails.fan_count} </p>
+             
             </section>
-            <Grid style={{
-      width: "500px"
-    }} data={dataItem.details} />
+           
+   
+            
+            
           </div>;
 };
 export default function App(props)  {
@@ -64,12 +69,17 @@ export default function App(props)  {
       dir: 'asc'
     }],
     group: [{
-      field: 'name'
+      field: 'PageDetails.name'
     }]
   });
   const [currentLocale, setCurrentLocale] = React.useState(locales[0]);
   const [dataResult, setDataResult] = React.useState(process(Data, dataState));
-  
+  const handlePageCheck=(props)=>
+  {
+    console.log(props)
+    var element=document.getElementById(props)
+    console.log(element.childNodes[0])
+  }
   const dataStateChange = event => {
     setDataResult(process(Data, event.dataState));
     setDataState(event.dataState);
@@ -115,11 +125,101 @@ export default function App(props)  {
                       </button>&nbsp;
                       <button className="k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary" onClick={exportPDF}>Export to PDF</button>
                     </GridToolbar>
-                    <GridColumn locked={true} field="id"  filterable={false} title="ID" />
-                    <GridColumn field="name"  title="Page Name"   />
-                    <GridColumn field="category" title="Page Category" />
-                    <GridColumn field="followers_count" title="Page followers" />
-                    <GridColumn field="fan_count" title="Page fans" />
+                   
+                    <GridColumn locked={true} filterable={false} width={"50px"}
+        cell={(props)=>{
+           
+
+             if(props.dataItem.items==undefined)
+             {
+              
+              return( <td>
+                <div style={{display: "flex",justifyContent: "center", alignItemsn: "center"}}>
+   
+                <Checkbox aria-label="Select Page" id={props.dataItem.PageDetails.id} onChange={()=>{handlePageCheck(props.dataItem.PageDetails.id)}}></Checkbox>
+                </div>
+                
+                </td>)
+             }
+             else
+             {
+              return(<></>)
+             }
+          
+        }}
+        
+        
+        />
+        <GridColumn style={{margin:"10px"}}  locked={true} filterable={true} cell={(props)=>{
+                    
+                 
+                    if(props.dataItem.items==undefined)
+                   {
+                     
+                       return(<td style={{display: "flex",justifyContent: "center", alignItemsn: "center"}}>
+                       <Container>
+                       <Row>
+                        <Col>
+                        <Avatar
+                       size="lg"
+                       src={props.dataItem.PageDetails.picture.data.url}
+                       color="gradient"
+                       bordered
+                       squared
+                        zoomed
+                        
+                     />
+                        </Col>
+                        <Col> <div style={{marginTop:"15px"}}><p>{props.dataItem.PageDetails.name}</p></div></Col>
+                       
+                        
+                       </Row>
+                       
+                       </Container>
+                       
+
+                     
+                       
+                       </td>)
+                   } 
+                       else  
+                   return(<></>)}}  title="Page Name " field='PageDetails.name' />
+         <GridColumn field="PageOwnerDetails.email"  title="Page Owner Email"   />           
+        <GridColumn style={{margin:"10px"}}  locked={true} filterable={true}  title="Page Owner" cell={(props)=>{
+                    
+                    
+                    if(props.dataItem.items==undefined)
+                   {
+                     
+                       return(<td style={{display: "flex",justifyContent: "center", alignItemsn: "center" }}>
+                      <Container>
+                      <Row>
+                        <Col>
+                        <Avatar
+                       size="lg"
+                       src={props.dataItem.PageOwnerDetails.picture.data.url}
+                       color="gradient"
+                       bordered
+                       squared
+                        zoomed
+                     />
+                        </Col>
+                        <Col>
+                        <div style={{marginTop:"15px"}}><p>{props.dataItem.PageOwnerDetails.name}</p></div>
+                        </Col>
+                      </Row>
+                      </Container>
+                      
+
+                    
+                     
+                       </td>)
+                   } 
+                       else  
+                   return(<></>)}} field="PageOwnerDetails.name"  />
+                   
+                    <GridColumn field="PageOwnerDetails.email"  title="Page Owner Email"   />
+                   
                   </Grid>
                 </ExcelExport>
 
@@ -134,11 +234,74 @@ export default function App(props)  {
             skip: dataState.skip,
             take: dataState.take
           })}>
-                  <GridColumn locked={true} field="id"  filterable={false} title="ID" />
-                    <GridColumn field="name"  title="Page Name"   />
-                    <GridColumn field="category" title="Page Category" />
-                    <GridColumn field="followers_count" title="Page followers" />
-                    <GridColumn field="fan_count" title="Page fans" />
+                  <GridColumn style={{margin:"10px"}}  locked={true} filterable={false} cell={(props)=>{
+                    
+                 
+                    if(props.dataItem.items==undefined)
+                   {
+                     
+                       return(<td style={{display: "flex",justifyContent: "center", alignItemsn: "center"}}>
+                       <Container>
+                       <Row>
+                        <Col>
+                        <Avatar
+                       size="lg"
+                       src={props.dataItem.PageDetails.picture.data.url}
+                       color="gradient"
+                       bordered
+                       squared
+                        zoomed
+                     />
+                        </Col>
+                        <Col> <div style={{marginTop:"15px"}}><p>{props.dataItem.PageDetails.name}</p></div></Col>
+                       
+                        
+                       </Row>
+                       
+                       </Container>
+                       
+
+                     
+                       
+                       </td>)
+                   } 
+                       else  
+                   return(<></>)}}  title="Page Name " />
+         <GridColumn field="PageOwnerDetails.email"  title="Page Owner Email"   />           
+        <GridColumn style={{margin:"10px"}}  locked={true} filterable={false}  title="Page Owner" cell={(props)=>{
+                    
+                    
+                    if(props.dataItem.items==undefined)
+                   {
+                     
+                       return(<td style={{display: "flex",justifyContent: "center", alignItemsn: "center" }}>
+                      <Container>
+                      <Row>
+                        <Col>
+                        <Avatar
+                       size="lg"
+                       src={props.dataItem.PageOwnerDetails.picture.data.url}
+                       color="gradient"
+                       bordered
+                       squared
+                        zoomed
+                     />
+                        </Col>
+                        <Col>
+                        <div style={{marginTop:"15px"}}><p>{props.dataItem.PageOwnerDetails.name}</p></div>
+                        </Col>
+                      </Row>
+                      </Container>
+                      
+
+                    
+                     
+                       </td>)
+                   } 
+                       else  
+                   return(<></>)}}  ></GridColumn>
+                   
+                    <GridColumn field="PageOwnerDetails.email"  title="Page Owner Email"   />
                   </Grid>}
                 </GridPDFExport>
                 {/*This Part here is what we gonna export to PDF it Ends here */}

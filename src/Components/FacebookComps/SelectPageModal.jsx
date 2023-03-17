@@ -45,14 +45,11 @@ export default function PagesDialog(props) {
        var checkbox=document.getElementById(Page.id)
        if(checkbox.checked)
        { 
-        listOfPages=[...listOfPages,{pageID:checkbox.id,page_LongLife_access_token:Page.access_token}]
+        listOfPages=[...listOfPages,{pageID:checkbox.id,Page_shortLivedToken:Page.access_token}]
        }
         
       })
-
-     
-     
-    JsonObject.groupID=variables.UserInformations.info.joinedGroups[0].id
+    JsonObject.groupID=GlobalState.SelectedGroup.id
     JsonObject.ownerFBfirst_name=variables.FacebookUser.LoggedFacebookUserInfo.first_name
     JsonObject.ownerFBlast_name=variables.FacebookUser.LoggedFacebookUserInfo.last_name
     JsonObject.ownerFBemail=variables.FacebookUser.LoggedFacebookUserInfo.email
@@ -64,7 +61,7 @@ export default function PagesDialog(props) {
 
     let JsonObjectToSend=JSON.stringify(JsonObject)
       
-    console.log(JsonObject)
+    
       let url2=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_ADDPAGE
       let UserToken=window.localStorage.getItem("AuthToken")
       let APIResult=CALL_API_With_JWTToken(url2,JsonObjectToSend,UserToken)
@@ -72,7 +69,6 @@ export default function PagesDialog(props) {
       
       APIResult.then((result)=>
       {
-       
                 if(result.successCode=="Page_Added")           
                 toast.success(result.result, {
                   position: "bottom-left",
@@ -83,10 +79,7 @@ export default function PagesDialog(props) {
                   draggable: true,
                   progress: undefined,
                   theme: "light",
-                  });            
-                                
-                                    
-                                    
+                  });                                       
                                   
       })
       .catch((e)=>{

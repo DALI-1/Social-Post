@@ -9,6 +9,7 @@ import Navigator from './Navigator';
 import ContentSelector from './ContentSelector';
 import HeaderSelector from './HeaderSelector';
 import {AppContext} from "../../context/Context"
+import * as variables  from '../../variables/variables'
 import {APIStatus,APIStatuses,UserInformations,UserActions,HeaderSpinnerActions,HeaderSpinner}  from '../../variables/variables'
 import {CALL_API_With_JWTToken,CALL_API_With_JWTToken_GET} from '../../libs/APIAccessAndVerification'
 function Copyright() {
@@ -194,7 +195,7 @@ Dispatch({type:HeaderSpinnerActions.TurnOnSpinner})
     } 
     console.log(UserInformations)
      // Intializing the state values with the ones fetched from the API
-
+     Dispatch({type:variables.SelectGroupActions.SetSelectedGroup,value:0}) 
     Dispatch({type:UserActions.UpdateFirstName,value:UserInformations.info.firstName}) 
     Dispatch({type:UserActions.UpdateLastName,value:UserInformations.info.lastName})
     Dispatch({type:UserActions.UpdateUsername,value:UserInformations.info.userName})
