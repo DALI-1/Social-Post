@@ -14,13 +14,15 @@ import { Avatar } from "@nextui-org/react";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
+
+import SelectFacebookPagesModal from "../FacebookComps/SelectFacebookPagesModal"
 export default function PagesDialog(props) {
    
     const {GlobalState,Dispatch}=React.useContext(AppContext)
    const [PlatformsLoadFlag,SetPlatformsLoadedFlag]=React.useState(false)
    const [ListOfPlatforms,SetListOfPlatforms]=React.useState([])
     const handleClose = () => {
-      props.SetSelectPageModalFlag(false)
+      props.SetSelectPlatformModalFlag(false)
     };
 
     React.useEffect(()=>
@@ -34,10 +36,9 @@ export default function PagesDialog(props) {
       
       APIResult.then((result)=>
       {
-               SetListOfPlatforms(result.result)
-                
+               SetListOfPlatforms(result.result) 
                SetPlatformsLoadedFlag(true)   
-               console.log(result)
+               
                Dispatch({type:variables.HeaderSpinnerActions.TurnOffRequestSpinner})                          
       })
       .catch((e)=>{
@@ -70,34 +71,31 @@ export default function PagesDialog(props) {
   alignItems: "center",
 
    }}>
-   {PlatformsLoadFlag?<Container><Row>{
+   {PlatformsLoadFlag?<Container className="d-flex justify-content-center align-items-center" >
+    <Row>{
 
-      
-ListOfPlatforms.map((platform)=>
-{
-  
-  return(<Col>
-     <Avatar
-                 size="xl"
-                 src={platform.platformLogoImageUrl
-                 }
-                 color="primary"
-                 bordered
-                
-                  zoomed
-                  
-               />
-               {platform.platformName}
-  </Col>)
-})
-}</Row></Container>:<></>}
-      
-   </div>
      
+ListOfPlatforms.map((platform)=>
+{ 
+  return(<Col className='m-3'>
+     <Avatar size="xl"  src={platform.platformLogoImageUrl} color="primary" zoomed
+           onClick={()=>{
+            if(platform.platformName=="Facebook")
+            {
+              variables.Pages.SelectedPlatformID=platform.id
+              props.SetSelectFBPageModalFlag(true)
+              handleClose() 
+          }
+          if(platform.platformName=="Instagram")
+          {
+            variables.Pages.SelectedPlatformID=platform.id
+            props.SetSelectINSTAPageModalFlag(true)
+            handleClose() 
+        }
+          }}/>{platform.platformName} </Col>)})}</Row></Container>:<></>}</div>
           </DialogContent>
           <DialogActions>
-            <Button variant="outlined" onClick={handleClose}>Cancel</Button>
-            
+            <Button variant="outlined" onClick={handleClose}>Cancel</Button>  
           </DialogActions>
         </Dialog>
       </>

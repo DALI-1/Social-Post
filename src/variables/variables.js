@@ -161,8 +161,11 @@ export var SelectGroupActions=
 
 export var Pages=
 {
-    SelectPagesList:{},
-    CurrentGroupPages:[]
+    FBSelectPagesList:{},
+    CurrentGroupPages:[],
+    SelectedPlatformID:0,
+    ListOfSelectedPages:[]
+   
     
 }
 
