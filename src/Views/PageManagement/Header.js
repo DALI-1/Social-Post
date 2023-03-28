@@ -136,14 +136,20 @@ function Header(props) {
       <AppBar component="div" position="static" elevation={0} sx={{ zIndex: 0 }}>
         <Tabs  value={TabMenu} textColor="inherit">
          
-           <Tab  label={<><TuneIcon/> <p>Manage Pages</p></>} />
+           <Tab  label={<><TuneIcon/> <p>Manage Pages</p></>}onClick={()=>{
+                Dispatch({type:variables.PageTabActions.SelectManagePage})
+          }} />
         
      
           {GlobalState.PageSelectedTab==variables.PageTabs.AddPage&&<Tab  label={<><GroupAddIcon/> <p>Add Pages</p></>}  />}
      
          {
           GlobalState.PageSelectedTab==variables.PageTabs.EditPage&&
-          <Tab label={<><EditIcon/> <p>Edit Page</p></>}  />
+          <Tab label={<><EditIcon/> <p>Edit Page</p></>}  onClick={()=>{
+            Dispatch({type:variables.PageTabActions.SelectEditPage})
+          }}
+            
+           />
 }
         </Tabs>
       </AppBar>

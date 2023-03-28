@@ -13,13 +13,23 @@ import { ToastContainer, toast } from 'react-toastify';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import { useEffect } from 'react';
 
+
+
 export default function PagesDialog(props) {
-   
+  
+   //this flag indicates if the Instagram Pages are loaded or not, False: not loaded, true: loaded
  let [PagesLoadedFlag,SetPagesLoadedFlag]=React.useState(false)
+ //this flag indicates if the User is connected to Facebook Account or not, false: not connected, true: connected
  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+ //This flag indicate if the Facebook SDK is loaded or not, true:loaded, false: not loaded
  const [ isSdkLoaded, SetisSdkLoaded] = React.useState(false);
+ 
  const {GlobalState,Dispatch}=React.useContext(AppContext)
   let FacebookLoginRefButton=React.useRef();
+  // this variable contains the list of pages that the user can accesss
+   //DATA FORMAT:[{name: 'RestaurantA', id: '100272216328499', instagram_business_account: {name: 'Mohamed Ali Gargouri', id: '17841458690186189'}}]
+    // name here indicate the Facebook page name and ID (this is useful for the optional choice later on)
+
   const [pages, setPages] = useState([]);
 
     const handleClose = () => {
@@ -27,6 +37,7 @@ export default function PagesDialog(props) {
     };
     const responseFacebook = (response) => {
       setIsLoggedIn(true);
+      
       variables.FacebookUser.LoggedFacebookUserInfo=response
       getInstagramPages(response.accessToken).then(()=>{
         SetPagesLoadedFlag(true)
@@ -37,21 +48,21 @@ export default function PagesDialog(props) {
       console.log("Failed to connect to Facebook");
     };
 
+    //This function fetches the instagram business accounts from the current loggedin Facebook user
     const getInstagramPages = async (access_token) => {
-      try {
-        console.log(access_token)
+
+      variables.Pages.INGSelectPagesList=[]
+      try { 
         // call to the Facebook Graph API to retrieve user's Pages with fields `instagram_business_account'
-        const response = await fetch(`https://graph.facebook.com/v11.0/me/accounts?fields=name,id,instagram_business_account&access_token=${access_token}`);
+        const response = await fetch(`https://graph.facebook.com/v11.0/me/accounts?fields=name,id,instagram_business_account{name,id},access_token&access_token=${access_token}`);
         const data = await response.json();
-        console.log(data.data)
         let ListOfPagesWithInstaBusinessAcounts=[]
-        
         data.data.map((page)=>{
            if(page.instagram_business_account!=undefined)
            ListOfPagesWithInstaBusinessAcounts=[...ListOfPagesWithInstaBusinessAcounts,page]
-        })
-
-        setPages(ListOfPagesWithInstaBusinessAcounts);
+        })    
+        variables.Pages.INGSelectPagesList=ListOfPagesWithInstaBusinessAcounts
+        setPages(ListOfPagesWithInstaBusinessAcounts); 
       } catch (error) {
         console.log(error.message);
       }
@@ -64,6 +75,42 @@ export default function PagesDialog(props) {
       FacebookLoginRefButton.current.click()
     },[isSdkLoaded])
 
+
+    const handleAddPage=(()=>{ 
+      var INFBPAGES=[]
+      //Checking which Page is selected
+      variables.Pages.INGSelectPagesList.map((Page)=>{
+       var checkbox=document.getElementById("NEWINSTAPage"+Page.instagram_business_account.id)
+
+       if(checkbox.checked)
+       { 
+        //Creating the list of potentional pages to add
+        INFBPAGES=[...INFBPAGES,Page]
+       }
+       
+      })
+      variables.Pages.INGSelectedPagesList=INFBPAGES
+      
+  props.SetINFBPages(INFBPAGES)
+  if(INFBPAGES.length>0)
+  {
+    props.SetShowINFBChoiceModal(true)
+  }
+  else
+  {
+    toast.info('You need to select at least one page', {
+      position: "bottom-left",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      });
+  }
+   
+    })
     return (
       <>
             
@@ -72,6 +119,13 @@ export default function PagesDialog(props) {
           onClose={handleClose}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
+          
+          PaperProps={{
+            style: { 
+              margin: '80px auto', // adjust margin to change vertical position
+
+             top:"-10rem"
+            }}}
         >
           <DialogTitle id="alert-dialog-title">
            Business Instagram Pages Selection
@@ -84,34 +138,29 @@ export default function PagesDialog(props) {
 
             <FacebookLogin  
         appId="959797981855736"
-        autoLoad={false}
+        autoLoad={true}
         fields="birthday,first_name,last_name,id,email,picture"
         callback={responseFacebook} 
         onFailure={onFailure}
         render={renderProps => {
           if(renderProps.isSdkLoaded==false)
-          {
-           SetisSdkLoaded(true)
-          }
-          return (
-            <button ref={FacebookLoginRefButton} onClick={renderProps.onClick}> </button> 
-          )
-      }}
-      /> 
-
-{!PagesLoadedFlag&&<p> Loading your facebook pages instagram business accounts...</p>}
-{PagesLoadedFlag&&
+          {SetisSdkLoaded(true)}
+          return (<button ref={FacebookLoginRefButton} onClick={renderProps.onClick}> </button> )}} /> 
+      {!PagesLoadedFlag&&<p> Loading your Instagram pages...</p>}
+      {PagesLoadedFlag&&
       pages.map((Page,index)=>{
+       
         return (
-          <Form.Check  id={"FBPage"+Page.id}  key={"FBPage"+Page.id} type="switch" defaultChecked={false}  autoComplete="off" autoSave="off" label={"FB PAGE"+Page.name+"Connected to the instagram account ID"+Page.instagram_business_account.id
-        }/> )})}
+          <Form.Check  id={"NEWINSTAPage"+Page.instagram_business_account.id}  key={"FBPage"+Page.instagram_business_account.id} type="switch" defaultChecked={false}  autoComplete="off" autoSave="off" label={Page.instagram_business_account.name   }/> )})}
           </DialogContent>
           <DialogActions>
             <Button variant="outlined" onClick={handleClose}>Cancel</Button>
-            <Button  variant="outlined" color="error"  autoFocus>
+            <Button  variant="outlined" color="error"  onClick={handleAddPage} autoFocus>
               Add Pages
             </Button>
           </DialogActions>
+              {/*This gonna show and ask the user to add the related FB pages if he want */}
+          
         </Dialog>
       </>
     );

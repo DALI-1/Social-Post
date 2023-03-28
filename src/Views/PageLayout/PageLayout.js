@@ -192,15 +192,16 @@ Dispatch({type:HeaderSpinnerActions.TurnOnSpinner})
           UserInformations.info=result
           UserInformations.info.passwordHash=null
           UserInformations.info.passwordSalt=null
-    } 
-    console.log(UserInformations)
+          console.log(UserInformations)
      // Intializing the state values with the ones fetched from the API
-     Dispatch({type:variables.SelectGroupActions.SetSelectedGroup,value:0}) 
+    Dispatch({type:variables.SelectGroupActions.SetSelectedGroup,value:0}) 
     Dispatch({type:UserActions.UpdateFirstName,value:UserInformations.info.firstName}) 
     Dispatch({type:UserActions.UpdateLastName,value:UserInformations.info.lastName})
     Dispatch({type:UserActions.UpdateUsername,value:UserInformations.info.userName})
     Dispatch({type:UserActions.UpdateEmail,value:UserInformations.info.email})
     Dispatch({type:UserActions.UpdateProfilPicture,value:UserInformations.info.profilePictureURL})
+    } 
+    
     Dispatch({type:HeaderSpinnerActions.TurnOffSpinner})
  })
  .catch(()=>{

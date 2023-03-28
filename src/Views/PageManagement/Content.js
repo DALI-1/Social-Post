@@ -16,7 +16,7 @@ import {AppContext} from "../../context/Context"
 import Container from 'react-bootstrap/Container';
 import { Row, Col } from 'react-bootstrap';
 import ManagePageContent from "./ManagePageContent";
-
+import EditPageContent from "./ModifyPageContent";
 export default function Content() {
   const {GlobalState,Dispatch}=React.useContext(AppContext)
 
@@ -27,8 +27,9 @@ export default function Content() {
 
      {UserInformations.info!=null?<>
       <Container>
-{GlobalState.NavigatorSelectedTab==variables.NavigatorTabs.ManagePagesTab&&<ManagePageContent/>}
-
+       
+{GlobalState.PageSelectedTab==variables.PageTabs.ManagePage&&<ManagePageContent/>}
+{GlobalState.PageSelectedTab==variables.PageTabs.EditPage&&<EditPageContent/>}
 
 
 

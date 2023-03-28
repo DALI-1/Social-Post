@@ -1,6 +1,7 @@
 import React,{ useState,useEffect,useRef } from 'react';
 import { useToast } from '@chakra-ui/react'
 import { APIStatuses } from '../variables/variables';
+import {ServerInternalError,ServerConnectionLostError}from "../Exceptions/Exceptions" ;
 import  {APIStatus}from "../variables/variables"
 import { ToastContainer, toast } from 'react-toastify';
 //This is an Async method which will call our API, url is the API path, data is the json data, the format should follow our DTO format in the backend
@@ -15,7 +16,23 @@ export  const  CALLAPI = async (url,data)=>
           "Content-Type": "application/json"  
         },
         body: data
+      })
+      .catch((e)=>{
+        //Throwing the Connection Lost Exception
+        throw new ServerConnectionLostError()
       });
+
+      
+      if(response.status.toString()=="500")
+      {
+      
+        //Throwing the Internal Error Exception
+        console.log("DEVELOPER ONLY: ->")
+        console.log(response)
+        throw new ServerInternalError()
+
+        
+      }
       
       const json = await response.json(); 
      
@@ -24,7 +41,11 @@ export  const  CALLAPI = async (url,data)=>
 
     } catch (error) {
       APIStatus.Status=APIStatuses.ConnectionLost
-        toast.error('Connection Lost, please try again...', {
+     //Handling the Internal Error Exception
+      if(error instanceof ServerInternalError)
+      {
+        APIStatus.Status=APIStatuses.ConnectionLost
+        toast.error(error.ErrorMessageUser, {
           position: "bottom-left",
           autoClose: 5000,
           hideProgressBar: false,
@@ -34,9 +55,23 @@ export  const  CALLAPI = async (url,data)=>
           progress: undefined,
           theme: "light",
           });
-       
-
-      return(error);
+      }
+       //Handling the Connection Lost Exception
+      if(error instanceof ServerConnectionLostError)
+      {
+        
+        APIStatus.Status=APIStatuses.ConnectionLost
+        toast.error(error.ErrorMessageUser, {
+          position: "bottom-left",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          });
+      }
     }
   }
 //This is an Async method which will call our API, url is the API path, data is the json data and also requires a valid JWT token
@@ -52,27 +87,71 @@ export  const  CALLAPI = async (url,data)=>
           'Authorization': `Bearer ${token}` 
         },
         body: data
+      })
+      .catch((e)=>{
+        //Throwing the Connection Lost Exception
+        console.log("DEVELOPER: "+response)
+        throw new ServerConnectionLostError()
       });
+
       
+      if(response.status.toString()=="500")
+      {
+        //Throwing the Internal Error Exception
+        console.log("DEVELOPER ONLY: ->")
+        console.log(response)
+        throw new ServerInternalError()
+      }
+  
+    
+
       const json = await response.json();  
       
       APIStatus.Status=APIStatuses.APICallSuccess
       return(json)
-    } catch (error) {
-      console.log(error)
+    
+
+
+
+    } 
+    catch(error)
+    {
+
       APIStatus.Status=APIStatuses.ConnectionLost
-      toast.error('Connection Lost, please try again...', {
-        position: "bottom-left",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        });
-      return(error);
+      //Handling the Internal Error Exception
+       if(error instanceof ServerInternalError)
+       {
+         APIStatus.Status=APIStatuses.ConnectionLost
+         toast.error(error.ErrorMessageUser, {
+           position: "bottom-left",
+           autoClose: 5000,
+           hideProgressBar: false,
+           closeOnClick: true,
+           pauseOnHover: true,
+           draggable: true,
+           progress: undefined,
+           theme: "light",
+           });
+       }
+        //Handling the Connection Lost Exception
+       if(error instanceof ServerConnectionLostError)
+       {
+         
+         APIStatus.Status=APIStatuses.ConnectionLost
+         toast.error(error.ErrorMessageUser, {
+           position: "bottom-left",
+           autoClose: 5000,
+           hideProgressBar: false,
+           closeOnClick: true,
+           pauseOnHover: true,
+           draggable: true,
+           progress: undefined,
+           theme: "light",
+           });
+       }
+      
     }
+ 
   }
   
   export const VerifyAuth = async (url,data,token)=>
@@ -87,24 +166,57 @@ export  const  CALLAPI = async (url,data)=>
           'Authorization': `Bearer ${token}` 
         },
         body: data
+      })
+      .catch((e)=>{
+        //Throwing the Connection Lost Exception
+        throw new ServerConnectionLostError()
       });
+
+      
+      if(response.status.toString()=="500")
+      {
+        //Throwing the Internal Error Exception
+        console.log("DEVELOPER ONLY: ->")
+        console.log(response)
+        throw new ServerInternalError()
+      }
       
       const json = await response.json();  
       APIStatus.Status=APIStatuses.APICallSuccess
       return(json)
     } catch (error) {
       APIStatus.Status=APIStatuses.ConnectionLost
-      toast.error('Connection Lost, please try again...', {
-        position: "bottom-left",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        });
-      return(error);
+      //Handling the Internal Error Exception
+       if(error instanceof ServerInternalError)
+       {
+         APIStatus.Status=APIStatuses.ConnectionLost
+         toast.error(error.ErrorMessageUser, {
+           position: "bottom-left",
+           autoClose: 5000,
+           hideProgressBar: false,
+           closeOnClick: true,
+           pauseOnHover: true,
+           draggable: true,
+           progress: undefined,
+           theme: "light",
+           });
+       }
+        //Handling the Connection Lost Exception
+       if(error instanceof ServerConnectionLostError)
+       {
+         
+         APIStatus.Status=APIStatuses.ConnectionLost
+         toast.error(error.ErrorMessageUser, {
+           position: "bottom-left",
+           autoClose: 5000,
+           hideProgressBar: false,
+           closeOnClick: true,
+           pauseOnHover: true,
+           draggable: true,
+           progress: undefined,
+           theme: "light",
+           });
+       }
     }
   }
 
@@ -115,20 +227,36 @@ export  const  CALLAPI = async (url,data)=>
     try {
       const response = await fetch(url,{
         method: "GET",
-        
         headers: { 
           "Content-Type": "application/json",
           'Authorization': `Bearer ${token}` 
         }
         
+      })
+      .catch((e)=>{
+        //Throwing the Connection Lost Exception
+        throw new ServerConnectionLostError()
       });
+
       
+      if(response.status.toString()=="500")
+      {
+        //Throwing the Internal Error Exception
+        console.log("DEVELOPER ONLY: ->")
+        console.log(response)
+        throw new ServerInternalError()
+      }
+
       const json = await response.json();  
       APIStatus.Status=APIStatuses.APICallSuccess
       return(json)
     } catch (error) {
       APIStatus.Status=APIStatuses.ConnectionLost
-        toast.error('Connection Lost, please try again...', {
+     //Handling the Internal Error Exception
+      if(error instanceof ServerInternalError)
+      {
+        APIStatus.Status=APIStatuses.ConnectionLost
+        toast.error(error.ErrorMessageUser, {
           position: "bottom-left",
           autoClose: 5000,
           hideProgressBar: false,
@@ -138,8 +266,22 @@ export  const  CALLAPI = async (url,data)=>
           progress: undefined,
           theme: "light",
           });
+      }
+       //Handling the Connection Lost Exception
+      if(error instanceof ServerConnectionLostError)
+      {
         
-    
-      return(error);
+        APIStatus.Status=APIStatuses.ConnectionLost
+        toast.error(error.ErrorMessageUser, {
+          position: "bottom-left",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          });
+      }
     }
   }

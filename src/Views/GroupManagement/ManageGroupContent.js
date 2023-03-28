@@ -364,27 +364,21 @@ export default function Content() {
       
       
       
+      
        <Row>
        {ViewMode=="Tabular"&&<>
-       <Paper sx={{ width: '100%', mb: 2 ,textAlign: "right" }}>
+       <Paper sx={{ width: '100%', m: 1,p:2 ,textAlign: "center" }}>
         <div style={{ textAlign: "right" }}>
-       <MDBBtn outline className='mx-2 m-2' color='secondary' onClick={handleAddNewGroup}>
-        Add New SubGroup
-      </MDBBtn>
-
-      <MDBBtn outline className='mx-2 m-2' color='secondary' onClick={handleModifyParentGroup}>
-        Modifty Group
-      </MDBBtn>
+      <MDBBtn outline className='mx-2 m-2' color='secondary' onClick={handleAddNewGroup}> Add New SubGroup</MDBBtn>
+      <MDBBtn outline className='mx-2 m-2' color='secondary' onClick={handleModifyParentGroup}>Modifty Group</MDBBtn>
       <MDBBtn outline className='mx-2 m-2' color='secondary' onClick={()=>{
         SelectedGroupID.current=variables.UserInformations.info.joinedGroups[0].id
         SelectedGroupName.current=variables.UserInformations.info.joinedGroups[0].group_Name
-        SetDeleteShow(true)
-      }}>
-       Delete Group
-      </MDBBtn>
+        SetDeleteShow(true)}}> Delete Group </MDBBtn>
        </div>
        </Paper>
-       <TableContainer component={Paper}>
+       <Paper sx={{ width: '100%', m: 1,p:2 ,textAlign: "center" }}>
+       <TableContainer>
        <div style={{ textAlign: "center", margin:"1rem" }}>
        <Groups2SharpIcon style={{Margin:"1rem"}}/>
         <h1>{"Groups Of "+variables.UserInformations.info.joinedGroups[0].group_Name}</h1>
@@ -421,6 +415,7 @@ export default function Content() {
       </Table>
       
     </TableContainer>
+    </Paper>
     </>
 }
 

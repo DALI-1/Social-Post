@@ -40,10 +40,7 @@ const intl = new IntlService('en');
 function findIndexByProp(list, prop, value) {
   
   for (let i = 0; i < list.length; i++) {
-    console.log(list[i])
     if (list[i][prop] === value) {
- console.log(i)
-
       return i;
     }
   }
@@ -53,79 +50,53 @@ function findIndexByProp(list, prop, value) {
 const DetailComponent = props => {
   const dataItem = props.dataItem;
   
-  return <div>
-            <section style={{
-      
-      float: "left"
-    }}>
-              <p><strong>Page Category:</strong>{dataItem.PageDetails.category} </p>
-              <p><strong>Page followers:</strong> {dataItem.PageDetails.followers_count}</p>
-              <p><strong>Page fans:</strong>{dataItem.PageDetails.fan_count} </p>
-              
+  return <div><section style={{float: "left"}}>
+      {/*This indicate that this is a Facebook Page and we handle it with different attributes*/}         
+              {dataItem.PageDetails.category!=undefined&&<p><strong>Page Category:</strong>{dataItem.PageDetails.category} </p>}
+             {dataItem.PageDetails.followers_count!=undefined&& <p><strong>Page followers:</strong> {dataItem.PageDetails.followers_count}</p>}
+              {dataItem.PageDetails.fan_count!=undefined&&<p><strong>Page fans:</strong>{dataItem.PageDetails.fan_count} </p>}
+           {/*Here we're gonna show which pages our current page is connected or related to */}   
               {dataItem.OtherPlatformAccountsDetails.length>0&&
                   <>
-                  <ListViewHeader
-                    style={{
-                      
-                      fontSize: 14
-                    }}
-                    className="pl-3 pb-2 pt-2"
-                  >
-                  <strong>Connected Accounts list:</strong>
-                </ListViewHeader>
-                  {
-                    
-                    dataItem.OtherPlatformAccountsDetails.map((e,index)=>{
-                      return(
-                        <div className="k-listview-item row p-2 border-bottom align-middle" style={{ margin: 0}}>
-              
-      <div className="col-3 m-2">
-        <h2 style={{ fontSize: 14, color: "#454545",marginBottom: 0, }} className="text-uppercase">
-          Account Username
-        </h2>
-        <div style={{fontSize: 12,color: "#a0a0a0", }}>
-        {e.value.username }
-        </div>
-      </div>
-      <div className="col-3 m-2">
-        <h2 style={{ fontSize: 14, color: "#454545",marginBottom: 0, }} className="text-uppercase">
-          Account Name
-        </h2>
-        <div style={{fontSize: 12,color: "#a0a0a0", }}>
-        {e.value.name }
-        </div>
-        
-      </div>
-      <div className="col-2 m-2">
-      <Avatar size="lg" src={dataItem.PagePlatformDetails[index+1].platformLogoImageUrl} color="gradient"   squared zoomed/>
-      </div>
-      <div className="col-2 m-2">
-      <Avatar size="lg" src={e.value.profile_picture_url} color="gradient"   squared zoomed/>
-      </div>
-     
-     
-     
-    </div>
-                      )
-                    })
-                  }
-                  </>
-              }
-              {dataItem.OtherPlatformAccountsDetails.length==0&&
-              <p> <strong>Connected Accounts list : </strong> This Page is not connected to any Accounts  </p>
-}
-             
-            </section>
-           
-            <style>
-      {`.k-listview-footer {
-            border-top-width: 0 !important;
-        }`}
-    </style>
-            
-            
-          </div>;
-};
+                  <ListViewHeader className="pl-3 pb-2 pt-2" style={{fontSize: 14}}><strong>Associated Pageslist:</strong></ListViewHeader>
+                    {dataItem.OtherPlatformAccountsDetails.map((e,index)=>{
+                      //here we testing by profile_picture_url attribute, if it's not undefined then the related page is an instagram page, else its a facebook one
+                      if(e.value.profile_picture_url!=undefined)
+                      {
+                        return(
+                          <div className="k-listview-item row p-2 border-bottom align-middle" style={{ margin: 0}}>
+                          <div className="col-2 m-2"> <Avatar size="lg" src={e.value.profile_picture_url} color="gradient"   squared zoomed/></div>
+                          {/*<div className="col-3 m-2">
+                          <h2 style={{ fontSize: 14, color: "#454545",marginBottom: 0, }} className="text-uppercase">  Account Username</h2>
+                        <div style={{fontSize: 12,color: "#a0a0a0", }}>{e.value.username }</div> </div>*/}
+                          <div className="col-4 m-2">
+                          <h2 style={{ fontSize: 14, color: "#454545",marginBottom: 0, }} className="text-uppercase"> Page Name</h2>
+                          <div style={{fontSize: 12,color: "#a0a0a0", }}>{e.value.name }</div></div>
+                          <div className="col-2 m-2">
+                          <Avatar size="lg" src={dataItem.PagePlatformDetails[index+1].platformLogoImageUrl} color="gradient"   squared zoomed/>
+                          </div></div>) 
+                      }
+                      //This indicate that this is a Facebook Page and we handle it with different attributes
+                      if(e.value.profile_picture_url==undefined)
+                      {
+                        return(
+                          <div className="k-listview-item row p-2 border-bottom align-middle" style={{ margin: 0}}>
+                          <div className="col-2 m-2"> <Avatar size="lg" src={e.value.picture.data.url} color="gradient"   squared zoomed/></div>
+                          {/*<div className="col-3 m-2">
+                          <h2 style={{ fontSize: 14, color: "#454545",marginBottom: 0, }} className="text-uppercase">  Account Username</h2>
+                        <div style={{fontSize: 12,color: "#a0a0a0", }}>{e.value.username }</div> </div>*/}
+                          <div className="col-4 m-2">
+                          <h2 style={{ fontSize: 14, color: "#454545",marginBottom: 0, }} className="text-uppercase"> Page Name</h2>
+                          <div style={{fontSize: 12,color: "#a0a0a0", }}>{e.value.name }</div></div>
+                          <div className="col-2 m-2">
+                          <Avatar size="lg" src={dataItem.PagePlatformDetails[index+1].platformLogoImageUrl} color="gradient"   squared zoomed/>
+                          </div></div>) 
+                      }})}</>}
+                     {dataItem.OtherPlatformAccountsDetails.length==0&&
+              <p> <strong>Associated Pageslist:</strong> This Page is not Associated to Any other page. </p>}
+            </section><style>{`.k-listview-footer {border-top-width: 0 !important;}`}</style>
+            </div>}; 
+
 export default function App(props)  { 
   let Data=props.data
   const locales = [{
@@ -142,24 +113,29 @@ export default function App(props)  {
       field: 'followers_count',
       dir: 'asc'
     }],
-    group: [{
-      field: 'PageDetails.name'
-    }]
+    group: []
+      
+   //[{field: 'PageDetails.name' }]
   });
+  
   const [currentLocale, setCurrentLocale] = React.useState(locales[0]);
   const [dataResult, setDataResult] = React.useState(process(Data, dataState));
   const handlePageCheck=(props)=>
   {
-    var element=document.getElementById(props)
+    var element=document.getElementById("CHECKBOX"+props.ID)
+   
     if(element.checked)
     {
-      variables.Pages.ListOfSelectedPages=[...variables.Pages.ListOfSelectedPages,{"PageID":props}]
+      variables.Pages.ListOfSelectedPages=[...variables.Pages.ListOfSelectedPages,props]
     }
     else
     {   
-      let index = findIndexByProp(variables.Pages.ListOfSelectedPages, 'PageID', props);
+      let index = findIndexByProp(variables.Pages.ListOfSelectedPages, 'ID', props.ID);
       variables.Pages.ListOfSelectedPages.splice(index,1)
+   
     }
+    
+    console.log(variables.Pages.ListOfSelectedPages)
   }
   const dataStateChange = event => {
     setDataResult(process(Data, event.dataState));
@@ -211,14 +187,38 @@ export default function App(props)  {
                     <GridColumn locked={true} filterable={false} width={"50px"} cell={(props)=>{
              if(props.dataItem.items==undefined)
              {
-              
-              return(
+                   let Checkbox_Is_Checked=false
+                     variables.Pages.ListOfSelectedPages.map((SelectedPages)=>{
+                         if(props.dataItem.PageDetails.id==SelectedPages.ID)
+                         {
+                          Checkbox_Is_Checked=true
+                          
+                         }
+                     })
+                     if(Checkbox_Is_Checked==true)
+                     {
+                      return(
                
-                <td columnSpan={1}>
-                <div style={{display: "flex",justifyContent: "center", alignItemsn: "center"}}>
-                <MDBCheckbox id={props.dataItem.PageDetails.id} name='flexCheck' value='' onChange={()=>{handlePageCheck(props.dataItem.PageDetails.id)}}/>
-                </div>
-                </td>)
+                        <td columnSpan={1}>
+                        <div style={{display: "flex",justifyContent: "center", alignItemsn: "center"}}>
+                          
+                        <MDBCheckbox id={"CHECKBOX"+props.dataItem.PageDetails.id} key={"CHECKBOX"+props.dataItem.PageDetails.id} name='flexCheck'  defaultChecked onChange={()=>{handlePageCheck({"ID":props.dataItem.PageDetails.id,"name":props.dataItem.PageDetails.name})}}/>
+                        </div>
+                        </td>)
+                     }
+                     else
+                     {
+                      return(
+               
+                        <td columnSpan={1}>
+                        <div style={{display: "flex",justifyContent: "center", alignItemsn: "center"}}>
+                          
+                        <MDBCheckbox id={"CHECKBOX"+props.dataItem.PageDetails.id} key={"CHECKBOX"+props.dataItem.PageDetails.id} name='flexCheck'  onChange={()=>{handlePageCheck({"ID":props.dataItem.PageDetails.id,"name":props.dataItem.PageDetails.name})}}/>
+                        </div>
+                        </td>)
+                     }
+                 
+              
              }
              else
              {
@@ -231,16 +231,37 @@ export default function App(props)  {
         <GridColumn style={{margin:"10px"}}  locked={true} filterable={true} cell={(props)=>{
                     if(props.dataItem.items==undefined)
                    {
-                       return(<td>
-                       <Container className="d-flex justify-content-center align-items-center">
-                       <Row >
-                        <Col >
-                        <Avatar size="lg" src={props.dataItem.PageDetails.picture.data.url} color="gradient"   squared zoomed/>
-                        </Col>
-                        <Col><p className="m-3">{props.dataItem.PageDetails.name}</p></Col>
-                       </Row>
-                       </Container>
-                       </td>)
+
+                    // If the response has a .picture it means teh page is a FB Page and we show it this way
+                    if(props.dataItem.PageDetails.picture!=undefined)
+                    {
+                      return(<td>
+                        <Container >
+                        <Row className="d-flex justify-content-center align-items-center" >
+                         <Col >
+                         <Avatar size="lg" src={props.dataItem.PageDetails.picture.data.url} color="gradient"   squared zoomed/>
+                         </Col>
+                         <Col><p className="m-1">{props.dataItem.PageDetails.name}</p></Col>
+                        </Row>
+                        </Container>
+                        </td>)
+                    }
+                     //else its an instagram picture
+                    if(props.dataItem.PageDetails.profile_picture_url!=undefined)
+                    {
+                      return(<td>
+                        <Container >
+                        <Row className="d-flex justify-content-center align-items-center" >
+                         <Col >
+                         <Avatar size="lg" src={props.dataItem.PageDetails.profile_picture_url} color="gradient"   squared zoomed/>
+                         </Col>
+                         <Col><p className="m-1">{props.dataItem.PageDetails.name}</p></Col>
+                        </Row>
+                        </Container>
+                        </td>)
+                    }
+                      
+
                    }}}  title="Page Name " field='PageDetails.name'>
                  
         </GridColumn> 
@@ -251,22 +272,23 @@ export default function App(props)  {
                    {
                        return(
                        <td>
-                        <Container className="d-flex justify-content-center align-items-center">
-                         {props.dataItem.PagePlatformDetails.map((plat)=>{return(<Row><Col><Avatar className="m-2" size="lg" src={plat.platformLogoImageUrl} color="gradient" zoomed/></Col></Row>)})}
-                         </Container> </td>) }}}  title="Supported platforms ">    
+                        <Container >
+                        <Row className="d-flex justify-content-center align-items-center">
+                         {props.dataItem.PagePlatformDetails.map((plat)=>{return(<Col><Avatar className="m-1" size="lg" src={plat.platformLogoImageUrl} color="gradient" zoomed/></Col>)})}
+                         </Row> </Container> </td>) }}}  title="Supported platforms ">    
         </GridColumn>  
         {/* This Grid Column shows the Page Owner Image and name */}      
         <GridColumn style={{margin:"10px"}}  locked={true} filterable={true}  title="Page Owner" cell={(props)=>{
                     if(props.dataItem.items==undefined)
                    {
                        return(<td>
-                      <Container className="d-flex justify-content-center align-items-center">
-                      <Row>
+                      <Container >
+                      <Row className="d-flex justify-content-center align-items-center">
                         <Col>
                         <Avatar size="lg" src={props.dataItem.PageOwnerDetails.picture.data.url} color="gradient"  zoomed/>
                         </Col>
                         <Col>
-                        <p className="m-3">{props.dataItem.PageOwnerDetails.name}</p>
+                        <p className="m-1">{props.dataItem.PageOwnerDetails.name}</p>
                         </Col>
                       </Row>
                       </Container>

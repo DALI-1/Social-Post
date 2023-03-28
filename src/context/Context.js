@@ -88,12 +88,12 @@ const reducer=(GlobalState,action)=>
                         return({...GlobalState,PageSelectedTab:variables.PageTabs.AddPage})
                     }
                  
-                case variables.PostSelectedTabActions.SelectEditPost:
+                case variables.PageTabActions.SelectEditPage:
                     {
                   return({...GlobalState,PageSelectedTab:variables.PageTabs.EditPage})
                     }
     
-                    case variables.PostSelectedTabActions.SelectManagePosts:
+                    case variables.PageTabActions.SelectManagePage:
                     {
                        
                   return({...GlobalState,PageSelectedTab:variables.PageTabs.ManagePage})
@@ -206,15 +206,15 @@ const reducer=(GlobalState,action)=>
                              //Selected Group
                         
                         case variables.SelectGroupActions.SetSelectedGroup:
-                            {   
-                               
+                            {                              
+                             variables.Group.SelectedGroup=variables.UserInformations.info.joinedGroups[action.value].id
                             return({...GlobalState,SelectedGroup:variables.UserInformations.info.joinedGroups[action.value]})
                            
                             } 
 
                             case variables.SelectGroupActions.SetSelectedGroupToDefault:
                             {   
-                               
+                                variables.Group.SelectedGroup=0
                             return({...GlobalState,SelectedGroup:0})
                            
                             }

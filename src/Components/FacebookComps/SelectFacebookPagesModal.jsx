@@ -13,6 +13,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 
 import { useEffect } from 'react';
+import { Pages } from '@mui/icons-material';
 
 export default function PagesDialog(props) {
    
@@ -22,15 +23,14 @@ export default function PagesDialog(props) {
 
   let FacebookLoginRefButton=React.useRef();
   const responseFacebook = (response) => {
-    console.log(response)
     setIsLoggedIn(true);
     variables.FacebookUser.LoggedFacebookUserInfo=response
-fetch(`https://graph.facebook.com/v16.0/me/accounts?fields=id,name,instagram_business_account,access_token&access_token=${response.accessToken}`)
+fetch(`https://graph.facebook.com/v16.0/me/accounts?fields=name,id,instagram_business_account{name,id},access_token&&access_token=${response.accessToken}`)
 .then(response => response.json())
 .then(data =>
 {
   variables.Pages.FBSelectPagesList=data
-  console.log(data)
+
   SetPagesLoadedFlag(true)
  
 }
@@ -49,75 +49,69 @@ fetch(`https://graph.facebook.com/v16.0/me/accounts?fields=id,name,instagram_bus
     //if the FB SDK IS LOADED AND RENDERED, LAUNCH THE PAGES FETCH
     if(isSdkLoaded==true)
     FacebookLoginRefButton.current.click()
-  
-
   },[isSdkLoaded])
     const {GlobalState,Dispatch}=React.useContext(AppContext)
     let ListOfPages=props.data
     const handleClose = () => {
-      console.log(props)
+  
       props.SetSelectFBPageModalFlag(false)
     };
   
 
     const handleAddPage=()=>
     {
-       var JsonObject={
-  "groupID": "",
-  "ownerFBid": "",
-  "OwnerFB_shortLivedToken": "",
-  "listOfPages": []
-  
-       }
-      var listOfPages=[]
-     
+      var List_Of_FacebookPages_With_Possible_BusinessAccounts=[]
+      var Selected_FB_Pages=[]
       //Checking which Page is selected
+      
       variables.Pages.FBSelectPagesList.data.map((Page)=>{
        var checkbox=document.getElementById("NewPage"+Page.id)
-      console.log(checkbox)
+
        if(checkbox.checked)
        { 
-        if(Page.instagram_business_account==undefined)
-        {listOfPages=[...listOfPages,{pageID:checkbox.id.replace("NewPage",""),Page_shortLivedToken:Page.access_token,listOfUsersRelatedToThePage:[]}]}
-        else
+        //Creating the list of potentional pages to add
+        Selected_FB_Pages=[...Selected_FB_Pages,Page]
+
+        if(Page.instagram_business_account!=undefined)
         {
-          listOfPages=[...listOfPages,{pageID:checkbox.id.replace("NewPage",""),Page_shortLivedToken:Page.access_token,listOfUsersRelatedToThePage:[ {platformUserID: Page.instagram_business_account.id}]}]
+          List_Of_FacebookPages_With_Possible_BusinessAccounts=[...List_Of_FacebookPages_With_Possible_BusinessAccounts,Page]
         }
        }
-        
+       
       })
-    JsonObject.groupID=GlobalState.SelectedGroup.id
-    JsonObject.ownerFBid=variables.FacebookUser.LoggedFacebookUserInfo.userID
-    JsonObject.OwnerFB_shortLivedToken=variables.FacebookUser.LoggedFacebookUserInfo.accessToken
-    JsonObject.listOfPages=listOfPages  
-    let JsonObjectToSend=JSON.stringify(JsonObject)
-      let url2=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_ADDPAGE
-      let UserToken=window.localStorage.getItem("AuthToken")
-      let APIResult=CALL_API_With_JWTToken(url2,JsonObjectToSend,UserToken)
-      Dispatch({type:variables.HeaderSpinnerActions.TurnOnRequestSpinner})
+      //Just updating the selected pages
+      variables.Pages.FBSelectedPagesList=Selected_FB_Pages
+      //Here I'm updating the value with facebook pages with a possible business accounts so that the optional pop up knows if it should show or not based on the length
+      props.SetFBINPages(List_Of_FacebookPages_With_Possible_BusinessAccounts)
       
-      APIResult.then((result)=>
-      {
-                if(result.successCode=="Page_Added")           
-                toast.success(result.result, {
-                  position: "bottom-left",
-                  autoClose: 5000,
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: true,
-                  progress: undefined,
-                  theme: "light",
-                  });                                       
-                                  
-      })
-      .catch((e)=>{
-
-        console.log(e)
-      })  
-      
-      Dispatch({type:variables.HeaderSpinnerActions.TurnOffRequestSpinner})
+  if(Selected_FB_Pages.length>0)
+  {
+    if(List_Of_FacebookPages_With_Possible_BusinessAccounts.length==0)
+    {
       handleClose()
+      props.handleAddINPages()
+    }
+    else
+    {
+      props.SetShowFBINChoiceModal(true)
+    }
+
+    
+  }
+  else
+  {
+    toast.info('You need to select at least one page', {
+      position: "bottom-left",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      });
+  }
+   
     }
    
     return (
@@ -125,7 +119,7 @@ fetch(`https://graph.facebook.com/v16.0/me/accounts?fields=id,name,instagram_bus
              <FacebookLogin  
         appId="959797981855736"
         autoLoad={true}
-        fields="instagram_basic,pages_show_list,email,pages_manage_posts"
+        fields="instagram_basic,pages_show_list,email,pages_manage_posts,pages_manage_metadata,pages_manage_cta"
         callback={responseFacebook} 
         onFailure={onFailure}
         render={renderProps => {
