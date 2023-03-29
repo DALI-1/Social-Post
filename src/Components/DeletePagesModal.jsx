@@ -27,10 +27,11 @@ export default function PagesDialog(props) {
     {
       let JsonObject={"listOfPagesToDelete":[]}
       variables.Pages.ListOfSelectedPages.map((page)=>{
+       
         JsonObject.listOfPagesToDelete=[...JsonObject.listOfPagesToDelete,{"pageID":page.ID}]
       })
       
-      let JsonObjectToSend=JSON.stringify(JsonObject)     
+      let JsonObjectToSend=JSON.stringify(JsonObject)    
       let url2=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_DELETEPAGES
       let UserToken=window.localStorage.getItem("AuthToken")
       let APIResult=CALL_API_With_JWTToken(url2,JsonObjectToSend,UserToken)

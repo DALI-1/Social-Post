@@ -21,6 +21,118 @@ import * as variables from "../../variables/variables"
 import {APIStatus,APIStatuses}  from '../../variables/variables';
 import { Avatar } from "@nextui-org/react";
 import { mapTree, extendDataItem } from '@progress/kendo-react-common';
+import { minHeight } from '@mui/system';
+import DeleteModal from "../../components/DeletePagesModal"
+import {
+    ListView,
+    ListViewHeader,
+    ListViewFooter,
+  } from "@progress/kendo-react-listview";
+
+
+
+  const MyHeaderAssociatePage = () => {
+    return (
+      <ListViewHeader
+        style={{
+          color: "rgb(0, 0, 0)",
+          fontSize: 15,
+        }}
+        className="pl-3 pb-2 pt-2"
+      >
+       <strong>Associated Pages: </strong> 
+      </ListViewHeader>
+    );
+  };
+  const MyHeaderAssociateToPage = () => {
+    return (
+      <ListViewHeader
+        style={{
+          color: "rgb(0, 0, 0)",
+          fontSize: 15,
+        }}
+        className="pl-3 pb-2 pt-2"
+      >
+        <strong>Pages Associated To: </strong>
+      </ListViewHeader>
+    );
+  };
+  const MyFooter = () => {
+   
+    return (
+      <ListViewFooter
+        style={{
+          color: "rgb(160, 160, 160)",
+          fontSize: 14,
+        }}
+        className="pl-3 pb-2 pt-2"
+      >
+       
+      </ListViewFooter>
+    );
+  };
+
+
+
+  
+
+    const MyItemRender = (props) => {
+        let e = props.dataItem;   
+        if(e.associated_By_Page!=undefined)
+        {
+                //here we testing by profile_picture_url attribute, if it's not undefined then the related page is an instagram page, else its a facebook one
+                if(e.associated_By_Page.profile_picture_url!=undefined)
+                {
+                return(
+                    <div className="k-listview-item row p-2 border-bottom align-middle" style={{ margin: 0}}>
+                    <div className="col-2 m-2"> <Avatar size="lg" src={e.associated_By_Page.profile_picture_url} color="gradient"   squared zoomed/></div>
+                    {/*<div className="col-3 m-2">
+                    <h2 style={{ fontSize: 14, color: "#454545",marginBottom: 0, }} className="text-uppercase">  Account Username</h2>
+                <div style={{fontSize: 12,color: "#a0a0a0", }}>{e.value.username }</div> </div>*/}
+                    <div className="col-4 m-2">
+                    <h2 style={{ fontSize: 14, color: "#454545",marginBottom: 0, }} className="text-uppercase"> Page Name</h2>
+                    <div style={{fontSize: 12,color: "#a0a0a0", }}>{e.associated_By_Page.name }</div></div>
+                    <div className="col-2 m-2">
+                    <Avatar size="lg" src={e.platform.platformLogoImageUrl} color="gradient"   squared zoomed/>
+                    </div></div>) 
+                }
+                //This indicate that this is a Facebook Page and we handle it with different attributes
+                if(e.profile_picture_url==undefined)
+                {
+                return(
+                    <div className="k-listview-item row p-2 border-bottom align-middle" style={{ margin: 0}}>
+                    <div className="col-2 m-2"> <Avatar size="lg" src={e.associated_By_Page.picture.data.url} color="gradient"   squared zoomed/></div>
+                    {/*<div className="col-3 m-2">
+                    <h2 style={{ fontSize: 14, color: "#454545",marginBottom: 0, }} className="text-uppercase">  Account Username</h2>
+                <div style={{fontSize: 12,color: "#a0a0a0", }}>{e.value.username }</div> </div>*/}
+                    <div className="col-4 m-2">
+                    <h2 style={{ fontSize: 14, color: "#454545",marginBottom: 0, }} className="text-uppercase"> Page Name</h2>
+                    <div style={{fontSize: 12,color: "#a0a0a0", }}>{e.associated_By_Page.name }</div></div>
+                    <div className="col-2 m-2">
+                    <Avatar size="lg" src={e.platform.platformLogoImageUrl} color="gradient"   squared zoomed/>
+                    </div></div>) 
+                }
+           
+          
+            }else
+            return (<></>)
+        }
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 export default function Content() {
     const selectField = "selected";
     const expandField = "expanded";
@@ -37,7 +149,12 @@ export default function Content() {
     const [SelectedpageData, setSelectedpageData] = React.useState([]);
     const [data, setdata] = React.useState([{id:"",name:"Loading"}]);
     const [value, setValue] = React.useState(null);
+    const [DropDownTreeShow, setDropDownTreeShow] = React.useState(true);
     const [expanded, setExpanded] = React.useState([data[0][dataItemKey]]);
+    const [Associated_By_Page, setAssociated_By_Page] = React.useState({});
+    const [List_Of_Associated_Pages, setList_Of_Associated_Pages] = React.useState([]);
+    const [DeleteModalShow, setDeleteModalShow] = React.useState(false);
+    const[AssociationsLoadedFlag,SetAssociationsLoadedFlag] = React.useState(false)
     let PagePicture= React.useRef();
     const onChange = (event) => setValue(event.value);
     const onExpandChange = React.useCallback(
@@ -56,7 +173,6 @@ export default function Content() {
     const [UploadProgress,setUploadProgress]=React.useState(0)
     React.useEffect(() => {              
         //Loading All FB Categories from the backened
-        
         var JsonObject={
             "PageID": variables.Pages.ListOfSelectedPages[0].ID
           }
@@ -67,19 +183,27 @@ export default function Content() {
           Dispatch({type:variables.HeaderSpinnerActions.TurnOnRequestSpinner})
           APIResult.then((result)=> {
             if(result.ErrorCode==undefined)
-              {setdata(result.result.data)}
-            else
-            {
-                console.log(result)
-               
-            }  
-            
-            
-        
-        })     
-          .catch((e)=>{console.log(e)})
+              {setdata(result.result.data)}}).catch((e)=>{console.log(e)})
+              Dispatch({type:variables.HeaderSpinnerActions.TurnOffRequestSpinner}) 
+          //Loading the Page Associated pages and associated by pages
+
+          let url3=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_GETPAGEASSOCIATIONS
+          let APIResult3=CALL_API_With_JWTToken(url3,JsonObjectToSend,UserToken)
+          Dispatch({type:variables.HeaderSpinnerActions.TurnOnRequestSpinner})
+          APIResult3.then((result)=> {
+            if(result.ErrorCode==undefined)
+              {   
+                if(JSON.stringify(result.result.associated_By_Page) === '{}')
+                {setAssociated_By_Page([]) }
+                else
+                {setAssociated_By_Page([result.result.associated_By_Page]) }
+                setList_Of_Associated_Pages(result.result.list_Of_Associated_Pages) 
+                SetAssociationsLoadedFlag(true)           
+            }})
+              .catch((e)=>{console.log(e)})
+              Dispatch({type:variables.HeaderSpinnerActions.TurnOffRequestSpinner})
        
-          Dispatch({type:variables.HeaderSpinnerActions.TurnOffRequestSpinner}) 
+          
 
         },[]);
 
@@ -97,13 +221,15 @@ export default function Content() {
   let APIResult3=CALL_API_With_JWTToken(url3,JsonObjectToSend3,UserToken3)
  
   APIResult3.then((result)=> { 
+    console.log(result)
     if(result.ErrorCode==undefined)
     {
+        //Handling Facebook result
         if (result.result.name!=undefined){PageName.current.value=result.result.name}
         if (result.result.about!=undefined){PageAbout.current.value=result.result.about}
-        if (result.result.picture.data.url!=undefined){PageImageUrl.current.src=result.result.picture.data.url}
+        if (result.result.picture!=undefined){PageImageUrl.current.src=result.result.picture.data.url}
         if (result.result.description!=undefined){PageDescription.current.value=result.result.description}
-        if (result.result.category_list[0]!=undefined){
+        if (result.result.category_list!=undefined){
             //Setting the default category to selected
             
         var res=mapTree(treeData,subItemsField,(item)=>{
@@ -111,6 +237,24 @@ export default function Content() {
               setValue(item)
             return item
         })
+        }
+        else
+        {
+            setDropDownTreeShow(false)
+        }
+
+        //HandlingInstagram result
+        if (result.result.picture==undefined)
+        {PageImageUrl.current.src=result.result.profile_picture_url}
+        if (result.result.description==undefined){
+            PageDescription.current.value="Not Applicable"
+            PageDescription.current.readOnly=true
+        }
+        
+        if (result.result.about==undefined){
+            
+            PageAbout.current.value="Not Applicable"
+            PageAbout.current.readOnly=true
         }
     }
     else
@@ -139,9 +283,10 @@ export default function Content() {
       props.preventDefault()
       
       var JsonObject={
-        "PageID": variables.Pages.ListOfSelectedPages[0].PageID,"pageName":PageName.current.value,"pageDescription":PageDescription.current.value
-        ,"pageAbout":PageAbout.current.value
+        "PageID": variables.Pages.ListOfSelectedPages[0].ID,"pageName":PageName.current.value,"pageDescription":PageDescription.current.value
+        ,"pageAbout":PageAbout.current.value,"pageCategory":value.id,"pageCategoryName":value.name
       }
+      console.log(value)
       let JsonObjectToSend=JSON.stringify(JsonObject)  
       let url2=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_UPDATEPAGEINFO
       let UserToken=window.localStorage.getItem("AuthToken")
@@ -190,7 +335,7 @@ export default function Content() {
                 //Sending a POST HTTP To the API with the Json Object
                 setUploadProgress(0)
                 var JsonObject={
-                    "PageID": variables.Pages.ListOfSelectedPages[0].PageID,"pictureURL":url.toString()
+                    "PageID": variables.Pages.ListOfSelectedPages[0].ID,"pictureURL":url.toString()
                    
                   }
                   let JsonObjectToSend=JSON.stringify(JsonObject)  
@@ -199,18 +344,34 @@ export default function Content() {
                   let APIResult=CALL_API_With_JWTToken(url2,JsonObjectToSend,UserToken)
                   Dispatch({type:variables.HeaderSpinnerActions.TurnOnRequestSpinner})
                   APIResult.then((result)=> {
-
-                    
-                    toast.success('Page Picture Changed Successfully', {
-                        position: "bottom-left",
-                        autoClose: 5000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                        theme: "light",
-                        });
+                    if(result.successCode=='Page_Picture_Updated')
+                    {
+                        toast.success('Page Picture Changed Successfully', {
+                            position: "bottom-left",
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "light",
+                            });
+                    }
+                    else
+                    {
+                        toast.error('Page Picture Changed failed.', {
+                            position: "bottom-left",
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "light",
+                            });
+                    }
+               
+                   
 
                     Dispatch({type:variables.HeaderSpinnerActions.TurnOffRequestSpinner})
                       })     
@@ -269,20 +430,23 @@ export default function Content() {
                 <div className="card-body text-center ">
                     {/*Test if User has a profile picture if not show default*/}
                     
-                    <img ref={PageImageUrl}   style={{ display: 'block', margin: 'auto' }}  className="rounded-5 shadow-2 mb-5 border border-primary"  alt=""/> 
-                    <form onSubmit={handleImageUpdate}>
+                    <img ref={PageImageUrl}   style={{ display: 'block', margin: 'auto',minWidth:"10rem",minHeight:"10rem",maxHeight:"10rem",maxWidth:"10rem" }}  className="rounded-5 shadow-2 mb-5 border border-primary"  alt=""/> 
+                    {DropDownTreeShow&&
+                         <form onSubmit={handleImageUpdate}>
                     
-                    <div className="small font-italic text-muted mb-4">
-                    <input className="form-control" name="file" id="inputUsername" type="file" accept="image/png, image/gif, image/jpeg" />
-                    {/* Show uploadprogress comp if the Uploadprogress state>0 */}
-                    {UploadProgress!=0&&<ProgressBar  className='m-4' now={UploadProgress} />}
-                    
-                    {UploadProgress!=0&&<span>Uploading Image please wait...</span>}
-
-                    {UploadProgress!=0&&<Button onClick={CancelImageUpload} variant="outline-primary">Cancel Upload</Button>}
-                    </div>
-                    <input className="btn btn-primary" type="submit" value="Save Image"/>
-                    </form>
+                         <div className="small font-italic text-muted mb-4">
+                         <input className="form-control" name="file" id="inputUsername" type="file" accept="image/png, image/gif, image/jpeg" />
+                         {/* Show uploadprogress comp if the Uploadprogress state>0 */}
+                         {UploadProgress!=0&&<ProgressBar  className='m-4' now={UploadProgress} />}
+                         
+                         {UploadProgress!=0&&<span>Uploading Image please wait...</span>}
+     
+                         {UploadProgress!=0&&<Button onClick={CancelImageUpload} variant="outline-primary">Cancel Upload</Button>}
+                         </div>
+                         <input className="btn btn-primary" type="submit" value="Save Image"/>
+                         </form>
+                    }
+               
                 </div>
             </div>
         </div>
@@ -295,7 +459,7 @@ export default function Content() {
                       
                         <div className="mb-3">
                             <label className="small mb-1" htmlFor="Pname"> Page Name</label>
-                            <input  ref={PageName} className="form-control" name="Page_Name" id="Pname" type="text" placeholder="Enter your new Page Name" />
+                            <input  ref={PageName} className="form-control" name="Page_Name" id="Pname" type="text" placeholder="Enter your new Page Name" readOnly />
                         </div>
                        
                         <div className="row gx-3 mb-3">
@@ -310,32 +474,82 @@ export default function Content() {
                                 <input  ref={PageDescription} className="form-control"  name="lastName" id="pdes" type="text" placeholder="Enter your Page Description here" />
                             </div>
                         </div>
-
-                        <div className="mb-3">
-                            <label className="small mb-1"> Page Category</label>
-                            <br></br>
-                            <div>
-                                <DropDownTree
-                                    data={treeData}
-                                    value={value}
-                                    onChange={onChange}
-                                    placeholder="Please select ..."
-                                    textField={textField}
-                                    dataItemKey={dataItemKey}
-                                    selectField={selectField}
-                                    expandField={expandField}
-                                    subItemsField={subItemsField}
-                                    onExpandChange={onExpandChange}
-                                />
-                            </div>
-                           
-          
-          
-                        </div>
+                        {DropDownTreeShow&&
+                             <>
+                             <div className="mb-3">
+                             <label className="small mb-1"> Page Category</label>
+                             <br></br>
+                             <div>
+                                  <DropDownTree
+                               data={treeData}
+                               value={value}
+                               onChange={onChange}
+                               placeholder="Please select ..."
+                               textField={textField}
+                               dataItemKey={dataItemKey}
+                               selectField={selectField}
+                               expandField={expandField}
+                               subItemsField={subItemsField}
+                               onExpandChange={onExpandChange} />
+                               
+                             </div>
+                            
+           
+           
+                         </div>  
+                        <input type="submit" value="Save Changes" className="btn btn-primary"/></>
+                            } 
+                        
 
                         
-                        <input type="submit" value="Save Changes" className="btn btn-primary"/>
+                        
                     </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div className="row d-flex" >
+        <div className="col-xl-4 d-flex">
+            
+            <div className="card mb-4 ">
+                <div className="card-header d-flex justify-content-center"> Delete Page</div>
+                <div className="card-body text-center ">
+                <p>If you want to delete the Page from the List, Be careful, if the Page is deleted, there is no come back, this is permanent!</p>      
+                        {DeleteModalShow&&<DeleteModal SetShowDeleteModal={setDeleteModalShow}/> }
+                <input className="btn btn-danger"style={{margin:"1rem"}} onClick={()=>{ 
+                  setDeleteModalShow(!DeleteModalShow)
+                }} type="submit" value="Delete Page"/>
+                </div>
+            </div>
+        </div>
+        <div className="col-xl-8 d-flex">
+           
+            <div className="card mb-4 ">
+                <div className="card-header d-flex justify-content-center"> Modify Page Association</div>
+                <div className="card-body text-center ">
+                   {AssociationsLoadedFlag==true?
+                   <>
+
+<ListView
+        data={List_Of_Associated_Pages}
+        item={MyItemRender}
+        style={{width: "100%"}}
+        header={MyHeaderAssociatePage}
+        footer={MyFooter}
+      />
+     {List_Of_Associated_Pages.length==0&&<p className="m-1"style={{color: "rgb(160, 160, 160)", fontSize: 12,}}>The Page doesn't have any.</p>}
+<ListView
+        data={Associated_By_Page}
+        item={MyItemRender}
+        style={{ width: "100%"}}
+        header={MyHeaderAssociateToPage}
+        footer={MyFooter}
+                   /> 
+                   {} 
+                   {console.log(Associated_By_Page.length)}    
+{Associated_By_Page.length==0&&<p className="m-1" style={{color: "rgb(160, 160, 160)", fontSize: 12,}}>The Page doesn't have any.</p>}       
+                     </>
+                   :<p>Loading Associations....</p>}
                 </div>
             </div>
         </div>
