@@ -7,7 +7,6 @@ import IndexPage from './Views/PageLayout/PageLayout';
 import ChangePW from './Views/Authentification/ChangePassword';
 import PasswordRecovery from './Views/Authentification/PasswordRecovery.jsx';
 import '@progress/kendo-theme-default/dist/all.css';
-
 function App() {
   return (
     <Router>

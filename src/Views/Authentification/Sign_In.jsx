@@ -91,6 +91,7 @@ setPasswordRecoveryStatus(false)
                   window.localStorage.setItem('AuthToken', result[property])
                   window.localStorage.setItem('IsRemembered', false)
                 }
+                setLoadingSpinnerStatus(false) 
           }
           else if(property=="UserNotFound")
           {
@@ -107,6 +108,7 @@ setPasswordRecoveryStatus(false)
                   progress: undefined,
                   theme: "light",
                   });
+                  setLoadingSpinnerStatus(false) 
           }
           else if(property=="WrongPassword")
           {
@@ -122,6 +124,7 @@ setPasswordRecoveryStatus(false)
               progress: undefined,
               theme: "light",
               });
+              setLoadingSpinnerStatus(false) 
           }
         
         }
@@ -138,9 +141,10 @@ setPasswordRecoveryStatus(false)
       progress: undefined,
       theme: "light",
       });
+      setLoadingSpinnerStatus(false) 
   
    })
-   setLoadingSpinnerStatus(false) 
+   
   }
 
   

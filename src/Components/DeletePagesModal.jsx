@@ -25,7 +25,9 @@ export default function PagesDialog(props) {
 
     const handleDelete=()=>
     {
-      let JsonObject={"listOfPagesToDelete":[]}
+      if(GlobalState.SelectedGroup.group_Name!="Loading...") 
+      {
+      let JsonObject={"listOfPagesToDelete":[],"groupID": GlobalState.SelectedGroup.id}
       variables.Pages.ListOfSelectedPages.map((page)=>{
        
         JsonObject.listOfPagesToDelete=[...JsonObject.listOfPagesToDelete,{"pageID":page.ID}]
@@ -54,16 +56,23 @@ export default function PagesDialog(props) {
                   progress: undefined,
                   theme: "light",
                   });
-                  
+
+
+                  Dispatch({type:variables.HeaderSpinnerActions.TurnOffRequestSpinner})  
+                  Dispatch({type:variables.PageTabActions.SelectManagePage}) 
+                  Dispatch({type:variables.RerenderActions.ReRenderPage}) 
+                  handleClose()
                }
-               handleClose()
-               Dispatch({type:variables.HeaderSpinnerActions.TurnOffRequestSpinner})                          
+               
+                
+                                     
       })
       .catch((e)=>{
 
         console.log(e)
       })
     }
+  }
 
     return (
       <>

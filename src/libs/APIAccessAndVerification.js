@@ -35,7 +35,10 @@ export  const  CALLAPI = async (url,data)=>
       }
       
       const json = await response.json(); 
-     
+      if(response.status.toString()=="400"&&json.errorCode == "F004")
+      {
+        console.log("TOO MANY FACEBOOK REQUESTS")
+      }
       APIStatus.Status=APIStatuses.APICallSuccess
       return(json)
 
@@ -102,10 +105,16 @@ export  const  CALLAPI = async (url,data)=>
         console.log(response)
         throw new ServerInternalError()
       }
+
   
     
 
       const json = await response.json();  
+      
+      if(response.status.toString()=="400"&&json.errorCode == "F004")
+      {
+        console.log("TOO MANY FACEBOOK REQUESTS")
+      }
       
       APIStatus.Status=APIStatuses.APICallSuccess
       return(json)
@@ -247,7 +256,11 @@ export  const  CALLAPI = async (url,data)=>
         throw new ServerInternalError()
       }
 
-      const json = await response.json();  
+      const json = await response.json(); 
+      if(response.status.toString()=="400"&&json.errorCode == "F004")
+      {
+        console.log("TOO MANY FACEBOOK REQUESTS")
+      } 
       APIStatus.Status=APIStatuses.APICallSuccess
       return(json)
     } catch (error) {

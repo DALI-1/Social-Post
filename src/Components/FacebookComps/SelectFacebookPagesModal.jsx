@@ -150,6 +150,13 @@ fetch(`https://graph.facebook.com/v16.0/me/accounts?fields=name,id,instagram_bus
           onClose={handleClose}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
+           
+          PaperProps={{
+            style: { 
+              margin: '80px auto', // adjust margin to change vertical position
+
+             top:"-10rem"
+            }}}
         >
           <DialogTitle id="alert-dialog-title">
            Facebook Pages Selection

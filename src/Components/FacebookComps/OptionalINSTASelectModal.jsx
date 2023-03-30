@@ -86,13 +86,7 @@ export default function PagesDialog(props) {
           disableEscapeKeyDown
           PaperProps={{
             style: { 
-              position: 'absolute',
-              margin: '80px auto', // adjust margin to change vertical position
-             maxWidth:"300px",
-             top:"20rem"
-           
-            },
-          }}
+              position: 'absolute',margin: '80px auto', maxWidth:"300px", top:"20rem"},}}
         >
           <DialogTitle id="alert-dialog-title">
             Optional Instagram Pages
