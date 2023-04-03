@@ -26,7 +26,7 @@ const myTheme = createTheme({
     neutralSecondary: "#605e5c",
     neutralPrimaryAlt: "#3b3a39",
     neutralPrimary: "#323130",
-    neutralDark: "#201f1e",
+    neutralDark: "#ffffff",
     black: "#000000",
     white: "#ffffff"
   }

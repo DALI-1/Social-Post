@@ -1,6 +1,6 @@
 import './Sign_up.css';
 
-import React,{ useState,useEffect,useRef  } from 'react';
+import React,{ useState,useRef  } from 'react';
 import LoadingSpinner from '../../components/LoadingSpinner'
 import {
   MDBBtn,
@@ -10,18 +10,15 @@ import {
   MDBCard,
   MDBCardBody,
   MDBInput,
-  MDBCheckbox,
   MDBIcon
 }
 from 'mdb-react-ui-kit';
-import {AppContext} from "../../context/Context"
 import { ChakraProvider } from '@chakra-ui/react'
 import logo from '../../Assets/SocialPost-Logo.png';
 import {CALLAPI} from '../../libs/APIAccessAndVerification'
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import {APIStatus,APIStatuses}  from '../../variables/variables';
 function App() {
-  const {GlobalState,Dispatch}=React.useContext(AppContext)
   let [LoadingSpinnerStatus, setLoadingSpinnerStatus] = useState(false);
   let UserExistStatus= useRef(false); //Flag indicated if the User exist or not
   let GroupExistStatus = useRef(false); //flag indicate if the default group name exist or not
@@ -41,19 +38,19 @@ function App() {
   let JsonString="{"
   for(let i=0;i<9;i++)
     {
-      if(i==8)
+      if(i===8)
       {
         ConfirmPassword=props.target[i].value
         JsonString+="}"
       }
      
-      if(i==7)
+      if(i===7)
       {
       JsonString+="\""+props.target[i].name+"\": "+"\""+props.target[i].value+"\""
       Password=props.target[i].value
       }
       else 
-         if(i!=8)
+         if(i!==8)
          {
           JsonString+="\""+props.target[i].name+"\": "+"\""+props.target[i].value+"\","
          } 
@@ -63,7 +60,7 @@ function App() {
  JsonObject=JSON.parse(JSON.stringify(JsonString))
  //Sending a POST HTTP To the API with the Json Object
  let url=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_REGISTERAPINAME
- if(ConfirmPassword==Password)
+ if(ConfirmPassword===Password)
  {
   
   if(Password.length>5)
@@ -72,7 +69,7 @@ function App() {
  let APIResult=CALLAPI(url,JsonObject)
 
  APIResult.then(result=>{
- if(APIStatus.Status==APIStatuses.APICallSuccess)
+ if(APIStatus.Status===APIStatuses.APICallSuccess)
  { 
   for( var property in result)
       {
@@ -162,7 +159,7 @@ function App() {
       }
 
        
-    if(UserExistStatus.current==false && GroupExistStatus.current==false &&APIStatus.Status==APIStatuses.APICallSuccess && EmailExistStatus.current==false &&PhoneNumberExistStatus.current==false)
+    if(UserExistStatus.current===false && GroupExistStatus.current===false &&APIStatus.Status===APIStatuses.APICallSuccess && EmailExistStatus.current===false &&PhoneNumberExistStatus.current===false)
     { 
      
       toast.success('You registered successfully!', {

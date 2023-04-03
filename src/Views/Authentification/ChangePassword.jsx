@@ -1,33 +1,31 @@
 import './Sign_in.css';
-import React,{ useState,useEffect,useRef } from 'react';
-import {MDBContainer, MDBCol, MDBRow, MDBBtn, MDBIcon, MDBInput, MDBCheckbox } from 'mdb-react-ui-kit';
+import React,{ useState,useRef } from 'react';
+import {MDBContainer, MDBCol, MDBRow, MDBBtn, MDBIcon, MDBInput} from 'mdb-react-ui-kit';
 import LoadingSpinner from '../../components/LoadingSpinner'
 import { ChakraProvider } from '@chakra-ui/react'
-import {CALLAPI,CALL_API_With_JWTToken} from '../../libs/APIAccessAndVerification'
-import { ToastContainer, toast } from 'react-toastify';
-import { APIStatus,APIStatuses} from '../../variables/variables';
+import {CALL_API_With_JWTToken} from '../../libs/APIAccessAndVerification'
+import { toast } from 'react-toastify';
 import logo from '../../Assets/SocialPost-Logo.png';
 function App() {
   let [LoadingSpinnerStatus, setLoadingSpinnerStatus] = useState(false);
-  let [PasswordRecoveryStatus, setPasswordRecoveryStatus] = useState(false);
+  //let [PasswordRecoveryStatus, setPasswordRecoveryStatus] = useState(false);
   const queryParameters = new URLSearchParams(window.location.search)
-  let ConfirmPasswordMatch= useRef(false);
  
   let Email = useRef(queryParameters.get("Email") );
   let Password = useRef("");
   let ConfirmPassword = useRef("");
 
 //This methode update the parent that the pop up closed
-  const HandleRecoveryClosure=()=>{
+/*  const HandleRecoveryClosure=()=>{
    
 setPasswordRecoveryStatus(false)
-  }
+  }*/
   const handlesubmit=(props)=>
   {
     props.preventDefault()
-    if(Password.current.value==ConfirmPassword.current.value)
+    if(Password.current.value===ConfirmPassword.current.value)
     {
-      if(Password.current.value!='' &&ConfirmPassword.current.value!=null)
+      if(Password.current.value!=='' &&ConfirmPassword.current.value!==null)
       {
       setLoadingSpinnerStatus(true)
     
@@ -37,7 +35,7 @@ setPasswordRecoveryStatus(false)
     for(let i=0;i<2;i++)
       {
         
-        if(i!=1)
+        if(i!==1)
         JsonString+="\""+props.target[i].name+"\": "+"\""+props.target[i].value+"\","
         else
         JsonString+="\""+props.target[i].name+"\": "+"\""+props.target[i].value+"\"}"
@@ -54,7 +52,7 @@ setPasswordRecoveryStatus(false)
     for( var property in result)
          {
           
-           if( property=="PasswordChanged")
+           if( property==="PasswordChanged")
            {
                       toast.success('Your Password Has changed successfully!', {
                         position: "bottom-left",
@@ -70,7 +68,7 @@ setPasswordRecoveryStatus(false)
                         window.location.replace('/login')
                       break
            }
-           if(property=="UserNotFound")
+           if(property==="UserNotFound")
            {
 
             toast.error('Password hasnt been changed, User not found', {
@@ -138,9 +136,9 @@ setPasswordRecoveryStatus(false)
 
         <MDBCol col='10' md='6'>
         <div className="container-sm">
-        <img src={logo} className="img-fluid" alt="Sample image" />
+        <img src={logo} className="img-fluid" alt="Social Post Logo" />
         </div>
-          <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp" className="img-fluid" alt="Sample image" />
+          <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp" className="img-fluid"  alt="Social Post" />
           
         </MDBCol>
         

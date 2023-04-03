@@ -6,8 +6,7 @@ import reportWebVitals from './reportWebVitals';
 
 import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import { ToastContainer, toast } from 'react-toastify';
-import FooterComp from './Headers/Footer'
+import { ToastContainer} from 'react-toastify';
 import { ChakraBaseProvider, extendBaseTheme } from '@chakra-ui/react'
 import {GlobalContext} from "./context/Context"
 import chakraTheme from '@chakra-ui/theme'

@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './AddSubGroupContent.css';
 import {CALL_API_With_JWTToken,CALL_API_With_JWTToken_GET} from '../../libs/APIAccessAndVerification'
@@ -8,16 +8,14 @@ import {AppContext} from "../../context/Context"
 import * as variables from "../../variables/variables"
 import Container from 'react-bootstrap/Container';
 import { Tree, TreeNode } from 'react-organizational-chart';
-import { MDBRadio,MDBContainer, MDBRow, MDBCol,MDBCheckbox} from 'mdb-react-ui-kit';
-import { Card, CardBody, CardFooter,CardHeader,Checkbox, CheckboxGroup } from '@chakra-ui/react'
+import { MDBRadio,MDBContainer} from 'mdb-react-ui-kit';
 import Groups2SharpIcon from '@mui/icons-material/Groups2Sharp';
 import AdjustSharpIcon from '@mui/icons-material/AdjustSharp';
-import SettingsSharpIcon from '@mui/icons-material/SettingsSharp';
-import {hashString,hashRandom } from 'react-hash-string'
+import {hashRandom } from 'react-hash-string'
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
-import {HeaderSpinnerActions,HeaderSpinner,GroupSelectedTabActions}  from '../../variables/variables'
+import {HeaderSpinnerActions,GroupSelectedTabActions}  from '../../variables/variables'
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -27,7 +25,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 
 export function AlertDialog(props) {
   const [open, setOpen] = React.useState(true);
-  const {GlobalState,Dispatch}=React.useContext(AppContext)
+  const {Dispatch}=React.useContext(AppContext)
 
   let handleGroupDelete=()=>{
  let GroupID=props.GroupID;
@@ -47,7 +45,7 @@ export function AlertDialog(props) {
            for( var property in result)
                                {
                                    
-                                   if( property=="GROUPDELETED")
+                                   if( property==="GROUPDELETED")
                                    {
                                     toast.success("The Group and all of's childs has been deleted successfully!", {
                                       position: "bottom-left",
@@ -60,7 +58,7 @@ export function AlertDialog(props) {
                                       theme: "light",
                                       });
                                     }
-                                    if(property=="IMPOSSIBLETODELETEGROUPUNDERROOT")
+                                    if(property==="IMPOSSIBLETODELETEGROUPUNDERROOT")
                                     {
                                       toast.info("You cant delete the campaign group !", {
                                         position: "bottom-left",
@@ -176,18 +174,18 @@ export default function Content() {
           {
             ListOfVisibleMenuItemsForTheSelection.forEach((MenuItem)=>
             {
-              if(MenuItem.id==action.menuItemId)
+              if(MenuItem.id===action.menuItemId)
               {
                MenuItemExist=true
               }
             })
           }
            //If we didnt add it, we go to the list of all MenuItems and we add it to the List of VissibleMenuItems
-           if(MenuItemExist==false)
+           if(MenuItemExist===false)
            { 
             AllMenuItems.forEach((mi)=>
             {
-              if(mi.id==action.menuItemId)
+              if(mi.id===action.menuItemId)
               ListOfVisibleMenuItemsForTheSelection=[...ListOfVisibleMenuItemsForTheSelection,mi]
             })
            }
@@ -229,7 +227,7 @@ export default function Content() {
 
                     {
                       CheckboxList.current=[...CheckboxList.current,{"CheckboxID":"GROUP"+group.id}]
-                      return(<TreeNode key={"GROUPTREEKEY"+group.id} label={<div><Groups2SharpIcon/> <p>{group.group_Name}</p> {group.id==variables.Group.SelectedGroup?<MDBRadio disabled key={"GROUPK"+group.id} id={"GROUP"+group.id} onClick={HandlePermissionShow} name="SubGroup" style={{margin:"0px"}}/>:<MDBRadio key={"GROUPK"+group.id} id={"GROUP"+group.id} onClick={HandlePermissionShow} name="SubGroup" style={{margin:"0px"}}/>}</div>}>
+                      return(<TreeNode key={"GROUPTREEKEY"+group.id} label={<div><Groups2SharpIcon/> <p>{group.group_Name}</p> {group.id===variables.Group.SelectedGroup?<MDBRadio disabled key={"GROUPK"+group.id} id={"GROUP"+group.id} onClick={HandlePermissionShow} name="SubGroup" style={{margin:"0px"}}/>:<MDBRadio key={"GROUPK"+group.id} id={"GROUP"+group.id} onClick={HandlePermissionShow} name="SubGroup" style={{margin:"0px"}}/>}</div>}>
                       {generateList(group.subGroups)}  
                       </TreeNode>)
                     }
@@ -309,18 +307,18 @@ export default function Content() {
             {
               ListOfVisibleMenuItemsForTheSelection.forEach((MenuItem)=>
               {
-                if(MenuItem.id==action.menuItemId)
+                if(MenuItem.id===action.menuItemId)
                 {
                  MenuItemExist=true
                 }
               })
             }
              //If we didnt add it, we go to the list of all MenuItems and we add it to the List of VissibleMenuItems
-             if(MenuItemExist==false)
+             if(MenuItemExist===false)
              { 
               AllMenuItems.forEach((mi)=>
               {
-                if(mi.id==action.menuItemId)
+                if(mi.id===action.menuItemId)
                 ListOfVisibleMenuItemsForTheSelection=[...ListOfVisibleMenuItemsForTheSelection,mi]
               })
              }
@@ -360,7 +358,7 @@ export default function Content() {
     const CancelGroupMove=()=>{
 
 ListOfActionSelection.current.map((checkbox)=>{
-if(checkbox.clicked==true)
+if(checkbox.clicked===true)
 {
   checkbox.clicked=false
  CheckboxList.current.map((CB)=>{
@@ -404,7 +402,7 @@ SetListOfPermToShow([])
 
           var JsonObject={"parentGroupId":DestGroupID,"groupId":SelectedGroupID,"newSubGroupActions":[]}
           ListOfActionSelection.current.map((action)=>{
-            if(action.clicked==true)
+            if(action.clicked===true)
             {
              
                 JsonObject.newSubGroupActions=[...JsonObject.newSubGroupActions,{id:action.Actionid.toString(),menuItemId:action.menuItemId.toString()}]
@@ -423,7 +421,7 @@ SetListOfPermToShow([])
            for( var property in result)
                                {
                                    
-                                   if( property=="GROUPMOVED")
+                                   if( property==="GROUPMOVED")
                                    {
                                     toast.success('Group Successsfully moved!', {
                                       position: "bottom-left",
@@ -443,13 +441,13 @@ SetListOfPermToShow([])
                                                variables.UserInformations.info=result
                                                variables.UserInformations.info.passwordHash=null
                                                variables.UserInformations.info.passwordSalt=null
-                                               if(RenderValue==true)
+                                               if(RenderValue===true)
                                                ReRender(false)
                                                else
                                                ReRender(true)
                                         })
                                    }
-                                   if( property=="SELECTEDGROUPDOESNTEXIST")
+                                   if( property==="SELECTEDGROUPDOESNTEXIST")
                                    {
                                     toast.error(' The group you selected doesnt exist anymore', {
                                       position: "bottom-left",
@@ -462,7 +460,7 @@ SetListOfPermToShow([])
                                       theme: "light",
                                       });
                                    }
-                                   if( property=="CANNOTCREATEGROUPWITHOUTACTIONS")
+                                   if( property==="CANNOTCREATEGROUPWITHOUTACTIONS")
                                    {
                                     toast.error('You must select some actions for the group!', {
                                       position: "bottom-left",
@@ -476,7 +474,7 @@ SetListOfPermToShow([])
                                       });
                                    }
                                   
-                                   if( property=="ParentGroupDoesntExist")
+                                   if( property==="ParentGroupDoesntExist")
                                    {
                                     toast.error('The parent group doesnt exist anymore', {
                                       position: "bottom-left",
@@ -489,7 +487,7 @@ SetListOfPermToShow([])
                                       theme: "light",
                                       });
                                    }
-                                   if( property=="DESTINATIONISTHESELECTEDGROUP")
+                                   if( property==="DESTINATIONISTHESELECTEDGROUP")
                                    {
                                     toast.error('Invalid destination, please select an other destination!', {
                                       position: "bottom-left",
@@ -503,7 +501,7 @@ SetListOfPermToShow([])
                                       });
                                    }
                                    
-                                   if( property=="GROUPMOVEDUNDERHISOWNCHILD")
+                                   if( property==="GROUPMOVEDUNDERHISOWNCHILD")
                                    {
                                     toast.error('You cant move the group under its own child!', {
                                       position: "bottom-left",
@@ -565,7 +563,7 @@ Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner})
 
           var JsonObject={"groupId":SelectedGroupID,"newSubGroupActions":[]}
           ListOfActionSelection.current.map((action)=>{
-            if(action.clicked==true)
+            if(action.clicked===true)
             {
               JsonObject.newSubGroupActions=[...JsonObject.newSubGroupActions,{id:action.Actionid.toString(),menuItemId:action.menuItemId.toString()}]
             }
@@ -581,7 +579,7 @@ Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner})
            for( var property in result)
                                {
                                    
-                                   if( property=="GROUPPERMISSIONCHANGED")
+                                   if( property==="GROUPPERMISSIONCHANGED")
                                    {
                                     toast.success('Group Permissions Successfully updated!', {
                                       position: "bottom-left",
@@ -618,18 +616,18 @@ Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner})
                                                       {
                                                         ListOfVisibleMenuItemsForTheSelection.forEach((MenuItem)=>
                                                         {
-                                                          if(MenuItem.id==action.menuItemId)
+                                                          if(MenuItem.id===action.menuItemId)
                                                           {
                                                            MenuItemExist=true
                                                           }
                                                         })
                                                       }
                                                        //If we didnt add it, we go to the list of all MenuItems and we add it to the List of VissibleMenuItems
-                                                       if(MenuItemExist==false)
+                                                       if(MenuItemExist===false)
                                                        { 
                                                         AllMenuItems.forEach((mi)=>
                                                         {
-                                                          if(mi.id==action.menuItemId)
+                                                          if(mi.id===action.menuItemId)
                                                           ListOfVisibleMenuItemsForTheSelection=[...ListOfVisibleMenuItemsForTheSelection,mi]
                                                         })
                                                        }
@@ -655,7 +653,7 @@ Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner})
                                                   }
                                         })
                                    }
-                                   if(property=="GROUPDOESNTEXIST")
+                                   if(property==="GROUPDOESNTEXIST")
                                    {
                                     toast.error('The selected group doesnt exist anymore, permission update ', {
                                       position: "bottom-left",
@@ -669,7 +667,7 @@ Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner})
                                       });
                                    }
 
-                                   if(property=="GROUPNEEDMOREPERMISSIONS")
+                                   if(property==="GROUPNEEDMOREPERMISSIONS")
                                    {
                                     toast.error('You need at least 1 permission per group!', {
                                       position: "bottom-left",
@@ -728,7 +726,7 @@ const HandleChangeName=()=>{
            for( var property in result)
                                {
                                    
-                                   if( property=="GROUPNAMECHANGED")
+                                   if( property==="GROUPNAMECHANGED")
                                    {
                                     toast.success('The name of the group Successfully updated!', {
                                       position: "bottom-left",
@@ -749,7 +747,7 @@ const HandleChangeName=()=>{
                                             variables.UserInformations.info=result
                                             variables.UserInformations.info.passwordHash=null
                                             variables.UserInformations.info.passwordSalt=null
-                                            if(RenderValue==true)
+                                            if(RenderValue===true)
                                             ReRender(false)
                                             else
                                             ReRender(true)
@@ -774,7 +772,7 @@ const HandleChangeName=()=>{
             <div className="card mb-4 ">
                <div className="card-header d-flex justify-content-center">Group permissions</div>
                <div className="card-body ">
-                {GlobalState.RequestSpinner==true?<p className="d-flex justify-content-center">Please wait, loading your group permissions....</p>:
+                {GlobalState.RequestSpinner===true?<p className="d-flex justify-content-center">Please wait, loading your group permissions....</p>:
                 
                 <Container>
                 <Row className="d-flex">
@@ -790,17 +788,17 @@ const HandleChangeName=()=>{
 
                      {ListOfPermToShow.map((action)=>{
                        //Showing the action if the action is in the proper menu
-                       if(action.menuItemId==view.id)
+                       if(action.menuItemId===view.id)
                        {
                          let UserGotThePerm=false
                          variables.Group.SelectedGroupPermissions.map((SelectedGroupAction)=>{
-                           if(SelectedGroupAction.id==action.id)
+                           if(SelectedGroupAction.id===action.id)
                            {
                            
                              UserGotThePerm=true}
                            
                          })
-                         if(UserGotThePerm==true)
+                         if(UserGotThePerm===true)
                          {
                            ListOfActionSelection.current[action.id]={Actionid:action.id,menuItemName:view.menuItemName,menuItemId:action.menuItemId,clicked:true}
                            return ( 
@@ -813,7 +811,7 @@ const HandleChangeName=()=>{
                              
                              label={action.actionName}
                              onClick={()=>{
-                               if(ListOfActionSelection.current[action.id].clicked==true)
+                               if(ListOfActionSelection.current[action.id].clicked===true)
                                {UpdateActionSelection(action.id,false)}
                                else
                                {
@@ -836,7 +834,7 @@ const HandleChangeName=()=>{
                              autoSave="off"
                              label={action.actionName}
                              onClick={()=>{
-                               if(ListOfActionSelection.current[action.id].clicked==true)
+                               if(ListOfActionSelection.current[action.id].clicked===true)
                                {UpdateActionSelection(action.id,false)}
                                else
                                {
@@ -859,7 +857,7 @@ const HandleChangeName=()=>{
                  })}
                     </>}
                    
-                    {ListOfViewsToShow.length==0&&<>
+                    {ListOfViewsToShow.length===0&&<>
                     
                  {SelectedParentGroupMenuItems.map((view,index)=>{
 
@@ -871,17 +869,17 @@ const HandleChangeName=()=>{
                     <div className="card-body ">
                        {SelectedParentGroupActions.map((action)=>{
                          //Showing the action if the action is in the proper menu
-                         if(action.menuItemId==view.id)
+                         if(action.menuItemId===view.id)
                          {
                            let UserGotThePerm=false
                            variables.Group.SelectedGroupPermissions.map((SelectedGroupAction)=>{
-                             if(SelectedGroupAction.id==action.id)
+                             if(SelectedGroupAction.id===action.id)
                              {
                              
                                UserGotThePerm=true}
                              
                            })
-                           if(UserGotThePerm==true)
+                           if(UserGotThePerm===true)
                            {
                              ListOfActionSelection.current[action.id]={Actionid:action.id,menuItemName:view.menuItemName,menuItemId:action.menuItemId,clicked:true}
                              return ( 
@@ -894,7 +892,7 @@ const HandleChangeName=()=>{
                                
                                label={action.actionName}
                                onClick={()=>{
-                                 if(ListOfActionSelection.current[action.id].clicked==true)
+                                 if(ListOfActionSelection.current[action.id].clicked===true)
                                  {UpdateActionSelection(action.id,false)}
                                  else
                                  {
@@ -917,7 +915,7 @@ const HandleChangeName=()=>{
                                autoSave="off"
                                label={action.actionName}
                                onClick={()=>{
-                                 if(ListOfActionSelection.current[action.id].clicked==true)
+                                 if(ListOfActionSelection.current[action.id].clicked===true)
                                  {UpdateActionSelection(action.id,false)}
                                  else
                                  {

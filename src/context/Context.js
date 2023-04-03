@@ -1,6 +1,5 @@
-import { useReducer,createContext,useContext,useEffect } from "react";
+import { useReducer,createContext } from "react";
 import * as variables from "../variables/variables"
-import { ToastContainer, toast } from 'react-toastify';
 export const AppContext=createContext(null);
 
 
@@ -198,7 +197,7 @@ const reducer=(GlobalState,action)=>
                         
                         case variables.RerenderActions.ReRenderPage:
                             {   
-                               if(GlobalState.Rerender==true)
+                               if(GlobalState.Rerender===true)
                             return({...GlobalState,Rerender:false})
                             else
                             return({...GlobalState,Rerender:true})

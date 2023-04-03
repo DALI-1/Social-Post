@@ -1,9 +1,8 @@
-import React,{ useState,useEffect,useRef } from 'react';
-import { useToast } from '@chakra-ui/react'
+
 import { APIStatuses } from '../variables/variables';
 import {ServerInternalError,ServerConnectionLostError}from "../Exceptions/Exceptions" ;
 import  {APIStatus}from "../variables/variables"
-import { ToastContainer, toast } from 'react-toastify';
+import {toast } from 'react-toastify';
 //This is an Async method which will call our API, url is the API path, data is the json data, the format should follow our DTO format in the backend
 export  const  CALLAPI = async (url,data)=>
   {
@@ -23,7 +22,7 @@ export  const  CALLAPI = async (url,data)=>
       });
 
       
-      if(response.status.toString()=="500")
+      if(response.status.toString()==="500")
       {
       
         //Throwing the Internal Error Exception
@@ -35,7 +34,7 @@ export  const  CALLAPI = async (url,data)=>
       }
       
       const json = await response.json(); 
-      if(response.status.toString()=="400"&&json.errorCode == "F004")
+      if(response.status.toString()==="400"&&json.errorCode ==="F004")
       {
         console.log("TOO MANY FACEBOOK REQUESTS")
       }
@@ -98,7 +97,7 @@ export  const  CALLAPI = async (url,data)=>
       });
 
       
-      if(response.status.toString()=="500")
+      if(response.status.toString()==="500")
       {
         //Throwing the Internal Error Exception
         console.log("DEVELOPER ONLY: ->")
@@ -111,7 +110,7 @@ export  const  CALLAPI = async (url,data)=>
 
       const json = await response.json();  
       
-      if(response.status.toString()=="400"&&json.errorCode == "F004")
+      if(response.status.toString()==="400"&&json.errorCode === "F004")
       {
         console.log("TOO MANY FACEBOOK REQUESTS")
       }
@@ -182,7 +181,7 @@ export  const  CALLAPI = async (url,data)=>
       });
 
       
-      if(response.status.toString()=="500")
+      if(response.status.toString()==="500")
       {
         //Throwing the Internal Error Exception
         console.log("DEVELOPER ONLY: ->")
@@ -248,7 +247,7 @@ export  const  CALLAPI = async (url,data)=>
       });
 
       
-      if(response.status.toString()=="500")
+      if(response.status.toString()==="500")
       {
         //Throwing the Internal Error Exception
         console.log("DEVELOPER ONLY: ->")
@@ -257,7 +256,7 @@ export  const  CALLAPI = async (url,data)=>
       }
 
       const json = await response.json(); 
-      if(response.status.toString()=="400"&&json.errorCode == "F004")
+      if(response.status.toString()==="400"&&json.errorCode === "F004")
       {
         console.log("TOO MANY FACEBOOK REQUESTS")
       } 

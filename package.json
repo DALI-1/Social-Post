@@ -45,6 +45,7 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "@tinymce/tinymce-react": "^4.3.0",
     "bootstrap": "^5.2.3",
     "cldr-core": "^42.0.0",
     "cldr-dates-full": "^42.0.0",

@@ -1,11 +1,8 @@
 import * as React from 'react';
-import PropTypes from 'prop-types';
 import AppBar from '@mui/material/AppBar';
-import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import HelpIcon from '@mui/icons-material/Help';
 import IconButton from '@mui/material/IconButton';
-import Link from '@mui/material/Link';
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import Tab from '@mui/material/Tab';
@@ -15,13 +12,13 @@ import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import LinearLoadingSpinner from '../../components/LinearLoadingSpinner'
 import {AppContext} from "../../context/Context"
-import { ProfileSelectedTabActions,ProfileTabs,GroupSelectedTabActions,GroupTabs } from '../../variables/variables';
+import { GroupSelectedTabActions,GroupTabs } from '../../variables/variables';
 import { Avatar } from "@nextui-org/react";
 import EditIcon from '@mui/icons-material/Edit';
 import TuneIcon from '@mui/icons-material/Tune';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
     
-const lightColor = 'rgba(255, 255, 255, 0.7)';
+
 
 
 function Header(props) {
@@ -32,7 +29,7 @@ function Header(props) {
   
   let [PicStatus,SetPicStatus]=React.useState();
   React.useEffect(()=>{
-    if(GlobalState.UserProfilePicture=="")
+    if(GlobalState.UserProfilePicture==="")
     {
       
       SetPicStatus("/static/images/avatar/1.jpg")
@@ -44,17 +41,17 @@ function Header(props) {
       
     }
 
-    if(GlobalState.GroupSelectedTab==GroupTabs.ManageGroupTab)
+    if(GlobalState.GroupSelectedTab===GroupTabs.ManageGroupTab)
     {
       SetTabMenu (0)
     }
     
-    if(GlobalState.GroupSelectedTab==GroupTabs.AddGroup)
+    if(GlobalState.GroupSelectedTab===GroupTabs.AddGroup)
     {
       SetTabMenu(1) 
     }
     
-    if(GlobalState.GroupSelectedTab==GroupTabs.EditGroupTab)
+    if(GlobalState.GroupSelectedTab===GroupTabs.EditGroupTab)
     {
       SetTabMenu(1)
     }
@@ -140,12 +137,12 @@ function Header(props) {
          }}/>
         
      
-          {GlobalState.GroupSelectedTab==GroupTabs.AddGroup&&<Tab  label={<><GroupAddIcon/> <p>Add SubGroup</p></>}  onClick={(e)=>{Dispatch({type:GroupSelectedTabActions.SelectAddGroup})
+          {GlobalState.GroupSelectedTab===GroupTabs.AddGroup&&<Tab  label={<><GroupAddIcon/> <p>Add SubGroup</p></>}  onClick={(e)=>{Dispatch({type:GroupSelectedTabActions.SelectAddGroup})
           SetTabMenu(1)
         }}/>}
      
          {
-          GlobalState.GroupSelectedTab==GroupTabs.EditGroupTab&&
+          GlobalState.GroupSelectedTab===GroupTabs.EditGroupTab&&
           <Tab label={<><EditIcon/> <p>Edit Group</p></>} onClick={()=>{Dispatch({type:GroupSelectedTabActions.SelectEditGroup})
         SetTabMenu(2)
         }} />

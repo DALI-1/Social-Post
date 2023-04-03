@@ -1,13 +1,11 @@
 import './Sign_in.css';
-import React,{ useState,useEffect,useRef } from 'react';
+import React,{ useState,useRef } from 'react';
 import {MDBContainer, MDBCol, MDBRow, MDBBtn, MDBIcon, MDBInput, MDBCheckbox } from 'mdb-react-ui-kit';
 import LoadingSpinner from '../../components/LoadingSpinner'
-import { useToast } from '@chakra-ui/react'
 import { ChakraProvider } from '@chakra-ui/react'
 import { PasswordRecovery } from './PasswordRecovery';
 import logo from '../../Assets/SocialPost-Logo.png';
-import { ToastContainer, toast } from 'react-toastify';
-import {AppContext} from "../../context/Context"
+import { toast } from 'react-toastify';
 import {CALLAPI} from '../../libs/APIAccessAndVerification'
 function App() {
   let [LoadingSpinnerStatus, setLoadingSpinnerStatus] = useState(false);
@@ -45,7 +43,7 @@ setPasswordRecoveryStatus(false)
     let JsonString="{"
     for(let i=0;i<3;i++)
       {
-        if(i==2)
+        if(i===2)
         RememberMe.current=props.target[i].checked
         if(i!=1)
         JsonString+="\""+props.target[i].name+"\": "+"\""+props.target[i].value+"\","
@@ -65,7 +63,7 @@ setPasswordRecoveryStatus(false)
    
     for( var property in result)
         {
-          if( property=="JWT_AccessToken")
+          if( property==="JWT_AccessToken")
           {
                 UserAuthentificated.current=true
                 
@@ -81,7 +79,7 @@ setPasswordRecoveryStatus(false)
                   });
                     
 
-                if(RememberMe.current==true)
+                if(RememberMe.current===true)
                 {
                   window.localStorage.setItem('AuthToken', result[property])
                   window.localStorage.setItem('IsRemembered', true)
@@ -93,7 +91,7 @@ setPasswordRecoveryStatus(false)
                 }
                 setLoadingSpinnerStatus(false) 
           }
-          else if(property=="UserNotFound")
+          else if(property==="UserNotFound")
           {
                  UserNameDontExist.current=true
                  
@@ -110,7 +108,7 @@ setPasswordRecoveryStatus(false)
                   });
                   setLoadingSpinnerStatus(false) 
           }
-          else if(property=="WrongPassword")
+          else if(property==="WrongPassword")
           {
             UserWrongPassStatus.current=true
             
@@ -128,7 +126,7 @@ setPasswordRecoveryStatus(false)
           }
         
         }
-        if(UserAuthentificated.current==true)
+        if(UserAuthentificated.current===true)
           window.location.replace('/index') 
    }).catch(error=>{
     toast.error('Contact Dev team, there is an internal error within the server', {

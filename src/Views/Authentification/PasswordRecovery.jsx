@@ -1,4 +1,4 @@
-import React, { Component,useState,useRef } from 'react';
+import React, {useState,useRef } from 'react';
 import {
     Modal,
     ModalOverlay,
@@ -17,10 +17,8 @@ import {
     FormErrorMessage,
     FormHelperText,Input
   } from '@chakra-ui/react'
-  import {Helmet} from "react-helmet";
-  import { useToast } from '@chakra-ui/react'
   import {CALLAPI} from '../../libs/APIAccessAndVerification'
-  import { ToastContainer, toast } from 'react-toastify';
+  import {toast } from 'react-toastify';
 
   import { APIStatus,APIStatuses} from '../../variables/variables';
 export const PasswordRecovery=(props)=> {
@@ -53,7 +51,7 @@ export const PasswordRecovery=(props)=> {
      for( var property in result)
          {
           
-           if( property=="token")
+           if( property==="token")
            {
             EmailFoundStatus.current=true;
            
@@ -61,7 +59,7 @@ export const PasswordRecovery=(props)=> {
            }
          }
           
-         if(EmailFoundStatus.current==false && APIStatus.Status==APIStatuses.APICallSuccess)
+         if(EmailFoundStatus.current===false && APIStatus.Status===APIStatuses.APICallSuccess)
          {
           
           
@@ -79,7 +77,7 @@ export const PasswordRecovery=(props)=> {
          else
          {
           
-           if(APIStatus.Status==APIStatuses.APICallSuccess)
+           if(APIStatus.Status===APIStatuses.APICallSuccess)
            {
             emailjs.sendForm('service_z9p6g6b', 'template_ypuv019', form.current, 'Th956W69Ljmfmz7sP')
             .then((result) => {

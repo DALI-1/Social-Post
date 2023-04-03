@@ -1,9 +1,8 @@
 import * as React from 'react';
-import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
-import { ToastContainer, toast } from 'react-toastify';
+import {toast } from 'react-toastify';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -13,36 +12,26 @@ import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import {CALL_API_With_JWTToken,CALL_API_With_JWTToken_GET} from '../../libs/APIAccessAndVerification'
-import {HeaderSpinnerActions,HeaderSpinner}  from '../../variables/variables'
-import * as ReactDOMServer from 'react-dom/server';
+import {HeaderSpinnerActions}  from '../../variables/variables'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import 'react-toastify/dist/ReactToastify.css';
 import './AddSubGroupContent.css';
-import { ProfileSelectedTabActions,ProfileTabs,GroupSelectedTabActions,GroupTabs } from '../../variables/variables';
-import TocSharpIcon from '@mui/icons-material/TocSharp';
-import AccountTreeSharpIcon from '@mui/icons-material/AccountTreeSharp';
+import {GroupSelectedTabActions} from '../../variables/variables';
 import AddCircleSharpIcon from '@mui/icons-material/AddCircleSharp';
 import {AppContext} from "../../context/Context"
 import * as variables from "../../variables/variables"
 import HighlightOffSharpIcon from '@mui/icons-material/HighlightOffSharp';
 import SettingsApplicationsSharpIcon from '@mui/icons-material/SettingsApplicationsSharp';
-import Form from 'react-bootstrap/Form';
-import Container from 'react-bootstrap/Container';
 import { MDBBtn } from 'mdb-react-ui-kit';
 import { Tree, TreeNode } from 'react-organizational-chart';
-import { MDBRadio,MDBContainer, MDBRow, MDBCol,MDBCheckbox } from 'mdb-react-ui-kit';
-import { Card, CardBody, CardFooter,Checkbox, CheckboxGroup } from '@chakra-ui/react'
+import {MDBContainer} from 'mdb-react-ui-kit';
 import Groups2SharpIcon from '@mui/icons-material/Groups2Sharp';
 import AdjustSharpIcon from '@mui/icons-material/AdjustSharp';
-import {hashString,hashRandom } from 'react-hash-string'
+import {hashRandom } from 'react-hash-string'
 import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import { styled } from '@mui/material/styles';
-import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-import Stack from '@mui/material/Stack';
 
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -53,7 +42,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 
 export function AlertDialog(props) {
   const [open, setOpen] = React.useState(true);
-  const {GlobalState,Dispatch}=React.useContext(AppContext)
+  const {Dispatch}=React.useContext(AppContext)
 
   let handleGroupDelete=()=>{
  let GroupID=props.GroupID;
@@ -73,7 +62,7 @@ export function AlertDialog(props) {
            for( var property in result)
                                {
                                    
-                                   if( property=="GROUPDELETED")
+                                   if( property==="GROUPDELETED")
                                    {
                                     toast.success("The Group and all of its childs has been deleted successfully!", {
                                       position: "bottom-left",
@@ -87,7 +76,7 @@ export function AlertDialog(props) {
                                       });
                                     }
 
-                                    if(property=="IMPOSSIBLETODELETEGROUPUNDERROOT")
+                                    if(property==="IMPOSSIBLETODELETEGROUPUNDERROOT")
                                     {
                                       toast.info("You cant delete the campaign group !", {
                                         position: "bottom-left",
@@ -161,7 +150,7 @@ Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner})
 function TRow (parameter){
   let [open, setOpen] = React.useState(false);
   let props=parameter.Group
-      if (props!=undefined)
+      if (props!==undefined)
       {
        
           return (
@@ -254,24 +243,19 @@ export default function Content() {
     //ListOfRadioButtons.current=[...ListOfRadioButtons.current,"GROUP"+variables.UserInformations.info.joinedGroups[0].id]
     GenerateRadioBoxList(variables.UserInformations.info.joinedGroups)
   },[])
-    const {GlobalState,Dispatch}=React.useContext(AppContext)
-
-    const [ListOfViewsToShow,SetListOfViewsToShow]=React.useState([]);
-    const [ListOfPermToShow,SetListOfPermToShow]=React.useState([]);
-   
+    const {Dispatch}=React.useContext(AppContext)  
     let SelectedGroupName=React.useRef("")
     let SelectedGroupID=React.useRef("")
     let ListOfRadioButtons=React.useRef([])
    
     let [DeleteShow,SetDeleteShow]=React.useState(false)
-    let [RenderValue,ReRender]=React.useState(false)
     let[ViewMode,SetViewMode]=React.useState("Tabular");
 
     //This recurssive function save the radio boxes IDs in a table so later it be used to identify which subgroup we under
     function GenerateRadioBoxList(subGroups) {
-           if(subGroups!=null)
+           if(subGroups!==null)
            {
-             if(subGroups.length!=0)
+             if(subGroups.length!==0)
              {
                   subGroups.map((group) => {
                   //Saving the Ids of the groups to the list ListOfRadioButtons.current
@@ -285,9 +269,9 @@ export default function Content() {
     }
     // This is a recurrsive function that generate the tree based on the user data and how many subgroups in the hiearchy 
            function generateList(subGroups) {
-            if(subGroups!=null)
+            if(subGroups!==null)
            {
-             if(subGroups.length!=0)
+             if(subGroups.length!==0)
              {
                 return (
                   <>
@@ -356,7 +340,7 @@ export default function Content() {
       <Row>
       <FormControlLabel className='mb-3'
           control={
-            <Switch  name="ViewMode" onClick={()=>{ViewMode=="Tabular"?SetViewMode("Tree"):SetViewMode("Tabular")}} />
+            <Switch  name="ViewMode" onClick={()=>{ViewMode==="Tabular"?SetViewMode("Tree"):SetViewMode("Tabular")}} />
           }
           label={ViewMode+" Mode"}
         />
@@ -366,7 +350,7 @@ export default function Content() {
       
       
        <Row>
-       {ViewMode=="Tabular"&&<>
+       {ViewMode==="Tabular"&&<>
        <Paper sx={{ width: '100%', m: 1,p:2 ,textAlign: "center" }}>
         <div style={{ textAlign: "right" }}>
       <MDBBtn outline className='mx-2 m-2' color='secondary' onClick={handleAddNewGroup}> Add New SubGroup</MDBBtn>
@@ -404,7 +388,7 @@ export default function Content() {
 
             
           }  
-          {variables.UserInformations.info.joinedGroups[0].subGroups.length==0&&<><TableRow>
+          {variables.UserInformations.info.joinedGroups[0].subGroups.length===0&&<><TableRow>
             <TableCell> </TableCell>
             
             <TableCell><div className="card-body text-center"><p >You don't have any sub groups</p></div> </TableCell>
@@ -419,7 +403,7 @@ export default function Content() {
     </>
 }
 
-{ViewMode=="Tree"&&
+{ViewMode==="Tree"&&
         <div className="card mb-4 mb-xl-0">      
                 <div className="card-header d-flex justify-content-center"> List Of Groups</div>
                 <div className="card-body text-center">

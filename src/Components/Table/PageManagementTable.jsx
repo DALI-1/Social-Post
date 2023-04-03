@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+
 import { MDBCheckbox } from 'mdb-react-ui-kit';
 import { Grid, GridColumn, GridToolbar } from '@progress/kendo-react-grid';
 import { DropDownList } from '@progress/kendo-react-dropdowns';
@@ -22,20 +22,11 @@ import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import * as variables from "../../variables/variables"
 import {
-  ListView,
   ListViewHeader,
-  ListViewFooter,
 } from "@progress/kendo-react-listview";
 load(likelySubtags, currencyData, weekData, numbers, currencies, caGregorian, dateFields, timeZoneNames);
 
 loadMessages(esMessages, 'es-ES');
-
-const DATE_FORMAT = 'yyyy-mm-dd hh:mm:ss.SSS';
-const intl = new IntlService('en');
-/*orders.forEach(o => {
-  o.orderDate = intl.parseDate(o.orderDate ? o.orderDate : '20/20/2020', DATE_FORMAT);
-  o.shippedDate = o.shippedDate ? undefined : intl.parseDate(o.shippedDate ? o.orderDate.toString() : '20/20/2020', DATE_FORMAT);
-});*/
 
 function findIndexByProp(list, prop, value) {
   

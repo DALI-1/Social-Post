@@ -5,7 +5,6 @@ import CustomTaskView from './CustomAppointmentForm';
 import CustomAppointment from "./CustomAppointment"
 import {Header,Content,CommandButton} from "./CustomAppointmentToolTip"
 import {BasicLayout,TextEditor} from "./CustomAppointmentForm"
-import "./styles.css"
 import {
   Scheduler,
   MonthView,
@@ -24,6 +23,12 @@ import {
   AppointmentForm
 } from "@devexpress/dx-react-scheduler-material-ui";
 
+//this is important, it fixes the black dialog bug
+const styles = `
+.css-btxns4-MuiPaper-root-MuiDrawer-paper {
+  background-color: white;
+}
+`;
 
 function Calendar(props) {
   const { data, onCurrentDateChange, onCommitChanges } = props;
@@ -84,13 +89,14 @@ function Calendar(props) {
       />
       {/*This here is used to show the add new post form */}
       <AppointmentForm
+       
             basicLayoutComponent={BasicLayout}
             textEditorComponent={TextEditor}
           />
 
       
     </Scheduler>
-   
+    <style dangerouslySetInnerHTML={{ __html: styles }}></style>
    </>
   );
 }

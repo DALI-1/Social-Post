@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './AddSubGroupContent.css';
 import {CALL_API_With_JWTToken,CALL_API_With_JWTToken_GET} from '../../libs/APIAccessAndVerification'
@@ -10,14 +10,13 @@ import * as variables from "../../variables/variables"
 import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/Container';
 import { Tree, TreeNode } from 'react-organizational-chart';
-import { MDBRadio,MDBContainer, MDBRow, MDBCol,MDBCheckbox } from 'mdb-react-ui-kit';
-import { Card, CardBody, CardFooter,Checkbox, CheckboxGroup } from '@chakra-ui/react'
+import { MDBRadio,MDBContainer} from 'mdb-react-ui-kit';
 import Groups2SharpIcon from '@mui/icons-material/Groups2Sharp';
 import AdjustSharpIcon from '@mui/icons-material/AdjustSharp';
-import {hashString,hashRandom } from 'react-hash-string'
+import {hashRandom } from 'react-hash-string'
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import {HeaderSpinnerActions,HeaderSpinner}  from '../../variables/variables'
+import {HeaderSpinnerActions}  from '../../variables/variables'
 export default function Content() {
 
     const {GlobalState,Dispatch}=React.useContext(AppContext)
@@ -50,18 +49,18 @@ export default function Content() {
           {
             ListOfVisibleMenuItemsForTheSelection.forEach((MenuItem)=>
             {
-              if(MenuItem.id==action.menuItemId)
+              if(MenuItem.id===action.menuItemId)
               {
                MenuItemExist=true
               }
             })
           }
            //If we didnt add it, we go to the list of all MenuItems and we add it to the List of VissibleMenuItems
-           if(MenuItemExist==false)
+           if(MenuItemExist===false)
            { 
             AllMenuItems.forEach((mi)=>
             {
-              if(mi.id==action.menuItemId)
+              if(mi.id===action.menuItemId)
               ListOfVisibleMenuItemsForTheSelection=[...ListOfVisibleMenuItemsForTheSelection,mi]
             })
            }
@@ -158,7 +157,7 @@ if(document.getElementById(RadioButton).checked)
      })
      JsonObject.groupName=GroupNameInput.current.value;
      ListOfActionSelection.current.map((action)=>{
-      if(action.clicked==true)
+      if(action.clicked===true)
       {
         JsonObject.subGroupActions=[...JsonObject.subGroupActions,{id:action.Actionid.toString(),menuItemId:action.menuItemId.toString()}]
       }
@@ -177,7 +176,7 @@ if(document.getElementById(RadioButton).checked)
                             {
                               
                                 
-                                if( property=="SubGroupNameAlreadyUsed")
+                                if( property==="SubGroupNameAlreadyUsed")
                                 {
                                     
                                     toast.error('The SubGroup Name already exist, please use an other one', {
@@ -192,7 +191,7 @@ if(document.getElementById(RadioButton).checked)
                                         });  
                                     break
                                 }
-                                if( property=="ParentGroupDoesntExist")
+                                if( property==="ParentGroupDoesntExist")
                                 {
                                     toast.error('The  Group Parent Just got deleted by someone, SubGroup creation failed', {
                                         position: "bottom-left",
@@ -206,7 +205,7 @@ if(document.getElementById(RadioButton).checked)
                                         });
                                         break
                                 }
-                                if( property=="CANNOTCREATEGROUPWITHOUTACTIONS")
+                                if( property==="CANNOTCREATEGROUPWITHOUTACTIONS")
                                 {
                                     toast.error('You cannot create a group with zero permissions, minimum is view for at least one menu', {
                                         position: "bottom-left",
@@ -220,7 +219,7 @@ if(document.getElementById(RadioButton).checked)
                                         });
                                         break
                                 }
-                                if( property=="SubGroupCreated")
+                                if( property==="SubGroupCreated")
                                 {
                                     toast.success('Sub Group successfully created!', {
                                         position: "bottom-left",
@@ -241,7 +240,7 @@ if(document.getElementById(RadioButton).checked)
                                                  variables.UserInformations.info=result
                                                  variables.UserInformations.info.passwordHash=null
                                                  variables.UserInformations.info.passwordSalt=null
-                                                 if(RenderValue==true)
+                                                 if(RenderValue===true)
                                                  ReRender(false)
                                                  else
                                                  ReRender(true)
@@ -295,7 +294,7 @@ if(document.getElementById(RadioButton).checked)
                <div className="card-body">
                    <Container>
                    <Row>
-                   {ListOfViewsToShow.length==0&&<p className='d-flex justify-content-center'>Select a group to view the possible permissions under that group</p>}
+                   {ListOfViewsToShow.length===0&&<p className='d-flex justify-content-center'>Select a group to view the possible permissions under that group</p>}
                     {ListOfViewsToShow.map((view,index)=>{
 
                       return(
@@ -303,11 +302,11 @@ if(document.getElementById(RadioButton).checked)
                        <div className="card mb-4">
                        <div className="card-header d-flex justify-content-center" style={{minWidth:"250px"}}>{view.menuItemName}</div>
                        <div className="card-body">
-                        {ListOfPermToShow.length==0&&<p>Select a group to view the possible permissions under that group</p>}
+                        {ListOfPermToShow.length===0&&<p>Select a group to view the possible permissions under that group</p>}
 
                         {ListOfPermToShow.map((action)=>{
                           
-                          if(action.menuItemId==view.id)
+                          if(action.menuItemId===view.id)
                           {
                             ListOfActionSelection.current[action.id]={Actionid:action.id,menuItemName:view.menuItemName,menuItemId:action.menuItemId,clicked:false}
                             return ( 
@@ -319,7 +318,7 @@ if(document.getElementById(RadioButton).checked)
                               autoSave="off"
                               label={action.actionName}
                               onClick={()=>{
-                                if(ListOfActionSelection.current[action.id].clicked==true)
+                                if(ListOfActionSelection.current[action.id].clicked===true)
                                 {UpdateActionSelection(action.id,false)}
                                 else
                                 {
