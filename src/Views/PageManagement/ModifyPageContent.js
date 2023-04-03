@@ -1,38 +1,29 @@
 import * as React from "react";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import Paper from "@mui/material/Paper";
-import Grid from "@mui/material/Grid";
+
 import Button from "@mui/material/Button";
 import { DropDownTree } from "@progress/kendo-react-dropdowns";
 import {
   processTreeData,
   expandedState,
 } from "../../components/tree-data-operations";
-import { ToastContainer, toast } from "react-toastify";
+import {  toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./ModifyPageContent.css";
 import {
   CALL_API_With_JWTToken,
-  CALL_API_With_JWTToken_GET,
 } from "../../libs/APIAccessAndVerification";
-import { MDBFile } from "mdb-react-ui-kit";
 import { storage } from "../../libs/FireBase";
 import {
   getDownloadURL,
   ref,
-  uploadBytesResumable,
-  deleteObject,
+  uploadBytesResumable, 
 } from "firebase/storage";
-import { hashString, hashRandom } from "react-hash-string";
+import {  hashRandom } from "react-hash-string";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import { AppContext } from "../../context/Context";
 import * as variables from "../../variables/variables";
-import { APIStatus, APIStatuses } from "../../variables/variables";
 import { Avatar } from "@nextui-org/react";
 import { mapTree, extendDataItem } from "@progress/kendo-react-common";
-import { minHeight } from "@mui/system";
 import DeleteModal from "../../components/DeletePagesModal";
 import {
   ListView,

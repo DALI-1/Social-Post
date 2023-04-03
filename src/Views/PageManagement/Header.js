@@ -1,11 +1,8 @@
 import * as React from "react";
-import PropTypes from "prop-types";
 import AppBar from "@mui/material/AppBar";
-import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import HelpIcon from "@mui/icons-material/Help";
 import IconButton from "@mui/material/IconButton";
-import Link from "@mui/material/Link";
 import MenuIcon from "@mui/icons-material/Menu";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import Tab from "@mui/material/Tab";
@@ -15,20 +12,11 @@ import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import LinearLoadingSpinner from "../../components/LinearLoadingSpinner";
 import { AppContext } from "../../context/Context";
-import {
-  ProfileSelectedTabActions,
-  ProfileTabs,
-  GroupSelectedTabActions,
-  GroupTabs,
-} from "../../variables/variables";
 import * as variables from "../../variables/variables";
 import { Avatar } from "@nextui-org/react";
 import EditIcon from "@mui/icons-material/Edit";
 import TuneIcon from "@mui/icons-material/Tune";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
-
-const lightColor = "rgba(255, 255, 255, 0.7)";
-
 function Header(props) {
   const { onDrawerToggle } = props;
   const { GlobalState, Dispatch } = React.useContext(AppContext);

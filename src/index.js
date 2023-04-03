@@ -11,6 +11,7 @@ import FooterComp from './Headers/Footer'
 import { ChakraBaseProvider, extendBaseTheme } from '@chakra-ui/react'
 import {GlobalContext} from "./context/Context"
 import chakraTheme from '@chakra-ui/theme'
+
 const { Button } = chakraTheme.components
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const theme = extendBaseTheme({
@@ -18,6 +19,8 @@ const theme = extendBaseTheme({
     Button,
   },
 })
+
+
 root.render(
   
   <> 

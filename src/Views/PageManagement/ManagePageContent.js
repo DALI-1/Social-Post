@@ -1,10 +1,9 @@
 import * as React from "react";
 import { Loader } from "@progress/kendo-react-indicators";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {
   CALL_API_With_JWTToken,
-  CALL_API_With_JWTToken_GET,
 } from "../../libs/APIAccessAndVerification";
 import { AppContext } from "../../context/Context";
 import * as variables from "../../variables/variables";

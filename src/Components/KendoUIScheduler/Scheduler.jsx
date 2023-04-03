@@ -22,6 +22,7 @@ import '@progress/kendo-date-math/tz/America/New_York';
 import '@progress/kendo-date-math/tz/America/Los_Angeles';
 import esMessages from './es.json';
 import { sampleDataWithCustomSchema, displayDate, customModelFields } from './events-utc';
+import CustomEventTemplate from './CustomEventTemplate';
 load(likelySubtags, currencyData, weekData, numbers, currencies, caGregorian, dateFields, timeZoneNames);
 loadMessages(esMessages, 'es-ES');
 export  default function App(props) {
@@ -63,6 +64,7 @@ export  default function App(props) {
       TaskID: guid()
     }))));
   }, [setData]);
+
   return <div>
         <div className="example-config">
           <div className="row">
@@ -86,39 +88,11 @@ export  default function App(props) {
         </div>
         <LocalizationProvider language={locale.language}>
           <IntlProvider locale={locale.locale}>
-            <Scheduler data={data} onDataChange={handleDataChange} view={view} onViewChange={handleViewChange} date={date} onDateChange={handleDateChange} editable={true} timezone={timezone} modelFields={customModelFields} group={{
-          resources: ['Rooms', 'Persons'],
-          orientation
-        }} resources={[{
-          name: 'Rooms',
-          data: [{
-            text: 'Meeting Room 101',
-            value: 1
-          }, {
-            text: 'Meeting Room 201',
-            value: 2,
-            color: '#FF7272'
-          }],
-          field: 'RoomID',
-          valueField: 'value',
-          textField: 'text',
-          colorField: 'color'
-        }, {
-          name: 'Persons',
-          data: [{
-            text: 'Peter',
-            value: 1,
-            color: '#5392E4'
-          }, {
-            text: 'Alex',
-            value: 2,
-            color: '#54677B'
-          }],
-          field: 'PersonIDs',
-          valueField: 'value',
-          textField: 'text',
-          colorField: 'color'
-        }]}>
+            
+            <Scheduler data={data} onDataChange={handleDataChange} view={view} onViewChange={handleViewChange} date={date} onDateChange={handleDateChange} editable={true} timezone={timezone} modelFields={customModelFields}
+         
+          viewTask={CustomEventTemplate}
+            >
               <TimelineView />
               <DayView />
               <WeekView />

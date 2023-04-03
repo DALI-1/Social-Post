@@ -15,14 +15,18 @@ import Groups2SharpIcon from '@mui/icons-material/Groups2Sharp';
 import AdjustSharpIcon from '@mui/icons-material/AdjustSharp';
 import {hashString,hashRandom } from 'react-hash-string'
 import Editor from "../../components/AddPostComps/Editor"
-import PostScheduler from "../../components/PostScheduler/Scheduler"
+
+
+//import PostScheduler from "../../components/KendoUIScheduler/Scheduler"
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import { MDBBtn } from 'mdb-react-ui-kit';
 import Paper from '@mui/material/Paper';
-
+import Counter from "../../components/Test/counter"
 import {HeaderSpinnerActions,HeaderSpinner}  from '../../variables/variables'
+import PostScheld from "../../components/MUIScheduler/Scheduler"
+
 export default function Content() {
 
     const {GlobalState,Dispatch}=React.useContext(AppContext)
@@ -45,18 +49,21 @@ export default function Content() {
        </Paper>
           </Col>
         </Row>
-      </Container>
+  </Container>
        
        <Container>
        <Row>
         <Col>
         <Paper sx={{ width: '100%', m: 1,p:2 ,textAlign: "center" }}>
-        <PostScheduler/>      
+        {/* <PostScheduler/>*/}  
+
+       <PostScheld/>
         </Paper>
         </Col>  
       </Row>
        
        </Container>
+
  
      
       
