@@ -39,7 +39,7 @@ export default function Content() {
       AllMenuItems=variables.UserInformations.info.joinedGroups[0].menuItems
      let ListOfVisibleMenuItemsForTheSelection=[]
    
-      if(ListOfActions!=null)
+      if(ListOfActions!==null)
       {
         ListOfActions.forEach((action)=>
         {
@@ -76,9 +76,9 @@ export default function Content() {
     }
     //This recurssive function save the radio boxes IDs in a table so later it be used to identify which subgroup we under
     function GenerateRadioBoxList(subGroups) {
-           if(subGroups!=null)
+           if(subGroups!==null)
            {
-             if(subGroups.length!=0)
+             if(subGroups.length!==0)
              {
                   subGroups.map((group) => {
                   //Saving the Ids of the groups to the list ListOfRadioButtons.current
@@ -92,9 +92,9 @@ export default function Content() {
     }
     // This is a recurrsive function that generate the tree based on the user data and how many subgroups in the hiearchy 
            function generateList(subGroups) {
-            if(subGroups!=null)
+            if(subGroups!==null)
            {
-             if(subGroups.length!=0)
+             if(subGroups.length!==0)
              {
                 return (
                   <>
@@ -116,12 +116,12 @@ export default function Content() {
         for(let i=0;i<subGroups.length;i++)
         {
           
-          if(subGroups[i].id.toString()!=id)
+          if(subGroups[i].id.toString()!==id)
           {      
-            if(subGroups[i].subGroups!=null)
-             { {if(subGroups[i].subGroups.length!=0)                
+            if(subGroups[i].subGroups!==null)
+             { {if(subGroups[i].subGroups.length!==0)                
                   localres=GetPermissionList(subGroups[i].subGroups,id)
-                  if(localres!=null)
+                  if(localres!==null)
                   res=localres
               }}
           }

@@ -40,7 +40,6 @@ function findIndexByProp(list, prop, value) {
 
 const DetailComponent = props => {
   const dataItem = props.dataItem;
-  
   return <div><section style={{float: "left"}}>
       {/*This indicate that this is a Facebook Page and we handle it with different attributes*/}         
               {dataItem.PageDetails.category!=undefined&&<p><strong>Page Category:</strong>{dataItem.PageDetails.category} </p>}
@@ -52,7 +51,7 @@ const DetailComponent = props => {
                   <ListViewHeader className="pl-3 pb-2 pt-2" style={{fontSize: 14}}><strong>Associated Pageslist:</strong></ListViewHeader>
                     {dataItem.OtherPlatformAccountsDetails.map((e,index)=>{
                       //here we testing by profile_picture_url attribute, if it's not undefined then the related page is an instagram page, else its a facebook one
-                      if(e.value.profile_picture_url!=undefined)
+                      if(e.value.profile_picture_url!==undefined)
                       {
                         return(
                           <div className="k-listview-item row p-2 border-bottom align-middle" style={{ margin: 0}}>
@@ -126,13 +125,13 @@ export default function App(props)  {
    
     }
     
-    console.log(variables.Pages.ListOfSelectedPages)
   }
   const dataStateChange = event => {
     setDataResult(process(Data, event.dataState));
     setDataState(event.dataState);
   };
   const expandChange = event => {
+    
     const isExpanded = event.dataItem.expanded === undefined ? event.dataItem.aggregates : event.dataItem.expanded;
     event.dataItem.expanded = !isExpanded;
     setDataResult({

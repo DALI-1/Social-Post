@@ -107,7 +107,7 @@ function Header(props) {
           <Grid container alignItems="center" spacing={1}>
             <Grid item xs>
               <Typography color="inherit" variant="h5" component="h1">
-                Posts Management
+                Publish Management
               </Typography>
             </Grid>
 
@@ -134,6 +134,9 @@ function Header(props) {
                 <TuneIcon /> <p>Manage Posts</p>
               </>
             }
+            onClick={() => {
+              Dispatch({ type: variables.PostSelectedTabActions.SelectManagePosts });
+            }}
           />
 
           {GlobalState.PostSelectedTab == variables.PostTabs.AddPost && (
@@ -143,6 +146,9 @@ function Header(props) {
                   <GroupAddIcon /> <p>Add Post</p>
                 </>
               }
+              onClick={() => {
+                Dispatch({ type: variables.PostSelectedTabActions.SelectAddPost });
+              }}
             />
           )}
 
@@ -153,6 +159,9 @@ function Header(props) {
                   <EditIcon /> <p>Edit Post</p>
                 </>
               }
+              onClick={() => {
+                Dispatch({ type: variables.PostSelectedTabActions.SelectEditPost });
+              }}
             />
           )}
         </Tabs>

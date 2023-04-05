@@ -4,6 +4,7 @@ import * as variables from "../../variables/variables";
 import { AppContext } from "../../context/Context";
 import Container from "react-bootstrap/Container";
 import ManagePostContent from "./ManagePostContent";
+import AddPostContent from "./AddPostContent";
 export default function Content() {
   const { GlobalState, Dispatch } = React.useContext(AppContext);
   return (
@@ -13,8 +14,8 @@ export default function Content() {
           {UserInformations.info != null ? (
             <>
               <Container>
-                {GlobalState.PostSelectedTab ==
-                  variables.PostTabs.ManagePostsTab && <ManagePostContent />}
+                {GlobalState.PostSelectedTab ==variables.PostTabs.ManagePostsTab && <ManagePostContent />}
+                 {GlobalState.PostSelectedTab ==variables.PostTabs.AddPost &&<AddPostContent/>}
               </Container>
             </>
           ) : (

@@ -5,7 +5,6 @@ import LoginPage from './Views/Authentification/Sign_In';
 import RegisterPage from './Views/Authentification/Sign_up';
 import IndexPage from './Views/PageLayout/PageLayout';
 import ChangePW from './Views/Authentification/ChangePassword';
-import '@progress/kendo-theme-default/dist/all.css';
 function App() {
   return (
     <Router>

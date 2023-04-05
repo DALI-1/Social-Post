@@ -35,46 +35,33 @@ function Calendar(props) {
 
   const [currentViewName, setCurrentViewName] = useState("Week");
 
- function  commitChanges({ added, changed, deleted }) {
-    this.setState((state) => {
-      let { data } = state;
-      if (added) {
-        const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0;
-        data = [...data, { id: startingAddedId, ...added }];
-      }
-      if (changed) {
-        data = data.map(appointment => (
-          changed[appointment.id] ? { ...appointment, ...changed[appointment.id] } : appointment));
-      }
-      if (deleted !== undefined) {
-        data = data.filter(appointment => appointment.id !== deleted);
-      }
-      return { data };
-    });
-  }
+  const handleCellHover = () => {
+    console.log("Cell hovered")
+   
+  };
 
   return (
     <>
-    <Scheduler data={data}>
+    <Scheduler onCellHoverChanged={handleCellHover} data={data} >   
       <ViewState
         currentViewName={currentViewName}
         onCurrentViewNameChange={setCurrentViewName}
         onCurrentDateChange={onCurrentDateChange}
       />
-      <EditingState onCommitChanges={commitChanges} />
+      <EditingState onCommitChanges={onCommitChanges} />
       <ConfirmationDialog />
       <DayView startDayHour={0.0} endDayHour={24.0} cellDuration={60} />
       <WeekView startDayHour={0.0} endDayHour={24.0} cellDuration={60} />
       <MonthView startDayHour={0.0} endDayHour={24.0} />
       {/*This here is used to show the custom appointment in the calendar */}
-      <Appointments appointmentComponent={CustomAppointment} />
+      <Appointments appointmentComponent={CustomAppointment}  />
       <AllDayPanel />
       <Toolbar />
       <DateNavigator />
       <TodayButton />
       <ViewSwitcher />
       
-{/*This here is used to show the cusom appointment tooltip */}
+{/*This here is used to show the custom appointment tooltip */}
       <AppointmentTooltip
             headerComponent={Header}
             contentComponent={Content}
@@ -93,6 +80,8 @@ function Calendar(props) {
             basicLayoutComponent={BasicLayout}
             textEditorComponent={TextEditor}
           />
+
+     
 
       
     </Scheduler>

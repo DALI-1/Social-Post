@@ -42,7 +42,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 
 export function AlertDialog(props) {
   const [open, setOpen] = React.useState(true);
-  const {Dispatch}=React.useContext(AppContext)
+  const {GlobalState,Dispatch}=React.useContext(AppContext)
 
   let handleGroupDelete=()=>{
  let GroupID=props.GroupID;

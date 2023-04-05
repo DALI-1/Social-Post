@@ -1,0 +1,18 @@
+.ClonePostHeader
+{
+  align-items:flex-start;
+  align-content: flex-start;
+  text-align: left;
+}
+.grayed-out {
+  color: #999;
+  opacity: 0.5;
+}
+
+.ClonePostContent
+{
+  
+  text-align: left;
+  margin-top: 1rem;
+ 
+}

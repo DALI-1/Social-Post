@@ -3,7 +3,7 @@ import { createTheme, Pivot, PivotItem, ThemeProvider } from "@fluentui/react";
 import "./styles.css";
 import Calendar from "./Calendar";
 import List from "./List";
-import { data } from "./data";
+import { TestData } from "./data";
 
 const myTheme = createTheme({
   palette: {
@@ -26,21 +26,49 @@ const myTheme = createTheme({
     neutralSecondary: "#605e5c",
     neutralPrimaryAlt: "#3b3a39",
     neutralPrimary: "#323130",
-    neutralDark: "#ffffff",
+    neutralDark: "#201f1e",
     black: "#000000",
     white: "#ffffff"
   }
 });
 
+
+
 export default function App() {
+
+const [Data,setData]=useState(TestData)
+
+  const handleCurrentDateChange = (date) => {
+    console.log('Current date changed to: ', date);
+    // Update your application state with the new date...
+  };
+  const handleCommitChanges = (e) => {
+    const { added, changed, deleted } = e;
+    
+    let TempData=Data
+      if (added) {
+        const startingAddedId = Data.length > 0 ? Data[Data.length - 1].id + 1 : 0;
+        TempData = [...Data, { id: startingAddedId, ...added }];
+      }
+      if (changed) {
+        TempData = Data.map(appointment => (
+          changed[appointment.id] ? { ...appointment, ...changed[appointment.id] } : appointment));
+      }
+      if (deleted !== undefined) {
+        TempData = Data.filter(appointment => appointment.id !== deleted);
+      }
+      setData(TempData)
+    
+  };
+
   return (
     <ThemeProvider applyTo="body" theme={myTheme}>
       <Pivot>
         <PivotItem headerText="Calendar">
-          <Calendar data={data} />
+          <Calendar data={Data} isFetching={true} onCurrentDateChange={handleCurrentDateChange} onCommitChanges={handleCommitChanges}/>
         </PivotItem>
         <PivotItem headerText="List">
-          <List data={data} />
+          <List data={Data} />
         </PivotItem>
       </Pivot>
     </ThemeProvider>

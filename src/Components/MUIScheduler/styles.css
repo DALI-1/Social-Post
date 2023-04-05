@@ -1,8 +1,8 @@
 .css-btxns4-MuiPaper-root-MuiDrawer-paper {
     background-color: "yellow" !important;
-    max-width: 1000px;
+    position: sticky;
     max-height: 1000px;
-    top:-3000px;
+    top:5000px;
   }
 
   

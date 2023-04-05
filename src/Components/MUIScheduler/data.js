@@ -1,4 +1,4 @@
-export const data = [
+export const TestData = [
     {
       id: 25,
       title: "Gas Kugelspeicher",
@@ -80,8 +80,8 @@ export const data = [
       id: 45,
       title: "Klemmenleistung DT5",
       comment: "aefqwef",
-      startDate: "2023-04-03T22:00:00",
-      endDate: "2023-04-04T17:00:00",
+      startDate: "2023-04-02T22:00:00",
+      
       createdAt: "2021-10-13T09:34:55.9431341",
       createdBy: "AuR",
       updatedAt: "2021-10-13T09:34:55.9431341",
@@ -91,8 +91,8 @@ export const data = [
       id: 46,
       title: "WT US HD",
       comment: "dsfaveqrg",
-      startDate: "2021-10-05T22:00:00",
-      endDate: "2021-10-07T15:00:00",
+      startDate: "2023-04-04T22:00:00",
+      
       createdAt: "2021-10-13T09:35:43.8712311",
       createdBy: "AuR",
       updatedAt: "2021-10-13T09:35:43.8712311",
