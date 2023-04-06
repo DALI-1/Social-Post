@@ -4,22 +4,25 @@ import {
   WeekView,
   Appointments,
 } from '@devexpress/dx-react-scheduler-material-ui';
+import PostCard from "../PostCardComponent/PostComp"
 const CustomAppointment = ({
   children, style, ...restProps
 }) => (
-  <Appointments.Appointment
+  /*<Appointments.Appointment
     {...restProps}
     style={{
       ...style,
       backgroundColor: '#FFC107',
       borderRadius: '8px',
     }}
-  >
-    {children}
-    <p>
-      Hello!
-    </p>
-  </Appointments.Appointment>
+  >{children}</Appointments.Appointment>*/
+    <PostCard  style={{
+      ...style,
+      backgroundColor: '#FFC107',
+      borderRadius: '8px',
+    }}/>
+   
+  
 );
 
 export default CustomAppointment

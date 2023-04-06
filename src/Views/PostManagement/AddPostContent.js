@@ -36,20 +36,21 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormLabel from '@mui/material/FormLabel';
 
 import FacebookPostClone from "../../components/FacebookComps/FBPostBoxClone"
+import PatternManagement from "../../components/PatternTable/PatternTable"
+import ImageAddEditor from "../../components/PostAssetsManagement/ImageAddEditor"
+import ImagePickerList from "../../components/PostAssetsManagement/ImagePicker"
 export default function Content() {
 
     const {GlobalState,Dispatch}=React.useContext(AppContext)
     //this is used for the splitter
     const [panes, setPanes] = React.useState([
       {
-        size: "50%",
+        size: "70%",
         min: "300px",
         collapsible: false,
-      },
-      {},
+      },     
       {
-        size: "50%",
-        min: "700px",
+        min: "200px",
         collapsible: false,
       },
     ]);
@@ -80,9 +81,8 @@ export default function Content() {
   };
   const commonStyles = {
     bgcolor: 'background.paper',
-    borderColor: "Red",
     m: 1,
-    border: 1,
+    border: "0.5px solid #3498db",
    padding:1
   };
 
@@ -91,11 +91,15 @@ export default function Content() {
   let [TextCode,SetTextCode]=React.useState("")
   const editorRef=React.useRef(null)
   function handleEditorChange() {
-    const content = editorRef.current.getContent();
-    SetTextCode(content)
+    if(LivePreview)
+    {
+      const content = editorRef.current.getContent();
+      SetTextCode(content)
+    }
+    
   }
   //Preview Related
-
+  let [LivePreview,setLivePreview]=React.useState(true)
     
   return (
     <>  
@@ -117,7 +121,7 @@ export default function Content() {
         <Accordion.Header>Pages</Accordion.Header>
         <Accordion.Body>
         <div>
-                <label className="medium mb-1" htmlFor="SelectPage" style={{marginTop:"1rem"}}> Selected Pages</label>
+                <label className="medium mb-1" htmlFor="SelectPage"> Selected Pages</label>
               <Select
               id="SelectPage"
               components={animatedComponents}
@@ -135,7 +139,7 @@ export default function Content() {
         <Accordion.Header>Post Tags</Accordion.Header>
         <Accordion.Body>
         <div>
-                  <label className="small mb-1" htmlFor="SelectPage" style={{marginTop:"1rem"}}> Post Tags</label>
+                  <label className="small mb-1" htmlFor="SelectPage"> Post Tags</label>
                   <TagsInput
                   value={selected}
                   onChange={setSelected}
@@ -150,18 +154,21 @@ export default function Content() {
      
     </Accordion>
            <div style={{margin:"0.5rem"}}>
-           <label className="medium" htmlFor="SelectPage">Post Content</label>
+           
            <Editor
            onEditorChange={handleEditorChange}
           apiKey={process.env.REACT_APP_TINYMCEJWTAPIKEY}
           init={{
             content_script: '../../libs/tinymce/js/tinymce/tinymce.min.js', 
-            plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage tableofcontents footnotes mergetags autocorrect typography inlinecss',
+            plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage tableofcontents footnotes mergetags autocorrect typography inlinecss auto_replace',
           toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
             toolbar_location: "top",
             menubar: false,
             statusbar: true,
             height: 200,
+            auto_replace: true,
+            auto_replace_chars: [
+              { before: ':D', after: '😀' },]
             
           }}
           onInit={(evt, editor) => editorRef.current = editor}
@@ -169,6 +176,44 @@ export default function Content() {
         />
            
             </div>
+
+            <Accordion className='m-2'>
+      <Accordion.Item eventKey="0">
+        <Accordion.Header>Manage Dynamic Fields & Patterns</Accordion.Header>
+        <Accordion.Body>
+        
+              
+        <PatternManagement/>     
+              
+        
+        </Accordion.Body>
+      </Accordion.Item>
+     
+    </Accordion>
+
+
+    <Accordion className='m-2'>
+      <Accordion.Item eventKey="0">
+        <Accordion.Header>Manage Assets</Accordion.Header>
+        <Accordion.Body>
+        
+             <Container className='justify-content-center align-items-center'>
+              
+              <Row>
+              <ImageAddEditor/>
+              </Row>
+              <Row>
+              <ImagePickerList/>     
+              </Row>
+              <Row><MDBBtn rounded className='mx-2 m-3' color='primary'> Add Selected Images </MDBBtn></Row>
+              
+              </Container> 
+             
+            
+        </Accordion.Body>
+      </Accordion.Item>
+     
+    </Accordion>
                   <Accordion className='m-2'>
       <Accordion.Item eventKey="0">
         <Accordion.Header>Post Time Scheduling</Accordion.Header>
@@ -188,10 +233,8 @@ export default function Content() {
     <FormControlLabel control={<Checkbox checked={Repeat} onChange={()=>{setRepeat(!Repeat)}} />} label="Repeat" />
 <br></br>
 
-      {Repeat&&<>
-      
-
-      <Box sx={{ ...commonStyles, borderRadius: 1,padding:"1rem "}} >
+      {Repeat&&<div className='fade-in'> 
+      <Box sx={{ ...commonStyles, borderRadius: 1,padding:"1rem "}}  >
         <Container>
           <Row>
 
@@ -253,13 +296,20 @@ export default function Content() {
           </Row>
        
       </Container>
-      </Box></>}
+      </Box>
+      
+      
+      </div>}
                   </div> 
         </Accordion.Body>
       </Accordion.Item>
      
     </Accordion>
       </Col>
+
+
+      <MDBBtn rounded className='mx-2 m-3' color='primary'>Schedule Post </MDBBtn>
+
                 <div className="mb-3">
                
                   </div>
@@ -267,12 +317,21 @@ export default function Content() {
               </Row>
             </Container>
           </div>
-          <div className="pane-content">
+          <div className="pane-content" >
           <div className="card-header d-flex justify-content-center">
                   Scheduled Post Preview
                 </div>
                 <div className="card-body text-center">
-                   <input></input>
+                <Container>
+                {!LivePreview&&<row><MDBBtn outline rounded className='mx-2 m-1' color='success' onClick={()=>{setLivePreview(true)}}> Enable Live preview</MDBBtn></row>}
+                {LivePreview&&<row><MDBBtn outline rounded className='mx-2 m-1' color='danger' onClick={()=>{setLivePreview(false)}}> Disable Live preview</MDBBtn></row>}
+                <row><MDBBtn outline rounded className='mx-2 m-1' color='dark' onClick={()=>{const content = editorRef.current.getContent(); SetTextCode(content)}} >View Changes</MDBBtn></row>
+               </Container>
+         
+                </div>
+                <div className="card-body text-center m-1" style={{ backgroundColor: "#f3f4f4",height: "700px",borderRadius:"3%"}}>
+               
+       
                   <FacebookPostClone Text={TextCode}/>
                 
 

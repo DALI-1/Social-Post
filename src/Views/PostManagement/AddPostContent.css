@@ -1,0 +1,14 @@
+.fade-in {
+    opacity: 0; /* set opacity to 0 to hide the element initially */
+    animation: fadeIn 1s ease-in forwards; /* apply the animation */
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0; /* start with opacity of 0 */
+    }
+    to {
+      opacity: 1; /* end with opacity of 1 */
+    }
+   
+  }

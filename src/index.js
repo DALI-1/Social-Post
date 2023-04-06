@@ -11,6 +11,7 @@ import { ChakraBaseProvider, extendBaseTheme } from '@chakra-ui/react'
 import {GlobalContext} from "./context/Context"
 import chakraTheme from '@chakra-ui/theme'
 import { registerLicense } from '@syncfusion/ej2-base';
+
 const { Button } = chakraTheme.components
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const theme = extendBaseTheme({
