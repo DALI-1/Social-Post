@@ -54,7 +54,7 @@ export default function AssetsGallery(props){
     objectFit: 'contain',
     compressInitial: null,
   };
-   const initialImage = '../../Assets/DefaultProfilePicture.png'
+   const initialImage = ''
    let [ImgSrc,setImageSrc]=React.useState();
   return (<div>
      

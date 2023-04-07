@@ -12,6 +12,23 @@ import {GlobalContext} from "./context/Context"
 import chakraTheme from '@chakra-ui/theme'
 import { registerLicense } from '@syncfusion/ej2-base';
 
+//scheduler styles
+import "@syncfusion/ej2-base/styles/bootstrap.css";
+import "@syncfusion/ej2-buttons/styles/bootstrap.css";
+import "@syncfusion/ej2-calendars/styles/bootstrap.css";
+import "@syncfusion/ej2-dropdowns/styles/bootstrap.css";
+import "@syncfusion/ej2-inputs/styles/bootstrap.css";
+import "@syncfusion/ej2-lists/styles/bootstrap.css";
+import "@syncfusion/ej2-navigations/styles/bootstrap.css";
+import "@syncfusion/ej2-popups/styles/bootstrap.css";
+import "@syncfusion/ej2-splitbuttons/styles/bootstrap.css";
+import "@syncfusion/ej2-react-schedule/styles/bootstrap.css";
+import "@syncfusion/ej2-react-grids/styles/bootstrap.css";
+import 'react-toastify/dist/ReactToastify.css';
+
+//this is for the add post splitter
+import '@syncfusion/ej2-layouts/styles/bootstrap.css';
+
 const { Button } = chakraTheme.components
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const theme = extendBaseTheme({

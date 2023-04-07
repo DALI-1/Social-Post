@@ -293,7 +293,7 @@ const headCells = [
     numeric: true,
     disablePadding: false,
     label: 'Pattern Value',
-  },
+  }
 
 
 ];

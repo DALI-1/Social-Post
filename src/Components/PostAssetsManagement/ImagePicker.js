@@ -50,6 +50,7 @@ const imageList = [img1, img2,img3,img4,img5,img6]
           maxPicks={2}
           onMaxPicks={this.onPickMaxImages.bind(this)}
           multiple 
+          
         />
        {/* <textarea rows="4" cols="100" value={this.state.max_images && JSON.stringify(this.state.max_images)} disabled/>
         <textarea rows="4" cols="100" value={this.state.max_message && JSON.stringify(this.state.max_message)} disabled/>*/}
@@ -58,4 +59,3 @@ const imageList = [img1, img2,img3,img4,img5,img6]
   }
 }
 
-render(<Demo/>, document.querySelector('#root'))

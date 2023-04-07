@@ -8,7 +8,7 @@ import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import { MDBBtn } from 'mdb-react-ui-kit';
 import Paper from '@mui/material/Paper';
-import PostSchedularCalendar from "../../components/MUIScheduler/Scheduler"
+import PostSchedularCalendar from "../../components/SyncfusionScheduler/Scheduler"
 
 export default function Content() {
 
@@ -34,7 +34,7 @@ export default function Content() {
        <Container>
        <Row>
         <Col>
-        <Paper sx={{ width: '100%', m: 1,p:2 ,textAlign: "center" }}>
+        <Paper sx={{ width: '100%',height:"100%", m: 1,p:2 ,textAlign: "center" }}>
         {/* <PostScheduler/>*/}  
 
        <PostSchedularCalendar/>
