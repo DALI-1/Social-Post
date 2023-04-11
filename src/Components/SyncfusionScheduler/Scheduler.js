@@ -30,14 +30,14 @@ const popupOpenHandler = (args) => {
   args.cancel = true; // Cancel the default pop-up form
   // Create and display your custom form
   // Example: display a simple alert box
-  Dispatch({type:variables.PostSelectedTabActions.SelectAddPost})
+  //Dispatch({type:variables.PostSelectedTabActions.SelectAddPost})
 };
 const eventSettings = { dataSource: data, fields: fieldsData }
 
 
   //eventsettings contanis the data of the scheduled posts we want to show
   return (
-    <ScheduleComponent selectedDate= {new Date(2018, 1, 15)} 
+    <ScheduleComponent selectedDate= {new Date()}
     eventSettings={eventSettings}
     cellTemplate={CustomCell}
     popupOpen={popupOpenHandler}

@@ -28,7 +28,6 @@ import 'react-toastify/dist/ReactToastify.css';
 
 //this is for the add post splitter
 import '@syncfusion/ej2-layouts/styles/bootstrap.css';
-
 const { Button } = chakraTheme.components
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const theme = extendBaseTheme({
