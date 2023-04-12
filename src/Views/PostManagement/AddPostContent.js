@@ -10,7 +10,8 @@ import Box from '@mui/material/Box';
 import { Editor } from "@tinymce/tinymce-react";
 import { PaneDirective, PanesDirective, SplitterComponent } from '@syncfusion/ej2-react-layouts';
 import "./AddPostContent.css";
-
+import * as variables from "../../variables/variables"
+import * as APILib from "../../libs/APIAccessAndVerification"
 import dayjs from 'dayjs';
 import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -88,7 +89,6 @@ const init = {
     'preview',
     'wordcount',
     'emoticons',
-    'advlink', 'paste', 'mention'
   ],
   toolbar_location: "top",
   menubar: false,
@@ -129,11 +129,21 @@ const init = {
     getFirstPaneRef: () => FirstPaneRef.current
   }));
 
-const PagesList = [{ id: 1, label: 'Acteol Page 1' },{ id: 2, label: 'Acteol Page 2' }];
+let [PagesList,setPagesList]=React.useState([])
 const fields = { value: 'id', text: 'label' };
-const selectedPages= React.useRef([]);
 const handlePageValueChange = (e) => {
-selectedPages.current=e.value;
+let SelectedPagesInfos=[]
+
+e.value.map((v)=>{
+
+  //here we will be itterating through the List of Pages to grab each page's info
+  PagesList.map((p)=>{
+   if(p.id===v)
+   SelectedPagesInfos=[...SelectedPagesInfos,p]
+  })
+})
+variables.PostGlobalVariables.POST_SelectedPageInfo=SelectedPagesInfos
+variables.PostGlobalVariables.POST_SelectedPageIds=e.value
 };
 
 const editorRef =React.useRef(null)
@@ -153,6 +163,39 @@ const commonStyles = {
   border: "0.5px solid #3498db",
  padding:1
 };
+
+//here we will be making calls to the backened to retrieve the List Of Pages
+React.useEffect(()=>{
+
+
+ var JsonObject = {
+    groupID: GlobalState.SelectedGroup.id,
+  };
+
+  let JsonObjectToSend = JSON.stringify(JsonObject);
+  let url2 =
+    process.env.REACT_APP_BACKENDURL + 
+    process.env.REACT_APP_GETGROUPPAGES;
+  let UserToken = window.localStorage.getItem("AuthToken");
+  let APIResult = APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
+  APIResult.then((result) => {
+    if (result.errorCode == undefined) {
+      let PageListFormatedForMultiSelect=[]
+      result.result[0].map((page)=>{
+        if(page.value.picture!==undefined)
+        {PageListFormatedForMultiSelect=[...PageListFormatedForMultiSelect,{id:page.value.id,label:page.value.name,PagePic:page.value.picture.data.url }] }     
+        else
+        {PageListFormatedForMultiSelect=[...PageListFormatedForMultiSelect,{id:page.value.id,label:page.value.name,PagePic:page.value.profile_picture_url }]}
+      })
+      
+     setPagesList(PageListFormatedForMultiSelect);
+     
+    }
+  });
+ 
+
+
+},[])
 
   return (
     <div className="pane-content">
@@ -176,14 +219,17 @@ const commonStyles = {
         popupHeight="250px"
         popupWidth="250px"
         fields={fields}
-        value={selectedPages.current}
-        showSelectAll={true}
-        onChange={()=>{handlePageValueChange(editorRef.current.getContent())}}
-        placeholder="Select the pages you want the post to show at"/>
+      value={variables.PostGlobalVariables.POST_SelectedPageIds}
+        
+        onChange={(e)=>{handlePageValueChange(e)}}
+        placeholder="Select the pages you want the post to show at"
+        
+        />
         
                   </div>
         </Accordion.Body>
       </Accordion.Item>
+
      
     </Accordion>           
        

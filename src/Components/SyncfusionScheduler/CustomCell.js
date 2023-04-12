@@ -39,8 +39,8 @@ if(currentDate<=cellDate)
           
            <Row>
                <Col md={12} > <div  class="HiddenPostInfo">_</div></Col>
-               <Col md={5} ><div    class="HiddenPostInfo">_</div></Col>
-               <Col md={5} ><div    class="HiddenPostInfo">_</div></Col>
+              {/* <Col md={5} ><div    class="HiddenPostInfo">_</div></Col>
+               <Col md={5} ><div    class="HiddenPostInfo">_</div></Col>*/}
               
 
 

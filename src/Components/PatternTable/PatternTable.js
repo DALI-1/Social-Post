@@ -41,15 +41,115 @@ import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import FormControl from '@mui/material/FormControl';
 import { Avatar } from "@nextui-org/react";
-
-
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import Collapse from '@mui/material/Collapse';
+import * as APILib from "../../libs/APIAccessAndVerification"
 export  function FormDialog(props) {
     const [open, setOpen] = React.useState(true);
+    const {GlobalState,Dispatch}=React.useContext(AppContext)
+    const PatternName= React.useRef();
+    const PatternValue=React.useRef();
     const handleClose = () => {
         props.SetShowAddPattern(false)
       setOpen(false);
     };
-  
+   const handleChangePatternName=(e)=>
+   {
+    PatternName.current=e.target.value
+   }
+   const handlePatternValue=(e)=>
+   {
+    PatternValue.current=e.target.value
+   }
+    const handlePatternAdd=()=>
+    {
+         if(PatternName.current=="" ||PatternValue.current=="")
+         {
+          toast.info("The Pattern Name and value cannot be empty!", {
+            position: "bottom-left",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+         }
+         else
+         {
+          
+          var JsonObject = {
+            patternName: PatternName.current,
+            patternText: PatternValue.current,
+            groupID: GlobalState.SelectedGroup.id,
+            };
+            
+            let JsonObjectToSend = JSON.stringify(JsonObject);
+            let url2 =
+            process.env.REACT_APP_BACKENDURL + 
+            process.env.REACT_APP_ADDPATTERN;
+            let UserToken = window.localStorage.getItem("AuthToken");
+            let APIResult = APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
+            APIResult.then((result) => {
+            if (result.errorCode == undefined) {
+              if(result.successCode==="Pattern_Added")
+              {
+                toast.success("The Pattern Created successfully!", {
+                  position: "bottom-left",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "light",
+                })
+                props.SetLocalReRender(!props.LocalRerender)
+                handleClose()
+              }
+              
+             
+            // setPagesList(result.result);
+            }
+            else
+            {
+             if(result.result =="Pattern_Exist") 
+             {
+              toast.info("The pattern you're trying to add Already Exist please pick a different name", {
+                position: "bottom-left",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+              });
+              handleClose()
+             }
+             if(result.result =="Group_Doesnt_exist")
+             {
+              toast.error("Error, looks like the Group you're under no longer exist", {
+                position: "bottom-left",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+              });
+              handleClose()
+             }
+            }
+            });
+          
+         }
+      
+    }
+ 
     return (
       <div>
         <Dialog open={open} onClose={handleClose}>
@@ -58,14 +158,16 @@ export  function FormDialog(props) {
             <DialogContentText>
               To Create your Pattern please input the name of the pattern  and the pattern you want to use for it.
             </DialogContentText>
-            <TextField
+            <TextField   
               autoFocus
               margin="dense"
               id="name"
               label="Pattern Name"
               type="text"
               fullWidth
+              onChange={handleChangePatternName}
               variant="standard"
+              v
             />
             <TextField
               autoFocus
@@ -74,12 +176,13 @@ export  function FormDialog(props) {
               label="Pattern"
               type="text"
               fullWidth
+              onChange={handlePatternValue}
               variant="standard"
             />
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose}>Cancel</Button>
-            <Button onClick={handleClose}>Save Pattern</Button>
+            <Button onClick={handlePatternAdd}>Save Pattern</Button>
           </DialogActions>
         </Dialog>
       </div>
@@ -92,16 +195,85 @@ export function AddDynamicFieldDialog(props) {
     let [GroupsDropDownList,SetGroupsDropDownList]=React.useState({})
     let UsersID=props.UserIDs
   
+
     
-    let handleUserDelete=()=>{
+    let handleDynamicFieldCreation=()=>{
+
+     var EmptyField=false
+     let DynamicField= 
+        {
+          patternID: props.selected[0],
+          listOfPagesDynamicFieldValues: [] 
+        }
+     let  listOfPagesDynamicFieldValues= []
+      
+  if(variables.PostGlobalVariables.POST_SelectedPageInfo.length!==0)
+  {
+    variables.PostGlobalVariables.POST_SelectedPageInfo.map((page)=>{
+      var element=document.getElementById(page.id)
+       if(element.value=="")
+       {
+        EmptyField=true
+       }
+      listOfPagesDynamicFieldValues=[...listOfPagesDynamicFieldValues,{pageID: page.id,dynamicFieldValue: element.value}]
+    
+    })
+  }
+  if(EmptyField==false)
+  {
+
   
-   var JsonObject=
+  let PatternUsedFlag=false
+  variables.PostGlobalVariables.POST_AddedDynamicFields.map((df)=>{
+
+    if(df.patternID===props.selected[0])
     {
-      "userIDs":UsersID,
-     
+      PatternUsedFlag=true
     }
-   
-  
+  })
+  if(PatternUsedFlag==false)
+  {
+    DynamicField.listOfPagesDynamicFieldValues=listOfPagesDynamicFieldValues
+    variables.PostGlobalVariables.POST_AddedDynamicFields=[...variables.PostGlobalVariables.POST_AddedDynamicFields,DynamicField]
+    toast.success("Pattern Created, now insert the pattern in the textfield where you want", {
+      position: "bottom-left",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+  }
+  else
+  {
+    toast.info("The Selected Pattern is already in use by an other Dynamic FIeld", {
+      position: "bottom-left",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+  }
+ handleClose() 
+}
+else
+{
+  toast.info("The Input value for each Dynamic field cannot be empty, please fill it", {
+    position: "bottom-left",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+  });
+}
   }
   
   
@@ -130,41 +302,36 @@ export function AddDynamicFieldDialog(props) {
             <DialogContentText className='m-2' id="alert-dialog-description">
 
              Please Input the dynamic fields values for each of the Pages you Selected
-                     for the current Selected Pattern <strong> //PROMO//</strong>
+                     for the current Selected Pattern
 
             </DialogContentText>
             <Container>
-            <Row className='m-2'>
-                <Col> <Row><Col><Avatar size="lg" src="" color="gradient"   squared zoomed/></Col> <Col>  Facebook Page 1</Col></Row></Col>
+              {variables.PostGlobalVariables.POST_SelectedPageInfo.length===0&&<p>No Selected Pages Found</p>}
+              {variables.PostGlobalVariables.POST_SelectedPageInfo.map((page)=>{
+              
+              return(
+                <Row className='m-2'>
+                <Col> <Row><Col><Avatar size="lg" src={page.PagePic} color="gradient"   squared zoomed/></Col> <Col>{page.label}</Col></Row></Col>
                 <Col>
                 <FormControl>
         <InputLabel htmlFor="component-outlined">Value</InputLabel>
         <OutlinedInput
-          id="component-outlined"
+          id={page.id}
           defaultValue=""
           label="Name"
+          required
         />
       </FormControl>
                 </Col>
             </Row>
-            <Row className='m-2'>
-                <Col> <Row><Col><Avatar size="lg" src="" color="gradient"   squared zoomed/></Col> <Col>  Facebook Page 2</Col></Row></Col>
-                <Col>
-                <FormControl>
-        <InputLabel htmlFor="component-outlined">Value</InputLabel>
-        <OutlinedInput
-          id="component-outlined"
-          defaultValue=""
-          label="Name"
-        />
-      </FormControl>
-                </Col>
-            </Row>
+              )
+
+              })}
             </Container>
           </DialogContent>
           <DialogActions>
             <Button variant="outlined" color="error"  onClick={handleClose}>Cancel</Button>
-            <Button variant="outlined" onClick={handleUserDelete} autoFocus>
+            <Button variant="outlined" onClick={handleDynamicFieldCreation}>
               Add Dynamic Field
             </Button>
           </DialogActions>
@@ -195,7 +362,7 @@ const FilterUsers=()=>{
 
 var filteredrows=[]
 props.Rows.map((row)=>{
-  if(row.userName.includes(UserText.current.value))
+  if(row.patternName.includes(UserText.current.value))
   {
     filteredrows=[...filteredrows,row]
   }
@@ -298,12 +465,7 @@ const headCells = [
 
 ];
 
-let rows=[{
 
-}];
-let Backuprows=[{
-
-}];
 
 
 function EnhancedTableHead(props) {
@@ -399,7 +561,7 @@ function EnhancedTableToolbar(props) {
       {numSelected > 0 ? (
         <Tooltip title="Delete">
           <IconButton>
-            <DeleteIcon onClick={props.HandleRemoveUser} />
+            <DeleteIcon onClick={props.handleRemovePattern} />
           </IconButton>
         </Tooltip>
       ) : (
@@ -417,7 +579,118 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
 
-export default function EnhancedTable() {
+ function handleRemove(e){
+  let tempDynamicFieldsVar
+variables.PostGlobalVariables.POST_AddedDynamicFields.map((df)=>{
+if(df.patternID==e)
+{
+tempDynamicFieldsVar= variables.PostGlobalVariables.POST_AddedDynamicFields.filter((element) => element.patternID != e)
+
+}
+}) 
+variables.PostGlobalVariables.POST_AddedDynamicFields=tempDynamicFieldsVar
+toast.success("Dynamic Field Successfully removed !", {
+  position: "bottom-left",
+  autoClose: 5000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+  theme: "light",
+});
+}
+
+function CollapseRow(props) {
+  const { dfdata } = props;
+  const { rows } = props;
+  const [open, setOpen] = React.useState(false);
+  const { SetLocalReRender } = props;
+  const { LocalRerender } = props;
+ 
+  //preparing pattern info
+  let patternName=""
+  let patternTxt=""
+  rows.map((row)=>{
+    if(row.id==dfdata.patternID)
+    {
+      patternName=row.patternName
+      patternTxt=row.patternText
+    }
+  })
+
+  return (
+    <React.Fragment>
+      <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+        <TableCell>
+          <IconButton
+            aria-label="expand row"
+            size="small"
+            onClick={() => setOpen(!open)}
+          >
+            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+          </IconButton>
+        </TableCell>
+        <TableCell component="th" scope="row">
+          {dfdata.patternID}
+        </TableCell>
+        <TableCell>{patternName}</TableCell>
+        <TableCell><IconButton onClick={()=>{handleRemove(dfdata.patternID);SetLocalReRender(!LocalRerender)}}>
+          <DeleteIcon/>
+        </IconButton></TableCell>
+      </TableRow>
+      <TableRow>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <Box sx={{ margin: 1 }}>
+              <Typography variant="h6" gutterBottom component="div">
+                Selected Pages
+              </Typography>
+              <Table size="small" aria-label="purchases">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Page Name</TableCell>
+                    <TableCell></TableCell>
+                    <TableCell>Pattern</TableCell>
+                    <TableCell >Value</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {dfdata.listOfPagesDynamicFieldValues.map((SRow) =>{ 
+                    //preparing the page info
+var Pagelabel=null
+var PagePicUrl=null
+variables.PostGlobalVariables.POST_SelectedPageInfo.map((page)=>{
+  if(SRow.pageID==page.id)
+  {
+  Pagelabel=page.label
+  PagePicUrl=page.PagePic
+  }
+})
+                    return(
+                    <TableRow key={SRow.pageID}>
+                      <TableCell component="th" scope="row">
+                        {Pagelabel}
+                      </TableCell>
+                      <TableCell><Avatar size="lg" src={PagePicUrl} color="gradient"   squared zoomed/></TableCell>
+                      <TableCell>{patternTxt}</TableCell>
+                      <TableCell>{SRow.dynamicFieldValue}</TableCell>
+                    </TableRow>
+                  )
+                }
+                  
+                  )}
+                </TableBody>
+              </Table>
+            </Box>
+          </Collapse>
+        </TableCell>
+      </TableRow>
+    </React.Fragment>
+  );
+}
+
+export  default function EnhancedTable() {
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
   const [selected, setSelected] = React.useState([]);
@@ -429,20 +702,61 @@ export default function EnhancedTable() {
   const [ShowAddPattern, SetShowAddPattern] = React.useState(false);
   const [RowsRerender, SetRowsRerender] = React.useState(false);
   const {GlobalState,Dispatch}=React.useContext(AppContext)
-  
-//Loading All user from DB
-  React.useEffect(()=>{
+  let [LocalRerender,SetLocalReRender]=React.useState(false)
+  let [rows, setrows] = React.useState([{}]);
+  let [Backuprows, setBackuprows] = React.useState([{}]); 
 
-  }
-,[])
+
+
+
+
+  
+ //Here we will be loading the patterns for the selected group
+ React.useEffect(()=>{
+
+  var JsonObject = {
+groupID: GlobalState.SelectedGroup.id,
+};
+
+let JsonObjectToSend = JSON.stringify(JsonObject);
+let url2 =
+process.env.REACT_APP_BACKENDURL + 
+process.env.REACT_APP_GETGROUPATTERNS;
+let UserToken = window.localStorage.getItem("AuthToken");
+let APIResult = APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
+APIResult.then((result) => {
+if (result.ErrorCode == undefined) {
+setrows(result.result)
+setBackuprows(result.result)
+// setPagesList(result.result);
+}
+});
+
+},[])
 
 //This use effect is called when a modification is done to update the table
 
 React.useEffect(()=>{
 
+  var JsonObject = {
+    groupID: GlobalState.SelectedGroup.id,
+    };
     
+    let JsonObjectToSend = JSON.stringify(JsonObject);
+    let url2 =
+    process.env.REACT_APP_BACKENDURL + 
+    process.env.REACT_APP_GETGROUPATTERNS;
+    let UserToken = window.localStorage.getItem("AuthToken");
+    let APIResult = APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
+    APIResult.then((result) => {
+    if (result.ErrorCode == undefined) {
+    setrows(result.result)
+    setBackuprows(result.result)
+    // setPagesList(result.result);
+    }
+    });
  
- },[GlobalState.Rerender])
+ },[LocalRerender])
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -504,18 +818,109 @@ React.useEffect(()=>{
     }
     const HandleAddDynamicFIeld=()=>
     {
+      if(selected.length!==1)
+      {
+        toast.info("You need to Select One Pattern Only !", {
+          position: "bottom-left",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      }
+      else
+      {
         SetShowAddDynamicField(true)
+      }
+       
     }
     const ChangeRows=(NewData)=>
     {
-        rows=NewData;
-        SetRowsRerender(!RowsRerender)
+      setrows(NewData);
+        //SetRowsRerender(!RowsRerender)
     }
     const RevertRows=()=>
     {
-    
-        rows=Backuprows;
-        SetRowsRerender(!RowsRerender)
+      setrows(Backuprows)
+        
+        //SetRowsRerender(!RowsRerender)
+    }
+
+    const handleRemovePattern=()=>
+    {
+      if(selected.length==0)
+      {
+        toast.info("Please Select a pattern you want to delete", {
+          position: "bottom-left",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      }
+      else
+      {
+      
+let TempObject={listOfPatternsToDelete:[]}
+
+
+
+        selected.map((s)=>{
+TempObject.listOfPatternsToDelete=[...TempObject.listOfPatternsToDelete,{patternID:s}]
+        })
+          var JsonObject =TempObject; 
+            let JsonObjectToSend = JSON.stringify(JsonObject); 
+            let url2 =
+            process.env.REACT_APP_BACKENDURL + 
+            process.env.REACT_APP_REMOVEPATTERN;
+            let UserToken = window.localStorage.getItem("AuthToken");
+            let APIResult = APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
+            APIResult.then((result) => {
+            if (result.errorCode == undefined) {
+              if(result.successCode = "Pattern_Deleted")
+              {
+                toast.success("Pattern Deleted Successfully", {
+                  position: "bottom-left",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "light",
+                });
+
+               setSelected([])
+                     
+                SetLocalReRender(!LocalRerender)
+              }
+            }
+            else
+            {
+             
+              if (result.result=='Invalid Pattern ID') {
+                toast.error("Unable to Delete this pattern because it's already in use by a scheduled post", {
+                  position: "bottom-left",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "light",
+                });
+              }
+            }
+            });
+        
+      }
+      
     }
 
     return (
@@ -526,10 +931,11 @@ React.useEffect(()=>{
 <Row>
 <Col>
 <Box sx={{ width: '100%' }}>
-<Paper sx={{ width: '100%', mb: 2 ,boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.1)'}}>
+<Paper sx={{ width: '100%', mb: 2 ,boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.1)',textAlign: "center" }} >
 <Container>
     <Row><Col><MDBBtn outline className='mx-2 m-2' color='secondary' onClick={HandleAddPattern} > Create new Pattern</MDBBtn></Col>
     <Col><MDBBtn outline className='mx-2 m-2' color='secondary' onClick={HandleAddDynamicFIeld} >Add Dynamic field</MDBBtn></Col>
+    
     </Row>
 </Container>
   </Paper>
@@ -543,7 +949,7 @@ React.useEffect(()=>{
 
 <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2,boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.1)' }}>
-        <EnhancedTableToolbar numSelected={selected.length} SetFilterModal={SetFilterModal} />
+        <EnhancedTableToolbar numSelected={selected.length} SetFilterModal={SetFilterModal} handleRemovePattern={handleRemovePattern} />
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -591,13 +997,10 @@ React.useEffect(()=>{
                         scope="row"
                         padding="none"
                       >
-                        {row.userName}
+                        {row.id}
                       </TableCell>
-                      <TableCell align="right">{row.firstName}</TableCell>
-                      <TableCell align="right">{row.lastName}</TableCell>
-                      <TableCell align="right">{row.age}</TableCell>
-                      <TableCell align="right">{row.email}</TableCell>
-                      <TableCell align="right">{row.phoneNumber}</TableCell>
+                      <TableCell align="right">{row.patternName}</TableCell>
+                      <TableCell align="right">{row.patternText}</TableCell>
                     </TableRow>
                   );
                 })}
@@ -630,10 +1033,34 @@ React.useEffect(()=>{
     </Box>
 </Col>
 </Row>
+<Row >
+  <Col md={12}><h1 className='m-2'> List Of Currently used Dynamic fields</h1></Col>
+  <Col md={12}>
+  
+  <TableContainer component={Paper} sx={{ width: '100%', mb: 2,boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.1)' }}>
+      <Table aria-label="collapsible table">
+        <TableHead>
+          <TableRow>
+            <TableCell />
+            <TableCell>ID</TableCell>
+            <TableCell align="right">Used Pattern</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {variables.PostGlobalVariables.POST_AddedDynamicFields.length==0&& <p>No Dynamic field found</p>}
+          {variables.PostGlobalVariables.POST_AddedDynamicFields.map((df) => (
+            <CollapseRow SetLocalReRender={SetLocalReRender} key={"DF"+df.patternID } rows={rows} dfdata={df} LocalRerender={LocalRerender} />
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+
+  </Col>
+</Row>
 </Container>
 
-{ShowAddPattern&&<FormDialog SetShowAddPattern={SetShowAddPattern} />}
-{ShowAddDynamicField&&<AddDynamicFieldDialog SetShowAddDynamicField={SetShowAddDynamicField} />}
+{ShowAddPattern&&<FormDialog SetShowAddPattern={SetShowAddPattern} SetLocalReRender={SetLocalReRender} LocalRerender={LocalRerender}/>}
+{ShowAddDynamicField&&<AddDynamicFieldDialog selected={selected} SetShowAddDynamicField={SetShowAddDynamicField} />}
 {FilterModal&&<FilterDialog SetFilterModal={SetFilterModal} Rows={rows} ChangeRows={ChangeRows} RevertRows={RevertRows} />}
 
 

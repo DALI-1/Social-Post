@@ -227,3 +227,12 @@ export var FacebookUser=
     LoggedFacebookUserInfo:{}
     
 }
+
+export var PostGlobalVariables=
+{
+ //This variable contains the selected Pages info by the user ! INFO ONLY USED TO DISPLAY PAGE INFO LATER WHEN U INSERT DYNAMIC FIELD
+    POST_SelectedPageInfo:[],
+     //This variable contains the selected Pages IDs by the user  !ID ONLY HERE USED FOR AN INITIZALIZING for tHE MULTISELECT
+    POST_SelectedPageIds:[],
+    POST_AddedDynamicFields:[]
+}
