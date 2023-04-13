@@ -79,72 +79,90 @@ export  function FormDialog(props) {
          }
          else
          {
+
+
+          const pattern = /^\/\/.*\/\/$/; // regular expression pattern
+
+            if (pattern.test(PatternValue.current)) {
+              var JsonObject = {
+                patternName: PatternName.current,
+                patternText: PatternValue.current,
+                groupID: GlobalState.SelectedGroup.id,
+                };
+                
+                let JsonObjectToSend = JSON.stringify(JsonObject);
+                let url2 =
+                process.env.REACT_APP_BACKENDURL + 
+                process.env.REACT_APP_ADDPATTERN;
+                let UserToken = window.localStorage.getItem("AuthToken");
+                let APIResult = APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
+                APIResult.then((result) => {
+                if (result.errorCode == undefined) {
+                  if(result.successCode==="Pattern_Added")
+                  {
+                    toast.success("The Pattern Created successfully!", {
+                      position: "bottom-left",
+                      autoClose: 5000,
+                      hideProgressBar: false,
+                      closeOnClick: true,
+                      pauseOnHover: true,
+                      draggable: true,
+                      progress: undefined,
+                      theme: "light",
+                    })
+                    props.SetLocalReRender(!props.LocalRerender)
+                    handleClose()
+                  }
+                  
+                 
+                // setPagesList(result.result);
+                }
+                else
+                {
+                 if(result.result =="Pattern_Exist") 
+                 {
+                  toast.info("The pattern you're trying to add Already Exist please pick a different name", {
+                    position: "bottom-left",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                  });
+                  handleClose()
+                 }
+                 if(result.result =="Group_Doesnt_exist")
+                 {
+                  toast.error("Error, looks like the Group you're under no longer exist", {
+                    position: "bottom-left",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                  });
+                  handleClose()
+                 }
+                }
+                });
+            } else {
+              toast.info("Pattern Value is formated wrongly, Please use this format //PatternValue//", {
+                position: "bottom-left",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+              });
+            }
           
-          var JsonObject = {
-            patternName: PatternName.current,
-            patternText: PatternValue.current,
-            groupID: GlobalState.SelectedGroup.id,
-            };
-            
-            let JsonObjectToSend = JSON.stringify(JsonObject);
-            let url2 =
-            process.env.REACT_APP_BACKENDURL + 
-            process.env.REACT_APP_ADDPATTERN;
-            let UserToken = window.localStorage.getItem("AuthToken");
-            let APIResult = APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
-            APIResult.then((result) => {
-            if (result.errorCode == undefined) {
-              if(result.successCode==="Pattern_Added")
-              {
-                toast.success("The Pattern Created successfully!", {
-                  position: "bottom-left",
-                  autoClose: 5000,
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: true,
-                  progress: undefined,
-                  theme: "light",
-                })
-                props.SetLocalReRender(!props.LocalRerender)
-                handleClose()
-              }
-              
-             
-            // setPagesList(result.result);
-            }
-            else
-            {
-             if(result.result =="Pattern_Exist") 
-             {
-              toast.info("The pattern you're trying to add Already Exist please pick a different name", {
-                position: "bottom-left",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-              });
-              handleClose()
-             }
-             if(result.result =="Group_Doesnt_exist")
-             {
-              toast.error("Error, looks like the Group you're under no longer exist", {
-                position: "bottom-left",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-              });
-              handleClose()
-             }
-            }
-            });
+         
           
          }
       
@@ -189,17 +207,10 @@ export  function FormDialog(props) {
     );
   }
 export function AddDynamicFieldDialog(props) {
-    const [open, setOpen] = React.useState(true);
-    const {GlobalState,Dispatch}=React.useContext(AppContext)
-    let ListOfGroups=React.useRef([])
-    let [GroupsDropDownList,SetGroupsDropDownList]=React.useState({})
-    let UsersID=props.UserIDs
-  
-
-    
+    const [open, setOpen] = React.useState(true); 
     let handleDynamicFieldCreation=()=>{
 
-     var EmptyField=false
+     var EmptyFieldOccurence=0
      let DynamicField= 
         {
           patternID: props.selected[0],
@@ -213,13 +224,13 @@ export function AddDynamicFieldDialog(props) {
       var element=document.getElementById(page.id)
        if(element.value=="")
        {
-        EmptyField=true
+        EmptyFieldOccurence++
        }
       listOfPagesDynamicFieldValues=[...listOfPagesDynamicFieldValues,{pageID: page.id,dynamicFieldValue: element.value}]
     
     })
   }
-  if(EmptyField==false)
+  if(EmptyFieldOccurence!=variables.PostGlobalVariables.POST_SelectedPageInfo.length)
   {
 
   
@@ -245,6 +256,16 @@ export function AddDynamicFieldDialog(props) {
       progress: undefined,
       theme: "light",
     });
+   
+    //Here we simply go through all the patterns, we extract the patternText and we insert it to the Editor
+    let PatternText="//ERROR//"
+    variables.PostGlobalVariables.POST_PatternsInfo.map((Pattern)=>{
+        if(Pattern.id==props.selected[0])
+        {
+          PatternText=Pattern.patternText
+        }
+    })
+    props.appendText(PatternText)
   }
   else
   {
@@ -263,7 +284,7 @@ export function AddDynamicFieldDialog(props) {
 }
 else
 {
-  toast.info("The Input value for each Dynamic field cannot be empty, please fill it", {
+  toast.info("The Input value for Page Dynamic field cannot be empty for Every page!", {
     position: "bottom-left",
     autoClose: 5000,
     hideProgressBar: false,
@@ -331,9 +352,9 @@ else
           </DialogContent>
           <DialogActions>
             <Button variant="outlined" color="error"  onClick={handleClose}>Cancel</Button>
-            <Button variant="outlined" onClick={handleDynamicFieldCreation}>
+            {variables.PostGlobalVariables.POST_SelectedPageInfo.length!==0&&<Button variant="outlined" onClick={handleDynamicFieldCreation}>
               Add Dynamic Field
-            </Button>
+            </Button>}
           </DialogActions>
         </Dialog>
     </>
@@ -343,6 +364,42 @@ else
   }
 
 
+
+
+  export function DeletePatternConfirmDialog(props) {
+  const handleClose = () => {
+    props.SetDeletePatternConfirmDialog(false)
+  };
+  return (
+    <>
+       <Dialog
+          open={true}
+          onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+           Pattern Delete
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText className='m-2' id="alert-dialog-description">
+
+             Are you sure you want to delete the pattern?
+            </DialogContentText>
+          
+          </DialogContent>
+          <DialogActions>
+            <Button variant="outlined"  onClick={handleClose}>No Don't Delete</Button>
+            <Button variant="outlined"color="error" onClick={()=>{props.handleRemovePattern();handleClose()}}>
+             Yes, Delete.
+            </Button>
+          </DialogActions>
+        </Dialog>
+    </>
+      
+       
+  );
+  }
 
 
 export function FilterDialog(props) {
@@ -526,7 +583,6 @@ EnhancedTableHead.propTypes = {
 
 function EnhancedTableToolbar(props) {
   const { numSelected } = props;
- 
   return (
     <Toolbar
       sx={{
@@ -561,7 +617,7 @@ function EnhancedTableToolbar(props) {
       {numSelected > 0 ? (
         <Tooltip title="Delete">
           <IconButton>
-            <DeleteIcon onClick={props.handleRemovePattern} />
+            <DeleteIcon onClick={()=>{props.SetDeletePatternConfirmDialog(!props.ShowDeletePatternConfirmDialog) }} />
           </IconButton>
         </Tooltip>
       ) : (
@@ -607,7 +663,6 @@ function CollapseRow(props) {
   const [open, setOpen] = React.useState(false);
   const { SetLocalReRender } = props;
   const { LocalRerender } = props;
- 
   //preparing pattern info
   let patternName=""
   let patternTxt=""
@@ -635,7 +690,7 @@ function CollapseRow(props) {
           {dfdata.patternID}
         </TableCell>
         <TableCell>{patternName}</TableCell>
-        <TableCell><IconButton onClick={()=>{handleRemove(dfdata.patternID);SetLocalReRender(!LocalRerender)}}>
+        <TableCell><IconButton onClick={()=>{handleRemove(dfdata.patternID);props.RemoveDynamicFieldText(patternTxt);SetLocalReRender(!LocalRerender)}}>
           <DeleteIcon/>
         </IconButton></TableCell>
       </TableRow>
@@ -651,7 +706,7 @@ function CollapseRow(props) {
                   <TableRow>
                     <TableCell>Page Name</TableCell>
                     <TableCell></TableCell>
-                    <TableCell>Pattern</TableCell>
+                    <TableCell>Pattern Value </TableCell>
                     <TableCell >Value</TableCell>
                   </TableRow>
                 </TableHead>
@@ -690,7 +745,7 @@ variables.PostGlobalVariables.POST_SelectedPageInfo.map((page)=>{
   );
 }
 
-export  default function EnhancedTable() {
+export  default function EnhancedTable({appendText,RemoveDynamicFieldText}) {
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
   const [selected, setSelected] = React.useState([]);
@@ -700,17 +755,12 @@ export  default function EnhancedTable() {
   const [FilterModal, SetFilterModal] = React.useState(false);
   const [ShowAddDynamicField, SetShowAddDynamicField] = React.useState(false);
   const [ShowAddPattern, SetShowAddPattern] = React.useState(false);
-  const [RowsRerender, SetRowsRerender] = React.useState(false);
+  let [ShowDeletePatternConfirmDialog, SetDeletePatternConfirmDialog] = React.useState(false);
   const {GlobalState,Dispatch}=React.useContext(AppContext)
   let [LocalRerender,SetLocalReRender]=React.useState(false)
   let [rows, setrows] = React.useState([{}]);
   let [Backuprows, setBackuprows] = React.useState([{}]); 
 
-
-
-
-
-  
  //Here we will be loading the patterns for the selected group
  React.useEffect(()=>{
 
@@ -727,8 +777,9 @@ let APIResult = APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken)
 APIResult.then((result) => {
 if (result.ErrorCode == undefined) {
 setrows(result.result)
+ //updating Patterns info, this will be used in the preview to replace the pattern values with their specific values
+variables.PostGlobalVariables.POST_PatternsInfo=result.result
 setBackuprows(result.result)
-// setPagesList(result.result);
 }
 });
 
@@ -751,8 +802,9 @@ React.useEffect(()=>{
     APIResult.then((result) => {
     if (result.ErrorCode == undefined) {
     setrows(result.result)
+    //updating Patterns info, this will be used in the preview to replace the pattern values with their specific values
+    variables.PostGlobalVariables.POST_PatternsInfo=result.result
     setBackuprows(result.result)
-    // setPagesList(result.result);
     }
     });
  
@@ -903,9 +955,23 @@ TempObject.listOfPatternsToDelete=[...TempObject.listOfPatternsToDelete,{pattern
             }
             else
             {
-             
+              
+
+              if (result.result=='Pattern_In_Use') {
+                toast.info("Unable to Delete this pattern because it's already in use by a scheduled post", {
+                  position: "bottom-left",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "light",
+                });
+              }
+
               if (result.result=='Invalid Pattern ID') {
-                toast.error("Unable to Delete this pattern because it's already in use by a scheduled post", {
+                toast.error("Something went wrong, the pattern you tried to delete doesn't exist", {
                   position: "bottom-left",
                   autoClose: 5000,
                   hideProgressBar: false,
@@ -949,7 +1015,7 @@ TempObject.listOfPatternsToDelete=[...TempObject.listOfPatternsToDelete,{pattern
 
 <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2,boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.1)' }}>
-        <EnhancedTableToolbar numSelected={selected.length} SetFilterModal={SetFilterModal} handleRemovePattern={handleRemovePattern} />
+        <EnhancedTableToolbar numSelected={selected.length} SetFilterModal={SetFilterModal} SetDeletePatternConfirmDialog={SetDeletePatternConfirmDialog} ShowDeletePatternConfirmDialog={ShowDeletePatternConfirmDialog}/>
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -1043,13 +1109,14 @@ TempObject.listOfPatternsToDelete=[...TempObject.listOfPatternsToDelete,{pattern
           <TableRow>
             <TableCell />
             <TableCell>ID</TableCell>
-            <TableCell align="right">Used Pattern</TableCell>
+            <TableCell>Pattern Name</TableCell>
+            <TableCell></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {variables.PostGlobalVariables.POST_AddedDynamicFields.length==0&& <p>No Dynamic field found</p>}
           {variables.PostGlobalVariables.POST_AddedDynamicFields.map((df) => (
-            <CollapseRow SetLocalReRender={SetLocalReRender} key={"DF"+df.patternID } rows={rows} dfdata={df} LocalRerender={LocalRerender} />
+            <CollapseRow  RemoveDynamicFieldText={RemoveDynamicFieldText} SetLocalReRender={SetLocalReRender} key={"DF"+df.patternID } rows={rows} dfdata={df} LocalRerender={LocalRerender} />
           ))}
         </TableBody>
       </Table>
@@ -1058,11 +1125,10 @@ TempObject.listOfPatternsToDelete=[...TempObject.listOfPatternsToDelete,{pattern
   </Col>
 </Row>
 </Container>
-
 {ShowAddPattern&&<FormDialog SetShowAddPattern={SetShowAddPattern} SetLocalReRender={SetLocalReRender} LocalRerender={LocalRerender}/>}
-{ShowAddDynamicField&&<AddDynamicFieldDialog selected={selected} SetShowAddDynamicField={SetShowAddDynamicField} />}
+{ShowAddDynamicField&&<AddDynamicFieldDialog appendText={appendText} selected={selected} SetShowAddDynamicField={SetShowAddDynamicField} />}
 {FilterModal&&<FilterDialog SetFilterModal={SetFilterModal} Rows={rows} ChangeRows={ChangeRows} RevertRows={RevertRows} />}
-
+{ShowDeletePatternConfirmDialog&&<DeletePatternConfirmDialog  handleRemovePattern={handleRemovePattern} SetDeletePatternConfirmDialog={SetDeletePatternConfirmDialog} ShowDeletePatternConfirmDialog={ShowDeletePatternConfirmDialog}/>}
 
   </>
   );

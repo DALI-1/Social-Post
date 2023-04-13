@@ -234,5 +234,6 @@ export var PostGlobalVariables=
     POST_SelectedPageInfo:[],
      //This variable contains the selected Pages IDs by the user  !ID ONLY HERE USED FOR AN INITIZALIZING for tHE MULTISELECT
     POST_SelectedPageIds:[],
-    POST_AddedDynamicFields:[]
+    POST_AddedDynamicFields:[],
+    POST_PatternsInfo:[]
 }

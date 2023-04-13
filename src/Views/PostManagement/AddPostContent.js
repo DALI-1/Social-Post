@@ -6,13 +6,13 @@ import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import { MDBBtn } from 'mdb-react-ui-kit';
 import Paper from '@mui/material/Paper';
-import Box from '@mui/material/Box';
 import { Editor } from "@tinymce/tinymce-react";
 import { PaneDirective, PanesDirective, SplitterComponent } from '@syncfusion/ej2-react-layouts';
 import "./AddPostContent.css";
 import * as variables from "../../variables/variables"
 import * as APILib from "../../libs/APIAccessAndVerification"
 import dayjs from 'dayjs';
+import {  toast } from 'react-toastify';
 import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -23,7 +23,7 @@ import Accordion from 'react-bootstrap/Accordion';
 import TextField from '@mui/material/TextField';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-
+import { Box, Button } from '@mui/material';
 import FormControl from '@mui/material/FormControl';
 import SelectMUI from '@mui/material/Select';
 import Radio from '@mui/material/Radio';
@@ -34,12 +34,119 @@ import FacebookPostClone from "../../components/FacebookComps/FBPostBoxClone"
 import AddHashTagDialog from "../../components/AddPostComps/AddHashTagsDialog"
 import AddDynamicFieldDialog from "../../components/AddPostComps/AddDynamicFieldDialog"
 import AddAssetsDialog from "../../components/AddPostComps/AddAssetsDialog"
-export const FirstPane=React.forwardRef(({handleEditorChange},ref)=> {
+import Pagination from '@mui/material/Pagination';
+import CircularProgress from '@mui/material/CircularProgress';
+export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelectionChange},ref)=> {
+  const editorRef =React.useRef(null)
+  const Post_DateInput=React.useRef(null)
+  const Post_RepeatCheckbox=React.useRef(false)
+  const Post_RepeatingOptionDropDownList=React.useRef(null)
+  //const Post_Repeat_EveryInput=React.useRef(null)
+  const Post_EndRepeatRadioBox=React.useRef(null)
+  const Post_EndRepeatOnNbOfOccurencesInput=React.useRef(null)
+  const Post_EndRepeatAfterDateInput=React.useRef(null)
+
+  const handlePostDateChange = (date) => {
+    //dayjs(date.$d)
+    Post_DateInput.current=date.$d
+  }
+  const HandlePost_RepeatCheckbox=(v)=>
+  {
+    Post_RepeatCheckbox.current=v.target.checked
+  }
+  const HandlePost_RepeatingOptionDropDownList=(e)=>
+  {
+    Post_RepeatingOptionDropDownList.current=e.target.value
+  }
+  /*const HandlePost_Repeat_EveryInput=(e)=>
+  {
+      Post_Repeat_EveryInput.current=e.target.value
+  }*/
+  const HandlePost_EndRepeatRadioBox=(e)=>
+  {
+    Post_EndRepeatRadioBox.current=e.target.value
+  }
+  const HandlePost_EndRepeatOnNbOfOccurencesInput=(e)=>
+  {
+    Post_EndRepeatOnNbOfOccurencesInput.current=e.target.value
+  }
+  const HandlePost_EndRepeatAfterDateInput=(date)=>
+  {
+    //dayjs(date.$d)
+    Post_EndRepeatAfterDateInput.current=date.$d
+  }
   const {GlobalState,Dispatch}=React.useContext(AppContext)
    //States related to showing the Dialogs
    const [ShowAddHashTagDialog,SetShowAddHashTagDialog]=React.useState(false)
    const [ShowAssetsDialog,SetShowAssetsDialog]=React.useState(false)
    const [ShowDynamicFieldDialog,SetShowDynamicFieldDialog]=React.useState(false)
+
+
+  const HandlePostSchedule=(()=>{
+
+    let EditorContent=editorRef.current.getContent()
+    let Post_Date=Post_DateInput.current
+    let Repeat=Post_RepeatCheckbox.current
+    let RepeatDropDownListSelection=Post_RepeatingOptionDropDownList.current
+    //let Repeat_Every=Post_Repeat_EveryInput.current
+    let EndRepeatRadioBoxValue=Post_EndRepeatRadioBox.current
+    let EndRepeatOnNbOfOccurencesValue=Post_EndRepeatOnNbOfOccurencesInput.current
+    let EndRepeatAfterDate=Post_EndRepeatAfterDateInput.current
+
+
+   let ListOfPages=[]
+    variables.PostGlobalVariables.POST_SelectedPageInfo.map((page)=>
+    {
+    ListOfPages=[...ListOfPages,{"pageID": page.id}]
+    })
+    var JsonObject = {  
+        postGroupID: GlobalState.SelectedGroup.id,
+        postText: EditorContent,
+        repeatPost: Repeat,
+        repeatOption: RepeatDropDownListSelection==1?"Hourly":RepeatDropDownListSelection==2?"Daily":RepeatDropDownListSelection==3?"Weekly":RepeatDropDownListSelection==4?"Monthly":RepeatDropDownListSelection==5?"Yearly":"NO_REPEAT",
+        endRepeatPost: EndRepeatRadioBoxValue==1?false:true,
+        endRepeatOption: EndRepeatRadioBoxValue==1?"NoEnd":EndRepeatRadioBoxValue==2?"EndOccOption":"EndDateOption",
+        endRepeatOnOccurence: EndRepeatRadioBoxValue==2?EndRepeatRadioBoxValue:0,
+        endRepeatAfterDate: EndRepeatRadioBoxValue==3?EndRepeatAfterDate:"2023-04-12T23:00:00.000Z",
+        postDate: Post_DateInput.current,
+        listOfPages:ListOfPages,
+        listOfAssets: [],
+        listOfDynamicFields: variables.PostGlobalVariables.POST_AddedDynamicFields
+    };
+
+   
+  
+    let JsonObjectToSend = JSON.stringify(JsonObject);
+    console.log(JsonObjectToSend)
+    let url2 =
+      process.env.REACT_APP_BACKENDURL + 
+      process.env.REACT_APP_ADDPOST;
+    let UserToken = window.localStorage.getItem("AuthToken");
+    let APIResult = APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
+    APIResult.then((result) => {
+      if (result.errorCode == undefined) {
+        console.log(result)
+        if(result.successCode=="Post_Scheduleded")
+        {
+
+          toast.success("Post Scheduleded Successfully!", {
+            position: "bottom-left",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+        }
+        
+        
+      }
+    });
+
+ 
+  })
   //this is related to tiny mce custom buttons
   const customHashTagIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="24" height="24"">
   <path xmlns="http://www.w3.org/2000/svg" d="m256 30.995c-107.476 0-203.979 59.927-240.146 149.121-9.859 24.302-15.854 49.834-15.854 75.879 0 124.072 115.39 225 256 225 37.646 0 74.077-7.236 108.398-21.519l98.452 21.182c5.339 1.203 11.349-.747 15-5.479 3.545-4.556 4.146-10.737 1.567-15.894l-29.106-58.198c39.229-40.575 61.689-91.684 61.689-145.092 0-124.072-115.39-225-256-225zm120 255c8.291 0 15 6.709 15 15s-6.709 15-15 15h-61.538l-14.033 49.116c-2.223 7.756-10.292 12.596-18.545 10.313-7.969-2.285-12.583-10.591-10.313-18.545l11.68-40.884h-88.79l-14.033 49.116c-2.223 7.756-10.292 12.596-18.545 10.313-7.969-2.285-12.583-10.591-10.313-18.545l11.68-40.884h-27.25c-8.291 0-15-6.709-15-15s6.709-15 15-15h35.825l17.142-60h-52.967c-8.291 0-15-6.709-15-15s6.709-15 15-15h61.538l14.033-49.116c2.285-7.983 10.664-12.466 18.545-10.313 7.969 2.285 12.583 10.591 10.313 18.545l-11.68 40.884h88.79l14.033-49.116c2.285-7.983 10.693-12.466 18.545-10.313 7.969 2.285 12.583 10.591 10.313 18.545l-11.68 40.884h27.25c8.291 0 15 6.709 15 15s-6.709 15-15 15h-35.825l-17.142 60z"/>
@@ -80,7 +187,7 @@ const init = {
         { name: 'Twitter', items: ['@twitterhandle1', '@twitterhandle2'] }
     ]
   },
-  selector: 'textarea',
+  selector: '#my-editor',
   plugins: [
     'lists',
     'link',
@@ -144,19 +251,18 @@ e.value.map((v)=>{
 })
 variables.PostGlobalVariables.POST_SelectedPageInfo=SelectedPagesInfos
 variables.PostGlobalVariables.POST_SelectedPageIds=e.value
+variables.PostGlobalVariables.POST_AddedDynamicFields=[]
+handlePageSelectionChange()
 };
 
-const editorRef =React.useRef(null)
+
 
 
   //this is related to scheduling
   const [Repeat,setRepeat] = React.useState(false);
+  const [PagesLoaded,SetPagesLoaded] = React.useState(false);
     //repeat things
-    const [RepeatOption, setRepeatOption] = React.useState('');
-
-const handleChange = (event) => {
-  setRepeatOption(event.target.value);
-};
+ 
 const commonStyles = {
   bgcolor: 'background.paper',
   m: 1,
@@ -189,7 +295,7 @@ React.useEffect(()=>{
       })
       
      setPagesList(PageListFormatedForMultiSelect);
-     
+     SetPagesLoaded(true)
     }
   });
  
@@ -197,6 +303,21 @@ React.useEffect(()=>{
 
 },[])
 
+//This is used to appened text to TinyMCEEditor
+function appendText(Text) {
+  editorRef.current.execCommand('mceInsertContent', false, Text)
+}
+
+//This is used to Remove the Dynamic Field  text from TinyMCEEditor in case the Dynamic FIeld is deleted
+function RemoveDynamicFieldText(Text) {
+  const editor = editorRef.current; // get a reference to the editor
+  const content = editor.getContent(); // get the current content of the editor
+  const regex = new RegExp(Text, 'g'); // create a regular expression with the global 'g' flag to replace all instances
+  const newText = ""; // the text to insert
+  const replacedContent = content.replace(regex, newText); // replace all instances of the 'Text' variable with 'newText'
+  editor.setContent(replacedContent); // set the new content of the edito
+
+}
   return (
     <div className="pane-content">
             <Container>   
@@ -212,20 +333,25 @@ React.useEffect(()=>{
         <Accordion.Header>Pages</Accordion.Header>
         <Accordion.Body>
         <div>
-      <MultiSelectComponent  
+
+          {!PagesLoaded&&<Box sx={{ display: 'flex', justifyContent: 'center', my: 2 }}>
+      <CircularProgress />
+    </Box>}
+      {PagesLoaded&&<MultiSelectComponent 
+      key={"MultiPageSelect"} 
       ref={FirstPaneRef}
        id="mtselement" 
        dataSource={PagesList}
         popupHeight="250px"
         popupWidth="250px"
         fields={fields}
-      value={variables.PostGlobalVariables.POST_SelectedPageIds}
-        
+        value={variables.PostGlobalVariables.POST_SelectedPageIds} 
         onChange={(e)=>{handlePageValueChange(e)}}
         placeholder="Select the pages you want the post to show at"
         
-        />
+        />}
         
+         
                   </div>
         </Accordion.Body>
       </Accordion.Item>
@@ -244,11 +370,6 @@ React.useEffect(()=>{
         />
            
             </div>
-
-           
-
-
-    
             <Accordion className='m-2' defaultActiveKey="0">
       <Accordion.Item eventKey="0">
         <Accordion.Header>Post Time Scheduling</Accordion.Header>
@@ -261,11 +382,12 @@ React.useEffect(()=>{
           'MobileDateTimePicker'
         ]}
       >
-          <MobileDateTimePicker label="Post Date" defaultValue={dayjs('2022-04-17T15:30')} /> 
+        {/* defaultValue={dayjs(new Date())}*/}
+          <MobileDateTimePicker label="Post Date"   onChange={handlePostDateChange}  /> 
       </DemoContainer>
     </LocalizationProvider>
 
-    <FormControlLabel control={<Checkbox checked={Repeat} onChange={()=>{setRepeat(!Repeat)}} />} label="Repeat" />
+    <FormControlLabel control={<Checkbox checked={Repeat} onChange={(e)=>{HandlePost_RepeatCheckbox(e);setRepeat(!Repeat)}} />} label="Repeat" />
 <br></br>
 
       {Repeat&&<div className='fade-in'> 
@@ -275,31 +397,35 @@ React.useEffect(()=>{
 
           <FormControl sx={{ mt: 1, minWidth: 120 }}>
         <InputLabel id="demo-simple-select-helper-label"> Repeating Option</InputLabel>
+
         <SelectMUI
+          onChange={HandlePost_RepeatingOptionDropDownList}
           labelId="demo-simple-select-helper-label"
           id="demo-simple-select-helper"
-          value={RepeatOption}
           label="Post Repeating Option"
-          onChange={handleChange}
+         defaultValue={1}
         >
-          <MenuItem value={1}>Weekly</MenuItem>
-          <MenuItem value={2}>Monthly</MenuItem>
-          <MenuItem value={3}>Yearly</MenuItem>
+          <MenuItem value={1}>Hourly</MenuItem>
+          <MenuItem value={2}>Daily</MenuItem>
+          <MenuItem value={3}>Weekly</MenuItem>
+          <MenuItem value={4}>Monthly</MenuItem>
+          <MenuItem value={5}>Yearly</MenuItem>
         </SelectMUI>
 
       </FormControl>
           </Row>
 
-          <Row style={{margin:"1rem"}}>
+          {/*<Row style={{margin:"1rem"}}>
             <Col><p style={{marginTop:"1.3rem"}}>Repeat Every </p></Col>
-            <Col><TextField id="outlined-basic" variant="outlined" /></Col>
+            <Col><TextField onChange={HandlePost_Repeat_EveryInput} id="outlined-basic" variant="outlined" /></Col>
             <Col style={{marginTop:"1.3rem"}} >Days</Col>
-          </Row>
+      </Row>*/}
           
           <Row style={{margin:"1rem"}}>
                       <FormControl>
             <FormLabel>End Repeat</FormLabel>
             <RadioGroup
+             onChange={HandlePost_EndRepeatRadioBox}
               aria-labelledby="demo-radio-buttons-group-label"
               defaultValue="female"
               name="radio-buttons-group"
@@ -312,7 +438,7 @@ React.useEffect(()=>{
               </Row>
             <Row style={{margin:"1rem"}}>
             <Col xs={4}><FormControlLabel style={{marginTop:"0.4rem"}} value="2" control={<Radio />} label="On" /></Col>
-            <Col xs={6}><TextField id="outlined-basic" variant="outlined" /></Col>
+            <Col xs={6}><TextField onChange={HandlePost_EndRepeatOnNbOfOccurencesInput} id="outlined-basic" variant="outlined" /></Col>
             <Col style={{marginTop:"1.3rem"}} >Occurences</Col>
           </Row>
 
@@ -320,7 +446,7 @@ React.useEffect(()=>{
             <Col xs={4}><FormControlLabel style={{marginTop:"0.4rem"}} value="3" control={<Radio />} label="After" /></Col>
             <Col xs={6}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <MobileDateTimePicker label="Post Date" defaultValue={dayjs('2022-04-17T15:30')} />  
+          <MobileDateTimePicker onChange={HandlePost_EndRepeatAfterDateInput} label="Post Date"/>  
          </LocalizationProvider></Col>
          <Col></Col>
             
@@ -344,7 +470,7 @@ React.useEffect(()=>{
 
 <Container>
   <Row>
-  <Col><MDBBtn  className='mx-2 m-3' color='primary'>Schedule Post </MDBBtn></Col>
+  <Col><MDBBtn  className='mx-2 m-3' color='primary' onClick={HandlePostSchedule}>Schedule Post </MDBBtn></Col>
   <Col><MDBBtn  className='mx-2 m-3' color='primary'>Post Now </MDBBtn></Col>
   </Row>
 </Container>
@@ -359,7 +485,7 @@ React.useEffect(()=>{
             {/*This is related to Dialog showing*/}
           {ShowAddHashTagDialog&&<AddHashTagDialog SetShowAddHashTagDialog={SetShowAddHashTagDialog}/>}
           {ShowAssetsDialog&&<AddAssetsDialog SetShowAssetsDialog={SetShowAssetsDialog}/>}
-          {ShowDynamicFieldDialog&&<AddDynamicFieldDialog SetShowDynamicFieldDialog={SetShowDynamicFieldDialog}/>}  
+          {ShowDynamicFieldDialog&&<AddDynamicFieldDialog appendText={appendText} RemoveDynamicFieldText={RemoveDynamicFieldText} SetShowDynamicFieldDialog={SetShowDynamicFieldDialog}/>}  
           </div>
   );
 })
@@ -368,15 +494,65 @@ React.useEffect(()=>{
  export const SecondPane=React.forwardRef(({LivePreview,TextCode},ref)=> {
   let [LivePreviewStatus,SetLivePreview]=React.useState(false)
   let [Text,SetText]=React.useState(TextCode)
+  const [ReRender,setReRender]=React.useState(false)
+  let ListOfPagePosts=React.useRef([])
   const SecondPane = React.useRef(null);
   //gets the custom ref for the component
   React.useImperativeHandle(ref, () => ({
-    getSecondPaneRef: updateFBPostClone
+    getSecondPaneRef: updateFBPostClone,
+    getSecondPaneReRenderer:HandleRerender
   }));
 
   const updateFBPostClone = (newPost) => {
    SetText(newPost)
   };
+  const HandleRerender = () => {
+    setReRender(!ReRender)
+   };
+  
+ListOfPagePosts.current=[]
+//We first iteratte through our pages so we added the required modifications
+  variables.PostGlobalVariables.POST_SelectedPageInfo.map((Page)=>{
+    let LocalText=Text
+//Then we iterate through every dynamic field
+       variables.PostGlobalVariables.POST_AddedDynamicFields.map((DF)=>{
+         let PatternTextValue=null
+        
+         //Here we go through all the patterns that we have and we search which one has the ID related to the Dynamic field and we extract the TextValue so when we replace our text we know which to replace  
+         variables.PostGlobalVariables.POST_PatternsInfo.map((Pattern)=>{
+            if(Pattern.id===DF.patternID)
+            {
+             PatternTextValue=Pattern.patternText
+            }
+         })
+         
+         DF.listOfPagesDynamicFieldValues.map((DFPage)=>{
+
+             if (DFPage.pageID===Page.id)
+             {
+               LocalText = LocalText.replace(PatternTextValue, DFPage.dynamicFieldValue);
+             }
+         })
+         
+         
+       })
+    
+     
+       ListOfPagePosts.current=[...ListOfPagePosts.current,<FacebookPostClone  ref={SecondPane} Text={LocalText} PageInfo={Page}/>]   
+   })
+
+
+   const itemsPerPage = 2;
+  const [page, setPage] = React.useState(1);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+
+  const startIndex = (page-1)* itemsPerPage;
+  const endIndex = ((startIndex) + itemsPerPage);
+   
   return (
     <div className="pane-content"   >
     <div className="card-header d-flex justify-content-center">
@@ -384,13 +560,22 @@ React.useEffect(()=>{
           </div>
           <div className="card-body text-center">
           <Container>
-          {!(LivePreview.current)&&<row><MDBBtn outline rounded className='mx-2 m-1' color='success' onClick={()=>{LivePreview.current=true; SetLivePreview(true)}}> Enable Live preview</MDBBtn></row>}
-          {LivePreview.current&&<row><MDBBtn outline rounded className='mx-2 m-1' color='danger' onClick={()=>{LivePreview.current=false; SetLivePreview(false)}}> Disable Live preview</MDBBtn></row>}
-          <row><MDBBtn outline rounded className='mx-2 m-1' color='dark' >View Changes</MDBBtn></row>
+          {!LivePreview.current&&<row><MDBBtn outline rounded className='mx-2 m-1' color='success' onClick={()=>{LivePreview.current=true; SetLivePreview(!LivePreviewStatus)}}> Enable Live preview</MDBBtn></row>}
+          {LivePreview.current&&<row><MDBBtn outline rounded className='mx-2 m-1' color='danger' onClick={()=>{LivePreview.current=false; SetLivePreview(!LivePreviewStatus)}}> Disable Live preview</MDBBtn></row>}
+          
          </Container>
           </div>
           <div className="card-body text-center m-1" style={{ backgroundColor: "#f3f4f4",height: "700px",borderRadius:"3%"}}>
-          <FacebookPostClone  ref={SecondPane} Text={Text}/>        
+            {ListOfPagePosts.current.length==0&&<Box sx={{ display: 'flex', justifyContent: 'center', my: 2 }}><p>No Pages Selected to Preview</p></Box>}
+               {ListOfPagePosts.current.slice(startIndex, endIndex).map((item,index) => (
+        <Row key={index}><Col md={12}>
+          {item}</Col></Row>
+       
+      ))}
+      <Box sx={{ display: 'flex', justifyContent: 'center', my: 2 }}>
+      <Pagination count={Math.ceil(ListOfPagePosts.current.length / itemsPerPage)} page={page} color="primary" onChange={handleChangePage} />
+       
+      </Box>
     </div>
     </div>
   )
@@ -407,21 +592,30 @@ export default function Content() {
   function handleEditorChange(EditorText) {
     if(LivePreview.current)
     {
-      const F1 = FirstPaneRef.current.getFirstPaneRef();
       const UpdateSecondPane= SecondPaneRef.current.getSecondPaneRef;
       UpdateSecondPane(EditorText)
-      //const content = editorRef.current.getContent();
-      //SetTextCode(EditorText)
     }
     
   }
+  function handlePageSelectionChange() {
+    if(LivePreview.current)
+    {
+      const SecondPaneReRenderer= SecondPaneRef.current.getSecondPaneReRenderer;
+      SecondPaneReRenderer()      
+    }
+    
+  }
+
+  
+
+
   return (
     <>  
        <Paper sx={{ width: "100%", height:"100%", m: 1, p: 2, textAlign: "center" }} style={{margin:"1rem",padding:"1rem",boxShadow: '0px 0px 10px 0px rgba(0, 0, 0, 0.2)'}}>
 
 <SplitterComponent id="splitter" height="100%" width="100%" separatorSize={5} >
    <PanesDirective>
-   <PaneDirective content={()=>{return(<FirstPane ref={FirstPaneRef} handleEditorChange={handleEditorChange} />)}} />
+   <PaneDirective content={()=>{return(<FirstPane ref={FirstPaneRef} handleEditorChange={handleEditorChange} handlePageSelectionChange={handlePageSelectionChange} />)}} />
 
    
      <PaneDirective content={()=>{return(<SecondPane  ref={SecondPaneRef} LivePreview={LivePreview} TextCode={TextCode} />)}} />
@@ -431,7 +625,7 @@ export default function Content() {
 
 
     </Paper>
-   
+
       
         
         

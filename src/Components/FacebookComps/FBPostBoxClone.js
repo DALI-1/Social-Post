@@ -8,8 +8,10 @@ import Container from 'react-bootstrap/Container';
 import ReactHtmlParser, { processNodes, convertNodeToElement, htmlparser2 } from 'react-html-parser'
 import CloneFooterImage from "../../Assets/FacebookClonePost/CloneFooterImage.png"
 import CloneCommentsImage from "../../Assets/FacebookClonePost/CloneCommentImage.png"
-export default function FBPostBoxClone({Text,Image}) {
-   
+export default function FBPostBoxClone({Text,PageInfo}) {
+    const currentDate = new Date();
+    const dateStr = currentDate.toLocaleDateString('en-US');
+  
 
   return (
     <Paper style={{ boxShadow: '2px 2px 5px rgba(0, 0, 0, 0.3)' }}
@@ -19,10 +21,9 @@ export default function FBPostBoxClone({Text,Image}) {
         <Row noGutters>
             <Col sx={4}  style={{ padding: 0 }}>
                 <div className='flex'>
-                <Avatar size="lg" src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/ProfileImages%2F-795987239?alt=media&token=1562fa44-1956-4fd1-866e-c5aa61c6a641" color="gradient"   rounded zoomed/>
-                <Col xs={12}><p style={{marginLeft:70,marginTop:-37}}> Page Name</p></Col>
-                <Col xs={12}><span className="grayed-out" style={{marginLeft:50,marginTop:137}}>Published  At 25/01/2023</span></Col> 
-                
+                <Avatar size="lg" src={PageInfo.PagePic} color="gradient"   rounded zoomed/>
+                <Col xs={12}><p style={{marginLeft:70,marginTop:-37}}>{PageInfo.label}</p></Col>
+                <Col xs={12}><span className="grayed-out" style={{marginLeft:50,marginTop:137}}>Published At {dateStr}</span></Col>      
                 </div>
             
             </Col>

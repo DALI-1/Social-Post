@@ -15,11 +15,10 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function AlertDialogSlide({SetShowDynamicFieldDialog}) {
+export default function AlertDialogSlide({SetShowDynamicFieldDialog,appendText,RemoveDynamicFieldText}) {
   const handleClose = () => {
     SetShowDynamicFieldDialog(false)
   };
-
   return (
     <div>
       <Dialog
@@ -42,7 +41,7 @@ export default function AlertDialogSlide({SetShowDynamicFieldDialog}) {
         <Accordion.Body>
         
               
-        <PatternManagement/>     
+        <PatternManagement appendText={appendText} RemoveDynamicFieldText={RemoveDynamicFieldText}/>     
               
         
         </Accordion.Body>

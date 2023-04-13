@@ -15,6 +15,7 @@ import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import LinearLoadingSpinner from "../../components/LinearLoadingSpinner";
 import { AppContext } from "../../context/Context";
+import SendIcon from '@mui/icons-material/Send';
 import {
   ProfileSelectedTabActions,
   ProfileTabs,
@@ -25,8 +26,7 @@ import * as variables from "../../variables/variables";
 import { Avatar } from "@nextui-org/react";
 import EditIcon from "@mui/icons-material/Edit";
 import TuneIcon from "@mui/icons-material/Tune";
-import GroupAddIcon from "@mui/icons-material/GroupAdd";
-
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 const lightColor = "rgba(255, 255, 255, 0.7)";
 
 function Header(props) {
@@ -131,7 +131,7 @@ function Header(props) {
           <Tab
             label={
               <>
-                <TuneIcon /> <p>Manage Posts</p>
+                <CalendarMonthIcon/> <p>Manage Posts</p>
               </>
             }
             onClick={() => {
@@ -143,7 +143,7 @@ function Header(props) {
             <Tab
               label={
                 <>
-                  <GroupAddIcon /> <p>Add Post</p>
+                  <SendIcon /> <p>Add Post</p>
                 </>
               }
               onClick={() => {
