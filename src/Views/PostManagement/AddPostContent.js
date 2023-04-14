@@ -24,6 +24,7 @@ import TextField from '@mui/material/TextField';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import { Box, Button } from '@mui/material';
+import Pagination from '@mui/material/Pagination';
 import FormControl from '@mui/material/FormControl';
 import SelectMUI from '@mui/material/Select';
 import Radio from '@mui/material/Radio';
@@ -34,15 +35,18 @@ import FacebookPostClone from "../../components/FacebookComps/FBPostBoxClone"
 import AddHashTagDialog from "../../components/AddPostComps/AddHashTagsDialog"
 import AddDynamicFieldDialog from "../../components/AddPostComps/AddDynamicFieldDialog"
 import AddAssetsDialog from "../../components/AddPostComps/AddAssetsDialog"
-import Pagination from '@mui/material/Pagination';
+import SendIcon from '@mui/icons-material/Send';
+import ScheduleSendIcon from '@mui/icons-material/ScheduleSend';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import CircularProgress from '@mui/material/CircularProgress';
 export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelectionChange},ref)=> {
   const editorRef =React.useRef(null)
   const Post_DateInput=React.useRef(null)
   const Post_RepeatCheckbox=React.useRef(false)
-  const Post_RepeatingOptionDropDownList=React.useRef(null)
+  const Post_RepeatingOptionDropDownList=React.useRef(1)
   //const Post_Repeat_EveryInput=React.useRef(null)
-  const Post_EndRepeatRadioBox=React.useRef(null)
+  const Post_EndRepeatRadioBox=React.useRef(1)
   const Post_EndRepeatOnNbOfOccurencesInput=React.useRef(null)
   const Post_EndRepeatAfterDateInput=React.useRef(null)
 
@@ -92,44 +96,71 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
     let EndRepeatRadioBoxValue=Post_EndRepeatRadioBox.current
     let EndRepeatOnNbOfOccurencesValue=Post_EndRepeatOnNbOfOccurencesInput.current
     let EndRepeatAfterDate=Post_EndRepeatAfterDateInput.current
-
-
-   let ListOfPages=[]
-    variables.PostGlobalVariables.POST_SelectedPageInfo.map((page)=>
+    
+    if(Post_Date!=null)
     {
-    ListOfPages=[...ListOfPages,{"pageID": page.id}]
-    })
-    var JsonObject = {  
-        postGroupID: GlobalState.SelectedGroup.id,
-        postText: EditorContent,
-        repeatPost: Repeat,
-        repeatOption: RepeatDropDownListSelection==1?"Hourly":RepeatDropDownListSelection==2?"Daily":RepeatDropDownListSelection==3?"Weekly":RepeatDropDownListSelection==4?"Monthly":RepeatDropDownListSelection==5?"Yearly":"NO_REPEAT",
-        endRepeatPost: EndRepeatRadioBoxValue==1?false:true,
-        endRepeatOption: EndRepeatRadioBoxValue==1?"NoEnd":EndRepeatRadioBoxValue==2?"EndOccOption":"EndDateOption",
-        endRepeatOnOccurence: EndRepeatRadioBoxValue==2?EndRepeatRadioBoxValue:0,
-        endRepeatAfterDate: EndRepeatRadioBoxValue==3?EndRepeatAfterDate:"2023-04-12T23:00:00.000Z",
-        postDate: Post_DateInput.current,
-        listOfPages:ListOfPages,
-        listOfAssets: [],
-        listOfDynamicFields: variables.PostGlobalVariables.POST_AddedDynamicFields
-    };
+      if(EditorContent!="")
+      {
 
-   
-  
-    let JsonObjectToSend = JSON.stringify(JsonObject);
-    console.log(JsonObjectToSend)
-    let url2 =
-      process.env.REACT_APP_BACKENDURL + 
-      process.env.REACT_APP_ADDPOST;
-    let UserToken = window.localStorage.getItem("AuthToken");
-    let APIResult = APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
-    APIResult.then((result) => {
-      if (result.errorCode == undefined) {
-        console.log(result)
-        if(result.successCode=="Post_Scheduleded")
+        
+        let ListOfPages=[]
+        variables.PostGlobalVariables.POST_SelectedPageInfo.map((page)=>
+        {
+        ListOfPages=[...ListOfPages,{"pageID": page.id}]
+        })
+      
+        if(ListOfPages.length!=0)
         {
 
-          toast.success("Post Scheduleded Successfully!", {
+          var JsonObject = {  
+            postGroupID: GlobalState.SelectedGroup.id,
+            postText: EditorContent,
+            repeatPost: Repeat,
+            repeatOption: RepeatDropDownListSelection==1?"Hourly":RepeatDropDownListSelection==2?"Daily":RepeatDropDownListSelection==3?"Weekly":RepeatDropDownListSelection==4?"Monthly":RepeatDropDownListSelection==5?"Yearly":"BUG_IMPOSSIBLE_TO_REACH",
+            endRepeatPost: EndRepeatRadioBoxValue==1?false:true,
+            endRepeatOption: EndRepeatRadioBoxValue==1?"NoEnd":EndRepeatRadioBoxValue==2?"EndOccOption":"EndDateOption",
+            endRepeatOnOccurence: EndRepeatRadioBoxValue==2?EndRepeatOnNbOfOccurencesValue:0,
+            endRepeatAfterDate: EndRepeatRadioBoxValue==3?EndRepeatAfterDate:"2023-04-12T23:00:00.000Z",
+            postDate: Post_DateInput.current,
+            listOfPages:ListOfPages,
+            listOfAssets: [],
+            listOfDynamicFields: variables.PostGlobalVariables.POST_AddedDynamicFields
+        };
+    
+       
+      
+        let JsonObjectToSend = JSON.stringify(JsonObject);
+        let url2 =
+          process.env.REACT_APP_BACKENDURL + 
+          process.env.REACT_APP_ADDPOST;
+        let UserToken = window.localStorage.getItem("AuthToken");
+        let APIResult = APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
+        APIResult.then((result) => {
+          if (result.errorCode == undefined) {
+            if(result.successCode=="Post_Scheduleded")
+            {
+    
+              toast.success("Post Scheduleded Successfully!", {
+                position: "bottom-left",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+               
+              });
+              Dispatch({type:variables.PostSelectedTabActions.SelectManagePosts})
+            }
+            
+            
+          }
+        });
+        }
+        else
+        {
+          toast.info("You cannot create a post without associating at least one page", {
             position: "bottom-left",
             autoClose: 5000,
             hideProgressBar: false,
@@ -141,11 +172,158 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
           });
         }
         
+      }
+      else
+      {
+        toast.info("You cannot create a post with an empty content", {
+          position: "bottom-left",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      }
+      
+  
+    }
+    else
+    {
+      toast.info("Post date for scheduled Posts cannot be empty, use Post Now instead if you don't want to specify the Post date", {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+
+   
+ 
+  })
+
+  const HandlePostNow=(()=>{
+
+    let EditorContent=editorRef.current.getContent()
+    let Post_Date=Post_DateInput.current
+    let Repeat=Post_RepeatCheckbox.current
+    let RepeatDropDownListSelection=Post_RepeatingOptionDropDownList.current
+    //let Repeat_Every=Post_Repeat_EveryInput.current
+    let EndRepeatRadioBoxValue=Post_EndRepeatRadioBox.current
+    let EndRepeatOnNbOfOccurencesValue=Post_EndRepeatOnNbOfOccurencesInput.current
+    let EndRepeatAfterDate=Post_EndRepeatAfterDateInput.current
+    
+    
+      if(EditorContent!="")
+      {
+
+        
+        let ListOfPages=[]
+        variables.PostGlobalVariables.POST_SelectedPageInfo.map((page)=>
+        {
+        ListOfPages=[...ListOfPages,{"pageID": page.id}]
+        })
+      
+        if(ListOfPages.length!=0)
+        {
+
+          var JsonObject = {  
+            postGroupID: GlobalState.SelectedGroup.id,
+            postText: EditorContent,
+            repeatPost: Repeat,
+            repeatOption: RepeatDropDownListSelection==1?"Hourly":RepeatDropDownListSelection==2?"Daily":RepeatDropDownListSelection==3?"Weekly":RepeatDropDownListSelection==4?"Monthly":RepeatDropDownListSelection==5?"Yearly":"BUG_IMPOSSIBLE_TO_REACH",
+            endRepeatPost: EndRepeatRadioBoxValue==1?false:true,
+            endRepeatOption: EndRepeatRadioBoxValue==1?"NoEnd":EndRepeatRadioBoxValue==2?"EndOccOption":"EndDateOption",
+            endRepeatOnOccurence: EndRepeatRadioBoxValue==2?EndRepeatOnNbOfOccurencesValue:0,
+            endRepeatAfterDate: EndRepeatRadioBoxValue==3?EndRepeatAfterDate:"2023-04-12T23:00:00.000Z",
+            postDate: new Date(),
+            listOfPages:ListOfPages,
+            listOfAssets: [],
+            listOfDynamicFields: variables.PostGlobalVariables.POST_AddedDynamicFields
+        };
+    
+       
+      
+        let JsonObjectToSend = JSON.stringify(JsonObject);
+        let url2 =
+          process.env.REACT_APP_BACKENDURL + 
+          process.env.REACT_APP_ADDPOST;
+        let UserToken = window.localStorage.getItem("AuthToken");
+        let APIResult = APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
+        APIResult.then((result) => {
+          if (result.errorCode == undefined) {
+            if(result.successCode=="Post_Scheduleded")
+            {
+    
+              toast.success("Post Scheduleded Successfully!", {
+                position: "bottom-left",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+               
+              });
+              Dispatch({type:variables.PostSelectedTabActions.SelectManagePosts})
+            }
+            
+            
+          }
+        });
+        }
+        else
+        {
+          toast.info("You cannot create a post without associating at least one page", {
+            position: "bottom-left",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+        }
         
       }
-    });
+      else
+      {
+        toast.info("You cannot create a post with an empty content", {
+          position: "bottom-left",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      }
+      
+  
+    
+      if(Post_Date!=null)
+    {
+      toast.info("choose Schedule Post Option if you want to schedule your post, Post Now is meant to instantly post", {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
 
- 
+   
   })
   //this is related to tiny mce custom buttons
   const customHashTagIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="24" height="24"">
@@ -179,7 +357,7 @@ const init = {
   content_script: [
     '../../libs/tinymce/js/tinymce/tinymce.min.js'
   ],
-  height: 300,
+  
   menubar: false,
   mentions: {
     source: [
@@ -251,6 +429,18 @@ e.value.map((v)=>{
 })
 variables.PostGlobalVariables.POST_SelectedPageInfo=SelectedPagesInfos
 variables.PostGlobalVariables.POST_SelectedPageIds=e.value
+console.log(variables.PostGlobalVariables.POST_PatternsInfo)
+console.log(variables.PostGlobalVariables.POST_AddedDynamicFields)
+variables.PostGlobalVariables.POST_AddedDynamicFields.map((DynamicField)=>{
+
+variables.PostGlobalVariables.POST_PatternsInfo.map((Pattern)=>{
+
+  if(Pattern.id==DynamicField.patternID)
+  {
+   RemoveDynamicFieldText(Pattern.patternText)
+  }
+})
+})
 variables.PostGlobalVariables.POST_AddedDynamicFields=[]
 handlePageSelectionChange()
 };
@@ -307,6 +497,10 @@ React.useEffect(()=>{
 function appendText(Text) {
   editorRef.current.execCommand('mceInsertContent', false, Text)
 }
+function AppenedAsset(Asset)
+{
+  editorRef.current.execCommand('mceInsertContent', false,Asset) 
+}
 
 //This is used to Remove the Dynamic Field  text from TinyMCEEditor in case the Dynamic FIeld is deleted
 function RemoveDynamicFieldText(Text) {
@@ -328,7 +522,7 @@ function RemoveDynamicFieldText(Text) {
                 <div className="card-body text-center">
                 <Col>
 
-                <Accordion className='m-2' defaultActiveKey="0">
+                <Accordion className='m-2' defaultActiveKey="0" style={{boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)'}}>
       <Accordion.Item eventKey="0">
         <Accordion.Header>Pages</Accordion.Header>
         <Accordion.Body>
@@ -359,7 +553,7 @@ function RemoveDynamicFieldText(Text) {
      
     </Accordion>           
        
-           <div style={{margin:"0.5rem"}}>
+           <div  style={{boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',margin:"0.5rem"}}>
            
            <Editor
           onInit={(evt, editor) => editorRef.current = editor}
@@ -370,7 +564,7 @@ function RemoveDynamicFieldText(Text) {
         />
            
             </div>
-            <Accordion className='m-2' defaultActiveKey="0">
+            <Accordion className='m-2' defaultActiveKey="0" style={{boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)'}}>
       <Accordion.Item eventKey="0">
         <Accordion.Header>Post Time Scheduling</Accordion.Header>
         <Accordion.Body>
@@ -427,8 +621,8 @@ function RemoveDynamicFieldText(Text) {
             <RadioGroup
              onChange={HandlePost_EndRepeatRadioBox}
               aria-labelledby="demo-radio-buttons-group-label"
-              defaultValue="female"
               name="radio-buttons-group"
+              defaultValue={1}
             >
               <Row style={{margin:"1rem"}}><Col xs={4}>
               <FormControlLabel style={{marginTop:"0.4rem"}} value="1" control={<Radio />} label="Never" defaultChecked />
@@ -470,8 +664,8 @@ function RemoveDynamicFieldText(Text) {
 
 <Container>
   <Row>
-  <Col><MDBBtn  className='mx-2 m-3' color='primary' onClick={HandlePostSchedule}>Schedule Post </MDBBtn></Col>
-  <Col><MDBBtn  className='mx-2 m-3' color='primary'>Post Now </MDBBtn></Col>
+  <Col><Button variant="outlined"color="primary" startIcon={<ScheduleSendIcon/>}  className='mx-2 m-3' onClick={HandlePostSchedule}>Schedule Post </Button></Col>
+  <Col><Button variant="outlined"color="primary" startIcon={<SendIcon/>}  className='mx-2 m-3' onClick={HandlePostNow}>Post Now </Button></Col>
   </Row>
 </Container>
       
@@ -484,7 +678,7 @@ function RemoveDynamicFieldText(Text) {
             </Container>
             {/*This is related to Dialog showing*/}
           {ShowAddHashTagDialog&&<AddHashTagDialog SetShowAddHashTagDialog={SetShowAddHashTagDialog}/>}
-          {ShowAssetsDialog&&<AddAssetsDialog SetShowAssetsDialog={SetShowAssetsDialog}/>}
+          {ShowAssetsDialog&&<AddAssetsDialog AppenedAsset={AppenedAsset} SetShowAssetsDialog={SetShowAssetsDialog}/>}
           {ShowDynamicFieldDialog&&<AddDynamicFieldDialog appendText={appendText} RemoveDynamicFieldText={RemoveDynamicFieldText} SetShowDynamicFieldDialog={SetShowDynamicFieldDialog}/>}  
           </div>
   );
@@ -559,13 +753,12 @@ ListOfPagePosts.current=[]
             Scheduled Post Preview
           </div>
           <div className="card-body text-center">
-          <Container>
-          {!LivePreview.current&&<row><MDBBtn outline rounded className='mx-2 m-1' color='success' onClick={()=>{LivePreview.current=true; SetLivePreview(!LivePreviewStatus)}}> Enable Live preview</MDBBtn></row>}
-          {LivePreview.current&&<row><MDBBtn outline rounded className='mx-2 m-1' color='danger' onClick={()=>{LivePreview.current=false; SetLivePreview(!LivePreviewStatus)}}> Disable Live preview</MDBBtn></row>}
-          
+          <Container> 
+          {!LivePreview.current&&<row><Button variant="outlined"color="primary" startIcon={<VisibilityOffIcon/>}  className='mx-2 m-1' onClick={()=>{LivePreview.current=true; SetLivePreview(!LivePreviewStatus)}}> Enable Live preview</Button></row>}
+          {LivePreview.current&&<row><Button variant="outlined"color="primary" startIcon={<VisibilityIcon/>} className='mx-2 m-1'  onClick={()=>{LivePreview.current=false; SetLivePreview(!LivePreviewStatus)}}> Disable Live preview</Button></row>}
          </Container>
           </div>
-          <div className="card-body text-center m-1" style={{ backgroundColor: "#f3f4f4",height: "700px",borderRadius:"3%"}}>
+          <div className="card-body text-center m-1" style={{ backgroundColor: "#f3f4f4",borderRadius:"3%"}}>
             {ListOfPagePosts.current.length==0&&<Box sx={{ display: 'flex', justifyContent: 'center', my: 2 }}><p>No Pages Selected to Preview</p></Box>}
                {ListOfPagePosts.current.slice(startIndex, endIndex).map((item,index) => (
         <Row key={index}><Col md={12}>
@@ -615,10 +808,10 @@ export default function Content() {
 
 <SplitterComponent id="splitter" height="100%" width="100%" separatorSize={5} >
    <PanesDirective>
-   <PaneDirective content={()=>{return(<FirstPane ref={FirstPaneRef} handleEditorChange={handleEditorChange} handlePageSelectionChange={handlePageSelectionChange} />)}} />
+   <PaneDirective  min='20%' content={()=>{return(<FirstPane ref={FirstPaneRef} handleEditorChange={handleEditorChange} handlePageSelectionChange={handlePageSelectionChange} />)}} />
 
    
-     <PaneDirective content={()=>{return(<SecondPane  ref={SecondPaneRef} LivePreview={LivePreview} TextCode={TextCode} />)}} />
+     <PaneDirective min='20%' content={()=>{return(<SecondPane  ref={SecondPaneRef} LivePreview={LivePreview} TextCode={TextCode} />)}} />
      
    </PanesDirective>
 </SplitterComponent> 

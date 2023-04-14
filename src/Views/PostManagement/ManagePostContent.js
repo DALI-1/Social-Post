@@ -16,21 +16,7 @@ export default function Content() {
     
     
   return (
-    <>
-       <Container>
-        <Row>
-          <Col>
-          <Paper sx={{ width: '100%', m: 1,p:2 ,textAlign: "center" }}>
-          <div style={{ textAlign: "right" }}>
-      <MDBBtn outline className='mx-2 m-2' color='secondary' >Add New Pattern</MDBBtn>
-      <MDBBtn outline className='mx-2 m-2' color='secondary' > Modifty Page</MDBBtn>
-      <MDBBtn outline className='mx-2 m-2' color='secondary' >Delete Page </MDBBtn>
-       </div>
-       </Paper>
-          </Col>
-        </Row>
-  </Container>
-       
+    <> 
        <Container>
        <Row>
         <Col>

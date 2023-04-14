@@ -22,6 +22,10 @@ import OptionalINFBSelectModal from "../../components/InstagramComps/OptionalFBS
 import OptionalFBINSelectModal from "../../components/FacebookComps/OptionalINSTASelectModal";
 import DeleteModal from "../../components/DeletePagesModal";
 import Alert from '@mui/material/Alert';
+import NoteAddIcon from '@mui/icons-material/NoteAdd'; 
+import NoteAltIcon from '@mui/icons-material/NoteAlt'; 
+import Button from '@mui/material/Button';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 export default function Content() {
   const { GlobalState, Dispatch } = React.useContext(AppContext);
   //this flag indicate to the system when to show the Facebook Dialog asking the user to  login to Facebook and shows him the possible pages that he can choose.
@@ -379,34 +383,35 @@ export default function Content() {
         <Row>
           <Col>
             <Paper sx={{ width: "100%", m: 1, p: 2, textAlign: "center" }}>
-              <div style={{ textAlign: "right" }}>
-                <MDBBtn
-                  outline
+              <div style={{ textAlign: "right" }}>           
+                <Button
+                  variant="outlined"color="primary"
                   className="mx-2 m-2"
-                  color="secondary"
+                  startIcon={<NoteAddIcon/>}
                   onClick={() => {
                     SetSelectPlatformModalFlag(true);
                   }}
                 >
                   Add New Page
-                </MDBBtn>
-                <MDBBtn
-                  outline
+                </Button>
+                <Button
+                  variant="outlined"color="primary"
                   className="mx-2 m-2"
-                  color="secondary"
+                  startIcon={<NoteAltIcon/>}
                   onClick={handlePageModify}
                 >
                   {" "}
                   Modifty Page
-                </MDBBtn>
-                <MDBBtn
-                  outline
+                </Button>
+
+                <Button
+                  variant="outlined"color="primary"
                   className="mx-2 m-2"
-                  color="secondary"
+                  startIcon={<DeleteForeverIcon/>}
                   onClick={HandlePageDelete}
                 >
-                  Delete Page{" "}
-                </MDBBtn>
+                  Delete Page
+                </Button>
               </div>
             </Paper>
           </Col>

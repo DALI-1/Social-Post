@@ -1,61 +1,48 @@
 
 import React, { Component } from 'react'
-import { render } from 'react-dom'
 import ImagePicker from 'react-image-picker'
 import './ImagePicker.css'
-import img1 from '../../Assets/AddUser.png'
-import img2 from '../../Assets/SocialPost-Logo.png'
-import img3 from '../../Assets/AddUser.png'
-import img4 from '../../Assets/SocialPost-Logo.png'
-import img5 from '../../Assets/AddUser.png'
-import img6 from '../../Assets/SocialPost-Logo.png'
-const imageList = [img1, img2,img3,img4,img5,img6]
-
- export default class Demo extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      image: '',
-      images: [],
-      max_images: [],
-      max_message: ''
-    }
+import { Box, Button } from '@mui/material';
+import Pagination from '@mui/material/Pagination';
+export default function GalleryPicker({Gallery,SetGallery,SelectedPictures}) {
+  const [maxImages, setMaxImages] = React.useState([]);
+  const [maxMessage, setMaxMessage] = React.useState("");
+  function onPickImagesWithLimit(maxImages) {
+    SelectedPictures.current=maxImages
+    setMaxImages(maxImages);
   }
 
-  onPickImage(image) {
-    this.setState({image})
+  function onPickMaxImages(lastImage) {
+    let image = JSON.stringify(lastImage);
+    let maxMessage = `Max images reached. ${image}`;
+    
+    setMaxMessage(maxMessage);
   }
 
-  onPickImages(images) {
-    this.setState({images})
-  }
+  const itemsPerPage = 12;
+  const [page, setPage] = React.useState(1);
 
-  onPickImagesWithLimit(max_images) {
-    this.setState({max_images})
-  }
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
 
-  onPickMaxImages(last_image) {
-    let image = JSON.stringify(last_image)
-    let max_message = `Max images reached. ${image}`
 
-    this.setState({max_message})
-  }
+  const startIndex = (page-1)* itemsPerPage;
+  const endIndex = ((startIndex) + itemsPerPage);
+  return (
+    <div>
+      <ImagePicker
+        images={Gallery.slice(startIndex, endIndex).map((image) => ({ src: image.resourceURL, value: image.id }))}
+        onPick={onPickImagesWithLimit}
+        maxPicks={2}
+        onMaxPicks={onPickMaxImages}
+        multiple
+      />
+      <Box sx={{ display: 'flex', justifyContent: 'center', my: 2 }}>
+      <Pagination count={Math.ceil(Gallery.length / itemsPerPage)} page={page} color="primary" onChange={handleChangePage} />
+       
+      </Box>
+    </div>
 
-  render() {
-    return (
-      <div>
-        <ImagePicker
-          images={imageList.map((image, i) => ({src: image, value: i}))}
-          onPick={this.onPickImagesWithLimit.bind(this)}
-          maxPicks={2}
-          onMaxPicks={this.onPickMaxImages.bind(this)}
-          multiple 
-          
-        />
-       {/* <textarea rows="4" cols="100" value={this.state.max_images && JSON.stringify(this.state.max_images)} disabled/>
-        <textarea rows="4" cols="100" value={this.state.max_message && JSON.stringify(this.state.max_message)} disabled/>*/}
-      </div>
-    )
-  }
+  );
 }
-

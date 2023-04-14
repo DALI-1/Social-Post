@@ -29,7 +29,6 @@ import {UserSelectedTabActions,UserTabs,HeaderSpinnerActions,HeaderSpinner,User}
 import {AppContext} from "../../context/Context"
 import {CALL_API_With_JWTToken,CALL_API_With_JWTToken_GET} from '../../libs/APIAccessAndVerification'
 import {hashString,hashRandom } from 'react-hash-string'
-import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -38,11 +37,11 @@ import DialogTitle from '@mui/material/DialogTitle';
 import * as variables from "../../variables/variables"
 import TextField from '@mui/material/TextField';
 import { letterSpacing } from '@mui/system';
-
-
-
-
-
+import Button from '@mui/material/Button';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import GroupRemoveIcon from '@mui/icons-material/GroupRemove';
 
 export function FilterDialog(props) {
   const [open, setOpen] = React.useState(true);
@@ -1184,21 +1183,37 @@ React.useEffect(()=>{
 <Box sx={{ width: '100%' }}>
 <Paper sx={{ width: '100%', mb: 2 ,textAlign: "right" }}>
 
-<MDBBtn outline className='mx-2 m-2' color='secondary' onClick={HandleAddUser} >
+<Button
+ variant="outlined"color="primary"
+ className="mx-2 m-2"
+ startIcon={<PersonAddIcon/>}
+ onClick={HandleAddUser} >
         Add New User
-      </MDBBtn>
-
-     <MDBBtn outline className='mx-2 m-2' color='secondary' onClick={HandleAddUserToGroup} >
-        Add User to Group
-      </MDBBtn>
-
-      <MDBBtn outline className='mx-2 m-2' color='secondary' onClick={HandleEditUser} >
+      </Button>
+      <Button 
+       variant="outlined"color="primary"
+       className="mx-2 m-2"
+       startIcon={<ManageAccountsIcon/>}
+      onClick={HandleEditUser} >
       Modify Selected User
-      </MDBBtn>
+      </Button>
+     <Button 
+      variant="outlined"color="primary"
+      className="mx-2 m-2"
+      startIcon={<GroupAddIcon/>}
+        onClick={HandleAddUserToGroup} >
+        Add User to Group
+      </Button>
 
-      <MDBBtn outline className='mx-2 m-2' color='secondary' onClick={HandleRemoveUserFromGroup} >
+      
+
+      <Button 
+       variant="outlined"color="primary"
+       className="mx-2 m-2"
+       startIcon={<GroupRemoveIcon/>}
+       onClick={HandleRemoveUserFromGroup} >
         Remove User From Group
-      </MDBBtn>
+      </Button>
     
   </Paper>
   </Box>

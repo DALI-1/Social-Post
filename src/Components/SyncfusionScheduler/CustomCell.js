@@ -7,6 +7,7 @@ import {AppContext} from "../../context/Context"
 import * as variables from "../../variables/variables"
 import IconButton from '@mui/material/IconButton';
 import SendIcon from '@mui/icons-material/Send';
+import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
 export default function CustomCell(props)
 {
     //props contain the selected date
@@ -24,7 +25,6 @@ const cellDate = new Date(props.date)
 
 if(currentDate<=cellDate)
 {
-  console.log("here with the fade one")
   return (
     <div className='post-container'
         style={{width:"85%",height:"30%",
@@ -72,8 +72,8 @@ if(currentDate<=cellDate)
 }
 else
 {
-  
- return( <div> Passed</div>)
+
+ return( <PlaylistAddCheckIcon color='primary' fontSize="small"/>)
 }
     
 

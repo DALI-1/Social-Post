@@ -45,17 +45,21 @@ import ReactImagePickerEditor, { ImagePickerConf } from 'react-image-picker-edit
 import './ImageAddEditor.css'
 
 
-export default function AssetsGallery(props){
+export default function AssetsGallery({Gallery,SetGallery,UploadedImage,SetUploadedImage}){
   const ImagePickerConf = {
     borderRadius: '8px',
     language: 'en',
     width: '100%',
-    height: '200px',
+    height: '100px',
     objectFit: 'contain',
     compressInitial: null,
   };
    const initialImage = ''
    let [ImgSrc,setImageSrc]=React.useState();
+   
+   React.useEffect(()=>{
+    SetUploadedImage(ImgSrc)
+   },[ImgSrc])
   return (<div>
      
         < ReactImagePickerEditor

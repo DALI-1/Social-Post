@@ -8,9 +8,9 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import PatternManagement from "../PatternTable/PatternTable"
 import Accordion from 'react-bootstrap/Accordion';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Container from 'react-bootstrap/Container';
+import CancelIcon from '@mui/icons-material/Cancel';
+import IconButton from '@mui/material/IconButton';
+
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -50,8 +50,8 @@ export default function AlertDialogSlide({SetShowDynamicFieldDialog,appendText,R
     </Accordion>
           </DialogContentText>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button> 
+        <DialogActions style={{display: 'flex',justifyContent: 'center',alignItems: 'center'}}> 
+        <Button variant="outlined" color='primary' startIcon={<CancelIcon />} onClick={handleClose}>Cancel</Button>  
         </DialogActions>
       </Dialog>
     </div>

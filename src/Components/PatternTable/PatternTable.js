@@ -24,11 +24,15 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import { Row,Col,Container } from 'react-bootstrap';
 import { MDBBtn } from 'mdb-react-ui-kit';
+import UndoIcon from '@mui/icons-material/Undo';
 import DropdownTreeSelect from 'react-dropdown-tree-select'
 import {UserSelectedTabActions,UserTabs,HeaderSpinnerActions,HeaderSpinner,User}from "../../variables/variables"
 import {AppContext} from "../../context/Context"
 import {CALL_API_With_JWTToken,CALL_API_With_JWTToken_GET} from '../../libs/APIAccessAndVerification'
 import {hashString,hashRandom } from 'react-hash-string'
+import DynamicFeedIcon from '@mui/icons-material/DynamicFeed';
+import PatternIcon from '@mui/icons-material/Pattern';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -45,6 +49,8 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Collapse from '@mui/material/Collapse';
 import * as APILib from "../../libs/APIAccessAndVerification"
+import CancelIcon from '@mui/icons-material/Cancel';
+import SaveAltIcon from '@mui/icons-material/SaveAlt';
 export  function FormDialog(props) {
     const [open, setOpen] = React.useState(true);
     const {GlobalState,Dispatch}=React.useContext(AppContext)
@@ -199,8 +205,8 @@ export  function FormDialog(props) {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
-            <Button onClick={handlePatternAdd}>Save Pattern</Button>
+            <Button variant="outlined" color='error' startIcon={<CancelIcon />} onClick={handleClose}>Cancel</Button>
+            <Button variant="outlined" color='primary' startIcon={<SaveAltIcon />} onClick={handlePatternAdd}>Save Pattern</Button>
           </DialogActions>
         </Dialog>
       </div>
@@ -351,8 +357,9 @@ else
             </Container>
           </DialogContent>
           <DialogActions>
-            <Button variant="outlined" color="error"  onClick={handleClose}>Cancel</Button>
-            {variables.PostGlobalVariables.POST_SelectedPageInfo.length!==0&&<Button variant="outlined" onClick={handleDynamicFieldCreation}>
+         
+            <Button variant="outlined" color="error" startIcon={<CancelIcon />}  onClick={handleClose}>Cancel</Button>
+            {variables.PostGlobalVariables.POST_SelectedPageInfo.length!==0&&<Button  startIcon={<SaveAltIcon />} variant="outlined" onClick={handleDynamicFieldCreation}>
               Add Dynamic Field
             </Button>}
           </DialogActions>
@@ -389,8 +396,8 @@ else
           
           </DialogContent>
           <DialogActions>
-            <Button variant="outlined"  onClick={handleClose}>No Don't Delete</Button>
-            <Button variant="outlined"color="error" onClick={()=>{props.handleRemovePattern();handleClose()}}>
+            <Button variant="outlined" startIcon={<CancelIcon />}  onClick={handleClose}>No Don't Delete</Button>
+            <Button variant="outlined"color="error" startIcon={<DeleteIcon/>} onClick={()=>{props.handleRemovePattern();handleClose()}}>
              Yes, Delete.
             </Button>
           </DialogActions>
@@ -448,10 +455,9 @@ return (
          
        </DialogContent>
 
-
         <DialogActions>
-          <Button onClick={cancelFilter}>Remove Filter</Button>
-          <Button onClick={FilterUsers}>Apply Filter</Button>
+          <Button variant="outlined"color="primary" startIcon={<UndoIcon/>} onClick={cancelFilter}>Remove Filter</Button>
+          <Button variant="outlined"color="primary" startIcon={<FilterAltIcon/>} onClick={FilterUsers}>Apply Filter</Button>
         </DialogActions>
       </Dialog>
     </div>
@@ -999,9 +1005,8 @@ TempObject.listOfPatternsToDelete=[...TempObject.listOfPatternsToDelete,{pattern
 <Box sx={{ width: '100%' }}>
 <Paper sx={{ width: '100%', mb: 2 ,boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.1)',textAlign: "center" }} >
 <Container>
-    <Row><Col><MDBBtn outline className='mx-2 m-2' color='secondary' onClick={HandleAddPattern} > Create new Pattern</MDBBtn></Col>
-    <Col><MDBBtn outline className='mx-2 m-2' color='secondary' onClick={HandleAddDynamicFIeld} >Add Dynamic field</MDBBtn></Col>
-    
+    <Row><Col><Button variant="outlined"color="primary" startIcon={<PatternIcon/>} className='mx-2 m-2' onClick={HandleAddPattern} > Create new Pattern</Button></Col>
+    <Col><Button variant="outlined"color="primary" startIcon={<DynamicFeedIcon/>} className='mx-2 m-2'  onClick={HandleAddDynamicFIeld} >Add Dynamic field</Button></Col>
     </Row>
 </Container>
   </Paper>
@@ -1113,8 +1118,8 @@ TempObject.listOfPatternsToDelete=[...TempObject.listOfPatternsToDelete,{pattern
             <TableCell></TableCell>
           </TableRow>
         </TableHead>
-        <TableBody>
-          {variables.PostGlobalVariables.POST_AddedDynamicFields.length==0&& <p>No Dynamic field found</p>}
+        <TableBody >
+          {variables.PostGlobalVariables.POST_AddedDynamicFields.length==0&& <div className="m-2" style={{display: 'flex',justifyContent: 'center',alignItems: 'center'}}><p>No Dynamic field found</p></div>}
           {variables.PostGlobalVariables.POST_AddedDynamicFields.map((df) => (
             <CollapseRow  RemoveDynamicFieldText={RemoveDynamicFieldText} SetLocalReRender={SetLocalReRender} key={"DF"+df.patternID } rows={rows} dfdata={df} LocalRerender={LocalRerender} />
           ))}
