@@ -1104,8 +1104,8 @@ TempObject.listOfPatternsToDelete=[...TempObject.listOfPatternsToDelete,{pattern
     </Box>
 </Col>
 </Row>
-<Row >
-  <Col md={12}><h1 className='m-2'> List Of Currently used Dynamic fields</h1></Col>
+<Row style={{display: 'flex',justifyContent: 'center',alignItems: 'center',margin:"1rem"}}>
+  <Col md={12}><h4 className='m-2'style={{display: 'flex',justifyContent: 'center',alignItems: 'center',margin:"1rem"}}> List Of Currently used Dynamic fields</h4></Col>
   <Col md={12}>
   
   <TableContainer component={Paper} sx={{ width: '100%', mb: 2,boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.1)' }}>

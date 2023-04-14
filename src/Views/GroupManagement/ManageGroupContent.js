@@ -39,7 +39,9 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-
+import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 export function AlertDialog(props) {
   const [open, setOpen] = React.useState(true);
   const {GlobalState,Dispatch}=React.useContext(AppContext)
@@ -138,7 +140,7 @@ Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner})
         </DialogContent>
         <DialogActions>
           <Button variant="outlined" onClick={handleClose}>No</Button>
-          <Button variant="outlined" color="error" onClick={handleGroupDelete} autoFocus>
+          <Button variant="outlined" color="error" onClick={handleGroupDelete}>
             Yes
           </Button>
         </DialogActions>
@@ -167,8 +169,8 @@ function TRow (parameter){
                 </TableCell>
                 
                 <TableCell align="left">
-                <Groups2SharpIcon style={{Margin:"1rem"}}/>
-                  {"                  "+props.group_Name}
+                <Groups2SharpIcon color="primary" style={{Margin:"1rem"}}/>
+                  {"         "+props.group_Name}
                 </TableCell>
                 <TableCell align="left">
                 <IconButton color="primary" aria-label="Add sub group" onClick={()=>{parameter.HandleGroupAdd(props.id,props.group_Name)}}>
@@ -180,7 +182,7 @@ function TRow (parameter){
                 <TableCell> <IconButton color="primary" aria-label="Edit sub group" onClick={()=>{parameter.HandleGroupEdit(props.id,props.group_Name)}}> 
                 <SettingsApplicationsSharpIcon/>
                 </IconButton></TableCell>
-                <TableCell><IconButton color="primary" aria-label="delete sub group"onClick={()=>{
+                <TableCell><IconButton color="error" aria-label="delete sub group"onClick={()=>{
                   parameter.SetGroupID.current=props.id
                   parameter.SetGroupName.current=props.group_Name
                   parameter.SetDeleteModal(true)
@@ -277,19 +279,19 @@ export default function Content() {
                   <>
                     {subGroups.map((group,index) => ( 
                       <TreeNode key={index}  label={<div id={"DIVGROUP"+group.id}
-                       ><Groups2SharpIcon/> <p>{group.group_Name}</p>
+                       ><Groups2SharpIcon  /> <p>{group.group_Name}</p>
 
-                    <IconButton className='m-0' id={"ADD"+group.id}  aria-label="Add sub group"
+                    <IconButton color="primary" className='m-0' id={"ADD"+group.id}  aria-label="Add sub group"
                    onClick={()=>{HandleGroupAdd(group.id,group.group_Name)}}
                     >
                         <AddCircleSharpIcon />
                         </IconButton>
-                          <IconButton className='m-0' id={"MODIFY"+group.id} aria-label="delete sub group"
+                          <IconButton color="primary"  className='m-0' id={"MODIFY"+group.id} aria-label="Modify sub group"
                           onClick={()=>{HandleGroupEdit(group.id,group.group_Name)}}
                           >
                         <SettingsApplicationsSharpIcon/>
                         </IconButton>
-                        <IconButton className='m-0' id={"DELETE"+group.Id} aria-label="delete sub group" onClick={
+                        <IconButton color="error" className='m-0' id={"DELETE"+group.Id} aria-label="delete sub group" onClick={
                           ()=>{
                             SelectedGroupID.current=group.id
                             SelectedGroupName.current=group.group_Name
@@ -351,21 +353,21 @@ export default function Content() {
       
        <Row>
        {ViewMode==="Tabular"&&<>
-       <Paper sx={{ width: '100%', m: 1,p:2 ,textAlign: "center" }}>
+       <Paper sx={{ width: '100%', m: 1 ,textAlign: "center" }}>
         <div style={{ textAlign: "right" }}>
-      <MDBBtn outline className='mx-2 m-2' color='secondary' onClick={handleAddNewGroup}> Add New SubGroup</MDBBtn>
-      <MDBBtn outline className='mx-2 m-2' color='secondary' onClick={handleModifyParentGroup}>Modifty Group</MDBBtn>
-      <MDBBtn outline className='mx-2 m-2' color='secondary' onClick={()=>{
+      <Button  variant="outlined"color="primary"className="mx-2 m-2"startIcon={<AddIcon/>} onClick={handleAddNewGroup}> Add New SubGroup</Button>
+      <Button  variant="outlined"color="primary"className="mx-2 m-2"startIcon={<EditIcon/>} onClick={handleModifyParentGroup}>Modifty Group</Button>
+      <Button  variant="outlined"color="error"className="mx-2 m-2"startIcon={<DeleteIcon/>} onClick={()=>{
         SelectedGroupID.current=variables.UserInformations.info.joinedGroups[0].id
         SelectedGroupName.current=variables.UserInformations.info.joinedGroups[0].group_Name
-        SetDeleteShow(true)}}> Delete Group </MDBBtn>
+        SetDeleteShow(true)}}> Delete Group </Button>
        </div>
        </Paper>
        <Paper sx={{ width: '100%', m: 1,p:2 ,textAlign: "center" }}>
        <TableContainer>
        <div style={{ textAlign: "center", margin:"1rem" }}>
-       <Groups2SharpIcon style={{Margin:"1rem"}}/>
-        <h1>{"Groups Of "+variables.UserInformations.info.joinedGroups[0].group_Name}</h1>
+       <Groups2SharpIcon   color="primary" style={{Margin:"1rem"}}/>
+        <h4>{"Groups Of "+variables.UserInformations.info.joinedGroups[0].group_Name}</h4>
         </div>
       <Table aria-label="collapsible table">
         <TableHead>

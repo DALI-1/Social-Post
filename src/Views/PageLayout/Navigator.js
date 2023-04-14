@@ -8,18 +8,18 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import HomeIcon from '@mui/icons-material/Home';
-
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 import LoginIcon from '@mui/icons-material/Login';
-import SettingsIcon from '@mui/icons-material/Settings';
 import logo from '../../Assets/SocialPost-Logo.png';
 import { MDBDropdown, MDBDropdownMenu, MDBDropdownToggle, MDBDropdownItem } from 'mdb-react-ui-kit';
 import {AppContext} from "../../context/Context"
 import { NavigatorTabs,NavigatorSelectedTabActions} from '../../variables/variables';
 import * as variables from '../../variables/variables';
-
 import GroupIcon from '@mui/icons-material/Group';
-
+import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
+import Groups2RoundedIcon from '@mui/icons-material/Groups2Rounded';
+import PersonPinCircleRoundedIcon from '@mui/icons-material/PersonPinCircleRounded';
+import DescriptionRoundedIcon from '@mui/icons-material/DescriptionRounded';
 const item = {
   py: '2px',
   px: 3,
@@ -97,12 +97,11 @@ export default function Navigator(props) {
            
           Dispatch({type:NavigatorSelectedTabActions.SelectManagePages})
         }
-        
   const categories = [
     {
       id: 'Publish Managmeent',
       children: [
-        { id: 'Manage Posts', icon: <SettingsIcon />,refrence:NavigatorTabs.ManagePostsTab, clickmethod:()=>{HandlePost()} },
+        { id: 'Manage Posts', icon: <CalendarMonthRoundedIcon />,refrence:NavigatorTabs.ManagePostsTab, clickmethod:()=>{HandlePost()} },
         /*{ id: 'View Posts', icon: <PreviewRoundedIcon /> },*/
         
       ],
@@ -110,7 +109,7 @@ export default function Navigator(props) {
     {
       id: 'Group Managmeent',
       children: [
-        { id: 'Manage Groups', icon: <SettingsIcon />,refrence:NavigatorTabs.ManageGroupsTab, clickmethod:()=>{HandleGroup()} },
+        { id: 'Manage Groups', icon: <Groups2RoundedIcon />,refrence:NavigatorTabs.ManageGroupsTab, clickmethod:()=>{HandleGroup()} },
         /*{ id: 'View Groups', icon: <PreviewRoundedIcon/> },*/
         /*{ id: 'Test Lab', icon: <PhonelinkSetupIcon /> },*/
       ],
@@ -118,7 +117,7 @@ export default function Navigator(props) {
     {
       id: 'User Managmeent',
       children: [
-        { id: 'Manage Users', icon: <SettingsIcon />,refrence:NavigatorTabs.ManageUsersTab, clickmethod:()=>{HandleUsers()} },
+        { id: 'Manage Users', icon: <PersonPinCircleRoundedIcon />,refrence:NavigatorTabs.ManageUsersTab, clickmethod:()=>{HandleUsers()} },
        /* { id: 'View Pages', icon: <PreviewRoundedIcon/> },*/
         
       ],
@@ -126,7 +125,7 @@ export default function Navigator(props) {
     {
       id: 'Page Managmeent',
       children: [
-        { id: 'Manage Pages', icon: <SettingsIcon />,refrence:NavigatorTabs.ManagePagesTab, clickmethod:()=>{HandlePage()} },
+        { id: 'Manage Pages', icon: <DescriptionRoundedIcon />,refrence:NavigatorTabs.ManagePagesTab, clickmethod:()=>{HandlePage()} },
        /* { id: 'View Pages', icon: <PreviewRoundedIcon/> },*/
         
       ],

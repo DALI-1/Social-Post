@@ -301,7 +301,7 @@ export default function Content() {
                 <div className="card-body text-center ">
                     {/*Test if User has a profile picture if not show default*/}
                     
-                    <img   style={{ display: 'block', margin: 'auto' }} ref={UserProfilePicture} className="rounded-5 shadow-2 mb-5 border border-primary"  alt=""/>
+                    <img   style={{ display:"inline-block",maxWidth:"20rem",maxHeight:"20rem", margin: 'auto',borderRadius:"50%" }} ref={UserProfilePicture} className=" rounded-5  shadow-5 mb-5 border border-primary"  alt=""/>
                     
                     
                     <form onSubmit={handleImageUpdate}>

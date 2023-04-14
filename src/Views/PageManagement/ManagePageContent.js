@@ -382,7 +382,7 @@ export default function Content() {
       <Container>
         <Row>
           <Col>
-            <Paper sx={{ width: "100%", m: 1, p: 2, textAlign: "center" }}>
+            <Paper sx={{ width: "100%", m: 1, textAlign: "center" }}>
               <div style={{ textAlign: "right" }}>           
                 <Button
                   variant="outlined"color="primary"
@@ -405,7 +405,7 @@ export default function Content() {
                 </Button>
 
                 <Button
-                  variant="outlined"color="primary"
+                  variant="outlined"color="error"
                   className="mx-2 m-2"
                   startIcon={<DeleteForeverIcon/>}
                   onClick={HandlePageDelete}

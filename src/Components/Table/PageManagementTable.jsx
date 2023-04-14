@@ -40,7 +40,7 @@ function findIndexByProp(list, prop, value) {
 
 const DetailComponent = props => {
   const dataItem = props.dataItem;
-  return <div><section style={{float: "left"}}>
+  return (<div><section style={{float: "left"}}>
       {/*This indicate that this is a Facebook Page and we handle it with different attributes*/}         
               {dataItem.PageDetails.category!=undefined&&<p><strong>Page Category:</strong>{dataItem.PageDetails.category} </p>}
              {dataItem.PageDetails.followers_count!=undefined&& <p><strong>Page followers:</strong> {dataItem.PageDetails.followers_count}</p>}
@@ -85,7 +85,7 @@ const DetailComponent = props => {
                      {dataItem.OtherPlatformAccountsDetails.length==0&&
               <p> <strong>Associated Pageslist:</strong> This Page is not Associated to Any other page. </p>}
             </section><style>{`.k-listview-footer {border-top-width: 0 !important;}`}</style>
-            </div>}; 
+            </div>)}; 
 
 export default function App(props)  { 
   let Data=props.data
@@ -131,11 +131,12 @@ export default function App(props)  {
     setDataState(event.dataState);
   };
   const expandChange = event => {
-    
     const isExpanded = event.dataItem.expanded === undefined ? event.dataItem.aggregates : event.dataItem.expanded;
     event.dataItem.expanded = !isExpanded;
+    
     setDataResult({
-      ...dataResult
+      ...dataResult,
+      data: [...dataResult.data],
     });
   };
   let _pdfExport;
@@ -156,9 +157,7 @@ export default function App(props)  {
         }}>
 
           {/*Here is our Table */}
-                  <Grid style={{
-            height: '700px'
-          }} sortable={true} filterable={true} groupable={true} reorderable={true} pageable={{
+                  <Grid  sortable={true} filterable={true} groupable={true} reorderable={true}  pageable={{
             buttonCount: 4,
             pageSizes: true
           }} data={dataResult} {...dataState} onDataStateChange={dataStateChange} detail={DetailComponent} expandField="expanded" onExpandChange={expandChange}>

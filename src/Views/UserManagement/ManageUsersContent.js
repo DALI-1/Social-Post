@@ -1182,7 +1182,6 @@ React.useEffect(()=>{
 <Col>
 <Box sx={{ width: '100%' }}>
 <Paper sx={{ width: '100%', mb: 2 ,textAlign: "right" }}>
-
 <Button
  variant="outlined"color="primary"
  className="mx-2 m-2"
@@ -1208,7 +1207,7 @@ React.useEffect(()=>{
       
 
       <Button 
-       variant="outlined"color="primary"
+       variant="outlined"color="error"
        className="mx-2 m-2"
        startIcon={<GroupRemoveIcon/>}
        onClick={HandleRemoveUserFromGroup} >
@@ -1242,7 +1241,24 @@ React.useEffect(()=>{
               rowCount={rows.length}
               HandleRemoveUser={HandleRemoveUser}
             />
+             
             <TableBody>
+
+            {stableSort(rows, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).length==0&&
+            <TableRow
+                      hover
+                      role="checkbox"
+                      key={"Empty"}
+                    >
+                      <TableCell padding="checkbox">
+                      </TableCell>
+                      <TableCell component="th"scope="row" padding="none">  </TableCell>                    
+                      <TableCell align="right"></TableCell>
+                      <TableCell align="center">No Users Under your access </TableCell>
+                      <TableCell align="right"></TableCell>
+                      <TableCell align="right"></TableCell>
+                      <TableCell align="right"></TableCell>
+                    </TableRow>}
               {stableSort(rows, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {

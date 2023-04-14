@@ -2,15 +2,7 @@ body{margin-top:20px;
     background-color:#f2f6fc;
     color:#69707a;
     }
-    .img-account-profile {
-        height: 12rem;
-        width: 12rem;
-    }
-    .img-accountAvatar-profile {
-        max-width: 2.5rem;
-        Max-height: 2.5rem;
-        
-    }
+    
     .rounded-circle {
         border-radius: 20% !important;
     }
