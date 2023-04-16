@@ -72,8 +72,8 @@ if(currentDate<=cellDate)
 }
 else
 {
-
- return( <PlaylistAddCheckIcon color='primary' fontSize="small"/>)
+//<PlaylistAddCheckIcon color='primary' fontSize="small"/>
+ return( <></>)
 }
     
 
