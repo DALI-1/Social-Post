@@ -23,8 +23,8 @@ export default function CustomCell(props)
 // Create another date to compare with
 const cellDate = new Date(props.date)
 
-if(currentDate<=cellDate)
-{
+/*if(currentDate<=cellDate)
+{*/
   return (
     <div className='post-container'
         style={{width:"85%",height:"30%",
@@ -69,13 +69,13 @@ if(currentDate<=cellDate)
           
          
     </div>)
-}
+/*}
 else
 {
 //<PlaylistAddCheckIcon color='primary' fontSize="small"/>
  return( <></>)
 }
-    
+ */   
 
     
 }

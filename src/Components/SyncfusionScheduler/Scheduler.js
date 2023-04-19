@@ -8,24 +8,6 @@ import {  toast } from 'react-toastify';
 export default function App() {
   const {GlobalState,Dispatch}=React.useContext(AppContext)
   const [data,setdata]=React.useState([
-    {
-      Id: 1,
-      Subject: 'Meeting - 1',
-      StartTime: new Date(2018, 1, 15, 10, 0),
-      EndTime: new Date(2018, 1, 15, 10, 0),
-      IsAllDay: false,
-      Status: 1,
-      Priority: 'High'
-    },
-    {
-      Id: 2,
-      Subject: 'Meeting - 2',
-      StartTime: new Date(2018, 1, 17, 10, 0),
-      EndTime:  new Date(2018, 1, 17, 10, 0),
-      IsAllDay: false,
-      Status: 1,
-      Priority: 'High'
-    }
   ])
 
   //
@@ -50,6 +32,7 @@ APIResult.then((result) => {
   if (result.errorCode == undefined) {
     var localdata =[...data]
     result.result.map((post)=>{
+      console.log(post)
       localdata=[...localdata,{
         Id: post.id,
         Subject: 'Post - '+post.id,
@@ -57,7 +40,8 @@ APIResult.then((result) => {
         EndTime: new Date(post.postDate),
         IsAllDay: false,
         Status: "Completed",
-        Priority: 'High'
+        Priority: 'High',
+        //RecurrenceRule: 'FREQ=DAILY;INTERVAL=1;COUNT=5'
       }]
 
     })
@@ -75,6 +59,16 @@ const popupOpenHandler = (args) => {
 };
 const eventSettings = { dataSource: data, fields: fieldsData }
 
+const appointmentTemplate = (props) => {
+  return (
+    <div className="my-appointment">
+      <div className="appointment-subject">{props.Subject}</div>
+      <div className="appointment-details">
+        {new Date(props.StartTime).toLocaleTimeString()} - {new Date(props.EndTime).toLocaleTimeString()}
+      </div>
+    </div>
+  );
+};
 
   //eventsettings contanis the data of the scheduled posts we want to show
   return (
@@ -85,6 +79,9 @@ const eventSettings = { dataSource: data, fields: fieldsData }
     >
      
         <Inject services={[Day, Week, WorkWeek, Month, Agenda]}/>
+        <e-appointment-template>
+        {appointmentTemplate}
+      </e-appointment-template>
         
     </ScheduleComponent>
   );

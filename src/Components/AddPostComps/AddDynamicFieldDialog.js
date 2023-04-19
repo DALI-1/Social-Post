@@ -30,7 +30,7 @@ export default function AlertDialogSlide({SetShowDynamicFieldDialog,appendText,R
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle>{"Dynamic Field Management"}</DialogTitle>
+        <DialogTitle>Dynamic Field Management</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
             Dynamic field

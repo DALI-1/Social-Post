@@ -286,7 +286,8 @@ const handleImageUpdate=(ImageUrl)=>
   });
   },[])
 
-  const HandleAddSelectedPictures_ToTheEditor=()=>
+  //Old Version of HandleAddSelectedPicture_ToEditor, this one adds it to the Editor
+  /*const HandleAddSelectedPictures_ToTheEditor=()=>
   {
       let AssetsHTML_ToInsert=""
 
@@ -295,6 +296,17 @@ const handleImageUpdate=(ImageUrl)=>
       AssetsHTML_ToInsert=AssetsHTML_ToInsert+"<img src="+Asset.src+" style=\"width: 70px; height: 70px;\" alt=\"image_description\"/>"
       })
     AppenedAsset(AssetsHTML_ToInsert)
+    handleClose()
+  }*/
+
+    const HandleAddSelectedPictures_ToTheEditor=()=>
+  {
+      let ListOfAssets=[]
+
+      SelectedPictures.current.map((Asset)=>{  
+        ListOfAssets=[...ListOfAssets,Asset]
+      })
+    AppenedAsset(ListOfAssets)
     handleClose()
   }
   return (
@@ -308,7 +320,7 @@ const handleImageUpdate=(ImageUrl)=>
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle>{"Manage Assets"}</DialogTitle>
+        <DialogTitle>Manage Assets</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
           

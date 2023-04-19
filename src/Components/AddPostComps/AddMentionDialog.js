@@ -23,20 +23,37 @@ function sleep(delay = 0) {
     setTimeout(resolve, delay);
   });
 }
-
-export default function AlertDialogSlide({SetShowAddHashTagDialog}) {
+export default function AlertDialogSlide({SetShowAddMentionDialog}) {
       //this is used for tags
   const [selected, setSelected] = React.useState(["#Gaming"]);
 
 
   
   const handleClose = () => {
-    SetShowAddHashTagDialog(false)
+    SetShowAddMentionDialog(false)
   };
 
   const [open, setOpen] = React.useState(false);
   const [options, setOptions] = React.useState([]);
   const loading = open && options.length === 0;
+  const [AppAccessToken, setAppAccessToken] = React.useState('');
+  //Getting the App Token
+  React.useEffect(()=>{
+    const fetchAccessToken = async () => {
+      const response = await fetch(`https://graph.facebook.com/oauth/access_token?client_id=`+process.env.REACT_APP_METAAPPKEY+`&client_secret=`+process.env.REACT_APP_METAAPPSECRET+`&grant_type=client_credentials&scopes=email, pages_manage_cta, pages_show_list, instagram_basic, instagram_manage_comments, instagram_manage_insights, instagram_content_publish, instagram_manage_messages, pages_read_engagement, pages_manage_metadata, pages_manage_posts, public_profile`);
+      const data = await response.json();
+      
+      return(data)
+    }
+    fetchAccessToken().then((res)=>{
+         console.log(res)
+         setAppAccessToken(res.access_token)
+
+         
+    });
+  },[])
+  
+
   React.useEffect(() => {
     let active = true;
 
@@ -74,13 +91,16 @@ export default function AlertDialogSlide({SetShowAddHashTagDialog}) {
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle>{"Add Tags To your Post"}</DialogTitle>
+        <DialogTitle>Post Mentions</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-            <Accordion className='m-2' defaultActiveKey="0">
+      <Container>
+        <Row>
+          <Col md={12}>
+          <Accordion className='m-2' defaultActiveKey="0">
       <Accordion.Item eventKey="0">
-        <Accordion.Header>Post Tags</Accordion.Header>
-        <Accordion.Body>
+        <Accordion.Header>Post Mentions</Accordion.Header>
+        <Accordion.Body> 
         <Autocomplete
         multiple
         limitTags={7}
@@ -116,6 +136,12 @@ export default function AlertDialogSlide({SetShowAddHashTagDialog}) {
       </Accordion.Item>
      
     </Accordion>
+          </Col>
+          
+        </Row>
+      </Container>
+
+    
           </DialogContentText>
         </DialogContent>
         <DialogActions>
