@@ -5,6 +5,8 @@ import { ScheduleComponent, Day, Week, WorkWeek, Month, Agenda, Inject } from '@
  import CustomCell from "./CustomCell"
  import * as APILib from "../../libs/APIAccessAndVerification"
 import {  toast } from 'react-toastify';
+
+import AddPost from "../../Views/PostManagement/AddPostContent"
 export default function App() {
   const {GlobalState,Dispatch}=React.useContext(AppContext)
   const [data,setdata]=React.useState([
@@ -30,9 +32,8 @@ let UserToken = window.localStorage.getItem("AuthToken");
 let APIResult = APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
 APIResult.then((result) => {
   if (result.errorCode == undefined) {
-    var localdata =[...data]
+    var localdata =[]
     result.result.map((post)=>{
-      console.log(post)
       localdata=[...localdata,{
         Id: post.id,
         Subject: 'Post - '+post.id,
@@ -46,27 +47,42 @@ APIResult.then((result) => {
 
     })
     setdata(localdata)
-    
-    
   }
 });
 },[])  
 const popupOpenHandler = (args) => {
-  args.cancel = true; // Cancel the default pop-up form
-  // Create and display your custom form
-  // Example: display a simple alert box
-  //Dispatch({type:variables.PostSelectedTabActions.SelectAddPost})
+ 
+  console.log(args)
+  if(args.type=="EventContainer")
+{/*args.cancel = true;  Cancel the default pop-up form*/  
+}
+if(args.type=="QuickInfo")
+{
+/*args.cancel = true;  Cancel the default pop-up form*/
+  
+  //pop.style.width = '1000px';
+}
+if(args.type=="Editor")
+{/*args.cancel = true;  Cancel the default pop-up form*/
+console.log(args)
+  var pop=document.getElementById(args.element.id)
+  console.log(pop)
+  pop.style.width="70%"
+  pop.style.height="70%"
+  pop.style.zIndex = "0";
+}
+  else
+  { 
+    /*args.cancel = true;  Cancel the default pop-up form*/
+
+  }
 };
 const eventSettings = { dataSource: data, fields: fieldsData }
 
 const appointmentTemplate = (props) => {
-  return (
-    <div className="my-appointment">
-      <div className="appointment-subject">{props.Subject}</div>
-      <div className="appointment-details">
-        {new Date(props.StartTime).toLocaleTimeString()} - {new Date(props.EndTime).toLocaleTimeString()}
-      </div>
-    </div>
+  console.log(props)
+  return (<AddPost/>
+   
   );
 };
 
@@ -74,15 +90,20 @@ const appointmentTemplate = (props) => {
   return (
     <ScheduleComponent selectedDate= {new Date()}
     eventSettings={eventSettings}
+    appointmentTemplate={props => (
+      <div>
+        <p>hiii</p>
+      </div>
+    )}
+    editorTemplate={
+      appointmentTemplate
+    }
     cellTemplate={CustomCell}
     popupOpen={popupOpenHandler}
-    >
-     
-        <Inject services={[Day, Week, WorkWeek, Month, Agenda]}/>
-        <e-appointment-template>
-        {appointmentTemplate}
-      </e-appointment-template>
-        
+    allowMultiRowSelection={false}
+    >  
+        <Inject services={[Day, Week,WorkWeek, Month, Agenda]}/>
     </ScheduleComponent>
   );
+
 }

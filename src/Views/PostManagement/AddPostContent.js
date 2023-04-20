@@ -46,9 +46,10 @@ import ImageDeleter from "../../components/PostAssetsManagement/ImageDeleter"
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
-export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelectionChange},ref)=> {
+import Filter1Icon from '@mui/icons-material/Filter1';
+export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelectionChange,handleAssetSelectionChange},ref)=> {
   const editorRef =React.useRef(null)
-  const Post_DateInput=React.useRef(null)
+  const Post_DateInput=React.useRef(dayjs(variables.PostGlobalVariables.POST_Scheduler_Selected_DateTime))
   const Post_RepeatCheckbox=React.useRef(false)
   const Post_RepeatingOptionDropDownList=React.useRef(1)
   //const Post_Repeat_EveryInput=React.useRef(null)
@@ -94,6 +95,11 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
    const [Assets,SetAssets]=React.useState([])
    const [SelectedAssets,SetSelectedAssets]=React.useState([])
 
+   React.useEffect(()=>{
+    variables.PostGlobalVariables.POST_SelectedAssetsInfo=Assets
+    handleAssetSelectionChange()
+   },[Assets])
+
    
   const HandlePostSchedule=(()=>{
 
@@ -105,7 +111,7 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
     let EndRepeatRadioBoxValue=Post_EndRepeatRadioBox.current
     let EndRepeatOnNbOfOccurencesValue=Post_EndRepeatOnNbOfOccurencesInput.current
     let EndRepeatAfterDate=Post_EndRepeatAfterDateInput.current
-    
+    let INSTAGRAM_Page_Exist_InSelection_Flag=false
     if(Post_Date!=null)
     {
       if(EditorContent!="")
@@ -115,6 +121,8 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
         let ListOfPages=[]
         variables.PostGlobalVariables.POST_SelectedPageInfo.map((page)=>
         {
+          if(page.PageType==2)
+          {INSTAGRAM_Page_Exist_InSelection_Flag=true}
         ListOfPages=[...ListOfPages,{"pageID": page.id}]
         })
       
@@ -128,49 +136,66 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
               assetID: Asset.value
             }]
           })
-          var JsonObject = {  
-            postGroupID: GlobalState.SelectedGroup.id,
-            postText: EditorContent,
-            repeatPost: Repeat,
-            repeatOption: RepeatDropDownListSelection==1?"Hourly":RepeatDropDownListSelection==2?"Daily":RepeatDropDownListSelection==3?"Weekly":RepeatDropDownListSelection==4?"Monthly":RepeatDropDownListSelection==5?"Yearly":"BUG_IMPOSSIBLE_TO_REACH",
-            endRepeatPost: EndRepeatRadioBoxValue==1?false:true,
-            endRepeatOption: EndRepeatRadioBoxValue==1?"NoEnd":EndRepeatRadioBoxValue==2?"EndOccOption":"EndDateOption",
-            endRepeatOnOccurence: EndRepeatRadioBoxValue==2?EndRepeatOnNbOfOccurencesValue:0,
-            endRepeatAfterDate: EndRepeatRadioBoxValue==3?EndRepeatAfterDate:"2023-04-12T23:00:00.000Z",
-            postDate: Post_DateInput.current,
-            listOfPages:ListOfPages,
-            listOfAssets: AssetsList,
-            listOfDynamicFields: variables.PostGlobalVariables.POST_AddedDynamicFields
-        };
-    
-        let JsonObjectToSend = JSON.stringify(JsonObject);
-        let url2 =
-          process.env.REACT_APP_BACKENDURL + 
-          process.env.REACT_APP_ADDPOST;
-        let UserToken = window.localStorage.getItem("AuthToken");
-        let APIResult = APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
-        APIResult.then((result) => {
-          if (result.errorCode == undefined) {
-            if(result.successCode=="Post_Scheduleded")
-            {
-    
-              toast.success("Post Scheduleded Successfully!", {
-                position: "bottom-left",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-               
-              });
-              Dispatch({type:variables.PostSelectedTabActions.SelectManagePosts})
-            }
-            
-            
+         
+          if(AssetsList.length==0 &&INSTAGRAM_Page_Exist_InSelection_Flag)
+          {
+            toast.info("You cannot create an Instagram Post without at least having picture added to it", {
+              position: "bottom-left",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
           }
-        });
+          else
+          {
+            var JsonObject = {  
+              postGroupID: GlobalState.SelectedGroup.id,
+              postText: EditorContent,
+              repeatPost: Repeat,
+              repeatOption: RepeatDropDownListSelection==1?"Hourly":RepeatDropDownListSelection==2?"Daily":RepeatDropDownListSelection==3?"Weekly":RepeatDropDownListSelection==4?"Monthly":RepeatDropDownListSelection==5?"Yearly":"BUG_IMPOSSIBLE_TO_REACH",
+              endRepeatPost: EndRepeatRadioBoxValue==1?false:true,
+              endRepeatOption: EndRepeatRadioBoxValue==1?"NoEnd":EndRepeatRadioBoxValue==2?"EndOccOption":"EndDateOption",
+              endRepeatOnOccurence: EndRepeatRadioBoxValue==2?EndRepeatOnNbOfOccurencesValue:0,
+              endRepeatAfterDate: EndRepeatRadioBoxValue==3?EndRepeatAfterDate:"2023-04-12T23:00:00.000Z",
+              postDate: Post_DateInput.current,
+              listOfPages:ListOfPages,
+              listOfAssets: AssetsList,
+              listOfDynamicFields: variables.PostGlobalVariables.POST_AddedDynamicFields
+           };
+      
+          let JsonObjectToSend = JSON.stringify(JsonObject);
+          let url2 =
+            process.env.REACT_APP_BACKENDURL + 
+            process.env.REACT_APP_ADDPOST;
+          let UserToken = window.localStorage.getItem("AuthToken");
+          let APIResult = APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
+          APIResult.then((result) => {
+            if (result.errorCode == undefined) {
+              if(result.successCode=="Post_Scheduleded")
+              {
+      
+                toast.success("Post Scheduleded Successfully!", {
+                  position: "bottom-left",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "light",
+                 
+                });
+                Dispatch({type:variables.PostSelectedTabActions.SelectManagePosts})
+              }
+              
+              
+            }
+          });
+          }
         }
         else
         {
@@ -231,8 +256,9 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
     let EndRepeatRadioBoxValue=Post_EndRepeatRadioBox.current
     let EndRepeatOnNbOfOccurencesValue=Post_EndRepeatOnNbOfOccurencesInput.current
     let EndRepeatAfterDate=Post_EndRepeatAfterDateInput.current
-    
-    
+    let INSTAGRAM_Page_Exist_InSelection_Flag=false
+    if(Post_Date!=null)
+    {
       if(EditorContent!="")
       {
 
@@ -240,6 +266,8 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
         let ListOfPages=[]
         variables.PostGlobalVariables.POST_SelectedPageInfo.map((page)=>
         {
+          if(page.PageType==2)
+          {INSTAGRAM_Page_Exist_InSelection_Flag=true}
         ListOfPages=[...ListOfPages,{"pageID": page.id}]
         })
       
@@ -253,51 +281,66 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
               assetID: Asset.value
             }]
           })
-          var JsonObject = {  
-            postGroupID: GlobalState.SelectedGroup.id,
-            postText: EditorContent,
-            repeatPost: Repeat,
-            repeatOption: RepeatDropDownListSelection==1?"Hourly":RepeatDropDownListSelection==2?"Daily":RepeatDropDownListSelection==3?"Weekly":RepeatDropDownListSelection==4?"Monthly":RepeatDropDownListSelection==5?"Yearly":"BUG_IMPOSSIBLE_TO_REACH",
-            endRepeatPost: EndRepeatRadioBoxValue==1?false:true,
-            endRepeatOption: EndRepeatRadioBoxValue==1?"NoEnd":EndRepeatRadioBoxValue==2?"EndOccOption":"EndDateOption",
-            endRepeatOnOccurence: EndRepeatRadioBoxValue==2?EndRepeatOnNbOfOccurencesValue:0,
-            endRepeatAfterDate: EndRepeatRadioBoxValue==3?EndRepeatAfterDate:"2023-04-12T23:00:00.000Z",
-            postDate: new Date(),
-            listOfPages:ListOfPages,
-            listOfAssets: AssetsList,
-            listOfDynamicFields: variables.PostGlobalVariables.POST_AddedDynamicFields
-        };
-    
-       
-      
-        let JsonObjectToSend = JSON.stringify(JsonObject);
-        let url2 =
-          process.env.REACT_APP_BACKENDURL + 
-          process.env.REACT_APP_ADDPOST;
-        let UserToken = window.localStorage.getItem("AuthToken");
-        let APIResult = APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
-        APIResult.then((result) => {
-          if (result.errorCode == undefined) {
-            if(result.successCode=="Post_Scheduleded")
-            {
-    
-              toast.success("Post Scheduleded Successfully!", {
-                position: "bottom-left",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-               
-              });
-              Dispatch({type:variables.PostSelectedTabActions.SelectManagePosts})
-            }
-            
-            
+         
+          if(AssetsList.length==0 &&INSTAGRAM_Page_Exist_InSelection_Flag)
+          {
+            toast.info("You cannot create an Instagram Post without at least having picture added to it", {
+              position: "bottom-left",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
           }
-        });
+          else
+          {
+            var JsonObject = {  
+              postGroupID: GlobalState.SelectedGroup.id,
+              postText: EditorContent,
+              repeatPost: Repeat,
+              repeatOption: RepeatDropDownListSelection==1?"Hourly":RepeatDropDownListSelection==2?"Daily":RepeatDropDownListSelection==3?"Weekly":RepeatDropDownListSelection==4?"Monthly":RepeatDropDownListSelection==5?"Yearly":"BUG_IMPOSSIBLE_TO_REACH",
+              endRepeatPost: EndRepeatRadioBoxValue==1?false:true,
+              endRepeatOption: EndRepeatRadioBoxValue==1?"NoEnd":EndRepeatRadioBoxValue==2?"EndOccOption":"EndDateOption",
+              endRepeatOnOccurence: EndRepeatRadioBoxValue==2?EndRepeatOnNbOfOccurencesValue:0,
+              endRepeatAfterDate: EndRepeatRadioBoxValue==3?EndRepeatAfterDate:"2023-04-12T23:00:00.000Z",
+              postDate: new Date(),
+              listOfPages:ListOfPages,
+              listOfAssets: AssetsList,
+              listOfDynamicFields: variables.PostGlobalVariables.POST_AddedDynamicFields
+           };
+      
+          let JsonObjectToSend = JSON.stringify(JsonObject);
+          let url2 =
+            process.env.REACT_APP_BACKENDURL + 
+            process.env.REACT_APP_ADDPOST;
+          let UserToken = window.localStorage.getItem("AuthToken");
+          let APIResult = APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
+          APIResult.then((result) => {
+            if (result.errorCode == undefined) {
+              if(result.successCode=="Post_Scheduleded")
+              {
+      
+                toast.success("Post Scheduleded Successfully!", {
+                  position: "bottom-left",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "light",
+                 
+                });
+                Dispatch({type:variables.PostSelectedTabActions.SelectManagePosts})
+              }
+              
+              
+            }
+          });
+          }
         }
         else
         {
@@ -329,10 +372,10 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
       }
       
   
-    
-      if(Post_Date!=null)
+    }
+    else
     {
-      toast.info("choose Schedule Post Option if you want to schedule your post, Post Now is meant to instantly post", {
+      toast.info("Post date for scheduled Posts cannot be empty, use Post Now instead if you don't want to specify the Post date", {
         position: "bottom-left",
         autoClose: 5000,
         hideProgressBar: false,
@@ -344,6 +387,7 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
       });
     }
 
+   
    
   })
 
@@ -525,13 +569,12 @@ React.useEffect(()=>{
   APIResult.then((result) => {
     if (result.errorCode == undefined) {
       let PageListFormatedForMultiSelect=[]
-      result.result[0].map((page)=>{
+      result.result[0].map((page,index)=>{
         if(page.value.picture!==undefined)
-        {PageListFormatedForMultiSelect=[...PageListFormatedForMultiSelect,{id:page.value.id,label:page.value.name,PagePic:page.value.picture.data.url }] }     
+        {PageListFormatedForMultiSelect=[...PageListFormatedForMultiSelect,{id:page.value.id,label:page.value.name,PagePic:page.value.picture.data.url,PageType:result.result[2][index][0].id }] }     
         else
-        {PageListFormatedForMultiSelect=[...PageListFormatedForMultiSelect,{id:page.value.id,label:page.value.name,PagePic:page.value.profile_picture_url }]}
+        {PageListFormatedForMultiSelect=[...PageListFormatedForMultiSelect,{id:page.value.id,label:page.value.name,PagePic:page.value.profile_picture_url,PageType:result.result[2][index][0].id }]}
       })
-      
      setPagesList(PageListFormatedForMultiSelect);
      SetPagesLoaded(true)
     }
@@ -667,7 +710,7 @@ const HandleAssetUnAssign=(()=>{
         ]}
       >
         {/* defaultValue={dayjs(new Date())}*/}
-          <MobileDateTimePicker label="Post Date"   onChange={handlePostDateChange}  /> 
+          <MobileDateTimePicker label="Post Date" defaultValue={dayjs(variables.PostGlobalVariables.POST_Scheduler_Selected_DateTime)}  onChange={handlePostDateChange}  /> 
       </DemoContainer>
     </LocalizationProvider>
 
@@ -777,11 +820,13 @@ const HandleAssetUnAssign=(()=>{
 })
 
 
- export const SecondPane=React.forwardRef(({LivePreview,TextCode},ref)=> {
+ export const SecondPane=React.forwardRef(({LivePreview,TextCode,SamplePreview},ref)=> {
   let [LivePreviewStatus,SetLivePreview]=React.useState(false)
+  let [SamplePreviewStatus,SetSamplePreview]=React.useState(true)
   let [Text,SetText]=React.useState(TextCode)
   const [ReRender,setReRender]=React.useState(false)
   let ListOfPagePosts=React.useRef([])
+  let List_Of_Samples=React.useRef([])
   const SecondPane = React.useRef(null);
   //gets the custom ref for the component
   React.useImperativeHandle(ref, () => ({
@@ -795,7 +840,7 @@ const HandleAssetUnAssign=(()=>{
   const HandleRerender = () => {
     setReRender(!ReRender)
    };
-  
+List_Of_Samples.current=[]
 ListOfPagePosts.current=[]
 //We first iteratte through our pages so we added the required modifications
   variables.PostGlobalVariables.POST_SelectedPageInfo.map((Page)=>{
@@ -822,20 +867,42 @@ ListOfPagePosts.current=[]
          
          
        })
-    
-     
+
+         //Checking if the Facebook sample is already added or not
+    let Facebook_SampleFlag=false  
+    let INSTA_SampleFlag=false  
+    List_Of_Samples.current.forEach((element)=>{
+
+      if(element.props.PageInfo.PageType=="1")
+      {
+        Facebook_SampleFlag=true
+      }
+    })
+
+    List_Of_Samples.current.forEach((element)=>{
+
+      if(element.props.PageInfo.PageType=="2")
+      {
+        INSTA_SampleFlag=true
+      }
+    })
+    if(!Facebook_SampleFlag && Page.PageType=="1")
+    {
+     List_Of_Samples.current=[...List_Of_Samples.current,<FacebookPostClone  ref={SecondPane} Text={LocalText} PageInfo={Page}/>]
+    }
+    //Checking if the Instagram sample is already added or not
+    if(!INSTA_SampleFlag && Page.PageType=="2" )
+    {
+     List_Of_Samples.current=[...List_Of_Samples.current,<FacebookPostClone  ref={SecondPane} Text={LocalText} PageInfo={Page}/>]
+    }
+      
        ListOfPagePosts.current=[...ListOfPagePosts.current,<FacebookPostClone  ref={SecondPane} Text={LocalText} PageInfo={Page}/>]   
    })
-
-
    const itemsPerPage = 2;
   const [page, setPage] = React.useState(1);
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
-
-
   const startIndex = (page-1)* itemsPerPage;
   const endIndex = ((startIndex) + itemsPerPage);
    
@@ -845,18 +912,35 @@ ListOfPagePosts.current=[]
             Scheduled Post Preview
           </div>
           <div className="card-body text-center">
-          <Container> 
+          <Container>  {!SamplePreview.current&&<row><Button variant="outlined"color="primary" startIcon={<Filter1Icon/>}  className='mx-2 m-1' onClick={()=>{ SamplePreview.current=true; SetSamplePreview(!SamplePreviewStatus)}}> Disable Sample preview</Button></row>}
+          {SamplePreview.current&&<row><Button variant="outlined"color="primary" startIcon={<Filter1Icon/>} className='mx-2 m-1'  onClick={()=>{ SamplePreview.current=false;SetSamplePreview(!SamplePreviewStatus)}}> Enable Sample preview</Button></row>}
           {!LivePreview.current&&<row><Button variant="outlined"color="primary" startIcon={<VisibilityOffIcon/>}  className='mx-2 m-1' onClick={()=>{LivePreview.current=true; SetLivePreview(!LivePreviewStatus)}}> Enable Live preview</Button></row>}
           {LivePreview.current&&<row><Button variant="outlined"color="primary" startIcon={<VisibilityIcon/>} className='mx-2 m-1'  onClick={()=>{LivePreview.current=false; SetLivePreview(!LivePreviewStatus)}}> Disable Live preview</Button></row>}
          </Container>
           </div>
           <div className="card-body text-center m-1" style={{ backgroundColor: "#f3f4f4",borderRadius:"3%"}}>
             {ListOfPagePosts.current.length==0&&<Box sx={{ display: 'flex', justifyContent: 'center', my: 2 }}><p>No Pages Selected to Preview</p></Box>}
-               {ListOfPagePosts.current.slice(startIndex, endIndex).map((item,index) => (
-        <Row key={index}><Col md={12}>
-          {item}</Col></Row>
-       
-      ))}
+               
+               {SamplePreview.current?
+                 ListOfPagePosts.current.slice(startIndex, endIndex).map((item,index) => (
+                  <Row key={"R"+index}><Col md={12}>
+                    {item}</Col></Row>
+                ))
+               :
+                List_Of_Samples.current.slice(startIndex, endIndex).map((item,index) => 
+                
+                {
+                  console.log(ListOfPagePosts.current)
+                  return(
+                  
+                    <Row key={"S"+index}><Col md={12}>
+                      {item}</Col></Row>  
+                  )
+                }
+                )
+               }
+             
+               
       <Box sx={{ display: 'flex', justifyContent: 'center', my: 2 }}>
       <Pagination count={Math.ceil(ListOfPagePosts.current.length / itemsPerPage)} page={page} color="primary" onChange={handleChangePage} />
        
@@ -871,6 +955,7 @@ export default function Content() {
   const SecondPaneRef=React.useRef(null)
    //Preview Related
    let LivePreview=React.useRef(true)
+   let SamplePreview=React.useRef(true)
   //TinyMce Related
   let [TextCode,SetTextCode]=React.useState("")
   const editorRef=React.useRef(null)
@@ -882,6 +967,15 @@ export default function Content() {
     }
     
   }
+
+  function handleAssetSelectionChange() {
+    if(LivePreview.current)
+    {
+      const SecondPaneReRenderer= SecondPaneRef.current.getSecondPaneReRenderer;
+      SecondPaneReRenderer()
+    }
+    
+  }
   function handlePageSelectionChange() {
     if(LivePreview.current)
     {
@@ -890,7 +984,12 @@ export default function Content() {
     }
     
   }
-
+ 
+  React.useEffect(()=>{
+    variables.PostGlobalVariables.POST_AddedDynamicFields=[]
+    variables.PostGlobalVariables.POST_PatternsInfo=[]
+    variables.PostGlobalVariables.POST_SelectedPageIds=[]
+  },[])
   
 
 
@@ -900,10 +999,10 @@ export default function Content() {
 
 <SplitterComponent id="splitter" height="100%" width="100%" separatorSize={5} >
    <PanesDirective>
-   <PaneDirective  min='20%' content={()=>{return(<FirstPane ref={FirstPaneRef} handleEditorChange={handleEditorChange} handlePageSelectionChange={handlePageSelectionChange} />)}} />
+   <PaneDirective  min='20%' content={()=>{return(<FirstPane ref={FirstPaneRef} handleAssetSelectionChange={handleAssetSelectionChange}  handleEditorChange={handleEditorChange} handlePageSelectionChange={handlePageSelectionChange} />)}} />
 
    
-     <PaneDirective min='20%' content={()=>{return(<SecondPane  ref={SecondPaneRef} LivePreview={LivePreview} TextCode={TextCode} />)}} />
+     <PaneDirective min='20%' content={()=>{return(<SecondPane  ref={SecondPaneRef} SamplePreview={SamplePreview} LivePreview={LivePreview} TextCode={TextCode} />)}} />
      
    </PanesDirective>
 </SplitterComponent> 

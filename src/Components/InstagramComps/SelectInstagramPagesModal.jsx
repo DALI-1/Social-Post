@@ -138,25 +138,19 @@ export default function PagesDialog(props) {
 
             <FacebookLogin  
         appId="959797981855736"
-        autoLoad={true}
+        autoLoad={false}
         fields="birthday,first_name,last_name,id,email,picture"
         scope="email,
-        publish_video,
         pages_manage_cta,
         pages_show_list,
         instagram_basic,
-        instagram_manage_comments,
-        instagram_manage_insights,
         instagram_content_publish,
-        publish_to_groups,
-        instagram_manage_messages,
         pages_read_engagement,
         pages_manage_metadata,
         pages_read_user_content,
         pages_manage_posts,
         pages_manage_engagement,
         public_profile"
-        
         callback={responseFacebook} 
         onFailure={onFailure}
         render={renderProps => {

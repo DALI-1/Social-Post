@@ -50,7 +50,7 @@ const DetailComponent = props => {
                   <>
                   <ListViewHeader className="pl-3 pb-2 pt-2" style={{fontSize: 14}}><strong>Associated Pageslist:</strong></ListViewHeader>
                     {dataItem.OtherPlatformAccountsDetails.map((e,index)=>{
-                      //here we testing by profile_picture_url attribute, if it's not undefined then the related page is an instagram page, else its a facebook one
+                      //here we testing by profile_picture_url attribute, if it's not undefined then the related page is an instagram page with a pfp , else its a facebook one
                       if(e.value.profile_picture_url!==undefined)
                       {
                         return(
@@ -66,8 +66,8 @@ const DetailComponent = props => {
                           <Avatar size="lg" src={dataItem.PagePlatformDetails[index+1].platformLogoImageUrl} color="gradient"   squared zoomed/>
                           </div></div>) 
                       }
-                      //This indicate that this is a Facebook Page and we handle it with different attributes
-                      if(e.value.profile_picture_url==undefined)
+                      //This indicate that this is a Facebook Page and it has a picture
+                      if(e.value.profile_picture_url==undefined && e.value.picture!=undefined )
                       {
                         return(
                           <div className="k-listview-item row p-2 border-bottom align-middle" style={{ margin: 0}}>
@@ -81,7 +81,26 @@ const DetailComponent = props => {
                           <div className="col-2 m-2">
                           <Avatar size="lg" src={dataItem.PagePlatformDetails[index+1].platformLogoImageUrl} color="gradient"   squared zoomed/>
                           </div></div>) 
-                      }})}</>}
+                      }
+
+                      //This indicate that this is a Instagram Page and without Picture
+                      if(e.value.profile_picture_url==undefined && e.value.picture==undefined )
+                      {
+                        return(
+                          <div className="k-listview-item row p-2 border-bottom align-middle" style={{ margin: 0}}>
+                          <div className="col-2 m-2"> <Avatar size="lg" src="" color="gradient"   squared zoomed/></div>
+                          {/*<div className="col-3 m-2">
+                          <h2 style={{ fontSize: 14, color: "#454545",marginBottom: 0, }} className="text-uppercase">  Account Username</h2>
+                        <div style={{fontSize: 12,color: "#a0a0a0", }}>{e.value.username }</div> </div>*/}
+                          <div className="col-4 m-2">
+                          <h2 style={{ fontSize: 14, color: "#454545",marginBottom: 0, }} className="text-uppercase"> Page Name</h2>
+                          <div style={{fontSize: 12,color: "#a0a0a0", }}>{e.value.name }</div></div>
+                          <div className="col-2 m-2">
+                          <Avatar size="lg" src={dataItem.PagePlatformDetails[index+1].platformLogoImageUrl} color="gradient"   squared zoomed/>
+                          </div></div>)
+                      }
+                      
+                      })}</>}
                      {dataItem.OtherPlatformAccountsDetails.length==0&&
               <p> <strong>Associated Pageslist:</strong> This Page is not Associated to Any other page. </p>}
             </section><style>{`.k-listview-footer {border-top-width: 0 !important;}`}</style>
@@ -243,6 +262,19 @@ export default function App(props)  {
                         <Row className="d-flex justify-content-center align-items-center" >
                          <Col >
                          <Avatar size="lg" src={props.dataItem.PageDetails.profile_picture_url} color="gradient"   squared zoomed/>
+                         </Col>
+                         <Col><p className="m-1">{props.dataItem.PageDetails.name}</p></Col>
+                        </Row>
+                        </Container>
+                        </td>)
+                    }
+                    else
+                    {
+                      return(<td>
+                        <Container >
+                        <Row className="d-flex justify-content-center align-items-center" >
+                         <Col >
+                         <Avatar size="lg" src="" color="gradient"   squared zoomed/>
                          </Col>
                          <Col><p className="m-1">{props.dataItem.PageDetails.name}</p></Col>
                         </Row>

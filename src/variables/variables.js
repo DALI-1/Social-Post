@@ -231,9 +231,20 @@ export var FacebookUser=
 export var PostGlobalVariables=
 {
  //This variable contains the selected Pages info by the user ! INFO ONLY USED TO DISPLAY PAGE INFO LATER WHEN U INSERT DYNAMIC FIELD
+ /*[
+    {
+        "id": "120524764321751",
+        "label": "Acteol",
+        "PagePic": "https://scontent.ftun4-2.fna.fbcdn.net/v/t39.30808-1/339619932_766806731416281_3059132488471044205_n.jpg?stp=c14.0.50.50a_cp0_dst-jpg_p50x50&_nc_cat=105&ccb=1-7&_nc_sid=dbb9e7&_nc_ohc=Zel4npR3Wj8AX-S6UEB&_nc_ht=scontent.ftun4-2.fna&edm=AJdBtusEAAAA&oh=00_AfDspo8pJ57Xyx-r6-M4lZTqYmMqirAbtB2NxV6dTVoVgQ&oe=64458AB3",
+        "PageType": 1
+    },
+
+]      This is an EXAMPLE OBJECT That shows how POST_SelectedPagesInfo Is Formated */
     POST_SelectedPageInfo:[],
      //This variable contains the selected Pages IDs by the user  !ID ONLY HERE USED FOR AN INITIZALIZING for tHE MULTISELECT
     POST_SelectedPageIds:[],
     POST_AddedDynamicFields:[],
-    POST_PatternsInfo:[]
+    POST_PatternsInfo:[],
+    POST_Scheduler_Selected_DateTime:new Date(),
+    POST_SelectedAssetsInfo:[],
 }

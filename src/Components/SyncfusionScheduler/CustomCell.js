@@ -7,75 +7,80 @@ import {AppContext} from "../../context/Context"
 import * as variables from "../../variables/variables"
 import IconButton from '@mui/material/IconButton';
 import SendIcon from '@mui/icons-material/Send';
-import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
+import TaskAltIcon from '@mui/icons-material/TaskAlt';
+import CloseIcon from '@mui/icons-material/Close';
+import dayjs from 'dayjs';
+import Button from '@mui/material/Button';
 export default function CustomCell(props)
 {
     //props contain the selected date
       const handleCreatePost=()=>{
+        variables.PostGlobalVariables.POST_Scheduler_Selected_DateTime=new Date(props.date)
         Dispatch({type:variables.PostSelectedTabActions.SelectAddPost})
       }
     const [isHovered, setIsHovered] = React.useState(false);
     const {GlobalState,Dispatch}=React.useContext(AppContext)
-
     const currentDate = new Date();
-
-  
 // Create another date to compare with
 const cellDate = new Date(props.date)
+if(dayjs(currentDate).isBefore(dayjs(cellDate)))
+{
 
-/*if(currentDate<=cellDate)
-{*/
-  return (
-    <div className='post-container'
-        style={{width:"85%",height:"30%",
-         }}
-         onMouseEnter={() => setIsHovered(true)}
-         onMouseLeave={() => setIsHovered(false)}>
-         <p style={{color:"white"}}>_</p>
-          {isHovered&&
-          <div className={isHovered ? 'FadedPost fade-in' : 'FadedPost fade-out'} >
-      
-          <Container>
-          
-           <Row>
-               <Col md={12} > <div  class="HiddenPostInfo">_</div></Col>
-              {/* <Col md={5} ><div    class="HiddenPostInfo">_</div></Col>
-               <Col md={5} ><div    class="HiddenPostInfo">_</div></Col>*/}
-              
-
-
-               <Col md={12} ><div   class="HiddenPostInfo">_</div></Col>
-               
-
-           </Row>
-           <Row><Col md={12}> 
- <IconButton aria-label="fingerprint" color="primary" onClick={handleCreatePost}>
-   <SendIcon/>
- </IconButton>
- 
-       </Col></Row>
-           
-
-          
-          </Container>
-          </div>
+  if(!isHovered)
+  {
+    if(props.type=="alldayCells")
+    {
+      return(<></>)
+    }
+    if(props.type=='monthCells')
+    {
+      return(<div onMouseEnter={() => setIsHovered(true)}><br/><br/><br/></div>)
+    }
+    else
+    { return(<div onMouseEnter={() => setIsHovered(true)}><br/><br/><br/></div>)
+    }
+   
+  }
+  else
+  {
+    
+    return (
+      <div className='post-container'
+           onMouseLeave={() =>setIsHovered(false)
           }
-      
-          
-         
-
-          
-          
-          
-         
-    </div>)
-/*}
+           onMouseEnter={() =>
+            setIsHovered(true)}>
+            <div className='FadedPost fade-in'>
+            <Container>
+             <Row>
+                 <Col md={12} > <div  class="HiddenPostInfo"><br/></div></Col>        
+                 <Col md={10} ><div   class="HiddenPostInfo"><br/></div></Col>
+             </Row>
+             <Row><Col md={12}> 
+             <Button  style={{marginBottom:"5px"}}variant="outlined" color='primary' startIcon={<SendIcon />} onClick={handleCreatePost}>Post</Button>
+         </Col></Row>
+            </Container>
+            </div>                
+      </div>)
+  }
+}
 else
 {
-//<PlaylistAddCheckIcon color='primary' fontSize="small"/>
- return( <></>)
+  if(props.type=="alldayCells")
+  {
+    return(<></>)
+  }
+  if(props.type=='monthCells')
+  {
+    return(<CloseIcon color='primary' fontSize="small"/>)
+  }
+  else
+  { 
+    return(<CloseIcon color='primary' fontSize="small"/>)
+  }
+ 
 }
- */   
+   
 
     
 }

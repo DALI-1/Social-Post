@@ -38,3 +38,6 @@
   }
 }
 
+.css-zw3mfo-MuiModal-root-MuiDialog-root {
+  z-index: 30000 !important;
+}

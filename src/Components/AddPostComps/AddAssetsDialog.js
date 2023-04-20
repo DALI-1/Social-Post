@@ -318,7 +318,7 @@ const handleImageUpdate=(ImageUrl)=>
         TransitionComponent={Transition}
         keepMounted
         onClose={handleClose}
-        aria-describedby="alert-dialog-slide-description"
+        aria-describedby="alert-dialog-slide-description"       
       >
         <DialogTitle>Manage Assets</DialogTitle>
         <DialogContent>
