@@ -154,7 +154,7 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
           {
             var JsonObject = {  
               postGroupID: GlobalState.SelectedGroup.id,
-              postText: EditorContent,
+              postText: EditorContent.toString().split("<p>").join("").split("</p>").join(""),
               repeatPost: Repeat,
               repeatOption: RepeatDropDownListSelection==1?"Hourly":RepeatDropDownListSelection==2?"Daily":RepeatDropDownListSelection==3?"Weekly":RepeatDropDownListSelection==4?"Monthly":RepeatDropDownListSelection==5?"Yearly":"BUG_IMPOSSIBLE_TO_REACH",
               endRepeatPost: EndRepeatRadioBoxValue==1?false:true,
@@ -299,7 +299,7 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
           {
             var JsonObject = {  
               postGroupID: GlobalState.SelectedGroup.id,
-              postText: EditorContent,
+              postText: EditorContent.toString().split("<p>").join("").split("</p>").join(""),
               repeatPost: Repeat,
               repeatOption: RepeatDropDownListSelection==1?"Hourly":RepeatDropDownListSelection==2?"Daily":RepeatDropDownListSelection==3?"Weekly":RepeatDropDownListSelection==4?"Monthly":RepeatDropDownListSelection==5?"Yearly":"BUG_IMPOSSIBLE_TO_REACH",
               endRepeatPost: EndRepeatRadioBoxValue==1?false:true,
@@ -446,8 +446,9 @@ const init = {
   content_script: [
     '../../libs/tinymce/js/tinymce/tinymce.min.js'
   ],
-  forced_root_block: false,
-  force_p_newlines: false,
+  force_br_newlines:false,
+  force_p_newlines :false,
+  forced_root_block :'',
   menubar: false,
   selector: '#my-editor',
   plugins: [
