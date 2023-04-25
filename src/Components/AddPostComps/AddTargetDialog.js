@@ -17,6 +17,7 @@ import Select from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
+import * as variables from "../../variables/variables"
 import * as Facebook_Search from "../../libs/Facebook_Search"
 import CancelIcon from '@mui/icons-material/Cancel';
 import ModeStandbyIcon from '@mui/icons-material/ModeStandby';
@@ -26,6 +27,11 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import TranslateIcon from '@mui/icons-material/Translate';
 import InterestsIcon from '@mui/icons-material/Interests';
 import {  toast } from "react-toastify";
+import { Avatar } from "@nextui-org/react";
+import Tooltip from '@mui/material/Tooltip';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import IconButton from '@mui/material/IconButton';
+import Fade from '@mui/material/Fade';  
 const Locales=[
   {
     "name": "English (US)",
@@ -401,12 +407,6 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-
-function sleep(delay = 0) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, delay);
-  });
-}
 export default function AlertDialogSlide({SetShowAddTargetDialog}) { 
   const handleClose = () => {
     SetShowAddTargetDialog(false)
@@ -414,9 +414,9 @@ export default function AlertDialogSlide({SetShowAddTargetDialog}) {
   //Interests Async Multi Select
   let Already_Searched_Target_Interest_Value= React.useRef("");
   let Target_Interest_MultiSelect_Value= React.useRef("");
-  const [Target_Interest_MultiSelect_Values, setTarget_Interest_MultiSelect_Values] = React.useState([]);
+  const [Target_Interest_MultiSelect_Values, setTarget_Interest_MultiSelect_Values] = React.useState(variables.PostGlobalVariables.POST_TargetedInterests);
   const [Target_Interest_MultiSelect_open, setTarget_Interest_MultiSelect_Open] = React.useState(false);
-  const [Target_Interest_MultiSelect_options, setTarget_Interest_MultiSelect_Options] = React.useState([]);
+  const [Target_Interest_MultiSelect_options, setTarget_Interest_MultiSelect_Options] = React.useState(variables.PostGlobalVariables.POST_CachedInterestOptions);
   const [Target_Interest_MultiSelect_loading,setTarget_Interest_MultiSelect_loading] =React.useState(false)
   React.useEffect(() => {
   if(Target_Interest_MultiSelect_Value.current!=="" &&Target_Interest_MultiSelect_Value.current!==Already_Searched_Target_Interest_Value.current)
@@ -442,12 +442,11 @@ export default function AlertDialogSlide({SetShowAddTargetDialog}) {
   setTarget_Interest_MultiSelect_loading(false)
   }, [Target_Interest_MultiSelect_loading]);
 
-
   // Country MultiSelect
   let Country_Target_MultiSelect_Value= React.useRef("");
-  const [Country_Target_MultiSelectValues, setCountry_Target_MultiSelectValues] = React.useState([]);
+  const [Country_Target_MultiSelectValues, setCountry_Target_MultiSelectValues] = React.useState(variables.PostGlobalVariables.POST_TargetedCountries);
   const [Country_Target_MultiSelectopen, setCountry_Target_MultiSelectOpen] = React.useState(false);
-  const [Country_Target_MultiSelectoptions, setCountry_Target_MultiSelectOptions] = React.useState([]);
+  const [Country_Target_MultiSelectoptions, setCountry_Target_MultiSelectOptions] = React.useState(variables.PostGlobalVariables.POST_CachedCountryOptions);
   const [Country_Target_MultiSelect_loading,setCountry_Target_MultiSelect_loading] =React.useState(false)
   React.useEffect(() => {
     if(Country_Target_MultiSelect_Value.current!=="" &&Country_Target_MultiSelect_Value.current!==Already_Searched_Target_Interest_Value.current)
@@ -479,9 +478,9 @@ export default function AlertDialogSlide({SetShowAddTargetDialog}) {
 
   let Already_Searched_Region_Value= React.useRef("");
   let Region_Target_MultiSelect_Value= React.useRef("");
-  const [Region_Target_MultiSelectValues, setRegion_Target_MultiSelectValues] = React.useState([]);
+  const [Region_Target_MultiSelectValues, setRegion_Target_MultiSelectValues] = React.useState(variables.PostGlobalVariables.POST_TargetedRegions);
   const [Region_Target_MultiSelectopen, setRegion_Target_MultiSelectOpen] = React.useState(false);
-  const [Region_Target_MultiSelectoptions, setRegion_Target_MultiSelectOptions] = React.useState([]);
+  const [Region_Target_MultiSelectoptions, setRegion_Target_MultiSelectOptions] = React.useState(variables.PostGlobalVariables.POST_CachedRegionOptions);
   const [Region_Target_MultiSelect_loading,setRegion_Target_MultiSelect_loading] =React.useState(false)
  
   React.useEffect(() => {
@@ -512,9 +511,9 @@ export default function AlertDialogSlide({SetShowAddTargetDialog}) {
 
   let Already_Searched_Location_Value= React.useRef("");
   let Location_Target_MultiSelect_Value= React.useRef("");
-  const [Location_Target_MultiSelectValues, setLocation_Target_MultiSelectValues] = React.useState([]);
+  const [Location_Target_MultiSelectValues, setLocation_Target_MultiSelectValues] = React.useState(variables.PostGlobalVariables.POST_TargetedLocations);
   const [Location_Target_MultiSelectopen, setLocation_Target_MultiSelectOpen] = React.useState(false);
-  const [Location_Target_MultiSelectoptions, setLocation_Target_MultiSelectOptions] = React.useState([]);
+  const [Location_Target_MultiSelectoptions, setLocation_Target_MultiSelectOptions] = React.useState(variables.PostGlobalVariables.POST_CachedLocationOptions);
   const [Location_Target_MultiSelect_loading,setLocation_Target_MultiSelect_loading] =React.useState(false)
   React.useEffect(() => {
     if(Location_Target_MultiSelect_Value.current!=="" &&Location_Target_MultiSelect_Value.current!==Already_Searched_Location_Value.current)
@@ -542,10 +541,12 @@ export default function AlertDialogSlide({SetShowAddTargetDialog}) {
      
     setLocation_Target_MultiSelect_loading(false)
     }, [Location_Target_MultiSelect_loading]);
+
+   
   //Target language Multi Select
-  const [Language_Target_MultiSelectValues, setLanguage_Target_MultiSelectValues] = React.useState([]);
+  const [Language_Target_MultiSelectValues, setLanguage_Target_MultiSelectValues] = React.useState(variables.PostGlobalVariables.POST_TargetedLanguages);
   const [Language_Target_MultiSelectopen, setLanguage_Target_MultiSelectOpen] = React.useState(false);
-  const [Language_Target_MultiSelectoptions, setLanguage_Target_MultiSelectOptions] = React.useState([]);
+  const [Language_Target_MultiSelectoptions, setLanguage_Target_MultiSelectOptions] = React.useState([...Locales]);
   const Language_Target_MultiSelectloading = Language_Target_MultiSelectopen && Language_Target_MultiSelectoptions.length === 0;
 
   React.useEffect(() => {
@@ -566,17 +567,11 @@ export default function AlertDialogSlide({SetShowAddTargetDialog}) {
     };
   }, [Language_Target_MultiSelectloading]);
 
-  React.useEffect(() => {
-    if (!Language_Target_MultiSelectopen) {
-      setLanguage_Target_MultiSelectOptions([]);
-    }
-  }, [Language_Target_MultiSelectopen]);
-
   //Age  Select
 
-  const [From_age, setFrom_Age] = React.useState('');
-  const [To_age, setTo_Age] = React.useState('');
-  const [Gender, setGender] = React.useState('');
+  const [From_age, setFrom_Age] = React.useState( variables.PostGlobalVariables.POST_TargetedAgeRange.FromAge);
+  const [To_age, setTo_Age] = React.useState(variables.PostGlobalVariables.POST_TargetedAgeRange.ToAge);
+  const [Gender, setGender] = React.useState(variables.PostGlobalVariables.POST_TargetedGenderId);
   const handleGenderChange = (event) => {
     setGender(event.target.value);
   };
@@ -597,17 +592,48 @@ export default function AlertDialogSlide({SetShowAddTargetDialog}) {
     if(To_age!=""&&From_age!="")
     {
     //checking if the from age is smaller than To age
-    if(To_age>From_age)
+    if(Number(To_age)>Number(From_age))
     {
-      if(From_age>100&&From_age<5 &&To_age>100&To_age<5)
+      if(Number(From_age)<100&&Number(From_age)>5 &&Number(To_age)<100&&Number(To_age)>5)
       {
-        console.log(From_age)
-        console.log(To_age)
-        console.log(Language_Target_MultiSelectValues)
-        console.log(Location_Target_MultiSelectValues)
-        console.log(Region_Target_MultiSelectValues)
-        console.log(Country_Target_MultiSelectValues)
-        console.log(Target_Interest_MultiSelect_Values)
+
+        //Updating the POST variables in /variables.js
+        //Updating Age
+        variables.PostGlobalVariables.POST_TargetedAgeRange.FromAge=From_age
+        variables.PostGlobalVariables.POST_TargetedAgeRange.ToAge=To_age
+        //Updating Gender
+        variables.PostGlobalVariables.POST_TargetedGenderId=Gender
+        //Updating Language
+        variables.PostGlobalVariables.POST_TargetedLanguages=Language_Target_MultiSelectValues
+        //Caching LanguageOptionList
+        variables.PostGlobalVariables.POST_CachedLanguageOptions=Language_Target_MultiSelectoptions
+          //Updating Location
+        variables.PostGlobalVariables.POST_TargetedLocations=Location_Target_MultiSelectValues
+        //Caching LocationOptionList
+        variables.PostGlobalVariables.POST_CachedLocationOptions=Location_Target_MultiSelectoptions
+          //Updating Regions
+        variables.PostGlobalVariables.POST_TargetedRegions=Region_Target_MultiSelectValues
+        //Caching RegionOptionList
+        variables.PostGlobalVariables.POST_CachedRegionOptions=Region_Target_MultiSelectoptions
+          //Updating Countries
+        variables.PostGlobalVariables.POST_TargetedCountries=Country_Target_MultiSelectValues
+        //Caching CountriesoptionList
+        variables.PostGlobalVariables.POST_CachedCountryOptions=Country_Target_MultiSelectoptions
+         //Updating Interests
+        variables.PostGlobalVariables.POST_TargetedInterests=Target_Interest_MultiSelect_Values
+        //Caching InterestsoptionList
+        variables.PostGlobalVariables.POST_CachedInterestOptions=Target_Interest_MultiSelect_options
+
+        toast.success("Post Targetting created Successfully !", {
+          position: "bottom-left",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
         handleClose()
       }
       else
@@ -641,6 +667,44 @@ export default function AlertDialogSlide({SetShowAddTargetDialog}) {
       
     }else
     {
+      //Updating the POST variables in /variables.js
+        //Updating Age
+        variables.PostGlobalVariables.POST_TargetedAgeRange.FromAge=From_age
+        variables.PostGlobalVariables.POST_TargetedAgeRange.ToAge=To_age
+        //Updating Gender
+        variables.PostGlobalVariables.POST_TargetedGenderId=Gender
+        //Updating Language
+        variables.PostGlobalVariables.POST_TargetedLanguages=Language_Target_MultiSelectValues
+        //Caching LanguageOptionList
+        variables.PostGlobalVariables.POST_CachedLanguageOptions=Language_Target_MultiSelectoptions
+          //Updating Location
+        variables.PostGlobalVariables.POST_TargetedLocations=Location_Target_MultiSelectValues
+        //Caching LocationOptionList
+        variables.PostGlobalVariables.POST_CachedLocationOptions=Location_Target_MultiSelectoptions
+          //Updating Regions
+        variables.PostGlobalVariables.POST_TargetedRegions=Region_Target_MultiSelectValues
+        //Caching RegionOptionList
+        variables.PostGlobalVariables.POST_CachedRegionOptions=Region_Target_MultiSelectoptions
+          //Updating Countries
+        variables.PostGlobalVariables.POST_TargetedCountries=Country_Target_MultiSelectValues
+        //Caching CountriesoptionList
+        variables.PostGlobalVariables.POST_CachedCountryOptions=Country_Target_MultiSelectoptions
+         //Updating Interests
+        variables.PostGlobalVariables.POST_TargetedInterests=Target_Interest_MultiSelect_Values
+        //Caching InterestsoptionList
+        variables.PostGlobalVariables.POST_CachedInterestOptions=Target_Interest_MultiSelect_options
+
+        toast.success("Post Targetting created Successfully !", {
+          position: "bottom-left",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        handleClose()
 
     }
 
@@ -661,15 +725,36 @@ export default function AlertDialogSlide({SetShowAddTargetDialog}) {
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle>Post Targets</DialogTitle>
+        <DialogTitle>Target Post</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
       <Container>
         <Row>
           <Col md={12}>
-          <Accordion className='m-2' defaultActiveKey="0">
+          <Accordion className='m-2' defaultActiveKey="-1">
       <Accordion.Item eventKey="0">
-        <Accordion.Header>Post Targets</Accordion.Header>
+        <Accordion.Header>
+          <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
+            <Row>
+              <Col md={4}>
+              <Avatar size="xl" style={{marginRight:"0.5rem"}} src={process.env.REACT_APP_FACEBOOKLOGOURL} color="primary" zoomed/>
+              </Col>
+              <Col >
+              <Avatar md={4}  size="xl" style={{marginLeft:"0.5rem",marginRight:"0.1rem"}}  src={process.env.REACT_APP_INSTAGRAMLOGOURL} color="primary" zoomed/>
+              </Col>
+              
+            </Row>
+            <Row>
+            <Col md={10}>
+               <p style={{marginTop:"1rem"}}>Facebook & Instagram Targetting Option</p>
+              </Col>
+              <Col md={2}>
+              <Tooltip style={{marginTop:"0.5rem"}} title="Here you can Target Facebook and Instagram posts so that they be posted specifically for certain people, example  only to females" TransitionComponent={Fade} TransitionProps={{ timeout: 600 }}><IconButton> <HelpOutlineIcon /></IconButton></Tooltip> 
+              </Col>
+            </Row>
+          </Container>
+
+       </Accordion.Header>
         <Accordion.Body> 
 
           <Container style={{  justifyContent: 'center',textAlign: 'center'  }}>
@@ -681,13 +766,13 @@ export default function AlertDialogSlide({SetShowAddTargetDialog}) {
            
               <Col md={6}>
               <FormControl fullWidth> 
-              <TextField id="outlined-basic" type='number' label="From Age" variant="outlined" onChange={handleFromAgeChange} />
+              <TextField id="outlined-basic" type='number' defaultValue={From_age} label="From Age" variant="outlined" onChange={handleFromAgeChange} />
         </FormControl>
               </Col>
               <Col md={6}>
               <FormControl fullWidth>
                
-               <TextField id="outlined-basic" type='number' label="To Age" variant="outlined" onChange={handleToAgeChange} />
+               <TextField id="outlined-basic" type='number' defaultValue={To_age} label="To Age" variant="outlined" onChange={handleToAgeChange} />
          </FormControl>
               </Col>
             </Row>
@@ -705,8 +790,9 @@ export default function AlertDialogSlide({SetShowAddTargetDialog}) {
            label="Gender"
            onChange={handleGenderChange}
          >
-           <MenuItem value={1}>Male</MenuItem>
-           <MenuItem value={2}>Female</MenuItem>
+           <MenuItem value={1}>Males Only</MenuItem>
+           <MenuItem value={2}>Females Only</MenuItem>
+           <MenuItem  value={3}>Both Genders</MenuItem>
          </Select>
          </FormControl>
               </Col>
@@ -722,7 +808,9 @@ export default function AlertDialogSlide({SetShowAddTargetDialog}) {
                   setCountry_Target_MultiSelectValues(newValue)
                   //if the Country is changed, all the regions should be updated 
                 setRegion_Target_MultiSelectValues([])
-                setRegion_Target_MultiSelectOptions([])  
+                setRegion_Target_MultiSelectOptions([]) 
+                setLocation_Target_MultiSelectOptions([])
+                setLocation_Target_MultiSelectValues([]) 
                 }}  
                 id="multiple-limit-tags"  
               open={Country_Target_MultiSelectopen}
@@ -736,6 +824,7 @@ export default function AlertDialogSlide({SetShowAddTargetDialog}) {
               getOptionLabel={(option) => option.name}
               options={Country_Target_MultiSelectoptions}
               loading={Country_Target_MultiSelect_loading}
+              value={Country_Target_MultiSelectValues}
               onInputChange={(e)=>{ 
                 Country_Target_MultiSelect_Value.current=e.target.value 
                 setCountry_Target_MultiSelect_loading(true)
@@ -778,6 +867,7 @@ export default function AlertDialogSlide({SetShowAddTargetDialog}) {
               onClose={() => {
                 setRegion_Target_MultiSelectOpen(false);
               }}
+              
               isOptionEqualToValue={(option, value) => option.key === value.key}
               getOptionLabel={(option) => option.name}
               options={Region_Target_MultiSelectoptions}
@@ -871,6 +961,7 @@ export default function AlertDialogSlide({SetShowAddTargetDialog}) {
               getOptionLabel={(option) => option.name}
               options={Language_Target_MultiSelectoptions}
               loading={Language_Target_MultiSelectloading}
+              value={Language_Target_MultiSelectValues}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -894,6 +985,7 @@ export default function AlertDialogSlide({SetShowAddTargetDialog}) {
             <strong style={{marginBottom:"1rem",marginTop:"1rem"}}><i><InterestsIcon/></i> Interests </strong>
               <Col md={12}>
               <Autocomplete
+              value={Target_Interest_MultiSelect_Values}
               onChange={(event, newValue)=>
               {
                 setTarget_Interest_MultiSelect_Values(newValue)
@@ -939,7 +1031,26 @@ export default function AlertDialogSlide({SetShowAddTargetDialog}) {
        
         </Accordion.Body>
       </Accordion.Item>
-     
+
+      <Accordion.Item eventKey="1">
+        <Accordion.Header>
+        <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
+            <Row>
+              <Col md={4}>
+              <Avatar size="xl" style={{marginRight:"0.5rem"}} src={process.env.REACT_APP_TWITTERLOGOURL} color="primary" zoomed/>
+              </Col>         
+            </Row>
+            <Row>
+            <Col md={12}>
+               <p style={{marginTop:"1rem"}}>Twitter Targetting Option</p>
+              </Col>
+            </Row>
+          </Container>
+        </Accordion.Header>
+        <Accordion.Body>
+          Under Developement..
+        </Accordion.Body>
+      </Accordion.Item>
     </Accordion>
           </Col>
           

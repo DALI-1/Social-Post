@@ -247,4 +247,21 @@ export var PostGlobalVariables=
     POST_PatternsInfo:[],
     POST_Scheduler_Selected_DateTime:new Date(),
     POST_SelectedAssetsInfo:[],
+    POST_TargetedGenderId:3,   //Values  are 1: males only, 2 females only, 3 both genders, by default it's 3
+    POST_TargetedAgeRange:{
+        FromAge:"",
+        ToAge:""
+    },
+    POST_TargetSelectedPlatform:"1",  //Facebook only for now...//
+    POST_TargetedCountries:[],
+    POST_CachedCountryOptions:[],
+    POST_TargetedRegions:[],
+    POST_CachedRegionOptions:[],
+    POST_TargetedLocations:[],
+    POST_CachedLocationOptions:[],
+    POST_TargetedInterests:[],
+    POST_CachedInterestOptions:[],
+    POST_TargetedLanguages:[],
+    POST_CachedLanguageOptions:[]
+
 }

@@ -152,6 +152,59 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
           }
           else
           {
+            let ReFormatedTargetedLanguages=[]
+            let ReFormatedTargetedLocations=[]
+            let ReFormatedTargetedRegions=[]
+            let ReFormatedTargetedCountries=[]
+            let ReFormatedTargetedInterests=[]
+        variables.PostGlobalVariables.POST_TargetedLanguages.map((Language)=>{
+          ReFormatedTargetedLanguages=[...ReFormatedTargetedLanguages,
+            {
+            language_Name: Language.name,
+            languagePlatform_Key: Language.key
+          }]       
+        })  
+          //Reformating Location
+        variables.PostGlobalVariables.POST_TargetedLocations.map((Location)=>{
+          ReFormatedTargetedLocations=[...ReFormatedTargetedLocations,
+            {
+              location_Name: Location.name,
+              location_Type: Location.type,
+              location_PlatformCode: Location.key,
+              location_RegionId:Location.region_id
+          }]
+        })      
+          //Reformating Regions
+        variables.PostGlobalVariables.POST_TargetedRegions.map((Region)=>{
+          ReFormatedTargetedRegions=[...ReFormatedTargetedRegions,
+            {    
+              region_Name: Region.name,
+              country_PlatformId: Region.country_code,
+              region_PlatformCode: Region.key
+          }]
+
+        })   
+          //Reformating Countries
+        variables.PostGlobalVariables.POST_TargetedCountries.map((Country)=>{    
+          ReFormatedTargetedCountries=[...ReFormatedTargetedCountries,
+            {
+             
+              country_Name: Country.name,
+              country_Key: Country.key,
+              country_PlatformCode: Country.country_code
+          }]
+        })
+         //Reformating Interests
+        variables.PostGlobalVariables.POST_TargetedInterests.map((Interest)=>{
+          ReFormatedTargetedInterests=[...ReFormatedTargetedInterests,
+            {
+              interest_Name:Interest.name,
+              interest_PlatformCode:Interest.id ,
+              interest_Description: Interest.description,
+              interest_Topic: Interest.topic
+            
+          }]
+        })
             var JsonObject = {  
               postGroupID: GlobalState.SelectedGroup.id,
               postText: EditorContent.toString().split("<p>").join("").split("</p>").join(""),
@@ -164,9 +217,19 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
               postDate: Post_DateInput.current,
               listOfPages:ListOfPages,
               listOfAssets: AssetsList,
-              listOfDynamicFields: variables.PostGlobalVariables.POST_AddedDynamicFields
-           };
-      
+              listOfDynamicFields: variables.PostGlobalVariables.POST_AddedDynamicFields,
+
+
+              target_AgeFrom: variables.PostGlobalVariables.POST_TargetedAgeRange.FromAge,
+              target_AgeTo: variables.PostGlobalVariables.POST_TargetedAgeRange.ToAge,
+              target_Gender: variables.PostGlobalVariables.POST_TargetedGenderId ,
+              target_PlatformId: variables.PostGlobalVariables.POST_TargetSelectedPlatform,
+              targeted_Countries: ReFormatedTargetedCountries,
+              targeted_Regions: ReFormatedTargetedRegions,
+              targeted_Locations: ReFormatedTargetedLocations,
+              targeted_Languages: ReFormatedTargetedLanguages,
+              targeted_Interests: ReFormatedTargetedInterests,
+           };  
           let JsonObjectToSend = JSON.stringify(JsonObject);
           let url2 =
             process.env.REACT_APP_BACKENDURL + 
@@ -297,6 +360,59 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
           }
           else
           {
+            let ReFormatedTargetedLanguages=[]
+            let ReFormatedTargetedLocations=[]
+            let ReFormatedTargetedRegions=[]
+            let ReFormatedTargetedCountries=[]
+            let ReFormatedTargetedInterests=[]
+        variables.PostGlobalVariables.POST_TargetedLanguages.map((Language)=>{
+          ReFormatedTargetedLanguages=[...ReFormatedTargetedLanguages,
+            {
+            language_Name: Language.name,
+            languagePlatform_Key: Language.key
+          }]       
+        })  
+          //Reformating Location
+        variables.PostGlobalVariables.POST_TargetedLocations.map((Location)=>{
+          ReFormatedTargetedLocations=[...ReFormatedTargetedLocations,
+            {
+              location_Name: Location.name,
+              location_Type: Location.type,
+              location_PlatformCode: Location.key,
+              location_RegionId:Location.region_id
+          }]
+        })      
+          //Reformating Regions
+        variables.PostGlobalVariables.POST_TargetedRegions.map((Region)=>{
+          ReFormatedTargetedRegions=[...ReFormatedTargetedRegions,
+            {    
+              region_Name: Region.name,
+              country_PlatformId: Region.country_code,
+              region_PlatformCode: Region.key
+          }]
+
+        })   
+          //Reformating Countries
+        variables.PostGlobalVariables.POST_TargetedCountries.map((Country)=>{    
+          ReFormatedTargetedCountries=[...ReFormatedTargetedCountries,
+            {
+             
+              country_Name: Country.name,
+              country_Key: Country.key,
+              country_PlatformCode: Country.country_code
+          }]
+        })
+         //Reformating Interests
+        variables.PostGlobalVariables.POST_TargetedInterests.map((Interest)=>{
+          ReFormatedTargetedInterests=[...ReFormatedTargetedInterests,
+            {
+              interest_Name:Interest.name,
+              interest_PlatformCode:Interest.id ,
+              interest_Description: Interest.description,
+              interest_Topic: Interest.topic
+            
+          }]
+        })
             var JsonObject = {  
               postGroupID: GlobalState.SelectedGroup.id,
               postText: EditorContent.toString().split("<p>").join("").split("</p>").join(""),
@@ -309,7 +425,18 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
               postDate: new Date(),
               listOfPages:ListOfPages,
               listOfAssets: AssetsList,
-              listOfDynamicFields: variables.PostGlobalVariables.POST_AddedDynamicFields
+              listOfDynamicFields: variables.PostGlobalVariables.POST_AddedDynamicFields,
+
+
+              target_AgeFrom: variables.PostGlobalVariables.POST_TargetedAgeRange.FromAge,
+              target_AgeTo: variables.PostGlobalVariables.POST_TargetedAgeRange.ToAge,
+              target_Gender: variables.PostGlobalVariables.POST_TargetedGenderId ,
+              target_PlatformId: variables.PostGlobalVariables.POST_TargetSelectedPlatform,
+              targeted_Countries: ReFormatedTargetedCountries,
+              targeted_Regions: ReFormatedTargetedRegions,
+              targeted_Locations: ReFormatedTargetedLocations,
+              targeted_Languages: ReFormatedTargetedLanguages,
+              targeted_Interests: ReFormatedTargetedInterests,
            };
       
           let JsonObjectToSend = JSON.stringify(JsonObject);
@@ -334,7 +461,7 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
                   theme: "light",
                  
                 });
-                Dispatch({type:variables.PostSelectedTabActions.SelectManagePosts})
+                //Dispatch({type:variables.PostSelectedTabActions.SelectManagePosts})
               }
               
               
@@ -931,7 +1058,7 @@ ListOfPagePosts.current=[]
                 List_Of_Samples.current.slice(startIndex, endIndex).map((item,index) => 
                 
                 {
-                  console.log(ListOfPagePosts.current)
+                  
                   return(
                   
                     <Row key={"S"+index}><Col md={12}>
@@ -987,9 +1114,38 @@ export default function Content() {
   }
  
   React.useEffect(()=>{
+    //initializing the variables, so that old data from previous posts are not saved
     variables.PostGlobalVariables.POST_AddedDynamicFields=[]
     variables.PostGlobalVariables.POST_PatternsInfo=[]
     variables.PostGlobalVariables.POST_SelectedPageIds=[]
+
+    //initializing the POST variables in /variables.js
+        //initializing Age
+        variables.PostGlobalVariables.POST_TargetedAgeRange.FromAge=""
+        variables.PostGlobalVariables.POST_TargetedAgeRange.ToAge=""
+        //Updating Gender
+        variables.PostGlobalVariables.POST_TargetedGenderId=3
+        //initializing Language
+        variables.PostGlobalVariables.POST_TargetedLanguages=[]
+        //initializing Caching LanguageOptionList
+        variables.PostGlobalVariables.POST_CachedLanguageOptions=[]
+          //initializing Location
+        variables.PostGlobalVariables.POST_TargetedLocations=[]
+        // initializing Caching LocationOptionList
+        variables.PostGlobalVariables.POST_CachedLocationOptions=[]
+          //initializing Regions
+        variables.PostGlobalVariables.POST_TargetedRegions=[]
+        // initializing Caching RegionOptionList
+        variables.PostGlobalVariables.POST_CachedRegionOptions=[]
+          //initializing Countries
+        variables.PostGlobalVariables.POST_TargetedCountries=[]
+        // initializing Caching CountriesoptionList
+        variables.PostGlobalVariables.POST_CachedCountryOptions=[]
+         //initializing Interests
+        variables.PostGlobalVariables.POST_TargetedInterests=[]
+        // initializing Caching InterestsoptionList
+        variables.PostGlobalVariables.POST_CachedInterestOptions=[]
+
   },[])
   
 
