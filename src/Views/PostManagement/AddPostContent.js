@@ -574,8 +574,6 @@ const init = {
     '../../libs/tinymce/js/tinymce/tinymce.min.js'
   ],
   force_br_newlines:false,
-  force_p_newlines :false,
-  forced_root_block :'',
   menubar: false,
   selector: '#my-editor',
   plugins: [
@@ -838,7 +836,7 @@ const HandleAssetUnAssign=(()=>{
         ]}
       >
         {/* defaultValue={dayjs(new Date())}*/}
-          <MobileDateTimePicker label="Post Date" defaultValue={dayjs(variables.PostGlobalVariables.POST_Scheduler_Selected_DateTime)}  onChange={handlePostDateChange}  /> 
+          <MobileDateTimePicker label="Post Date" defaultValue={dayjs(variables.PostGlobalVariables.POST_Scheduler_Selected_DateTime).add(-1,"day")}  onChange={handlePostDateChange}  /> 
       </DemoContainer>
     </LocalizationProvider>
 

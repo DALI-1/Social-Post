@@ -9,9 +9,6 @@ import Slide from '@mui/material/Slide';
 import Accordion from 'react-bootstrap/Accordion';
 import ImageAddEditor from "../../components/PostAssetsManagement/ImageAddEditor"
 import ImagePickerList from "../../components/PostAssetsManagement/ImagePicker"
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Container from 'react-bootstrap/Container';
 import { MDBBtn } from 'mdb-react-ui-kit';
 import {AppContext} from "../../context/Context"
 import * as APILib from "../../libs/APIAccessAndVerification"
@@ -26,6 +23,14 @@ import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CancelIcon from '@mui/icons-material/Cancel';
 import PostAddIcon from '@mui/icons-material/PostAdd';
+import { Avatar } from "@nextui-org/react";
+import Tooltip from '@mui/material/Tooltip';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import Fade from '@mui/material/Fade'; 
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container'; 
+import IconButton from '@mui/material/IconButton';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -326,7 +331,26 @@ const handleImageUpdate=(ImageUrl)=>
           
           <Accordion className='m-2' defaultActiveKey="0">
       <Accordion.Item eventKey="0">
-        <Accordion.Header>Manage Assets</Accordion.Header>
+        <Accordion.Header>
+        <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
+            <Row>
+              <Col md={4}>
+              <Avatar size="xl"  style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/AssetsPictures%2F-764526288?alt=media&token=5e4d8bfb-5e2d-4a22-a2d2-82940fb36f87" color="primary" zoomed/>
+              </Col>              
+            </Row>
+
+
+            
+            <Row>
+            <Col md={10}>
+               <p style={{marginTop:"1rem"}}>Manage Post Images & Group Gallery</p>
+              </Col>
+              <Col md={2}>
+              <Tooltip style={{marginTop:"0.5rem"}} title="Here you can manage your Group Gallery, Add new repeatitive pictures like logos and use them directly and also add the pictures to your posts" TransitionComponent={Fade} TransitionProps={{ timeout: 600 }}><IconButton> <HelpOutlineIcon /></IconButton></Tooltip> 
+              </Col>
+            </Row>
+          </Container>
+        </Accordion.Header>
         <Accordion.Body>
         
              <Container style={{justifyContent: 'center',alignItems: 'center',margin:"1rem"}}>

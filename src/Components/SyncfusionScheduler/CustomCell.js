@@ -30,14 +30,14 @@ if(dayjs(currentDate).isBefore(dayjs(cellDate)))
   {
     if(props.type=="alldayCells")
     {
-      return(<></>)
+      return(null)
     }
     if(props.type=='monthCells')
     {
-      return(<div onMouseEnter={() => setIsHovered(true)}><br/><br/><br/></div>)
+      return(<div style={{display:"block",height:"35px"}} onMouseEnter={() => setIsHovered(true)}></div>)
     }
     else
-    { return(<div onMouseEnter={() => setIsHovered(true)}><br/><br/><br/></div>)
+    { return(<div style={{display:"block",height:"35px"}} onMouseEnter={() => setIsHovered(true)}></div>)
     }
    
   }
@@ -46,16 +46,18 @@ if(dayjs(currentDate).isBefore(dayjs(cellDate)))
     
     return (
       <div className='post-container'
-           onMouseLeave={() =>setIsHovered(false)
-          }
-           onMouseEnter={() =>
-            setIsHovered(true)}>
-            <div className='FadedPost fade-in'>
+           onMouseLeave={() => setIsHovered(false)}    
+           onMouseEnter={() =>setIsHovered(true)}        
+           >
+            
+            <div className='FadedPost '>
             <Container>
+              
              <Row>
                  <Col md={12} > <div  class="HiddenPostInfo"><br/></div></Col>        
-                 <Col md={10} ><div   class="HiddenPostInfo"><br/></div></Col>
-             </Row>
+                 <Col md={12} ><div   class="HiddenPostInfo"><br/></div></Col>
+                
+             </Row>  
              <Row><Col md={12}> 
              <Button  style={{marginBottom:"5px"}}variant="outlined" color='primary' startIcon={<SendIcon />} onClick={handleCreatePost}>Post</Button>
          </Col></Row>
@@ -68,15 +70,15 @@ else
 {
   if(props.type=="alldayCells")
   {
-    return(<></>)
+    return(null);
   }
   if(props.type=='monthCells')
   {
-    return(<CloseIcon color='primary' fontSize="small"/>)
+    return(<CloseIcon  color='primary' fontSize="small"/>)
   }
   else
   { 
-    return(<CloseIcon color='primary' fontSize="small"/>)
+    return(<CloseIcon  color='primary' fontSize="small"/>)
   }
  
 }

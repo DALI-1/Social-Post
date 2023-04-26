@@ -624,7 +624,7 @@ export default function AlertDialogSlide({SetShowAddTargetDialog}) {
         //Caching InterestsoptionList
         variables.PostGlobalVariables.POST_CachedInterestOptions=Target_Interest_MultiSelect_options
 
-        toast.success("Post Targetting created Successfully !", {
+        toast.info("Post Targetting Applied !", {
           position: "bottom-left",
           autoClose: 5000,
           hideProgressBar: false,
@@ -694,7 +694,7 @@ export default function AlertDialogSlide({SetShowAddTargetDialog}) {
         //Caching InterestsoptionList
         variables.PostGlobalVariables.POST_CachedInterestOptions=Target_Interest_MultiSelect_options
 
-        toast.success("Post Targetting created Successfully !", {
+        toast.info("Post Targetting Applied !", {
           position: "bottom-left",
           autoClose: 5000,
           hideProgressBar: false,
@@ -731,7 +731,7 @@ export default function AlertDialogSlide({SetShowAddTargetDialog}) {
       <Container>
         <Row>
           <Col md={12}>
-          <Accordion className='m-2' defaultActiveKey="-1">
+          <Accordion className='m-2' defaultActiveKey="0">
       <Accordion.Item eventKey="0">
         <Accordion.Header>
           <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
@@ -1032,7 +1032,7 @@ export default function AlertDialogSlide({SetShowAddTargetDialog}) {
         </Accordion.Body>
       </Accordion.Item>
 
-      <Accordion.Item eventKey="1">
+     {/* <Accordion.Item eventKey="1">
         <Accordion.Header>
         <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
             <Row>
@@ -1050,8 +1050,8 @@ export default function AlertDialogSlide({SetShowAddTargetDialog}) {
         <Accordion.Body>
           Under Developement..
         </Accordion.Body>
-      </Accordion.Item>
-    </Accordion>
+      </Accordion.Item>*/}
+                </Accordion>
           </Col>
           
         </Row>

@@ -27,60 +27,25 @@
 
   .post-container
   {
-    display: inline-block;
-    justify-content: center;
-    align-items: center;
-    margin: 9px;
-    padding: 9px;
-    z-index: 1;
+    display: block;
+    padding: 0.7rem;
+    background-color: #3179b924
   }
   .FadedPost
   {
-    box-sizing: border-box;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-    padding: 1px;
+    box-sizing:border-box;
     background-color: rgb(243, 244, 244);
     border-radius: 6px;
     border: 1px dashed rgb(146, 154, 155);
-    display: flex;
-    width: 100%;
-    height:30%;
-    -webkit-box-align: stretch;
-    align-items: stretch;
-    flex-direction: row;
+
    
   }
 
-  .HiddenPostInfoContainer
-  {
-   
-        display: flex;
-        justify-content: center;
-        align-items: stretch;
-        flex-direction: row;
-      
-  }
-  
   .HiddenPostInfo
-  {
-    display: inline-block; /* or block, depending on your layout */
-  width: 80%;
+  { /* or block, depending on your layout */
     background-color: darkgrey;
     color:darkgrey ;
     margin:1rem;
     border-radius: 6px;
-    opacity: 0.3;
-  }
-  .PostBtn {
-    color: yellowgreen;
-    background-color: rgb(0, 0, 0);
-}
-
-  @media (max-width: 1000px) {
-     /* Styles that should be applied to elements with the class "my-class"
-         on screens 600 pixels wide or smaller */
-    .PostBtn {
-     
-        background-color: brown;
-    }
+    opacity: 0.5;
   }

@@ -5,14 +5,86 @@ import { ScheduleComponent, Day, Week, WorkWeek, Month, Agenda, Inject } from '@
  import CustomCell from "./CustomCell"
  import * as APILib from "../../libs/APIAccessAndVerification"
 import {  toast } from 'react-toastify';
-
 import AddPost from "../../Views/PostManagement/AddPostContent"
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+export function ModifyDialog({setModifyPostShow,ModifyPostShow,postid,data,setdata}) {
+  const [open, setOpen] = React.useState(true);
+  const {GlobalState,Dispatch}=React.useContext(AppContext)
+
+const handleClose = () => {
+  setOpen(false);
+  setModifyPostShow(false)
+};
+const handlePostDelete=()=>
+{
+
+  var JsonObject = {  
+    postID: postid
+ };
+
+let JsonObjectToSend = JSON.stringify(JsonObject);
+let url2 =
+  process.env.REACT_APP_BACKENDURL + 
+  process.env.REACT_APP_DELETEPOST
+let UserToken = window.localStorage.getItem("AuthToken");
+let APIResult = APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
+APIResult.then((result) => {
+  if (result.errorCode == undefined) {
+    if(result.successCode=="Post_Removed")
+    {
+      toast.success("The Selected Post Is deleted.", {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",     
+      });
+      setdata(data.filter(p=>p.Id!=postid))
+      handleClose()
+      
+    }
+    
+    
+  }
+
+});
+
+}
+return (
+  <>
+    <div>      
+      <Dialog fullWidth={true} open={open} >
+        <DialogTitle> Post Settings</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+          Are you sure you want to delete the Selected post?
+          </DialogContentText>
+       </DialogContent>
+
+        <DialogActions>
+          <Button variant="outlined"color="primary"  onClick={handleClose}>No, I don't want to</Button>
+          <Button variant="outlined"color="error"  onClick={handlePostDelete}>Yes, Delete the Post</Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  </>  
+);
+}
+
 export default function App() {
   const {GlobalState,Dispatch}=React.useContext(AppContext)
   const [data,setdata]=React.useState([
   ])
-
-  //
+  const [ModifyPostShow,setModifyPostShow]=React.useState(false)
+  const [SelectedPostID,SetSelectedPostID]=React.useState(false)
   const fieldsData = {
     id: 'Id',
     subject: { name: 'Subject' },
@@ -52,24 +124,30 @@ APIResult.then((result) => {
 },[])  
 const popupOpenHandler = (args) => {
  
-  console.log(args)
   if(args.type=="EventContainer")
 {/*args.cancel = true;  Cancel the default pop-up form*/  
 }
 if(args.type=="QuickInfo")
 {
-/*args.cancel = true;  Cancel the default pop-up form*/
-  
-  //pop.style.width = '1000px';
+//args.cancel = true;  //Cancel the default pop-up form*/
+if(args.data.Id==null)
+{
+  args.cancel = true;
+}
+else
+{
+  setModifyPostShow(true)
+  SetSelectedPostID(args.data.Id)
+}
+
 }
 if(args.type=="Editor")
-{/*args.cancel = true;  Cancel the default pop-up form*/
-console.log(args)
-  var pop=document.getElementById(args.element.id)
-  console.log(pop)
+{args.cancel = true;  //Cancel the default pop-up form*/
+
+ /* var pop=document.getElementById(args.element.id)
   pop.style.width="70%"
   pop.style.height="70%"
-  pop.style.zIndex = "0";
+  pop.style.zIndex = "0";*/
 }
   else
   { 
@@ -78,32 +156,19 @@ console.log(args)
   }
 };
 const eventSettings = { dataSource: data, fields: fieldsData }
-
-const appointmentTemplate = (props) => {
-  console.log(props)
-  return (<AddPost/>
-   
-  );
-};
-
   //eventsettings contanis the data of the scheduled posts we want to show
-  return (
-    <ScheduleComponent selectedDate= {new Date()}
+  return (<>
+   <ScheduleComponent
+     selectedDate= {new Date()}
     eventSettings={eventSettings}
-    appointmentTemplate={props => (
-      <div>
-        <p>hiii</p>
-      </div>
-    )}
-    editorTemplate={
-      appointmentTemplate
-    }
     cellTemplate={CustomCell}
     popupOpen={popupOpenHandler}
-    allowMultiRowSelection={false}
     >  
         <Inject services={[Day, Week,WorkWeek, Month, Agenda]}/>
     </ScheduleComponent>
+  {ModifyPostShow&&<ModifyDialog ModifyPostShow={ModifyPostShow} setModifyPostShow={setModifyPostShow} postid={SelectedPostID} setdata={setdata} data={data}/>}
+  </>
+   
   );
 
 }
