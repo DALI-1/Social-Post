@@ -737,11 +737,9 @@ export default function AlertDialogSlide({SetShowAddTargetDialog}) {
           <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
             <Row>
               <Col md={4}>
-              <Avatar size="xl" style={{marginRight:"0.5rem"}} src={process.env.REACT_APP_FACEBOOKLOGOURL} color="primary" zoomed/>
+              <Avatar size="xl" style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2Ftarget.png?alt=media&token=884b4ed1-5c08-494e-9ea7-a92cd85119ab" color="primary" zoomed/>
               </Col>
-              <Col >
-              <Avatar md={4}  size="xl" style={{marginLeft:"0.5rem",marginRight:"0.1rem"}}  src={process.env.REACT_APP_INSTAGRAMLOGOURL} color="primary" zoomed/>
-              </Col>
+             
               
             </Row>
             <Row>

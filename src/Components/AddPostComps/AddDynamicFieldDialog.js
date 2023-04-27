@@ -47,7 +47,7 @@ export default function AlertDialogSlide({SetShowDynamicFieldDialog,appendText,R
         <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
             <Row>
               <Col md={4}>
-              <Avatar size="xl" squared style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/AssetsPictures%2F-1502659086?alt=media&token=16127f87-7ffc-4cd0-8b0e-0644aca671e1" color="primary" zoomed/>
+              <Avatar size="xl" style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2Fhome-icon-Unrivalled-functionality.png?alt=media&token=3777def1-531d-40b6-baed-8c33e7ec466b" color="primary" zoomed/>
               </Col>              
             </Row>
 
