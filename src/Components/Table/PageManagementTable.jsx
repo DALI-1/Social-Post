@@ -40,68 +40,57 @@ function findIndexByProp(list, prop, value) {
 
 const DetailComponent = props => {
   const dataItem = props.dataItem;
-  return (<div><section style={{float: "left"}}>
-      {/*This indicate that this is a Facebook Page and we handle it with different attributes*/}         
-              {dataItem.PageDetails.category!=undefined&&<p><strong>Page Category:</strong>{dataItem.PageDetails.category} </p>}
-             {dataItem.PageDetails.followers_count!=undefined&& <p><strong>Page followers:</strong> {dataItem.PageDetails.followers_count}</p>}
-              {dataItem.PageDetails.fan_count!=undefined&&<p><strong>Page fans:</strong>{dataItem.PageDetails.fan_count} </p>}
+  return (<div><section style={{float: "center"}}>
+      {/*This indicate that this is a Facebook Page and we handle it with different attributes*/} 
+      <Container>
+        <Row style={{margin:"1rem"}}>
+        <Col md={4}>
+          <p><strong>Page Name: </strong>{dataItem.cachedData_PageName} </p>
+        </Col>
+        <Col md={4}>
+          <p><strong>Page About: </strong>{dataItem.cachedData_About} </p>
+          </Col>
+          <Col md={4}>
+          <p><strong>Page Bio: </strong>{dataItem.cachedData_Bio} </p>
+          </Col>
+          <Col md={4}>
+          <p><strong>Page Description: </strong>{dataItem.cachedData_Description} </p>
+          </Col>
+          <Col md={4}>
+          <p><strong>Page Category: </strong>{dataItem.cachedData_Category} </p>
+          </Col> 
+          <Col md={4}>
+          <p><strong>Page Address : </strong>{dataItem.cachedData_Location} </p>
+          </Col>
+          <Col md={4}>
+          <p><strong>Page Phone Number : </strong>{dataItem.cachedData_PhoneNumber} </p>
+          </Col>
+          <Col md={4}>
+          <p><strong>Page followers: </strong> {dataItem.cachedData_followers_count}</p>
+          </Col>
+          <Col md={4}>
+          <p><strong>Page fans: </strong>{dataItem.cachedData_fan_count} </p>
+          </Col>
+        </Row>
+
+        </Container>           
            {/*Here we're gonna show which pages our current page is connected or related to */}   
-              {dataItem.OtherPlatformAccountsDetails.length>0&&
+              {dataItem.associatedPlatformPages.length>0&&
                   <>
                   <ListViewHeader className="pl-3 pb-2 pt-2" style={{fontSize: 14}}><strong>Associated Pageslist:</strong></ListViewHeader>
-                    {dataItem.OtherPlatformAccountsDetails.map((e,index)=>{
-                      //here we testing by profile_picture_url attribute, if it's not undefined then the related page is an instagram page with a pfp , else its a facebook one
-                      if(e.value.profile_picture_url!==undefined)
-                      {
-                        return(
-                          <div className="k-listview-item row p-2 border-bottom align-middle" style={{ margin: 0}}>
-                          <div className="col-2 m-2"> <Avatar size="lg" src={e.value.profile_picture_url} color="gradient"   squared zoomed/></div>
-                          {/*<div className="col-3 m-2">
-                          <h2 style={{ fontSize: 14, color: "#454545",marginBottom: 0, }} className="text-uppercase">  Account Username</h2>
-                        <div style={{fontSize: 12,color: "#a0a0a0", }}>{e.value.username }</div> </div>*/}
-                          <div className="col-4 m-2">
-                          <h2 style={{ fontSize: 14, color: "#454545",marginBottom: 0, }} className="text-uppercase"> Page Name</h2>
-                          <div style={{fontSize: 12,color: "#a0a0a0", }}>{e.value.name }</div></div>
-                          <div className="col-2 m-2">
-                          <Avatar size="lg" src={dataItem.PagePlatformDetails[index+1].platformLogoImageUrl} color="gradient"   squared zoomed/>
-                          </div></div>) 
-                      }
-                      //This indicate that this is a Facebook Page and it has a picture
-                      if(e.value.profile_picture_url==undefined && e.value.picture!=undefined )
-                      {
-                        return(
-                          <div className="k-listview-item row p-2 border-bottom align-middle" style={{ margin: 0}}>
-                          <div className="col-2 m-2"> <Avatar size="lg" src={e.value.picture.data.url} color="gradient"   squared zoomed/></div>
-                          {/*<div className="col-3 m-2">
-                          <h2 style={{ fontSize: 14, color: "#454545",marginBottom: 0, }} className="text-uppercase">  Account Username</h2>
-                        <div style={{fontSize: 12,color: "#a0a0a0", }}>{e.value.username }</div> </div>*/}
-                          <div className="col-4 m-2">
-                          <h2 style={{ fontSize: 14, color: "#454545",marginBottom: 0, }} className="text-uppercase"> Page Name</h2>
-                          <div style={{fontSize: 12,color: "#a0a0a0", }}>{e.value.name }</div></div>
-                          <div className="col-2 m-2">
-                          <Avatar size="lg" src={dataItem.PagePlatformDetails[index+1].platformLogoImageUrl} color="gradient"   squared zoomed/>
-                          </div></div>) 
-                      }
-
-                      //This indicate that this is a Instagram Page and without Picture
-                      if(e.value.profile_picture_url==undefined && e.value.picture==undefined )
-                      {
-                        return(
-                          <div className="k-listview-item row p-2 border-bottom align-middle" style={{ margin: 0}}>
-                          <div className="col-2 m-2"> <Avatar size="lg" src="" color="gradient"   squared zoomed/></div>
-                          {/*<div className="col-3 m-2">
-                          <h2 style={{ fontSize: 14, color: "#454545",marginBottom: 0, }} className="text-uppercase">  Account Username</h2>
-                        <div style={{fontSize: 12,color: "#a0a0a0", }}>{e.value.username }</div> </div>*/}
-                          <div className="col-4 m-2">
-                          <h2 style={{ fontSize: 14, color: "#454545",marginBottom: 0, }} className="text-uppercase"> Page Name</h2>
-                          <div style={{fontSize: 12,color: "#a0a0a0", }}>{e.value.name }</div></div>
-                          <div className="col-2 m-2">
-                          <Avatar size="lg" src={dataItem.PagePlatformDetails[index+1].platformLogoImageUrl} color="gradient"   squared zoomed/>
-                          </div></div>)
-                      }
-                      
-                      })}</>}
-                     {dataItem.OtherPlatformAccountsDetails.length==0&&
+                  {dataItem.associatedPlatformPages.map((AssociatedPage)=>{
+                  return(
+                    <div className="k-listview-item row p-2 border-bottom align-middle" style={{ margin: 0}}>
+                    <div className="col-2 m-2"> <Avatar size="lg" src={AssociatedPage.cachedData_PictureURL} color="gradient"   squared zoomed/></div>         
+                    <div className="col-4 m-2">
+                    <h2 style={{ fontSize: 14, color: "#454545",marginBottom: 0, }} className="text-uppercase"> Page Name</h2>
+                    <div style={{fontSize: 12,color: "#a0a0a0", }}>{AssociatedPage.cachedData_PageName }</div></div>
+                    <div className="col-4 m-2">                    
+                    <Avatar size="lg" src={AssociatedPage.platform.platformLogoImageUrl} color="gradient"   squared zoomed/>
+                    </div></div>) 
+                  })}
+                      </>}
+                     {dataItem.associatedPlatformPages.length==0&&
               <p> <strong>Associated Pageslist:</strong> This Page is not Associated to Any other page. </p>}
             </section><style>{`.k-listview-footer {border-top-width: 0 !important;}`}</style>
             </div>)}; 
@@ -197,7 +186,7 @@ export default function App(props)  {
              {
                    let Checkbox_Is_Checked=false
                      variables.Pages.ListOfSelectedPages.map((SelectedPages)=>{
-                         if(props.dataItem.PageDetails.id==SelectedPages.ID)
+                         if(props.dataItem.id==SelectedPages.ID)
                          {
                           Checkbox_Is_Checked=true
                           
@@ -210,7 +199,7 @@ export default function App(props)  {
                         <td columnSpan={1}>
                         <div style={{display: "flex",justifyContent: "center", alignItemsn: "center"}}>
                           
-                        <MDBCheckbox id={"CHECKBOX"+props.dataItem.PageDetails.id} key={"CHECKBOX"+props.dataItem.PageDetails.id} name='flexCheck'  defaultChecked onChange={()=>{handlePageCheck({"ID":props.dataItem.PageDetails.id,"name":props.dataItem.PageDetails.name})}}/>
+                        <MDBCheckbox id={"CHECKBOX"+props.dataItem.platformPageID} key={"CHECKBOX"+props.dataItem.platformPageID} name='flexCheck'  defaultChecked onChange={()=>{handlePageCheck({"ID":props.dataItem.platformPageID,"name":props.dataItem.cachedData_PageName})}}/>
                         </div>
                         </td>)
                      }
@@ -221,7 +210,7 @@ export default function App(props)  {
                         <td columnSpan={1}>
                         <div style={{display: "flex",justifyContent: "center", alignItemsn: "center"}}>
                           
-                        <MDBCheckbox id={"CHECKBOX"+props.dataItem.PageDetails.id} key={"CHECKBOX"+props.dataItem.PageDetails.id} name='flexCheck'  onChange={()=>{handlePageCheck({"ID":props.dataItem.PageDetails.id,"name":props.dataItem.PageDetails.name})}}/>
+                        <MDBCheckbox id={"CHECKBOX"+props.dataItem.platformPageID} key={"CHECKBOX"+props.dataItem.platformPageID} name='flexCheck'  onChange={()=>{handlePageCheck({"ID":props.dataItem.platformPageID,"name":props.dataItem.cachedData_PageName})}}/>
                         </div>
                         </td>)
                      }
@@ -240,34 +229,19 @@ export default function App(props)  {
                     if(props.dataItem.items==undefined)
                    {
 
-                    // If the response has a .picture it means teh page is a FB Page and we show it this way
-                    if(props.dataItem.PageDetails.picture!=undefined)
+                    if(props.dataItem.cachedData_PictureIs_silhouette==false)
                     {
                       return(<td>
                         <Container >
                         <Row className="d-flex justify-content-center align-items-center" >
                          <Col >
-                         <Avatar size="lg" src={props.dataItem.PageDetails.picture.data.url} color="gradient"   squared zoomed/>
+                         <Avatar size="lg" src={props.dataItem.cachedData_PictureURL} color="gradient"   squared zoomed/>
                          </Col>
-                         <Col><p className="m-1">{props.dataItem.PageDetails.name}</p></Col>
+                         <Col><p className="m-1">{props.dataItem.cachedData_PageName}</p></Col>
                         </Row>
                         </Container>
                         </td>)
-                    }
-                     //else its an instagram picture
-                    if(props.dataItem.PageDetails.profile_picture_url!=undefined)
-                    {
-                      return(<td>
-                        <Container >
-                        <Row className="d-flex justify-content-center align-items-center" >
-                         <Col >
-                         <Avatar size="lg" src={props.dataItem.PageDetails.profile_picture_url} color="gradient"   squared zoomed/>
-                         </Col>
-                         <Col><p className="m-1">{props.dataItem.PageDetails.name}</p></Col>
-                        </Row>
-                        </Container>
-                        </td>)
-                    }
+                    }                 
                     else
                     {
                       return(<td>
@@ -276,50 +250,72 @@ export default function App(props)  {
                          <Col >
                          <Avatar size="lg" src="" color="gradient"   squared zoomed/>
                          </Col>
-                         <Col><p className="m-1">{props.dataItem.PageDetails.name}</p></Col>
+                         <Col><p className="m-1">{props.dataItem.cachedData_PageName}</p></Col>
                         </Row>
                         </Container>
                         </td>)
                     }
                       
 
-                   }}}  title="Page Name " field='PageDetails.name'>
+                   }}}  title="Page Name " field='cachedData_PageName'>
                  
         </GridColumn> 
 
          {/*This Grid Collumn shows the Page supported platforms */}
-        <GridColumn style={{margin:"10px"}}  locked={true} filterable={false} cell={(props)=>{
+        <GridColumn style={{margin:"10px"}}   cell={(props)=>{
                     if(props.dataItem.items==undefined)
                    {
                        return(
                        <td>
                         <Container >
                         <Row className="d-flex justify-content-center align-items-center">
-                         {props.dataItem.PagePlatformDetails.map((plat)=>{return(<Col><Avatar className="m-1" size="lg" src={plat.platformLogoImageUrl} color="gradient" zoomed/></Col>)})}
-                         </Row> </Container> </td>) }}}  title="Supported platforms ">    
+                         <Col md={2}>                         
+                         <Avatar className="m-1" size="lg" src={props.dataItem.platform.platformLogoImageUrl} color="gradient" zoomed/>
+                         </Col>
+                         <Col md={6} className="mt-3">
+                         <p>{props.dataItem.platform.platformName}</p>
+                         </Col>
+                         </Row> </Container> </td>) }}}  title="Page Type" field="platform.platformName">    
         </GridColumn>  
         {/* This Grid Column shows the Page Owner Image and name */}      
-        <GridColumn style={{margin:"10px"}}  locked={true} filterable={true}  title="Page Owner" cell={(props)=>{
+        <GridColumn style={{margin:"10px"}}   title="Page Owner" cell={(props)=>{
                     if(props.dataItem.items==undefined)
                    {
                        return(<td>
                       <Container >
                       <Row className="d-flex justify-content-center align-items-center">
-                        <Col>
-                        <Avatar size="lg" src={props.dataItem.PageOwnerDetails.picture.data.url} color="gradient"  zoomed/>
+                        <Col md={2}>
+                        <Avatar size="lg" src={props.dataItem.pageOwner.cachedData_PictureURL} color="gradient"  zoomed/>
                         </Col>
-                        <Col>
-                        <p className="m-1">{props.dataItem.PageOwnerDetails.name}</p>
+                        <Col md={6}>
+                        <p className="m-1">{props.dataItem.pageOwner.cachedData_Name}</p>
                         </Col>
                       </Row>
                       </Container>
                        </td>)
-                   }}} field="PageOwnerDetails.name" >
+                   }}} field="pageOwner.cachedData_Name" >
                      
                    </GridColumn>
                   {/*This Grid Column just shows the owner's Email */}
                  
-                    <GridColumn field="PageOwnerDetails.email"  title="Page Owner Email"></GridColumn>
+                    <GridColumn   field="pageOwner.cachedData_Email"  title="Page Owner Email" 
+                    cell={(props)=>{
+                      if(props.dataItem.items==undefined)
+                      {
+                      return(<td>
+                        <Container >
+                        <Row className="d-flex justify-content-center align-items-center">             
+                          <Col md={12}>
+                          <p className="m-1">{props.dataItem.pageOwner.cachedData_Email}</p>
+                          </Col>
+                        </Row>
+                        </Container>
+                         </td>)
+
+                      }
+
+                    }}>
+                    </GridColumn>
                    
                    
                   </Grid>
@@ -336,13 +332,15 @@ export default function App(props)  {
             skip: dataState.skip,
             take: dataState.take
           })}>
-                         {/* This Gridl Column shows the checkbox that allows you to select which page to modify */}
-                         <GridColumn locked={true} filterable={false} width={"50px"} cell={(props)=>{
+                
+                   
+                    {/* This Gridl Column shows the checkbox that allows you to select which page to modify */}
+                    <GridColumn locked={true} filterable={false} width={"50px"} cell={(props)=>{
              if(props.dataItem.items==undefined)
              {
                    let Checkbox_Is_Checked=false
                      variables.Pages.ListOfSelectedPages.map((SelectedPages)=>{
-                         if(props.dataItem.PageDetails.id==SelectedPages.ID)
+                         if(props.dataItem.id==SelectedPages.ID)
                          {
                           Checkbox_Is_Checked=true
                           
@@ -355,7 +353,7 @@ export default function App(props)  {
                         <td columnSpan={1}>
                         <div style={{display: "flex",justifyContent: "center", alignItemsn: "center"}}>
                           
-                        <MDBCheckbox id={"CHECKBOX"+props.dataItem.PageDetails.id} key={"CHECKBOX"+props.dataItem.PageDetails.id} name='flexCheck'  defaultChecked onChange={()=>{handlePageCheck({"ID":props.dataItem.PageDetails.id,"name":props.dataItem.PageDetails.name})}}/>
+                        <MDBCheckbox id={"CHECKBOX"+props.dataItem.id} key={"CHECKBOX"+props.dataItem.id} name='flexCheck'  defaultChecked onChange={()=>{handlePageCheck({"ID":props.dataItem.id,"name":props.dataItem.cachedData_PageName})}}/>
                         </div>
                         </td>)
                      }
@@ -366,7 +364,7 @@ export default function App(props)  {
                         <td columnSpan={1}>
                         <div style={{display: "flex",justifyContent: "center", alignItemsn: "center"}}>
                           
-                        <MDBCheckbox id={"CHECKBOX"+props.dataItem.PageDetails.id} key={"CHECKBOX"+props.dataItem.PageDetails.id} name='flexCheck'  onChange={()=>{handlePageCheck({"ID":props.dataItem.PageDetails.id,"name":props.dataItem.PageDetails.name})}}/>
+                        <MDBCheckbox id={"CHECKBOX"+props.dataItem.id} key={"CHECKBOX"+props.dataItem.id} name='flexCheck'  onChange={()=>{handlePageCheck({"ID":props.dataItem.id,"name":props.dataItem.cachedData_PageName})}}/>
                         </div>
                         </td>)
                      }
@@ -385,73 +383,93 @@ export default function App(props)  {
                     if(props.dataItem.items==undefined)
                    {
 
-                    // If the response has a .picture it means teh page is a FB Page and we show it this way
-                    if(props.dataItem.PageDetails.picture!=undefined)
+                    if(props.dataItem.cachedData_PictureIs_silhouette==false)
                     {
                       return(<td>
                         <Container >
                         <Row className="d-flex justify-content-center align-items-center" >
                          <Col >
-                         <Avatar size="lg" src={props.dataItem.PageDetails.picture.data.url} color="gradient"   squared zoomed/>
+                         <Avatar size="lg" src={props.dataItem.cachedData_PictureURL} color="gradient"   squared zoomed/>
                          </Col>
-                         <Col><p className="m-1">{props.dataItem.PageDetails.name}</p></Col>
+                         <Col><p className="m-1">{props.dataItem.cachedData_PageName}</p></Col>
                         </Row>
                         </Container>
                         </td>)
-                    }
-                     //else its an instagram picture
-                    if(props.dataItem.PageDetails.profile_picture_url!=undefined)
+                    }                 
+                    else
                     {
                       return(<td>
                         <Container >
                         <Row className="d-flex justify-content-center align-items-center" >
                          <Col >
-                         <Avatar size="lg" src={props.dataItem.PageDetails.profile_picture_url} color="gradient"   squared zoomed/>
+                         <Avatar size="lg" src="" color="gradient"   squared zoomed/>
                          </Col>
-                         <Col><p className="m-1">{props.dataItem.PageDetails.name}</p></Col>
+                         <Col><p className="m-1">{props.dataItem.cachedData_PageName}</p></Col>
                         </Row>
                         </Container>
                         </td>)
                     }
                       
 
-                   }}}  title="Page Name " field='PageDetails.name'>
+                   }}}  title="Page Name " field='cachedData_PageName'>
                  
         </GridColumn> 
 
          {/*This Grid Collumn shows the Page supported platforms */}
-        <GridColumn style={{margin:"10px"}}  locked={true} filterable={false} cell={(props)=>{
+        <GridColumn style={{margin:"10px"}}   cell={(props)=>{
                     if(props.dataItem.items==undefined)
                    {
                        return(
                        <td>
                         <Container >
                         <Row className="d-flex justify-content-center align-items-center">
-                         {props.dataItem.PagePlatformDetails.map((plat)=>{return(<Col><Avatar className="m-1" size="lg" src={plat.platformLogoImageUrl} color="gradient" zoomed/></Col>)})}
-                         </Row> </Container> </td>) }}}  title="Supported platforms ">    
+                         <Col md={2}>                         
+                         <Avatar className="m-1" size="lg" src={props.dataItem.platform.platformLogoImageUrl} color="gradient" zoomed/>
+                         </Col>
+                         <Col md={6} className="mt-3">
+                         <p>{props.dataItem.platform.platformName}</p>
+                         </Col>
+                         </Row> </Container> </td>) }}}  title="Page Type" field="platform.platformName">    
         </GridColumn>  
         {/* This Grid Column shows the Page Owner Image and name */}      
-        <GridColumn style={{margin:"10px"}}  locked={true} filterable={true}  title="Page Owner" cell={(props)=>{
+        <GridColumn style={{margin:"10px"}}   title="Page Owner" cell={(props)=>{
                     if(props.dataItem.items==undefined)
                    {
                        return(<td>
                       <Container >
                       <Row className="d-flex justify-content-center align-items-center">
-                        <Col>
-                        <Avatar size="lg" src={props.dataItem.PageOwnerDetails.picture.data.url} color="gradient"  zoomed/>
+                        <Col md={2}>
+                        <Avatar size="lg" src={props.dataItem.pageOwner.cachedData_PictureURL} color="gradient"  zoomed/>
                         </Col>
-                        <Col>
-                        <p className="m-1">{props.dataItem.PageOwnerDetails.name}</p>
+                        <Col md={6}>
+                        <p className="m-1">{props.dataItem.pageOwner.cachedData_Name}</p>
                         </Col>
                       </Row>
                       </Container>
                        </td>)
-                   }}} field="PageOwnerDetails.name" >
+                   }}} field="pageOwner.cachedData_Name" >
                      
                    </GridColumn>
                   {/*This Grid Column just shows the owner's Email */}
                  
-                    <GridColumn field="PageOwnerDetails.email"  title="Page Owner Email"></GridColumn>
+                    <GridColumn   field="pageOwner.cachedData_Email"  title="Page Owner Email" 
+                    cell={(props)=>{
+                      if(props.dataItem.items==undefined)
+                      {
+                      return(<td>
+                        <Container >
+                        <Row className="d-flex justify-content-center align-items-center">             
+                          <Col md={12}>
+                          <p className="m-1">{props.dataItem.pageOwner.cachedData_Email}</p>
+                          </Col>
+                        </Row>
+                        </Container>
+                         </td>)
+
+                      }
+
+                    }}>
+                    </GridColumn>
                    
                   </Grid>}
                 </GridPDFExport>

@@ -42,12 +42,10 @@ export default function Content() {
     React.useState(false);
   //This is a flag that indicate when the Current selected group pages are loaded in order to show the table and the loading spinner
   const [DataLoaded, SetDataLoaded] = React.useState(false);
-
   //THIS INDICATE THE INSTA PAGES THAT HAVE A POSSIBE CONNECTION TO A FACEBOOK PAGE for the Instagram optional Modal
   //This is mainly used to show the facebook pages list in order for the User to optionally select the related Facbook users
   //DATA FORMAT:[{name: 'RestaurantA', id: '100272216328499', instagram_business_account: {name: 'Mohamed Ali Gargouri', id: '17841458690186189'}}]
   // name here indicate the Facebook page name and ID (this is useful for the optional choice later on)
-
   const [INFBPages, SetINFBPages] = React.useState([]);
   //THIS INDICATE THE Facebook PAGES THAT HAVE A POSSIBE CONNECTION TO An INSTAGRAM BUSINESS PAGE for the Instagram optional Modal
   //This is mainly used to show the facebook pages list in order for the User to optionally select the related Facbook users
@@ -62,8 +60,8 @@ export default function Content() {
 
   //This flag indicate to the Delete modal when to be on or of
   const [ShowDeleteModal, SetShowDeleteModal] = React.useState(false);
-
   const [TooManyRequestsError,SetTooManyRequestsError]=React.useState(false)
+   
   const handlePageModify = () => {
     if (
       variables.Pages.ListOfSelectedPages.length == 0 ||
@@ -88,6 +86,7 @@ export default function Content() {
   const handleAddINPages = () => {
     //Test if the select platform is Facebook or Instagram
     //This is the Facebook Case
+    console.log(variables.Pages)
     if (variables.Pages.SelectedPlatformID == 1) {
       //formating the request based on the backend DTO
       var JsonObject = {
@@ -154,10 +153,14 @@ export default function Content() {
             progress: undefined,
             theme: "light",
           });
+          //--------NOTE:Updating the selected variables to avoid conflicts if u try to add pages again----//
+          variables.Pages.FBSelectedPagesList=[]
+          variables.Pages.FBSelectPagesList=[]
+          variables.Pages.FBINGSelectedOptionalPagesList =[]
+          //---------End NOTE---------//
           Dispatch({ type: variables.HeaderSpinnerActions.TurnOffRequestSpinner });
           Dispatch({ type: variables.PageTabActions.SelectManagePage });
-          Dispatch({ type: variables.RerenderActions.ReRenderPage });
-          
+          Dispatch({ type: variables.RerenderActions.ReRenderPage });        
         }
 
         if (result.result == "Selected_Page_Exist") {
@@ -182,6 +185,7 @@ export default function Content() {
       
     }
 
+    console.log(variables.FacebookUser.LoggedFacebookUserInfo)
     //This is the Instagram Case
     if (variables.Pages.SelectedPlatformID == 2) {
       //formating the request based on the backend DTO
@@ -190,7 +194,7 @@ export default function Content() {
         groupID: variables.Group.SelectedGroup,
         ownerFBid: variables.FacebookUser.LoggedFacebookUserInfo.id,
         ownerFB_shortLivedToken:
-          variables.FacebookUser.LoggedFacebookUserInfo.access_token,
+          variables.FacebookUser.LoggedFacebookUserInfo.accessToken,
         listOfPages: [],
       };
 
@@ -249,6 +253,12 @@ export default function Content() {
               theme: "light",
             }
           );
+          
+            //--------NOTE:Updating the selected variables to avoid conflicts if u try to add pages again----//
+            variables.Pages.INGSelectedPagesList=[]
+            variables.Pages.INGSelectPagesList=[]
+            variables.Pages.INGFBSelectedOptionalPagesList =[]
+            //---------End NOTE---------//
           Dispatch({ type: variables.HeaderSpinnerActions.TurnOffRequestSpinner });
           Dispatch({ type: variables.PageTabActions.SelectManagePage });
           Dispatch({ type: variables.RerenderActions.ReRenderPage });
@@ -291,17 +301,13 @@ export default function Content() {
       APIResult.then((result) => {
         if (result.errorCode == undefined) {
           variables.Pages.CurrentGroupPages = [];
-          result.result[0].map((Page, index) => {
+          result.result.map((Page) => {
             variables.Pages.CurrentGroupPages = [
-              ...variables.Pages.CurrentGroupPages,
-              {
-                PageDetails: Page.value,
-                PageOwnerDetails: result.result[1][0].value,
-                PagePlatformDetails: result.result[2][index],
-                OtherPlatformAccountsDetails: result.result[3][index],
-              },
+              ...variables.Pages.CurrentGroupPages,Page
+              
             ];
           });
+
           SetDataLoaded(true);
           variables.Pages.ListOfSelectedPages = [];
           Dispatch({ type: variables.HeaderSpinnerActions.TurnOffRequestSpinner });
@@ -320,13 +326,14 @@ export default function Content() {
     }
   }, []);
 
-  // This is mainly used to refresh the table after an update!
+//This is used to reload data after changes
   useEffect(() => {
+
+    SetDataLoaded(false)
     //Here we intialize our Page management and we request the select groups pages and show them to the user
     variables.Pages.ListOfSelectedPages = [];
     //If the User informations successfully loaded, that includes the group he is in by default or the one that he selected
     if (GlobalState.SelectedGroup.group_Name != "Loading...") {
-      SetDataLoaded(false);
       var JsonObject = { groupID: GlobalState.SelectedGroup.id };
       let JsonObjectToSend = JSON.stringify(JsonObject);
       let url2 =
@@ -335,30 +342,32 @@ export default function Content() {
       let APIResult = CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
       Dispatch({ type: variables.HeaderSpinnerActions.TurnOnRequestSpinner });
       APIResult.then((result) => {
-        if (result.ErrorCode == undefined) {
+        if (result.errorCode == undefined) {
           variables.Pages.CurrentGroupPages = [];
-          result.result[0].map((Page, index) => {
+          console.log(result.result)
+          result.result.map((Page) => {
             variables.Pages.CurrentGroupPages = [
-              ...variables.Pages.CurrentGroupPages,
-              {
-                PageDetails: Page.value,
-                PageOwnerDetails: result.result[1][0].value,
-                PagePlatformDetails: result.result[2][index],
-                OtherPlatformAccountsDetails: result.result[3][index],
-              },
+              ...variables.Pages.CurrentGroupPages,Page
+              
             ];
           });
           SetDataLoaded(true);
           variables.Pages.ListOfSelectedPages = [];
           Dispatch({ type: variables.HeaderSpinnerActions.TurnOffRequestSpinner });
         }
+        else
+        {
+              if(result.errorCode == "F004")
+        SetTooManyRequestsError(true)
+        SetDataLoaded(true);
+        Dispatch({ type: variables.HeaderSpinnerActions.TurnOffRequestSpinner });
+        }
       }).catch((e) => {
         console.log(e);
       });
-      
+     
     }
   }, [GlobalState.Rerender]);
-
   const HandlePageDelete = () => {
     //This function is gonna turn on the delete modal flag and redirect the request to it so it handles the delete
     if (variables.Pages.ListOfSelectedPages.length > 0) {
@@ -487,7 +496,7 @@ export default function Content() {
 
       {/*Here is the pop up that shows when the user chooses to delete multiple pages*/}
       {ShowDeleteModal && (
-        <DeleteModal SetShowDeleteModal={SetShowDeleteModal} />
+        <DeleteModal SetShowDeleteModal={SetShowDeleteModal}/>
       )}
     </>
   );

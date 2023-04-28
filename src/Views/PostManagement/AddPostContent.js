@@ -695,12 +695,11 @@ React.useEffect(()=>{
   APIResult.then((result) => {
     if (result.errorCode == undefined) {
       let PageListFormatedForMultiSelect=[]
-      result.result[0].map((page,index)=>{
-        if(page.value.picture!==undefined)
-        {PageListFormatedForMultiSelect=[...PageListFormatedForMultiSelect,{id:page.value.id,label:page.value.name,PagePic:page.value.picture.data.url,PageType:result.result[2][index][0].id }] }     
-        else
-        {PageListFormatedForMultiSelect=[...PageListFormatedForMultiSelect,{id:page.value.id,label:page.value.name,PagePic:page.value.profile_picture_url,PageType:result.result[2][index][0].id }]}
+      result.result.map((page)=>{
+        {PageListFormatedForMultiSelect=[...PageListFormatedForMultiSelect,{id:page.platformPageID,label:page.cachedData_PageName,PagePic:page.cachedData_PictureURL,PageType:page.platformID
+        }] }     
       })
+      console.log(PageListFormatedForMultiSelect)
      setPagesList(PageListFormatedForMultiSelect);
      SetPagesLoaded(true)
     }

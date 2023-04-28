@@ -36,8 +36,7 @@ export default function PagesDialog(props) {
       props.SelectINSTAPageModalFlag(false)
     };
     const responseFacebook = (response) => {
-      setIsLoggedIn(true);
-      
+      setIsLoggedIn(true);   
       variables.FacebookUser.LoggedFacebookUserInfo=response
       getInstagramPages(response.accessToken).then(()=>{
         SetPagesLoadedFlag(true)
@@ -137,26 +136,16 @@ export default function PagesDialog(props) {
             </DialogContentText>
 
             <FacebookLogin  
-        appId="959797981855736"
+        appId={process.env.REACT_APP_METAAPPKEY}
         autoLoad={false}
-        fields="birthday,first_name,last_name,id,email,picture"
-        scope="email,
-        pages_manage_cta,
-        pages_show_list,
-        instagram_basic,
-        instagram_content_publish,
-        pages_read_engagement,
-        pages_manage_metadata,
-        pages_read_user_content,
-        pages_manage_posts,
-        pages_manage_engagement,
-        public_profile"
+        fields={process.env.REACT_APP_METAAPP_APPFIELDS}
+        scope={process.env.REACT_APP_METAAPP_APPSCOPES}
         callback={responseFacebook} 
         onFailure={onFailure}
         render={renderProps => {
           if(renderProps.isSdkLoaded==false)
           {SetisSdkLoaded(true)}
-          return (<button ref={FacebookLoginRefButton} onClick={renderProps.onClick}> </button> )}} /> 
+          return (<button style={{display:"none"}} ref={FacebookLoginRefButton} onClick={renderProps.onClick}> </button> )}} /> 
       {!PagesLoadedFlag&&<p> Loading your Instagram pages...</p>}
       {PagesLoadedFlag&&
       pages.map((Page,index)=>{

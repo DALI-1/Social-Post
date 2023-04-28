@@ -196,13 +196,9 @@ const reducer=(GlobalState,action)=>
                         //ReRender
                         
                         case variables.RerenderActions.ReRenderPage:
-                            {   
-                               if(GlobalState.Rerender===true)
-                            return({...GlobalState,Rerender:false})
-                            else
-                            return({...GlobalState,Rerender:true})
-                            } 
-                             //Selected Group
+ 
+                        console.log("Re-render request triggered!")
+                            return({...GlobalState,Rerender:!GlobalState.Rerender})
                         
                         case variables.SelectGroupActions.SetSelectedGroup:
                             {                              
@@ -259,8 +255,7 @@ else
         ProfileSelectedTab:variables.ProfileTabs.ProfileTab,
         GroupSelectedTab:variables.GroupTabs.ManageGroupTab,
         UserSelectedTab:variables.UserTabs.ManageUserTab,
-        PostSelectedTab:variables.PostTabs.ManagePostsTab,
-        
+        PostSelectedTab:variables.PostTabs.ManagePostsTab,       
         PageSelectedTab: variables.PageTabs.ManagePage,
         SelectedGroup:{group_Name:"Loading..."},
         PassedGroupID:null,

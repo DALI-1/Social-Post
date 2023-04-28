@@ -118,20 +118,10 @@ fetch(`https://graph.facebook.com/v16.0/me/accounts?fields=name,id,instagram_bus
     return (
       <>
              <FacebookLogin  
-        appId="959797981855736"
-        autoLoad={false}
-        fields="birthday,first_name,last_name,id,email,picture"
-        scope="email,
-        pages_manage_cta,
-        pages_show_list,
-        instagram_basic,
-        instagram_content_publish,
-        pages_read_engagement,
-        pages_manage_metadata,
-        pages_read_user_content,
-        pages_manage_posts,
-        pages_manage_engagement,
-        public_profile"
+        appId={process.env.REACT_APP_METAAPPKEY}
+        autoLoad={true}
+        fields={process.env.REACT_APP_METAAPP_APPFIELDS}
+        scope={process.env.REACT_APP_METAAPP_APPSCOPES}
         callback={responseFacebook} 
         onFailure={onFailure}
         render={renderProps => {
@@ -140,7 +130,7 @@ fetch(`https://graph.facebook.com/v16.0/me/accounts?fields=name,id,instagram_bus
            SetisSdkLoaded(true)
           }
           return (
-            <button ref={FacebookLoginRefButton} onClick={renderProps.onClick}> </button> 
+            <button style={{display:"none"}} ref={FacebookLoginRefButton} onClick={renderProps.onClick}> </button> 
           )
       }}
       />       
