@@ -20,6 +20,8 @@ export default function PagesDialog(props) {
    
     const {GlobalState,Dispatch}=React.useContext(AppContext)
     const handleClose = () => {
+      //Setting the list of selected pages to empty
+      variables.Pages.ListOfSelectedPages=[]
       props.SetShowDeleteModal(false)
     };
 
@@ -61,6 +63,8 @@ export default function PagesDialog(props) {
                   Dispatch({type:variables.HeaderSpinnerActions.TurnOffRequestSpinner})  
                   Dispatch({type:variables.PageTabActions.SelectManagePage}) 
                   Dispatch({type:variables.RerenderActions.ReRenderPage}) 
+                  //Setting the list of selected pages to null after the delete
+                  variables.Pages.ListOfSelectedPages=[]
                   handleClose()
                }
                

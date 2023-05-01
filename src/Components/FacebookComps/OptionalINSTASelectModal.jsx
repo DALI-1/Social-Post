@@ -13,7 +13,9 @@ import { ToastContainer, toast } from 'react-toastify';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import { useEffect } from 'react';
 import Slide from '@mui/material/Slide';
-
+import NoteAddIcon from '@mui/icons-material/NoteAdd';
+import CancelIcon from '@mui/icons-material/Cancel';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -26,7 +28,6 @@ export default function PagesDialog(props) {
  
   const [pages, setPages] = useState(props.FBINPages);
 
-
   const handlePreviousClose = () => {
     props.SetSelectFBPageModalFlag(false)
   };
@@ -37,6 +38,14 @@ export default function PagesDialog(props) {
       props.SetShowFBINChoiceModal(false)
       handlePreviousClose()
     };
+
+    const HandleCancel=()=>{
+      variables.Pages.FBINGSelectedOptionalPagesList=[] 
+      variables.Pages.FBSelectPagesList=[]
+      variables.Pages.FBSelectedPagesList=[]
+      props.SetShowFBINChoiceModal(false)
+      handlePreviousClose()
+    }
     const handleAddPage=(()=>{
       //This function make a call to add the IN and FB page in case there is optional FB, otherwise the previous modal does.
       //Here we prepare the list of selected optional FB pages
@@ -86,25 +95,26 @@ export default function PagesDialog(props) {
           disableEscapeKeyDown
           PaperProps={{
             style: { 
-              position: 'absolute',margin: '80px auto', maxWidth:"300px", top:"20rem"},}}
+              position: 'absolute',margin: '80px auto', minWidth:"300px", bottom:"-0.5rem"},}}
         >
           <DialogTitle id="alert-dialog-title">
-            Optional Instagram Pages
+            Optional Instagram Pages Add
           </DialogTitle>
           <DialogContent>
             <DialogContentText className='m-2' id="alert-dialog-description">      
-            We found that these Instagram pages are related to your  selected Facebook pages
-            do you wanna add them?
+            The Selected Facebook Pages are linked to these Instagram accounts, would you like to add them as well and have them associated to each other?
+           <br></br>
+           <strong>Note: The Association between the pages is not gonna modify anything, it's just logical and for you to know which Instagram page is related to which Facebook Page.</strong>
             </DialogContentText>
           
     {pages.map((Page,index)=>{
-        
         return (
-        <Form.Check  id={"FBINOptionalPage"+Page.id}  key={"FBINOptionalPage"+Page.id} type="switch" defaultChecked={false}  autoComplete="off" autoSave="off" label={Page.instagram_business_account.name}/> )})}
+        <Form.Check  id={"FBINOptionalPage"+Page.id}  key={"FBINOptionalPage"+Page.id} type="switch" defaultChecked={false}  autoComplete="off" autoSave="off" label={Page.instagram_business_account.username+" Associated to "+Page.name}/> )})}
           </DialogContent>
           <DialogActions>
-            <Button variant="outlined" onClick={handleClose}>No</Button>
-            <Button  variant="outlined" color="error"  onClick={handleAddPage} autoFocus>
+          <Button variant="outlined" startIcon={<HighlightOffIcon/>} color="info" onClick={HandleCancel}>Cancel</Button>
+            <Button variant="outlined" startIcon={<CancelIcon/>} color="warning" onClick={handleClose}>No</Button>
+            <Button  variant="outlined" startIcon={<NoteAddIcon/>} color="warning"  onClick={handleAddPage}>
               Yes
             </Button>
           </DialogActions>

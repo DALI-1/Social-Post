@@ -180,6 +180,7 @@ export var SelectGroupActions=
 
 export var Pages=
 {
+    CurrentGroupPages:[],
     FBSelectPagesList:[],
     FBSelectedPagesList:[],
     FBINGSelectedOptionalPagesList:[],

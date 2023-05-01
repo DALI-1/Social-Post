@@ -11,10 +11,10 @@ import {CALL_API_With_JWTToken} from "../../libs/APIAccessAndVerification"
 import * as variables from "../../variables/variables"
 import { ToastContainer, toast } from 'react-toastify';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
-
 import { useEffect } from 'react';
 import { Pages } from '@mui/icons-material';
-
+import NoteAddIcon from '@mui/icons-material/NoteAdd';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 export default function PagesDialog(props) {
    
  let [PagesLoadedFlag,SetPagesLoadedFlag]=React.useState(false)
@@ -26,14 +26,61 @@ export default function PagesDialog(props) {
     setIsLoggedIn(true);
     variables.FacebookUser.LoggedFacebookUserInfo=response
     console.log(response)
-fetch(`https://graph.facebook.com/v16.0/me/accounts?fields=name,id,instagram_business_account{name,id},access_token&&access_token=${response.accessToken}`)
+fetch(`https://graph.facebook.com/v16.0/me/accounts?fields=name,id,instagram_business_account{username,id},access_token&&access_token=${response.accessToken}`)
 .then(response => response.json())
 .then(data =>
 {
-  variables.Pages.FBSelectPagesList=data
+  let TempData=data.data
+  data.data.map((page)=>{
+    //this flag tell us that the page exist already
+    let Page_Exist_Flag=false
+    //This flag tell us that the business account of this page already exist
+    let Page_Insta_Exist_Flag=false
 
+    //Here we will be checking if the page exist or not
+    variables.Pages.CurrentGroupPages.map((Existing_Page)=>{
+
+      if(Existing_Page.platformPageID==page.id)
+      {
+        console.log("Page exist")
+        Page_Exist_Flag=true
+      }
+      //here we test if the page has an IN Business acc
+      if(page.instagram_business_account!=null)
+      {
+        if(Existing_Page.platformPageID==page.instagram_business_account.id)
+        {
+          console.log("Insta page exist")
+         Page_Insta_Exist_Flag=true
+        }
+      }
+      
+
+    })
+
+    //The case where the instagram and facebook page already exist
+       if(Page_Exist_Flag==true && Page_Insta_Exist_Flag==true)
+      {
+        TempData=TempData.filter(item=>item.id!=page.id)
+      }
+      //The case where only the instagram page exist
+      if(Page_Exist_Flag==false && Page_Insta_Exist_Flag==true)
+      { 
+        TempData=TempData.filter(item=>item.id!=page.id)
+        let Page_WithoutBA={name:page.name,id:page.id,access_token:page.access_token}
+        TempData=[...TempData,Page_WithoutBA]
+      }
+      //the case where only the fb page is found
+      if(Page_Exist_Flag==true && Page_Insta_Exist_Flag==false)
+      {
+       
+        TempData=TempData.filter(item=>item.id!=page.id)
+        
+      }
+
+  })
+  variables.Pages.FBSelectPagesList={data:TempData}
   SetPagesLoadedFlag(true)
- 
 }
 )
 .catch(error => console.error(error));
@@ -148,26 +195,28 @@ fetch(`https://graph.facebook.com/v16.0/me/accounts?fields=name,id,instagram_bus
             }}}
         >
           <DialogTitle id="alert-dialog-title">
-           Facebook Pages Selection
+           Facebook Pages Add
           </DialogTitle>
           <DialogContent>
             <DialogContentText className='m-2' id="alert-dialog-description">
-                Welcome 
-               Please Select the facebook pages you want to add to the group
+            Please Select the Facebook pages you would like to add within your current group.
+            <br></br>
+               <strong>Note: Only Facebook pages allowed, your account will not be shown here.</strong>
             </DialogContentText>
      {!PagesLoadedFlag&&<p>Loading your facebook pages...</p>}
+
+     {PagesLoadedFlag&&variables.Pages.FBSelectPagesList.data.length==0&&<p>No Pages found or the pages you own are all already added.</p>}
+
      {PagesLoadedFlag&&
-      variables.Pages.FBSelectPagesList.data.map((Page,index)=>{
-        return (
-          <Form.Check  id={"NewPage"+Page.id}  key={"NewPage"+Page.id} type="switch" defaultChecked={false}  autoComplete="off" autoSave="off" label={Page.name}/> )})}
+      variables.Pages.FBSelectPagesList.data.map((Page,index)=>{ return (<Form.Check  id={"NewPage"+Page.id}  key={"NewPage"+Page.id} type="switch" defaultChecked={false}  autoComplete="off" autoSave="off" label={Page.name}/> )})}
           </DialogContent>
           <DialogActions>
-            <Button variant="outlined" onClick={handleClose}>Cancel</Button>
-            <Button  variant="outlined" color="error" onClick={handleAddPage} autoFocus>
-              Add Pages
-            </Button>
+            <Button variant="outlined" startIcon={<HighlightOffIcon/>} color="info" onClick={handleClose}>Cancel.</Button>
+          {PagesLoadedFlag&&<Button  variant="outlined" startIcon={<NoteAddIcon/>} color="warning" onClick={handleAddPage}>
+            Add the selected pages.
+            </Button>}
           </DialogActions>
         </Dialog>
       </>
     );
-  }
+        }
