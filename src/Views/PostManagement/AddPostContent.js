@@ -47,6 +47,11 @@ import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import Filter1Icon from '@mui/icons-material/Filter1';
+import Autocomplete from '@mui/material/Autocomplete';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
+const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+const checkedIcon = <CheckBoxIcon fontSize="small" />;
 export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelectionChange,handleAssetSelectionChange},ref)=> {
   const editorRef =React.useRef(null)
   const Post_DateInput=React.useRef(dayjs(variables.PostGlobalVariables.POST_Scheduler_Selected_DateTime))
@@ -635,22 +640,27 @@ const init = {
   }));
 
 let [PagesList,setPagesList]=React.useState([])
-const fields = { value: 'id', text: 'label' };
-const handlePageValueChange = (e) => {
+
+const handlePageValueChange = (newValue) => {
 let SelectedPagesInfos=[]
+newValue.map((v)=>{
 
-e.value.map((v)=>{
-
+  console.log(v)
   //here we will be itterating through the List of Pages to grab each page's info
   PagesList.map((p)=>{
-   if(p.id===v)
-   SelectedPagesInfos=[...SelectedPagesInfos,p]
+   if(p.id===v.id)
+   {
+    SelectedPagesInfos=[...SelectedPagesInfos,p]
+   }
+   
   })
 })
+console.log(SelectedPagesInfos)
 variables.PostGlobalVariables.POST_SelectedPageInfo=SelectedPagesInfos
-variables.PostGlobalVariables.POST_SelectedPageIds=e.value
+variables.PostGlobalVariables.POST_SelectedPageIds=newValue
 variables.PostGlobalVariables.POST_AddedDynamicFields.map((DynamicField)=>{
 
+  console.log(variables.PostGlobalVariables.POST_AddedDynamicFields)
 variables.PostGlobalVariables.POST_PatternsInfo.map((Pattern)=>{
 
   if(Pattern.id==DynamicField.patternID)
@@ -659,12 +669,57 @@ variables.PostGlobalVariables.POST_PatternsInfo.map((Pattern)=>{
   }
 })
 })
-variables.PostGlobalVariables.POST_AddedDynamicFields=[]
+
+CreateDefaultDynamicFields()
+//variables.PostGlobalVariables.POST_AddedDynamicFields=[]
 handlePageSelectionChange()
 };
 
 
+const CreateDefaultDynamicFields=()=>{
 
+  let DefaultDynamicFields=[1,2,3,4]
+ let LocalDynamicFieldList=[]
+  DefaultDynamicFields.map((e)=>{
+
+    //Handling the Name default dynamicfield
+    if(e==1)
+    {
+       let locallistOfPagesDynamicFieldsValues=[]
+       variables.PostGlobalVariables.POST_SelectedPageInfo.map((page)=>{
+       locallistOfPagesDynamicFieldsValues=[...locallistOfPagesDynamicFieldsValues,{pageID:page.id,dynamicFieldValue:page.label}]
+       })     
+       LocalDynamicFieldList=[...LocalDynamicFieldList,{listOfPagesDynamicFieldValues:locallistOfPagesDynamicFieldsValues,patternID:e}]
+    }
+    //Handling the website default dynamicfield
+    else if(e==2)
+    {let locallistOfPagesDynamicFieldsValues=[]
+      variables.PostGlobalVariables.POST_SelectedPageInfo.map((page)=>{
+        locallistOfPagesDynamicFieldsValues=[...locallistOfPagesDynamicFieldsValues,{pageID:page.id,dynamicFieldValue:page.Website}]
+        })     
+        LocalDynamicFieldList=[...LocalDynamicFieldList,{listOfPagesDynamicFieldValues:locallistOfPagesDynamicFieldsValues,patternID:e}]
+    }
+    //handling the location default dynamic field
+    else if(e==3)
+    {let locallistOfPagesDynamicFieldsValues=[]
+      variables.PostGlobalVariables.POST_SelectedPageInfo.map((page)=>{
+        locallistOfPagesDynamicFieldsValues=[...locallistOfPagesDynamicFieldsValues,{pageID:page.id,dynamicFieldValue:page.location}]
+        })     
+        LocalDynamicFieldList=[...LocalDynamicFieldList,{listOfPagesDynamicFieldValues:locallistOfPagesDynamicFieldsValues,patternID:e}]
+    }
+    //handling the Number default dynamic field
+    else if (e==4)
+    {let locallistOfPagesDynamicFieldsValues=[]
+      variables.PostGlobalVariables.POST_SelectedPageInfo.map((page)=>{
+        locallistOfPagesDynamicFieldsValues=[...locallistOfPagesDynamicFieldsValues,{pageID:page.id,dynamicFieldValue:page.Number}]
+        })     
+        LocalDynamicFieldList=[...LocalDynamicFieldList,{listOfPagesDynamicFieldValues:locallistOfPagesDynamicFieldsValues,patternID:e}]
+
+    }
+
+  })
+ variables.PostGlobalVariables.POST_AddedDynamicFields=LocalDynamicFieldList
+}
 
   //this is related to scheduling
   const [Repeat,setRepeat] = React.useState(false);
@@ -696,7 +751,7 @@ React.useEffect(()=>{
     if (result.errorCode == undefined) {
       let PageListFormatedForMultiSelect=[]
       result.result.map((page)=>{
-        {PageListFormatedForMultiSelect=[...PageListFormatedForMultiSelect,{id:page.platformPageID,label:page.cachedData_PageName,PagePic:page.cachedData_PictureURL,PageType:page.platformID
+        {PageListFormatedForMultiSelect=[...PageListFormatedForMultiSelect,{id:page.platformPageID,label:page.cachedData_PageName,PagePic:page.cachedData_PictureURL,PageType:page.platformID,location:page.cachedData_Location,Number:page.cachedData_PhoneNumber,Website:page.cachedData_WebsiteURL
         }] }     
       })
       console.log(PageListFormatedForMultiSelect)
@@ -762,7 +817,50 @@ const HandleAssetUnAssign=(()=>{
           {!PagesLoaded&&<Box sx={{ display: 'flex', justifyContent: 'center', my: 2 }}>
       <CircularProgress />
     </Box>}
-      {PagesLoaded&&<MultiSelectComponent 
+      {PagesLoaded&&
+
+
+          <Autocomplete
+          onChange={(event, newValue)=>{
+            handlePageValueChange(newValue)
+          }}
+          key={"MultiPageSelect"}
+          ref={FirstPaneRef}
+          multiple
+          id="checkboxes-tags-demo"
+          options={PagesList}
+          disableCloseOnSelect
+          getOptionLabel={(option) => option.label}
+          renderOption={(props, option, { selected }) => {
+            return(
+              <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
+            
+              <Checkbox
+                icon={icon}
+                checkedIcon={checkedIcon}
+                style={{ marginRight: 8 }}
+                checked={selected}
+              />
+
+
+          <img
+            loading="lazy"
+            width="20"
+            src={option.PagePic}
+            srcSet={option.PagePic}
+            alt=""
+          />
+          {option.label}          
+            </Box>
+          )}}
+          style={{ width: "auto" }}
+          renderInput={(params) => (
+            <TextField {...params} label="Selected Pages" placeholder="Select your Facebook & instagram Pages" />
+          )}
+          />
+      
+     
+      /*<MultiSelectComponent 
       key={"MultiPageSelect"} 
       ref={FirstPaneRef}
        id="mtselement" 
@@ -774,7 +872,7 @@ const HandleAssetUnAssign=(()=>{
         onChange={(e)=>{handlePageValueChange(e)}}
         placeholder="Select the pages you want the post to show at"
         
-        />}
+        />*/}
         
          
                   </div>
@@ -1080,7 +1178,7 @@ export default function Content() {
   const SecondPaneRef=React.useRef(null)
    //Preview Related
    let LivePreview=React.useRef(true)
-   let SamplePreview=React.useRef(true)
+   let SamplePreview=React.useRef(false)
   //TinyMce Related
   let [TextCode,SetTextCode]=React.useState("")
   const editorRef=React.useRef(null)
@@ -1193,3 +1291,4 @@ export default function Content() {
 </>
   );
 }
+

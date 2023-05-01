@@ -51,6 +51,8 @@ import Collapse from '@mui/material/Collapse';
 import * as APILib from "../../libs/APIAccessAndVerification"
 import CancelIcon from '@mui/icons-material/Cancel';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
+import InputIcon from '@mui/icons-material/Input';
+import SaveIcon from '@mui/icons-material/Save';
 export  function FormDialog(props) {
     const [open, setOpen] = React.useState(true);
     const {GlobalState,Dispatch}=React.useContext(AppContext)
@@ -252,7 +254,7 @@ export function AddDynamicFieldDialog(props) {
   {
     DynamicField.listOfPagesDynamicFieldValues=listOfPagesDynamicFieldValues
     variables.PostGlobalVariables.POST_AddedDynamicFields=[...variables.PostGlobalVariables.POST_AddedDynamicFields,DynamicField]
-    toast.success("Pattern Created, now insert the pattern in the textfield where you want", {
+    toast.success("Pattern Created.", {
       position: "bottom-left",
       autoClose: 5000,
       hideProgressBar: false,
@@ -669,9 +671,11 @@ function CollapseRow(props) {
   const [open, setOpen] = React.useState(false);
   const { SetLocalReRender } = props;
   const { LocalRerender } = props;
+  const {appendText}=props
   //preparing pattern info
   let patternName=""
   let patternTxt=""
+  let PatternID=dfdata.patternID
   rows.map((row)=>{
     if(row.id==dfdata.patternID)
     {
@@ -679,6 +683,26 @@ function CollapseRow(props) {
       patternTxt=row.patternText
     }
   })
+  const UpdateDynamicField=(pageid,patternid)=>{
+
+    console.log(pageid,patternid)
+    let NewInputValue= document.getElementById("PAGEDynamicFieldVAlue"+pageid).value
+    console.log(variables.PostGlobalVariables.POST_AddedDynamicFields)
+    variables.PostGlobalVariables.POST_AddedDynamicFields.map((df)=>{
+
+      if(df.patternID==patternid)
+      {
+        df.listOfPagesDynamicFieldValues.map((df_page_value)=>{
+
+          if(df_page_value.pageID==pageid)
+          {
+            df_page_value.dynamicFieldValue=NewInputValue
+          }
+        })
+      }
+      
+    })
+  }
 
   return (
     <React.Fragment>
@@ -696,9 +720,36 @@ function CollapseRow(props) {
           {dfdata.patternID}
         </TableCell>
         <TableCell>{patternName}</TableCell>
-        <TableCell><IconButton onClick={()=>{handleRemove(dfdata.patternID);props.RemoveDynamicFieldText(patternTxt);SetLocalReRender(!LocalRerender)}}>
+        <TableCell><IconButton onClick={()=>{handleRemove(dfdata.patternID);props.RemoveDynamicFieldText(patternTxt);SetLocalReRender(!LocalRerender)
+        ;toast.info("The selected DynamicField deleted successfully !", {
+          position: "bottom-left",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });}}>
           <DeleteIcon/>
-        </IconButton></TableCell>
+        </IconButton>
+        </TableCell>
+
+        <TableCell><IconButton onClick={()=>{appendText(" "+patternTxt);SetLocalReRender(!LocalRerender);
+      toast.info("The pattern inserted in the textfield", {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });}}>
+          <InputIcon/>
+        </IconButton>
+        </TableCell>
+        
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -714,20 +765,21 @@ function CollapseRow(props) {
                     <TableCell></TableCell>
                     <TableCell>Pattern Value </TableCell>
                     <TableCell >Value</TableCell>
+                    <TableCell ></TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {dfdata.listOfPagesDynamicFieldValues.map((SRow) =>{ 
                     //preparing the page info
-var Pagelabel=null
-var PagePicUrl=null
-variables.PostGlobalVariables.POST_SelectedPageInfo.map((page)=>{
-  if(SRow.pageID==page.id)
-  {
-  Pagelabel=page.label
-  PagePicUrl=page.PagePic
-  }
-})
+                        var Pagelabel=null
+                        var PagePicUrl=null
+                        variables.PostGlobalVariables.POST_SelectedPageInfo.map((page)=>{
+                          if(SRow.pageID==page.id)
+                          {
+                          Pagelabel=page.label
+                          PagePicUrl=page.PagePic
+                          }
+                        })
                     return(
                     <TableRow key={SRow.pageID}>
                       <TableCell component="th" scope="row">
@@ -735,7 +787,22 @@ variables.PostGlobalVariables.POST_SelectedPageInfo.map((page)=>{
                       </TableCell>
                       <TableCell><Avatar size="lg" src={PagePicUrl} color="gradient"   squared zoomed/></TableCell>
                       <TableCell>{patternTxt}</TableCell>
-                      <TableCell>{SRow.dynamicFieldValue}</TableCell>
+                      <TableCell><TextField id={"PAGEDynamicFieldVAlue"+SRow.pageID}  key={SRow.pageID} variant="outlined" defaultValue={SRow.dynamicFieldValue} /></TableCell>
+                      <TableCell><IconButton onClick={()=>{UpdateDynamicField(SRow.pageID,PatternID);
+                        toast.info("The value of the dynamic field Updated!", {
+                          position: "bottom-left",
+                          autoClose: 5000,
+                          hideProgressBar: false,
+                          closeOnClick: true,
+                          pauseOnHover: true,
+                          draggable: true,
+                          progress: undefined,
+                          theme: "light",
+                        });}}>
+                          
+                            <SaveIcon/>
+                          </IconButton>
+                          </TableCell>
                     </TableRow>
                   )
                 }
@@ -876,6 +943,7 @@ React.useEffect(()=>{
     }
     const HandleAddDynamicFIeld=()=>
     {
+      
       if(selected.length!==1)
       {
         toast.info("You need to Select One Pattern Only !", {
@@ -888,6 +956,21 @@ React.useEffect(()=>{
           progress: undefined,
           theme: "light",
         });
+      }
+      //Here we test if the selected pattern is one of the default patterns or not
+      else if(selected[0]==1 ||selected[0]==2||selected[0]==3||selected[0]==4)
+      {
+        toast.info("You cannot create a dynamic field using default patterns, please use an other personal one.", {
+          position: "bottom-left",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+
       }
       else
       {
@@ -987,6 +1070,20 @@ TempObject.listOfPatternsToDelete=[...TempObject.listOfPatternsToDelete,{pattern
                   progress: undefined,
                   theme: "light",
                 });
+              }
+              if(result.result=="Default_Pattern_CannotBe_Deleted")
+              {
+                toast.error("One of the Selected patterns is a Default Pattern used by default dynamic fields, you cannot delete them!", {
+                  position: "bottom-left",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "light",
+                });
+
               }
             }
             });
@@ -1121,7 +1218,7 @@ TempObject.listOfPatternsToDelete=[...TempObject.listOfPatternsToDelete,{pattern
         <TableBody >
           {variables.PostGlobalVariables.POST_AddedDynamicFields.length==0&& <div className="m-2" style={{display: 'flex',justifyContent: 'center',alignItems: 'center'}}><p>No Dynamic field found</p></div>}
           {variables.PostGlobalVariables.POST_AddedDynamicFields.map((df) => (
-            <CollapseRow  RemoveDynamicFieldText={RemoveDynamicFieldText} SetLocalReRender={SetLocalReRender} key={"DF"+df.patternID } rows={rows} dfdata={df} LocalRerender={LocalRerender} />
+            <CollapseRow appendText={appendText} RemoveDynamicFieldText={RemoveDynamicFieldText} SetLocalReRender={SetLocalReRender} key={"DF"+df.patternID } rows={rows} dfdata={df} LocalRerender={LocalRerender} />
           ))}
         </TableBody>
       </Table>
