@@ -180,7 +180,7 @@ export var SelectGroupActions=
 
 export var Pages=
 {
-    CurrentGroupPages:[],
+    
     FBSelectPagesList:[],
     FBSelectedPagesList:[],
     FBINGSelectedOptionalPagesList:[],
@@ -253,6 +253,7 @@ export var PostGlobalVariables=
         FromAge:"",
         ToAge:""
     },
+    POST_AssetsTags:[],  // [{Id:id1,Asset_ID:id1,[{TaggedUserID:ID,Tag_X:1,Tag_Y:2}]}]
     POST_TargetSelectedPlatform:"1",  //Facebook only for now...//
     POST_TargetedCountries:[],
     POST_CachedCountryOptions:[],

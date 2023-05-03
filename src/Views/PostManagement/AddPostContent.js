@@ -43,16 +43,21 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import CircularProgress from '@mui/material/CircularProgress';
 import ImageDeleter from "../../components/PostAssetsManagement/ImageDeleter"
-import IconButton from '@mui/material/IconButton';
+
 import DeleteIcon from '@mui/icons-material/Delete';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import Filter1Icon from '@mui/icons-material/Filter1';
 import Autocomplete from '@mui/material/Autocomplete';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import {hashRandom } from 'react-hash-string'
+import ImageTagDialog from "../../components/AddPostComps/AddImageTagDialog"
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import IconButton from '@mui/material/IconButton';
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelectionChange,handleAssetSelectionChange},ref)=> {
+  
+  //--------------------Variables specific the posting options------------------------------//
   const editorRef =React.useRef(null)
   const Post_DateInput=React.useRef(dayjs(variables.PostGlobalVariables.POST_Scheduler_Selected_DateTime))
   const Post_RepeatCheckbox=React.useRef(false)
@@ -61,6 +66,7 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
   const Post_EndRepeatRadioBox=React.useRef(1)
   const Post_EndRepeatOnNbOfOccurencesInput=React.useRef(null)
   const Post_EndRepeatAfterDateInput=React.useRef(null)
+  ///-----------------------------------End of variabiles specific to Posting options--------------------///
   const handlePostDateChange = (date) => {
     //dayjs(date.$d)
     Post_DateInput.current=date.$d
@@ -90,6 +96,7 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
     //dayjs(date.$d)
     Post_EndRepeatAfterDateInput.current=date.$d
   }
+  //----------------------------------------Variables related to the Options, DynamicField, Assets, mentions--------------------///
   const {GlobalState,Dispatch}=React.useContext(AppContext)
    //States related to showing the Dialogs
    const [ShowAddMentionDialog,SetShowAddMentionDialog]=React.useState(false)
@@ -99,12 +106,15 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
    const [ShowDynamicFieldDialog,SetShowDynamicFieldDialog]=React.useState(false)
    const [Assets,SetAssets]=React.useState([])
    const [SelectedAssets,SetSelectedAssets]=React.useState([])
-
+   const [ShowImageTagDialog,SetShowImageTagDialog]=React.useState(false)
+   
+   //----------------------------------------End of Variables related to the Options, DynamicField, Assets, mentions--------------------///
    React.useEffect(()=>{
     variables.PostGlobalVariables.POST_SelectedAssetsInfo=Assets
     handleAssetSelectionChange()
    },[Assets])
 
+   
    
   const HandlePostSchedule=(()=>{
 
@@ -138,7 +148,7 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
 
           Assets.map((Asset)=>{
             AssetsList=[...AssetsList,{ 
-              assetID: Asset.value
+              assetID: Asset.AssetId
             }]
           })
          
@@ -222,6 +232,7 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
               postDate: Post_DateInput.current,
               listOfPages:ListOfPages,
               listOfAssets: AssetsList,
+              listOfTags:variables.PostGlobalVariables.POST_AssetsTags,
               listOfDynamicFields: variables.PostGlobalVariables.POST_AddedDynamicFields,
 
 
@@ -346,7 +357,7 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
 
           Assets.map((Asset)=>{
             AssetsList=[...AssetsList,{ 
-              assetID: Asset.value
+              assetID: Asset.AssetId
             }]
           })
          
@@ -431,8 +442,7 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
               listOfPages:ListOfPages,
               listOfAssets: AssetsList,
               listOfDynamicFields: variables.PostGlobalVariables.POST_AddedDynamicFields,
-
-
+              listOfTags:variables.PostGlobalVariables.POST_AssetsTags,
               target_AgeFrom: variables.PostGlobalVariables.POST_TargetedAgeRange.FromAge,
               target_AgeTo: variables.PostGlobalVariables.POST_TargetedAgeRange.ToAge,
               target_Gender: variables.PostGlobalVariables.POST_TargetedGenderId ,
@@ -655,7 +665,6 @@ newValue.map((v)=>{
    
   })
 })
-console.log(SelectedPagesInfos)
 variables.PostGlobalVariables.POST_SelectedPageInfo=SelectedPagesInfos
 variables.PostGlobalVariables.POST_SelectedPageIds=newValue
 variables.PostGlobalVariables.POST_AddedDynamicFields.map((DynamicField)=>{
@@ -774,9 +783,16 @@ function appendText(Text) {
 {
   editorRef.current.execCommand('mceInsertContent', false,Asset) 
 }*/
-function AppenedAsset(Assets)
+function AppenedAsset(NewAssetsList)
 {
-  SetAssets(Assets)
+  
+  let localNewAssetsList=[...Assets]
+  NewAssetsList.map((Asset)=>{
+    //We just adding unique randomlly generated ID for the picture since the Assets can use the same image multiple times
+    let NewAsset={src:Asset.src,value:hashRandom(),AssetId:Asset.value}
+    localNewAssetsList=[...localNewAssetsList,NewAsset]
+  })
+  SetAssets(localNewAssetsList)
 }
 
 
@@ -794,10 +810,37 @@ function RemoveDynamicFieldText(Text) {
 
 const HandleAssetUnAssign=(()=>{
 
-  const filteredGallery = Assets.filter(AssetItem =>!SelectedAssets.some(SelectedAssetItem => SelectedAssetItem.value === AssetItem.value)) 
+  const filteredGallery = Assets.filter(AssetItem =>!SelectedAssets.some(SelectedAssetItem => SelectedAssetItem.value === AssetItem.value))
+  //Updating the Tags 
+  console.log("BEFORE")
+  console.log(SelectedAssets[0].value)
+  console.log( variables.PostGlobalVariables.POST_AssetsTags)
+  variables.PostGlobalVariables.POST_AssetsTags = variables.PostGlobalVariables.POST_AssetsTags.filter(AssetItem =>!SelectedAssets.some(SelectedAssetItem => SelectedAssetItem.value === AssetItem.Id))  
+  console.log( variables.PostGlobalVariables.POST_AssetsTags)
   SetAssets(filteredGallery)
 })
 
+const HandleImageTag=(()=>{
+
+  if(SelectedAssets.length!=1)
+  {
+    toast.info("You need to select One Image to modify's tagging", {
+      position: "bottom-left",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+  }
+  else
+  {
+    SetShowImageTagDialog(true)
+  }
+
+})
   return (
     <div className="pane-content">
             <Container>   
@@ -858,21 +901,7 @@ const HandleAssetUnAssign=(()=>{
             <TextField {...params} label="Selected Pages" placeholder="Select your Facebook & instagram Pages" />
           )}
           />
-      
-     
-      /*<MultiSelectComponent 
-      key={"MultiPageSelect"} 
-      ref={FirstPaneRef}
-       id="mtselement" 
-       dataSource={PagesList}
-        popupHeight="250px"
-        popupWidth="250px"
-        fields={fields}
-        value={variables.PostGlobalVariables.POST_SelectedPageIds} 
-        onChange={(e)=>{handlePageValueChange(e)}}
-        placeholder="Select the pages you want the post to show at"
-        
-        />*/}
+}
         
          
                   </div>
@@ -901,7 +930,7 @@ const HandleAssetUnAssign=(()=>{
                       <Accordion.Body>
                         {SelectedAssets.length>0&& <div style={{  float: "right"}}>
                           {/*This Gonna tag ppl in the pictures */}
-      <IconButton color="primary" aria-label="Tag" size="large" >
+      <IconButton color="primary" aria-label="Tag" size="large" onClick={HandleImageTag} >
         <LocalOfferIcon fontSize="inherit" />
       </IconButton>
                           
@@ -1032,14 +1061,16 @@ const HandleAssetUnAssign=(()=>{
                   </div>
               </Row>
             </Container>
-            {/*This is related to Dialog showing*/}
+            {/*-----------------------------This Part here handles Dialog showing------------------------------------------*/}
           {ShowAddMentionDialog&&<AddMentionDialog SetShowAddMentionDialog={SetShowAddMentionDialog}/>}
           {ShowAssetsDialog&&<AddAssetsDialog AppenedAsset={AppenedAsset} SetShowAssetsDialog={SetShowAssetsDialog}/>}
           {ShowDynamicFieldDialog&&<AddDynamicFieldDialog appendText={appendText} RemoveDynamicFieldText={RemoveDynamicFieldText} SetShowDynamicFieldDialog={SetShowDynamicFieldDialog}/>} 
           {ShowAddLocationDialog&&<AddLocationDialog SetShowAddLocationDialog={SetShowAddLocationDialog}/>}
           {ShowAddTargetDialog&&<AddTargetDialog SetShowAddTargetDialog={SetShowAddTargetDialog}/>} 
+          {ShowImageTagDialog&&<ImageTagDialog ShowImageTagDialog={ShowImageTagDialog} SetShowImageTagDialog={SetShowImageTagDialog} SelectedAssets={SelectedAssets}/>}
+            {/*-----------------------------End Of the Part that handles Dialog showing------------------------------------------*/}
           </div>
-  );
+  )
 })
 
 

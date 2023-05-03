@@ -232,11 +232,11 @@ INFBPAGES.map((page)=>{
       pages.map((Page,index)=>{
        
         return (
-          <Form.Check  id={"NEWINSTAPage"+Page.instagram_business_account.id}  key={"FBPage"+Page.instagram_business_account.id} type="switch" defaultChecked={false}  autoComplete="off" autoSave="off" label={Page.instagram_business_account.username   }/> )})}
+          <Form.Check  id={"NEWINSTAPage"+Page.instagram_business_account.id}  key={"FBPage"+Page.instagram_business_account.id} type="switch" defaultChecked={false}  autoComplete="off" autoSave="off" label={<strong>{Page.instagram_business_account.username}</strong>}/> )})}
           </DialogContent>
           <DialogActions>
             <Button variant="outlined" startIcon={<HighlightOffIcon/>} color="info" onClick={handleClose}>Cancel.</Button>
-            {PagesLoadedFlag&&<Button  variant="outlined" startIcon={<NoteAddIcon/>} color="warning"  onClick={handleAddPage}>
+            {PagesLoadedFlag&&pages.length!=0&&<Button  variant="outlined" startIcon={<NoteAddIcon/>} color="warning"  onClick={handleAddPage}>
               Add the selected pages.
             </Button>}
           </DialogActions>

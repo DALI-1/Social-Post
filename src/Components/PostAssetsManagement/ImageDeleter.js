@@ -5,19 +5,23 @@ import './ImageDeleter.css'
 import { Box, Button } from '@mui/material';
 import Pagination from '@mui/material/Pagination';
 export default function GalleryPicker({Gallery,SetSelectedAssets}) {
-  const [maxImages, setMaxImages] = React.useState([]);
-  const [maxMessage, setMaxMessage] = React.useState("");
   function onPickImagesWithLimit(maxImages) {
-    SetSelectedAssets(maxImages)
-    setMaxImages(maxImages);
+    let ListOfSelectedImages=[]
+
+    maxImages.map((Image)=>{
+
+      Gallery.map((im)=>{
+
+        if(im.value==Image.value)
+        {
+          ListOfSelectedImages=[...ListOfSelectedImages,im]
+        }
+      })
+    })
+    SetSelectedAssets(ListOfSelectedImages)
   }
 
-  function onPickMaxImages(lastImage) {
-    let image = JSON.stringify(lastImage);
-    let maxMessage = `Max images reached. ${image}`;
-    
-    setMaxMessage(maxMessage);
-  }
+
 
   const itemsPerPage = 12;
   const [page, setPage] = React.useState(1);
@@ -32,10 +36,8 @@ export default function GalleryPicker({Gallery,SetSelectedAssets}) {
   return (
     <div>
       <ImagePicker
-        images={Gallery.slice(startIndex, endIndex).map((image) => ({ src: image.src, value: image.value }))}
+        images={Gallery.slice(startIndex, endIndex).map((image,index) => ({ src: image.src, value: image.value}))}
         onPick={onPickImagesWithLimit}
-        maxPicks={2}
-        onMaxPicks={onPickMaxImages}
         multiple
       />
       <Box sx={{ display: 'flex', justifyContent: 'center', my: 2 }}>

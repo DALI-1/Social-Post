@@ -1,0 +1,116 @@
+
+.Tag_Image
+{
+    position: inherit;
+    display: inline-block;
+     margin: 0 auto;
+     border: 1px solid rgb(255, 255, 255);
+     border-radius:5px;
+     box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); 
+     border-radius:5px;
+}
+
+.Tag_Image img {
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+
+
+.Tagbox
+{   position:absolute; 
+    width: 50px;
+    height: 50px;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius:50%;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.5); 
+     
+}
+.Tagbox:hover
+{   position:absolute; 
+    width: 50px;
+    height: 50px;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius:50%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); 
+    
+}
+
+
+
+
+.TagPopup
+{
+   display: none;
+    position: absolute;
+    border-radius:5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); 
+    margin-top: 3.5rem;
+    padding: 0.5rem;
+    background-color:rgb(255, 255, 255);
+    width: max-content; 
+    z-index: 90;
+}
+.TagPopup:hover
+{
+   z-index: 100;  
+}
+
+.TagInfo
+{
+   display: inline-block;
+    position: absolute;
+    border-radius:10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); 
+    padding: 0.1rem; 
+    opacity:0.7;
+}
+
+.TagInfo:hover
+{
+
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); 
+    padding: 0.1rem;
+    background-color:rgb(255, 255, 255); 
+    opacity:1;
+}
+
+.TagPopup:hover
+{
+   display: inline-block;
+    position: absolute;
+    border-radius:5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); 
+    margin-top: 3.5rem;
+    padding: 0.5rem;
+    background-color:rgb(255, 255, 255); 
+    opacity:1;
+   
+  
+}
+.Tagbox:hover + .TagPopup
+{
+    display: inline-block;
+    position: absolute;
+    border-radius:5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); 
+    margin-top: 3.5rem;
+    padding: 0.5rem;
+    background-color:rgb(255, 255, 255); 
+    opacity:1;
+    animation: FadeAnim 700ms ease-out;
+    animation-fill-mode:forwards;
+    animation-timing-function:ease-out;
+    z-index:100 ;
+}
+@keyframes FadeAnim {
+    0% { opacity: 0.1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+    
+  }
+
+
+  
+  
+   

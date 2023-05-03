@@ -134,7 +134,7 @@ export default function PagesDialog(props) {
     {pages.map((Page,index)=>{
         
         return (
-          <Form.Check  id={"INGFBOptionalPage"+Page.id}  key={"INGFBOptionalPage"+Page.id} type="switch" defaultChecked={false}  autoComplete="off" autoSave="off" label={Page.name+" Associated to "+Page.instagram_business_account.username}/> )})}
+          <Form.Check  id={"INGFBOptionalPage"+Page.id}  key={"INGFBOptionalPage"+Page.id} type="switch" defaultChecked={false}  autoComplete="off" autoSave="off" label={<><strong>{Page.name}</strong>{" Associated to "}<strong>{Page.instagram_business_account.username}</strong></>}/> )})}
           </DialogContent>
           <DialogActions>
           <Button variant="outlined" startIcon={<HighlightOffIcon/>} color="info" onClick={HandleCancel}>Cancel.</Button>

@@ -291,6 +291,7 @@ const handleImageUpdate=(ImageUrl)=>
   });
   },[])
 
+  console.log(Gallery)
   //Old Version of HandleAddSelectedPicture_ToEditor, this one adds it to the Editor
   /*const HandleAddSelectedPictures_ToTheEditor=()=>
   {

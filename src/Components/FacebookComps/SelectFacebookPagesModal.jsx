@@ -205,14 +205,14 @@ fetch(`https://graph.facebook.com/v16.0/me/accounts?fields=name,id,instagram_bus
             </DialogContentText>
      {!PagesLoadedFlag&&<p>Loading your facebook pages...</p>}
 
-     {PagesLoadedFlag&&variables.Pages.FBSelectPagesList.data.length==0&&<p>No Pages found or the pages you own are all already added.</p>}
+     {PagesLoadedFlag&&variables.Pages.FBSelectPagesList.data.length==0&&<strong>No Pages found or the pages you own are all already added.</strong>}
 
      {PagesLoadedFlag&&
       variables.Pages.FBSelectPagesList.data.map((Page,index)=>{ return (<Form.Check  id={"NewPage"+Page.id}  key={"NewPage"+Page.id} type="switch" defaultChecked={false}  autoComplete="off" autoSave="off" label={Page.name}/> )})}
           </DialogContent>
           <DialogActions>
             <Button variant="outlined" startIcon={<HighlightOffIcon/>} color="info" onClick={handleClose}>Cancel.</Button>
-          {PagesLoadedFlag&&<Button  variant="outlined" startIcon={<NoteAddIcon/>} color="warning" onClick={handleAddPage}>
+          {PagesLoadedFlag &&variables.Pages.FBSelectPagesList.data.length!=0&&<Button  variant="outlined" startIcon={<NoteAddIcon/>} color="warning" onClick={handleAddPage}>
             Add the selected pages.
             </Button>}
           </DialogActions>
