@@ -127,6 +127,7 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
     let EndRepeatOnNbOfOccurencesValue=Post_EndRepeatOnNbOfOccurencesInput.current
     let EndRepeatAfterDate=Post_EndRepeatAfterDateInput.current
     let INSTAGRAM_Page_Exist_InSelection_Flag=false
+    let POST_Txt=EditorContent.toString().split("<p>").join("").split("</p>").join("")
     if(Post_Date!=null)
     {
       if(EditorContent!="")
@@ -220,9 +221,21 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
             
           }]
         })
+
+              //-------------------------NOTE: Formating the Mentions for the backened--------------------------//
+        // 1- Adding the platformaccounts to a list
+        //2- Changing the Text and formating like this @[12345]  1235 is an example, it should be a platformaccountID
+        let Formated_listOfMentionedPlatformAccounts=[]         
+        variables.PostGlobalVariables.POST_Mentions.map((MentionedUser)=>{
+          Formated_listOfMentionedPlatformAccounts=[...Formated_listOfMentionedPlatformAccounts,{mentionedPlatformAccount_ID:MentionedUser.MentionedUserID}]
+          POST_Txt=POST_Txt.replace(MentionedUser.MentionText,"@["+MentionedUser.MentionedUserID+"]")
+        })
+         console.log(Formated_listOfMentionedPlatformAccounts)
+
+        //-------------------------NOTE: END OF Formating the Mentions for the backened--------------------------//
             var JsonObject = {  
               postGroupID: GlobalState.SelectedGroup.id,
-              postText: EditorContent.toString().split("<p>").join("").split("</p>").join(""),
+              postText: POST_Txt,
               repeatPost: Repeat,
               repeatOption: RepeatDropDownListSelection==1?"Hourly":RepeatDropDownListSelection==2?"Daily":RepeatDropDownListSelection==3?"Weekly":RepeatDropDownListSelection==4?"Monthly":RepeatDropDownListSelection==5?"Yearly":"BUG_IMPOSSIBLE_TO_REACH",
               endRepeatPost: EndRepeatRadioBoxValue==1?false:true,
@@ -235,7 +248,7 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
               listOfTags:variables.PostGlobalVariables.POST_AssetsTags,
               listOfDynamicFields: variables.PostGlobalVariables.POST_AddedDynamicFields,
 
-
+              listOfMentionedPlatformAccounts:Formated_listOfMentionedPlatformAccounts,
               target_AgeFrom: variables.PostGlobalVariables.POST_TargetedAgeRange.FromAge,
               target_AgeTo: variables.PostGlobalVariables.POST_TargetedAgeRange.ToAge,
               target_Gender: variables.PostGlobalVariables.POST_TargetedGenderId ,
@@ -336,6 +349,7 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
     let EndRepeatOnNbOfOccurencesValue=Post_EndRepeatOnNbOfOccurencesInput.current
     let EndRepeatAfterDate=Post_EndRepeatAfterDateInput.current
     let INSTAGRAM_Page_Exist_InSelection_Flag=false
+    let POST_Txt=EditorContent.toString().split("<p>").join("").split("</p>").join("")
     if(Post_Date!=null)
     {
       if(EditorContent!="")
@@ -429,9 +443,20 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
             
           }]
         })
+          //-------------------------NOTE: Formating the Mentions for the backened--------------------------//
+        // 1- Adding the platformaccounts to a list
+        //2- Changing the Text and formating like this @[12345]  1235 is an example, it should be a platformaccountID
+          let Formated_listOfMentionedPlatformAccounts=[]         
+        variables.PostGlobalVariables.POST_Mentions.map((MentionedUser)=>{
+          Formated_listOfMentionedPlatformAccounts=[...Formated_listOfMentionedPlatformAccounts,{mentionedPlatformAccount_ID:MentionedUser.MentionedUserID}]
+          POST_Txt=POST_Txt.replace(MentionedUser.MentionText,"@["+MentionedUser.MentionedUserID+"]")
+        })
+         
+
+        //-------------------------NOTE: END OF Formating the Mentions for the backened--------------------------//
             var JsonObject = {  
               postGroupID: GlobalState.SelectedGroup.id,
-              postText: EditorContent.toString().split("<p>").join("").split("</p>").join(""),
+              postText:POST_Txt ,
               repeatPost: Repeat,
               repeatOption: RepeatDropDownListSelection==1?"Hourly":RepeatDropDownListSelection==2?"Daily":RepeatDropDownListSelection==3?"Weekly":RepeatDropDownListSelection==4?"Monthly":RepeatDropDownListSelection==5?"Yearly":"BUG_IMPOSSIBLE_TO_REACH",
               endRepeatPost: EndRepeatRadioBoxValue==1?false:true,
@@ -439,6 +464,7 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
               endRepeatOnOccurence: EndRepeatRadioBoxValue==2?EndRepeatOnNbOfOccurencesValue:0,
               endRepeatAfterDate: EndRepeatRadioBoxValue==3?EndRepeatAfterDate:"2023-04-12T23:00:00.000Z",
               postDate: new Date(),
+              listOfMentionedPlatformAccounts:Formated_listOfMentionedPlatformAccounts,
               listOfPages:ListOfPages,
               listOfAssets: AssetsList,
               listOfDynamicFields: variables.PostGlobalVariables.POST_AddedDynamicFields,
@@ -808,15 +834,22 @@ function RemoveDynamicFieldText(Text) {
 
 }
 
+//This is used to Remove the mentionedUsers  text from TinyMCEEditor in case the mentionedUsers list is updated
+function RemoveMentionedUserText(Text) {
+  const editor = editorRef.current; // get a reference to the editor
+  const content = editor.getContent(); // get the current content of the editor
+  const regex = new RegExp(Text, 'g'); // create a regular expression with the global 'g' flag to replace all instances
+  const newText = ""; // the text to insert
+  const replacedContent = content.replace(regex, newText); // replace all instances of the 'Text' variable with 'newText'
+  editor.setContent(replacedContent); // set the new content of the edito
+
+}
+
 const HandleAssetUnAssign=(()=>{
 
   const filteredGallery = Assets.filter(AssetItem =>!SelectedAssets.some(SelectedAssetItem => SelectedAssetItem.value === AssetItem.value))
   //Updating the Tags 
-  console.log("BEFORE")
-  console.log(SelectedAssets[0].value)
-  console.log( variables.PostGlobalVariables.POST_AssetsTags)
   variables.PostGlobalVariables.POST_AssetsTags = variables.PostGlobalVariables.POST_AssetsTags.filter(AssetItem =>!SelectedAssets.some(SelectedAssetItem => SelectedAssetItem.value === AssetItem.Id))  
-  console.log( variables.PostGlobalVariables.POST_AssetsTags)
   SetAssets(filteredGallery)
 })
 
@@ -1062,7 +1095,7 @@ const HandleImageTag=(()=>{
               </Row>
             </Container>
             {/*-----------------------------This Part here handles Dialog showing------------------------------------------*/}
-          {ShowAddMentionDialog&&<AddMentionDialog SetShowAddMentionDialog={SetShowAddMentionDialog}/>}
+          {ShowAddMentionDialog&&<AddMentionDialog SetShowAddMentionDialog={SetShowAddMentionDialog} appendText={appendText} RemoveMentionedUserText={RemoveMentionedUserText}/>}
           {ShowAssetsDialog&&<AddAssetsDialog AppenedAsset={AppenedAsset} SetShowAssetsDialog={SetShowAssetsDialog}/>}
           {ShowDynamicFieldDialog&&<AddDynamicFieldDialog appendText={appendText} RemoveDynamicFieldText={RemoveDynamicFieldText} SetShowDynamicFieldDialog={SetShowDynamicFieldDialog}/>} 
           {ShowAddLocationDialog&&<AddLocationDialog SetShowAddLocationDialog={SetShowAddLocationDialog}/>}
@@ -1099,6 +1132,11 @@ ListOfPagePosts.current=[]
 //We first iteratte through our pages so we added the required modifications
   variables.PostGlobalVariables.POST_SelectedPageInfo.map((Page)=>{
     let LocalText=Text
+
+    variables.PostGlobalVariables.POST_Mentions.map((mentionedUser)=>{
+      LocalText=LocalText.replace(mentionedUser.MentionText,mentionedUser.Preview_Name)
+    })
+
 //Then we iterate through every dynamic field
        variables.PostGlobalVariables.POST_AddedDynamicFields.map((DF)=>{
          let PatternTextValue=null
