@@ -9,7 +9,7 @@
     opacity:1
 }
 .image_picker .responsive .thumbnail{
-    border:1px solid #cbcdcd;
+    border:1px solid #009be5;
     border-radius:4px;
     padding:5px;
     max-width:150px;
@@ -20,7 +20,7 @@
     box-shadow:0 0 2px 1px rgba(0, 0, 0, 0.7)
 }
 .image_picker .responsive .selected{
-    background-color:#f3f4f4
+    background-color:#009be5
 }
 .image_picker .responsive:hover{
     cursor:pointer
@@ -46,4 +46,15 @@
 }
 .image_picker .clear{
     clear:both
+}
+
+.image_picker .responsive .tagged{
+    position: absolute;
+    display: inline-block;
+    background:url(../../Assets/ImagePicker/TaggedIcon.png);
+    background-size:cover; 
+    height:25px;
+    width:25px;
+    top:0px;
+    left:0px;
 }

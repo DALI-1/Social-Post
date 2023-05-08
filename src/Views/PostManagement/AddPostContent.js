@@ -1106,7 +1106,7 @@ const HandleImageTag=(()=>{
 
  {/*-----------------------NOTE: Here we tell a user about the Used dynamic fields, tag, assets--------------------*/}
 
- <MuiAlert elevation={3}   severity="info" variant="outlined">
+ <MuiAlert elevation={1}   severity="info" variant="outlined">
   Your post is currently using {DefaultDynamicFieldCount()}  Default Dynamic fields, {CustomDynamicFIeldCount()} Custom Dynamic fields, {variables.PostGlobalVariables.POST_SelectedAssetsInfo.length} Assets, {variables.PostGlobalVariables.POST_AssetsTags.length} tagged Assets,
   {variables.PostGlobalVariables.POST_TargetedAgeRange.FromAge!="" || variables.PostGlobalVariables.POST_TargetedAgeRange.ToAge!="" || variables.PostGlobalVariables.POST_TargetedCountries.length!=0 || variables.PostGlobalVariables.POST_TargetedInterests.length!=0  || variables.PostGlobalVariables.POST_TargetedLanguages.length!=0 || variables.PostGlobalVariables.POST_TargetedGenderId!=3?<> Audience Targetting Enabled</> : <> Audience Targetting Disabled</> }
  </MuiAlert>

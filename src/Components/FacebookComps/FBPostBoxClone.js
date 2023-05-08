@@ -11,10 +11,16 @@ import * as variables from "../../variables/variables"
 import Carousel from 'react-material-ui-carousel'
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
+import FbImageLibrary from '../../libs/Facebook_Image_Selector/Facebook_Image_Selector'
 export default function FBPostBoxClone({Text,PageInfo}) {
     const currentDate = new Date();
     const dateStr = currentDate.toLocaleDateString('en-US');
+    var ImagesTab=[]
 
+
+    variables.PostGlobalVariables.POST_SelectedAssetsInfo.map((im)=>{
+      ImagesTab=[...ImagesTab,im.src]
+    })
     //----------------------------------If the PAGE WE POSTING IS for a FACEBOOK PAGE--------------------------------------//
    if(PageInfo.PageType==1)
    {
@@ -88,8 +94,10 @@ export default function FBPostBoxClone({Text,PageInfo}) {
             { ReactHtmlParser(Text) }
               
 
+  
+            <FbImageLibrary images={ImagesTab}/>
           
-      {variables.PostGlobalVariables.POST_SelectedAssetsInfo.length==1?
+      {/*variables.PostGlobalVariables.POST_SelectedAssetsInfo.length==1?
       <img         
       src={variables.PostGlobalVariables.POST_SelectedAssetsInfo[0].src}
       style={{width:"100%",height:"300px"}}
@@ -111,7 +119,7 @@ export default function FBPostBoxClone({Text,PageInfo}) {
         </ImageListItem>
       ))}
     </ImageList>
-      }
+      */}
             <hr/>
             </div>
             <div className='ClonePostFooter'>

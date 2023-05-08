@@ -163,7 +163,11 @@ setListOfBoxes([...ListOfBoxes,BoxObj])
       //Here I simply removed it from the List since it's about to get updated//
       variables.PostGlobalVariables.POST_AssetsTags=variables.PostGlobalVariables.POST_AssetsTags.filter((tag)=>tag.Id!=OldTagObj.Id)
        //-------------Adding the new Tag for the Asset------------//
-    variables.PostGlobalVariables.POST_AssetsTags=[...variables.PostGlobalVariables.POST_AssetsTags,{Id:SelectedAssets[0].value,Asset_ID:SelectedAssets[0].AssetId,Assetags:Temp_Tags}]
+       if(Temp_Tags.length>0)
+       {
+        variables.PostGlobalVariables.POST_AssetsTags=[...variables.PostGlobalVariables.POST_AssetsTags,{Id:SelectedAssets[0].value,Asset_ID:SelectedAssets[0].AssetId,Assetags:Temp_Tags}]
+       }
+   
     }
 
     toast.info("Tag Removed !", {
@@ -341,7 +345,8 @@ setListOfBoxes([...ListOfBoxes,BoxObj])
               if(BoxElement.TaggedPersonID!=null)
               {
                 return(<> 
-                  <div className='TagInfo' style={{top: `${BoxElement.Screen_y+BoxElement.ScrollTopValue-25-current_ScrollTop}px`,left: `${BoxElement.Screen_x+BoxElement.ScrollLeftValue-25-current_ScrollLeft}px` }}>
+                  <div className='TagInfo' style={{top: `${BoxElement.Screen_y+BoxElement.ScrollTopValue-current_ScrollTop}px`,left: `${BoxElement.Screen_x+BoxElement.ScrollLeftValue-25-current_ScrollLeft}px` }}>
+                  <div className="triangle"></div>
                   <Container>
                     <Row>
                       <Col>
