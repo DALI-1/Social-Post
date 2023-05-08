@@ -53,6 +53,7 @@ import {hashRandom } from 'react-hash-string'
 import ImageTagDialog from "../../components/AddPostComps/AddImageTagDialog"
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import IconButton from '@mui/material/IconButton';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelectionChange,handleAssetSelectionChange},ref)=> {
@@ -107,7 +108,7 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
    const [Assets,SetAssets]=React.useState([])
    const [SelectedAssets,SetSelectedAssets]=React.useState([])
    const [ShowImageTagDialog,SetShowImageTagDialog]=React.useState(false)
-   
+   const [InfoTag,SetInfoTag]=React.useState(false)
    //----------------------------------------End of Variables related to the Options, DynamicField, Assets, mentions--------------------///
    React.useEffect(()=>{
     variables.PostGlobalVariables.POST_SelectedAssetsInfo=Assets
@@ -695,7 +696,6 @@ variables.PostGlobalVariables.POST_SelectedPageInfo=SelectedPagesInfos
 variables.PostGlobalVariables.POST_SelectedPageIds=newValue
 variables.PostGlobalVariables.POST_AddedDynamicFields.map((DynamicField)=>{
 
-  console.log(variables.PostGlobalVariables.POST_AddedDynamicFields)
 variables.PostGlobalVariables.POST_PatternsInfo.map((Pattern)=>{
 
   if(Pattern.id==DynamicField.patternID)
@@ -706,8 +706,8 @@ variables.PostGlobalVariables.POST_PatternsInfo.map((Pattern)=>{
 })
 
 CreateDefaultDynamicFields()
-//variables.PostGlobalVariables.POST_AddedDynamicFields=[]
 handlePageSelectionChange()
+SetInfoTag(!InfoTag)
 };
 
 
@@ -789,7 +789,6 @@ React.useEffect(()=>{
         {PageListFormatedForMultiSelect=[...PageListFormatedForMultiSelect,{id:page.platformPageID,label:page.cachedData_PageName,PagePic:page.cachedData_PictureURL,PageType:page.platformID,location:page.cachedData_Location,Number:page.cachedData_PhoneNumber,Website:page.cachedData_WebsiteURL
         }] }     
       })
-      console.log(PageListFormatedForMultiSelect)
      setPagesList(PageListFormatedForMultiSelect);
      SetPagesLoaded(true)
     }
@@ -801,7 +800,7 @@ React.useEffect(()=>{
 
 //This is used to appened text to TinyMCEEditor
 function appendText(Text) {
-  editorRef.current.execCommand('mceInsertContent', false, Text)
+  editorRef.current.execCommand('mceInsertContent', false, Text+" ")
 }
 
 //Old Version of AppenedAssets, it ads them directly to the HTML
@@ -810,8 +809,7 @@ function appendText(Text) {
   editorRef.current.execCommand('mceInsertContent', false,Asset) 
 }*/
 function AppenedAsset(NewAssetsList)
-{
-  
+{  
   let localNewAssetsList=[...Assets]
   NewAssetsList.map((Asset)=>{
     //We just adding unique randomlly generated ID for the picture since the Assets can use the same image multiple times
@@ -831,7 +829,7 @@ function RemoveDynamicFieldText(Text) {
   const newText = ""; // the text to insert
   const replacedContent = content.replace(regex, newText); // replace all instances of the 'Text' variable with 'newText'
   editor.setContent(replacedContent); // set the new content of the edito
-
+  SetInfoTag(!InfoTag)
 }
 
 //This is used to Remove the mentionedUsers  text from TinyMCEEditor in case the mentionedUsers list is updated
@@ -842,7 +840,7 @@ function RemoveMentionedUserText(Text) {
   const newText = ""; // the text to insert
   const replacedContent = content.replace(regex, newText); // replace all instances of the 'Text' variable with 'newText'
   editor.setContent(replacedContent); // set the new content of the edito
-
+  SetInfoTag(!InfoTag)
 }
 
 const HandleAssetUnAssign=(()=>{
@@ -850,8 +848,35 @@ const HandleAssetUnAssign=(()=>{
   const filteredGallery = Assets.filter(AssetItem =>!SelectedAssets.some(SelectedAssetItem => SelectedAssetItem.value === AssetItem.value))
   //Updating the Tags 
   variables.PostGlobalVariables.POST_AssetsTags = variables.PostGlobalVariables.POST_AssetsTags.filter(AssetItem =>!SelectedAssets.some(SelectedAssetItem => SelectedAssetItem.value === AssetItem.Id))  
-  SetAssets(filteredGallery)
+  SetAssets(filteredGallery) 
 })
+
+// This function count the default dynamic fields
+const DefaultDynamicFieldCount=(()=>{
+  let DefaultdfCount=0;
+  variables.PostGlobalVariables.POST_AddedDynamicFields.map((dyf)=>{
+    if(dyf.patternID==1 ||dyf.patternID==2 || dyf.patternID==3 || dyf.patternID==4)
+    {
+      DefaultdfCount++
+    }
+  })
+  return DefaultdfCount;
+})
+// This function count the custom dynamic fields
+const CustomDynamicFIeldCount=(()=>{
+  let CustomdfCount=0;
+  variables.PostGlobalVariables.POST_AddedDynamicFields.map((dyf)=>{
+    if(dyf.patternID!=1 && dyf.patternID!=2 && dyf.patternID!=3 && dyf.patternID!=4)
+    {
+      CustomdfCount++
+    }
+  })
+  return CustomdfCount;
+})
+//-------------This is used to update the Info Tag when assets change-----------//
+React.useEffect(()=>{
+  SetInfoTag(!InfoTag)
+},[Assets])
 
 const HandleImageTag=(()=>{
 
@@ -894,8 +919,6 @@ const HandleImageTag=(()=>{
       <CircularProgress />
     </Box>}
       {PagesLoaded&&
-
-
           <Autocomplete
           onChange={(event, newValue)=>{
             handlePageValueChange(newValue)
@@ -974,7 +997,7 @@ const HandleImageTag=(()=>{
       </div>
                         }
                        
-                                     <ImageDeleter Gallery={Assets} SetSelectedAssets={SetSelectedAssets} />
+                      <ImageDeleter Gallery={Assets} SetSelectedAssets={SetSelectedAssets} />
                       </Accordion.Body>
                     </Accordion.Item>
               
@@ -982,7 +1005,8 @@ const HandleImageTag=(()=>{
                   </Accordion> 
             
             }
-            <Accordion className='m-2' defaultActiveKey="0" style={{boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)'}}>
+          
+      <Accordion className='m-2' defaultActiveKey="0" style={{boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)'}}>
       <Accordion.Item eventKey="0">
         <Accordion.Header>Post Time Scheduling</Accordion.Header>
         <Accordion.Body>
@@ -1080,6 +1104,13 @@ const HandleImageTag=(()=>{
     </Accordion>
       </Col>
 
+ {/*-----------------------NOTE: Here we tell a user about the Used dynamic fields, tag, assets--------------------*/}
+
+ <MuiAlert elevation={3}   severity="info" variant="outlined">
+  Your post is currently using {DefaultDynamicFieldCount()}  Default Dynamic fields, {CustomDynamicFIeldCount()} Custom Dynamic fields, {variables.PostGlobalVariables.POST_SelectedAssetsInfo.length} Assets, {variables.PostGlobalVariables.POST_AssetsTags.length} tagged Assets,
+  {variables.PostGlobalVariables.POST_TargetedAgeRange.FromAge!="" || variables.PostGlobalVariables.POST_TargetedAgeRange.ToAge!="" || variables.PostGlobalVariables.POST_TargetedCountries.length!=0 || variables.PostGlobalVariables.POST_TargetedInterests.length!=0  || variables.PostGlobalVariables.POST_TargetedLanguages.length!=0 || variables.PostGlobalVariables.POST_TargetedGenderId!=3?<> Audience Targetting Enabled</> : <> Audience Targetting Disabled</> }
+ </MuiAlert>
+            {/*-----------------------NOTE: NOTE END--------------------*/}
 <Container>
   <Row>
   <Col><Button variant="outlined"color="primary" startIcon={<ScheduleSendIcon/>}  className='mx-2 m-3' onClick={HandlePostSchedule}>Schedule Post </Button></Col>
@@ -1234,8 +1265,7 @@ ListOfPagePosts.current=[]
              
                
       <Box sx={{ display: 'flex', justifyContent: 'center', my: 2 }}>
-      <Pagination count={Math.ceil(ListOfPagePosts.current.length / itemsPerPage)} page={page} color="primary" onChange={handleChangePage} />
-       
+      <Pagination count={Math.ceil(ListOfPagePosts.current.length / itemsPerPage)} page={page} color="primary" onChange={handleChangePage} />       
       </Box>
     </div>
     </div>
@@ -1282,7 +1312,8 @@ export default function Content() {
     variables.PostGlobalVariables.POST_AddedDynamicFields=[]
     variables.PostGlobalVariables.POST_PatternsInfo=[]
     variables.PostGlobalVariables.POST_SelectedPageIds=[]
-
+    variables.PostGlobalVariables.POST_AssetsTags=[]
+    variables.PostGlobalVariables.POST_Mentions=[]
     //initializing the POST variables in /variables.js
         //initializing Age
         variables.PostGlobalVariables.POST_TargetedAgeRange.FromAge=""
