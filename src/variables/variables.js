@@ -47,6 +47,7 @@ export const PostTabs=
     AddPost:"AddPostTab",
     SelectPostGroup:"SelectPostGroup",
     EditPost:"EditPostTab",
+    PreviewPost:"PreviewPostTab",
     ManagePostsTab:"ManagePostsTab"
 }
 
@@ -55,7 +56,8 @@ export const PostSelectedTabActions=
 {
     SelectAddPost:"SwitchToAddPost",
     SelectPostGroup:"SelectPostGroup",
-    SelectEditPost:"SwitchToEditUser",
+    SelectEditPost:"SwitchToEditPost",
+    SelectPreviewPost:"SwitchToPreviewPost",
     SelectManagePosts:"SwitchToManagePostsTab"
 }
 
@@ -265,6 +267,8 @@ export var PostGlobalVariables=
     POST_TargetedInterests:[],
     POST_CachedInterestOptions:[],
     POST_TargetedLanguages:[],
-    POST_CachedLanguageOptions:[]
+    POST_CachedLanguageOptions:[],
+
+    EDITPOST_SelectedPostID:null
 
 }

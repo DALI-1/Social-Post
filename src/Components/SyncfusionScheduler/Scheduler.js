@@ -5,20 +5,23 @@ import { ScheduleComponent, Day, Week, WorkWeek, Month, Agenda, Inject } from '@
  import CustomCell from "./CustomCell"
  import * as APILib from "../../libs/APIAccessAndVerification"
 import {  toast } from 'react-toastify';
-import AddPost from "../../Views/PostManagement/AddPostContent"
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-export function ModifyDialog({setModifyPostShow,ModifyPostShow,postid,data,setdata}) {
-  const [open, setOpen] = React.useState(true);
-  const {GlobalState,Dispatch}=React.useContext(AppContext)
+import Slide from '@mui/material/Slide';
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
+//---------------------------------This Dialog here shows the delete confirmation for the Post-----------------------------//
+export function DeleteConfirmDialog({DeletePostShow,setDeletePostShow,postid,data,setdata}) {
+  const [open, setOpen] = React.useState(true);
 const handleClose = () => {
   setOpen(false);
-  setModifyPostShow(false)
+  setDeletePostShow(!DeletePostShow)
 };
 const handlePostDelete=()=>
 {
@@ -50,9 +53,7 @@ APIResult.then((result) => {
       setdata(data.filter(p=>p.Id!=postid))
       handleClose()
       
-    }
-    
-    
+    } 
   }
 
 });
@@ -61,7 +62,7 @@ APIResult.then((result) => {
 return (
   <>
     <div>      
-      <Dialog fullWidth={true} open={open} >
+      <Dialog fullWidth={true} open={open} TransitionComponent={Transition} >
         <DialogTitle> Post Settings</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -79,11 +80,60 @@ return (
 );
 }
 
+//----------------------------Here is the dialog where we allow the user to choose either to Edit, Modify or delete a post-----------------
+export function ModifyDialog({setModifyPostShow,ModifyPostShow,postid,data,setdata,DeletePostShow,setDeletePostShow}) {
+  const [open, setOpen] = React.useState(true);
+  const {GlobalState,Dispatch}=React.useContext(AppContext)
+const handleClose = () => {
+  setOpen(false);
+  setModifyPostShow(!ModifyPostShow)
+};
+const HandleModifyPost=()=>
+{
+  variables.PostGlobalVariables.EDITPOST_SelectedPostID=postid
+  Dispatch({ type: variables.PostSelectedTabActions.SelectEditPost });
+  handleClose()
+}
+
+const HandleDeletePost=()=>
+{
+  setDeletePostShow(!DeletePostShow)
+  handleClose()
+}
+const HandlePreviewPost=()=>
+{
+  variables.PostGlobalVariables.EDITPOST_SelectedPostID=postid
+  Dispatch({ type: variables.PostSelectedTabActions.SelectPreviewPost });
+  handleClose()
+}
+return (
+  <>
+    <div>      
+      <Dialog fullWidth={true} open={open} >
+        <DialogTitle> Post Settings</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+          Select What do you wanna do with the selected Post.
+          </DialogContentText>
+       </DialogContent>
+
+        <DialogActions>
+        <Button variant="outlined"color="primary"  onClick={HandlePreviewPost}>Preview Post</Button>
+          <Button variant="outlined"color="primary"  onClick={HandleModifyPost}>Modify Post</Button>
+          <Button variant="outlined"color="error"  onClick={HandleDeletePost}>¨Delete Post</Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  </>  
+);
+}
+
 export default function App() {
   const {GlobalState,Dispatch}=React.useContext(AppContext)
   const [data,setdata]=React.useState([
   ])
   const [ModifyPostShow,setModifyPostShow]=React.useState(false)
+  const [DeletePostShow,setDeletePostShow]=React.useState(false)
   const [SelectedPostID,SetSelectedPostID]=React.useState(false)
   const fieldsData = {
     id: 'Id',
@@ -106,17 +156,19 @@ APIResult.then((result) => {
   if (result.errorCode == undefined) {
     var localdata =[]
     result.result.map((post)=>{
-      localdata=[...localdata,{
-        Id: post.id,
-        Subject: 'Post - '+post.id,
-        StartTime: new Date(post.postDate),
-        EndTime: new Date(post.postDate),
-        IsAllDay: false,
-        Status: "Completed",
-        Priority: 'High',
-        //RecurrenceRule: 'FREQ=DAILY;INTERVAL=1;COUNT=5'
-      }]
-
+      if(post.isDeleted==false)
+      {
+        localdata=[...localdata,{
+          Id: post.id,
+          Subject: 'Post - '+post.id,
+          StartTime: new Date(post.postDate),
+          EndTime: new Date(post.postDate),
+          IsAllDay: false,
+          Status: "Completed",
+          Priority: 'High',
+          //RecurrenceRule: 'FREQ=DAILY;INTERVAL=1;COUNT=5'
+        }]
+      }        
     })
     setdata(localdata)
   }
@@ -166,7 +218,8 @@ const eventSettings = { dataSource: data, fields: fieldsData }
     >  
         <Inject services={[Day, Week,WorkWeek, Month, Agenda]}/>
     </ScheduleComponent>
-  {ModifyPostShow&&<ModifyDialog ModifyPostShow={ModifyPostShow} setModifyPostShow={setModifyPostShow} postid={SelectedPostID} setdata={setdata} data={data}/>}
+  {ModifyPostShow&&<ModifyDialog ModifyPostShow={ModifyPostShow} setModifyPostShow={setModifyPostShow} postid={SelectedPostID} setdata={setdata} data={data} DeletePostShow={DeletePostShow} setDeletePostShow={setDeletePostShow}/>}
+  {DeletePostShow&&<DeleteConfirmDialog DeletePostShow={DeletePostShow} setDeletePostShow={setDeletePostShow} postid={SelectedPostID} setdata={setdata} data={data}/>}
   </>
    
   );

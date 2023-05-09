@@ -6,7 +6,7 @@ export const AppContext=createContext(null);
 
 const reducer=(GlobalState,action)=>
 {
-    
+  
        switch(action.type)
        {
                     //Profile Tab actions
@@ -55,6 +55,10 @@ const reducer=(GlobalState,action)=>
 
                       //Post Tab Actions
 
+                      case variables.PostSelectedTabActions.SelectPreviewPost:
+                    {       
+                        return({...GlobalState,PostSelectedTab:variables.PostTabs.PreviewPost})
+                    }
                 case variables.PostSelectedTabActions.SelectAddPost:
                     {       
                         return({...GlobalState,PostSelectedTab:variables.PostTabs.AddPost})
@@ -62,6 +66,7 @@ const reducer=(GlobalState,action)=>
                  
                 case variables.PostSelectedTabActions.SelectEditPost:
                     {
+                       
                   return({...GlobalState,PostSelectedTab:variables.PostTabs.EditPost})
                     }
     
@@ -197,7 +202,6 @@ const reducer=(GlobalState,action)=>
                         
                         case variables.RerenderActions.ReRenderPage:
  
-                        console.log("Re-render request triggered!")
                             return({...GlobalState,Rerender:!GlobalState.Rerender})
                         
                         case variables.SelectGroupActions.SetSelectedGroup:

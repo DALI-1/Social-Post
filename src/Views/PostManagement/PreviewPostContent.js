@@ -1306,6 +1306,7 @@ export default function Content() {
     }
     
   }
+ 
   React.useEffect(()=>{
     //initializing the variables, so that old data from previous posts are not saved
     variables.PostGlobalVariables.POST_AddedDynamicFields=[]
@@ -1341,6 +1342,9 @@ export default function Content() {
         variables.PostGlobalVariables.POST_CachedInterestOptions=[]
 
   },[])
+  
+
+
   return (
     <>  
        <Paper sx={{ width: "100%", height:"100%", m: 1, p: 2, textAlign: "center" }} style={{margin:"1rem",padding:"1rem",boxShadow: '0px 0px 10px 0px rgba(0, 0, 0, 0.2)'}}>

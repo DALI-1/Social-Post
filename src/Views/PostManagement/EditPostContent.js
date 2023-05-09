@@ -56,7 +56,7 @@ import IconButton from '@mui/material/IconButton';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
-export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelectionChange,handleAssetSelectionChange},ref)=> {
+export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelectionChange,handleAssetSelectionChange,DefaultPostText},ref)=> {
   
   //--------------------Variables specific the posting options------------------------------//
   const editorRef =React.useRef(null)
@@ -105,7 +105,7 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
    const [ShowAddTargetDialog,SetShowAddTargetDialog]=React.useState(false)
    const [ShowAssetsDialog,SetShowAssetsDialog]=React.useState(false)
    const [ShowDynamicFieldDialog,SetShowDynamicFieldDialog]=React.useState(false)
-   const [Assets,SetAssets]=React.useState([])
+   const [Assets,SetAssets]=React.useState(variables.PostGlobalVariables.POST_SelectedAssetsInfo)
    const [SelectedAssets,SetSelectedAssets]=React.useState([])
    const [ShowImageTagDialog,SetShowImageTagDialog]=React.useState(false)
    const [InfoTag,SetInfoTag]=React.useState(false)
@@ -114,9 +114,8 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
     variables.PostGlobalVariables.POST_SelectedAssetsInfo=Assets
     handleAssetSelectionChange()
    },[Assets])
-
-   
-   
+//-----------intiliazing the images by the selection
+ 
   const HandlePostSchedule=(()=>{
 
     let EditorContent=editorRef.current.getContent()
@@ -231,7 +230,6 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
           Formated_listOfMentionedPlatformAccounts=[...Formated_listOfMentionedPlatformAccounts,{mentionedPlatformAccount_ID:MentionedUser.MentionedUserID}]
           POST_Txt=POST_Txt.replace(MentionedUser.MentionText,"@["+MentionedUser.MentionedUserID+"]")
         })
-         console.log(Formated_listOfMentionedPlatformAccounts)
 
         //-------------------------NOTE: END OF Formating the Mentions for the backened--------------------------//
             var JsonObject = {  
@@ -682,7 +680,6 @@ const handlePageValueChange = (newValue) => {
 let SelectedPagesInfos=[]
 newValue.map((v)=>{
 
-  console.log(v)
   //here we will be itterating through the List of Pages to grab each page's info
   PagesList.map((p)=>{
    if(p.id===v.id)
@@ -926,14 +923,16 @@ const HandleImageTag=(()=>{
           key={"MultiPageSelect"}
           ref={FirstPaneRef}
           multiple
+          value={variables.PostGlobalVariables.POST_SelectedPageIds}
           id="checkboxes-tags-demo"
           options={PagesList}
           disableCloseOnSelect
+          isOptionEqualToValue={(option,value)=>option.id==value.id}       
           getOptionLabel={(option) => option.label}
           renderOption={(props, option, { selected }) => {
             return(
-              <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
-            
+              <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>            
+              
               <Checkbox
                 icon={icon}
                 checkedIcon={checkedIcon}
@@ -975,6 +974,8 @@ const HandleImageTag=(()=>{
            onEditorChange={handleEditorChange}
           apiKey={process.env.REACT_APP_TINYMCEJWTAPIKEY}
           init={init}
+          initialValue={DefaultPostText}
+          
         />
            
             </div>
@@ -1271,8 +1272,9 @@ ListOfPagePosts.current=[]
     </div>
   )
 })
-export default function Content() {
-
+export default   function Content() {
+  const { GlobalState, Dispatch } = React.useContext(AppContext);
+  const [DefaultPostText,setDefaultPostText]=React.useState();
   const FirstPaneRef=React.useRef(null)
   const SecondPaneRef=React.useRef(null)
    //Preview Related
@@ -1306,48 +1308,229 @@ export default function Content() {
     }
     
   }
+ 
   React.useEffect(()=>{
-    //initializing the variables, so that old data from previous posts are not saved
-    variables.PostGlobalVariables.POST_AddedDynamicFields=[]
-    variables.PostGlobalVariables.POST_PatternsInfo=[]
-    variables.PostGlobalVariables.POST_SelectedPageIds=[]
-    variables.PostGlobalVariables.POST_AssetsTags=[]
-    variables.PostGlobalVariables.POST_Mentions=[]
-    //initializing the POST variables in /variables.js
-        //initializing Age
-        variables.PostGlobalVariables.POST_TargetedAgeRange.FromAge=""
-        variables.PostGlobalVariables.POST_TargetedAgeRange.ToAge=""
-        //Updating Gender
-        variables.PostGlobalVariables.POST_TargetedGenderId=3
-        //initializing Language
-        variables.PostGlobalVariables.POST_TargetedLanguages=[]
-        //initializing Caching LanguageOptionList
-        variables.PostGlobalVariables.POST_CachedLanguageOptions=[]
-          //initializing Location
-        variables.PostGlobalVariables.POST_TargetedLocations=[]
-        // initializing Caching LocationOptionList
-        variables.PostGlobalVariables.POST_CachedLocationOptions=[]
-          //initializing Regions
-        variables.PostGlobalVariables.POST_TargetedRegions=[]
-        // initializing Caching RegionOptionList
-        variables.PostGlobalVariables.POST_CachedRegionOptions=[]
-          //initializing Countries
-        variables.PostGlobalVariables.POST_TargetedCountries=[]
-        // initializing Caching CountriesoptionList
-        variables.PostGlobalVariables.POST_CachedCountryOptions=[]
-         //initializing Interests
-        variables.PostGlobalVariables.POST_TargetedInterests=[]
-        // initializing Caching InterestsoptionList
-        variables.PostGlobalVariables.POST_CachedInterestOptions=[]
 
+    
+
+    //--------NOTE: THE intialiazing should be done after the pages are loaded and configured properly to avoid early buggy clicks--------
+    var JsonObject = {  
+      postID:variables.PostGlobalVariables.EDITPOST_SelectedPostID
+    }
+  let JsonObjectToSend = JSON.stringify(JsonObject);
+  let url2 =
+    process.env.REACT_APP_BACKENDURL + 
+    process.env.REACT_APP_GETPOSTINFO;
+  let UserToken = window.localStorage.getItem("AuthToken");
+  let APIResult = APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
+  APIResult.then((response) => {
+    if (response.errorCode == undefined) {
+      if(response.successCode=="PostInfo_Reterived")
+      {
+
+        //-------------------------------NOTE: TEMP VARIABLES that will be used to initialize the POST INFO--------------------//
+       
+      let Temp_Formated_SelectedPagesList=[]
+      let Temp_Formated_DynamicFieldList=[]
+      let ListOfPlatformPageID_ID=[]
+                 //-------------------------------END NOTE--------------------//
+                 console.log("Response result")
+     console.log(response.result)
+      //------TASK:preparing selected pages,Temp_Formated_SelectedPagesList-----//
+      response.result.pages.map((page)=>{
+        Temp_Formated_SelectedPagesList=[...Temp_Formated_SelectedPagesList,{
+          "id": page.platformPageID,
+        "label": page.cachedData_PageName,
+        "PagePic": page.cachedData_PictureURL,
+        "PageType": page.platformID,
+        "location": page.cachedData_Location,
+        "Number": page.cachedData_PhoneNumber,
+        "Website": page.cachedData_WebsiteURL
+        }]
+        ListOfPlatformPageID_ID=[...ListOfPlatformPageID_ID,{"platformPageID":page.platformPageID,"PageID":page.id}]
+      })
+      variables.PostGlobalVariables.POST_SelectedPageIds=Temp_Formated_SelectedPagesList
+      variables.PostGlobalVariables.POST_SelectedPageInfo=Temp_Formated_SelectedPagesList
+      console.log(variables.PostGlobalVariables.POST_SelectedPageIds)
+      //------END TASK-----//
+
+      //------TASK:preparing  the dynamicfields & Patterns-----//
+
+      let Passed_DyfPatterns=[]
+      Temp_Formated_DynamicFieldList=[]
+      response.result.postDynamicFields.map((dyf)=>{
+        if(!Passed_DyfPatterns.includes(dyf.patternId))
+        {
+          let temp_dyf={"listOfPagesDynamicFieldValues":[],"patternID":dyf.patternId}
+          //We filter  the dynamicfields by Patterns
+          let Temp_listOfPagesDynamicFieldValues=[]
+          //itterating through every dynamic field within a specific pattern
+          response.result.postDynamicFields.filter((p)=>p.patternId==temp_dyf.patternID).map((Filtered_dyf)=>{ 
+            //Getting the correct PagePlatformID for the PageID
+            ListOfPlatformPageID_ID.map((page)=>{
+              if(page.PageID==Filtered_dyf.pageID)
+              {
+                //Updating the Page value
+                Temp_listOfPagesDynamicFieldValues=[...Temp_listOfPagesDynamicFieldValues,
+                  {
+                      "pageID": page.platformPageID,
+                      "dynamicFieldValue": Filtered_dyf.value  
+                  }]
+              }
+            })
+            })
+            //Updating the Dynamic values list with the pages
+          temp_dyf.listOfPagesDynamicFieldValues=Temp_listOfPagesDynamicFieldValues
+          //Setting the dynamicfield as passed to avoid going through it in next itterations
+          Passed_DyfPatterns=[...Passed_DyfPatterns,dyf.patternId]
+          //Adding the Dynamicfield to the temporary dynamicfield list
+          Temp_Formated_DynamicFieldList=[...Temp_Formated_DynamicFieldList,temp_dyf]
+        }
+       
+      })
+      //Updating the Dynamicfield List with the formated one
+       variables.PostGlobalVariables.POST_AddedDynamicFields=Temp_Formated_DynamicFieldList
+      console.log(variables.PostGlobalVariables.POST_AddedDynamicFields)
+      //Calling the API to fetch the group patterns so we load the patterns by default and have our dynamic fields shown properly
+      var JsonObject = {
+        groupID: GlobalState.SelectedGroup.id,
+        };
+        let JsonObjectToSend = JSON.stringify(JsonObject);
+        let url2 =process.env.REACT_APP_BACKENDURL + process.env.REACT_APP_GETGROUPATTERNS;
+        let UserToken = window.localStorage.getItem("AuthToken");
+        let APIResult = APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
+        APIResult.then((result) => {
+        if (result.ErrorCode == undefined) {
+         //updating Patterns info, this will be used in the preview to replace the pattern values with their specific values
+        variables.PostGlobalVariables.POST_PatternsInfo=result.result
+        }
+        });
+
+      //------END TASK-----//
+
+      //------TASK:preparing  the Assets & tags -----//
+      
+      let Temp_Formated_AssetsList=[]
+      let Temp_Formated_TagsList=[]
+      response.result.usedAssets.map((Asset)=>{
+        Temp_Formated_AssetsList=[...Temp_Formated_AssetsList,{
+          "src":Asset.asset.resourceURL,
+        "value":Asset.id,
+        "AssetId":Asset.asset.id
+        }]
+        //Preparing tags list 
+        let Temp_CurrentAsset_Formated_TagsList=[]
+        Asset.asset_Tags.map((tag)=>{
+        Temp_CurrentAsset_Formated_TagsList=[...Temp_CurrentAsset_Formated_TagsList,{
+          "TaggedUserID": tag.taggedPlatformAccount.platformAccountID,
+            "Tag_X": parseInt(tag.taggedImage_X),
+            "Tag_Y": parseInt(tag.taggedImage_Y),
+            "Screen_x":  parseInt(tag.app_Screen_x),
+            "Screen_y":  parseInt(tag.app_Screen_y),
+            "ScrollTopValue": parseInt(tag.app_ScrollLeftValue),
+            "ScrollLeftValue": parseInt(tag.app_ScrollTopValue),
+            "TaggedPersonPic": tag.taggedPlatformAccount.cachedData_PictureURL,
+            "TaggedPersonName": tag.taggedPlatformAccount.cachedData_Name
+        }]
+        })
+        //Adding the tags to the temp list
+        if(Temp_CurrentAsset_Formated_TagsList.length>0)
+         {
+          Temp_Formated_TagsList=[...Temp_Formated_TagsList,{
+            "Id":Asset.id,
+            "Asset_ID":Asset.asset.id,
+            "Assetags":Temp_CurrentAsset_Formated_TagsList
+          }]
+         }
+      })
+      
+      variables.PostGlobalVariables.POST_SelectedAssetsInfo=Temp_Formated_AssetsList
+      variables.PostGlobalVariables.POST_AssetsTags=Temp_Formated_TagsList
+      console.log(variables.PostGlobalVariables.POST_SelectedAssetsInfo)
+      console.log(variables.PostGlobalVariables.POST_AssetsTags)
+      
+      //------END TASK-----//
+
+        //------TASK:preparing  the  Text and Mentions -----//
+        let Temp_PostText=response.result.postText
+        const regex = /\@\[(\d+)\]/g;
+        const matches = Temp_PostText.match(regex);
+        const userIds = matches.map(match => match.match(/\d+/)[0]);
+        //Creating an empty mapping variable between the pattern and how the text should be shown to the user
+        let MentionCode_Text=[]
+        let Temp_FormatedMentions=[]
+        response.result.postMentions.map((mention)=>{
+          //Filling the mapping variable here
+          userIds.map((userid,index)=>{
+            if(mention.mentioned_PlatformAccount.platformAccountID==userid)
+           {
+            MentionCode_Text=[...MentionCode_Text,{"MentionCode":matches[index],"MentionText":"@"+mention.mentioned_PlatformAccount.cachedData_Name.replaceAll(" ","")}]
+            Temp_FormatedMentions=[...Temp_FormatedMentions,{
+              "MentionedUserID":mention.mentioned_PlatformAccount.platformAccountID ,
+              "MentionText": "@"+mention.mentioned_PlatformAccount.cachedData_Name.replaceAll(" ",""),
+              "Preview_Name": mention.mentioned_PlatformAccount.cachedData_Name
+            }]
+           }
+          })
+           
+        })
+        // Using the mapping values to replace the string shown to the user
+        MentionCode_Text.map((Mapping)=>{
+          Temp_PostText=Temp_PostText.replaceAll(Mapping.MentionCode, Mapping.MentionText);
+        })
+        variables.PostGlobalVariables.POST_Mentions=Temp_FormatedMentions
+
+      setDefaultPostText(Temp_PostText)
+      //------END TASK-----//
+
+
+
+      //------TASK:preparing  the  Targetting Options -----//
+      //handling age
+      variables.PostGlobalVariables.POST_TargetedAgeRange.FromAge=response.result.posT_Targeted_AgeRange.min_age   
+      variables.PostGlobalVariables.POST_TargetedAgeRange.ToAge=response.result.posT_Targeted_AgeRange.max_age 
+      //Handling Gender
+      variables.PostGlobalVariables.POST_TargetedGenderId=response.result.posT_Targeted_Gender.id
+      //Handling LANGUAGES
+      let Temp_FromatedLanguages=[]
+      response.result.posT_Targeted_Languages.map((lang)=>{
+        Temp_FromatedLanguages=[...Temp_FromatedLanguages,{
+            "name": lang.language_Name,
+            "key": lang.language_PlatformKey       
+        }]
+      })
+      //Handling Interests
+      let Temp_FromatedInterests=[]
+      response.result.posT_Targeted_Interests.map((interest)=>{
+        Temp_FromatedInterests=[...Temp_FromatedInterests,
+        {
+          "key": "TN",
+          "name": "Tunisie",
+          "type": "country",
+          "country_code": "TN",
+          "country_name": "Tunisie",
+          "supports_region": true,
+          "supports_city": true
+        }]
+      })
+
+      
+      //------END TASK-----//
+
+      }
+    }
+  });
   },[])
+  
+
+
   return (
     <>  
        <Paper sx={{ width: "100%", height:"100%", m: 1, p: 2, textAlign: "center" }} style={{margin:"1rem",padding:"1rem",boxShadow: '0px 0px 10px 0px rgba(0, 0, 0, 0.2)'}}>
 
 <SplitterComponent id="splitter" height="100%" width="100%" separatorSize={5} >
    <PanesDirective>
-   <PaneDirective  min='20%' content={()=>{return(<FirstPane ref={FirstPaneRef} handleAssetSelectionChange={handleAssetSelectionChange}  handleEditorChange={handleEditorChange} handlePageSelectionChange={handlePageSelectionChange} />)}} />
+   <PaneDirective  min='20%' content={()=>{return(<FirstPane ref={FirstPaneRef} handleAssetSelectionChange={handleAssetSelectionChange}  handleEditorChange={handleEditorChange} handlePageSelectionChange={handlePageSelectionChange} DefaultPostText={DefaultPostText} />)}} />
 
    
      <PaneDirective min='20%' content={()=>{return(<SecondPane  ref={SecondPaneRef} SamplePreview={SamplePreview} LivePreview={LivePreview} TextCode={TextCode} />)}} />

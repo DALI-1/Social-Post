@@ -254,7 +254,7 @@ export function AddDynamicFieldDialog(props) {
   {
     DynamicField.listOfPagesDynamicFieldValues=listOfPagesDynamicFieldValues
     variables.PostGlobalVariables.POST_AddedDynamicFields=[...variables.PostGlobalVariables.POST_AddedDynamicFields,DynamicField]
-    toast.success("Pattern Created.", {
+    toast.info("Pattern Created.", {
       position: "bottom-left",
       autoClose: 5000,
       hideProgressBar: false,
@@ -653,7 +653,7 @@ tempDynamicFieldsVar= variables.PostGlobalVariables.POST_AddedDynamicFields.filt
 }
 }) 
 variables.PostGlobalVariables.POST_AddedDynamicFields=tempDynamicFieldsVar
-toast.success("Dynamic Field Successfully removed !", {
+toast.info("Dynamic Field removed !", {
   position: "bottom-left",
   autoClose: 5000,
   hideProgressBar: false,
@@ -720,17 +720,7 @@ function CollapseRow(props) {
           {dfdata.patternID}
         </TableCell>
         <TableCell>{patternName}</TableCell>
-        <TableCell><IconButton onClick={()=>{handleRemove(dfdata.patternID);props.RemoveDynamicFieldText(patternTxt);SetLocalReRender(!LocalRerender)
-        ;toast.info("The selected DynamicField deleted successfully !", {
-          position: "bottom-left",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });}}>
+        <TableCell><IconButton onClick={()=>{handleRemove(dfdata.patternID);props.RemoveDynamicFieldText(patternTxt);SetLocalReRender(!LocalRerender)}}>
           <DeleteIcon/>
         </IconButton>
         </TableCell>

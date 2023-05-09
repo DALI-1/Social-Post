@@ -16,12 +16,7 @@ import Typography from "@mui/material/Typography";
 import LinearLoadingSpinner from "../../components/LinearLoadingSpinner";
 import { AppContext } from "../../context/Context";
 import SendIcon from '@mui/icons-material/Send';
-import {
-  ProfileSelectedTabActions,
-  ProfileTabs,
-  GroupSelectedTabActions,
-  GroupTabs,
-} from "../../variables/variables";
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import * as variables from "../../variables/variables";
 import { Avatar } from "@nextui-org/react";
 import EditIcon from "@mui/icons-material/Edit";
@@ -51,6 +46,9 @@ function Header(props) {
     }
 
     if (GlobalState.PostSelectedTab == variables.PostTabs.EditPost) {
+      SetTabMenu(1);
+    }
+    if (GlobalState.PostSelectedTab == variables.PostTabs.PreviewPost) {
       SetTabMenu(1);
     }
   }, [GlobalState]);
@@ -157,6 +155,19 @@ function Header(props) {
               label={
                 <>
                   <EditIcon /> <p>Edit Post</p>
+                </>
+              }
+              onClick={() => {
+                Dispatch({ type: variables.PostSelectedTabActions.SelectEditPost });
+              }}
+            />
+          )}
+
+          {GlobalState.PostSelectedTab == variables.PostTabs.PreviewPost && (
+            <Tab
+              label={
+                <>
+                  <VisibilityIcon /> <p>Preview Post</p>
                 </>
               }
               onClick={() => {

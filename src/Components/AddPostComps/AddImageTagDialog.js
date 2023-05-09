@@ -42,6 +42,7 @@ export default function AlertDialogSlide({SetShowImageTagDialog,SelectedAssets})
   //-------------------------------------NOTE:Here you find the Component states and variables---------------------------------///
   let [ListOfPossible_Users_To_Tag,setListOfPossible_Users_To_Tag]=React.useState([])
   let [ListOfBoxes,setListOfBoxes]=React.useState([])
+  console.log(ListOfBoxes)
   let [current_ScrollTop,setcurrent_ScrollTop]=React.useState(0);
   let [current_ScrollLeft,setcurrent_ScrollLeft]=React.useState(0);
   let current_X=React.useRef(0);
@@ -79,10 +80,12 @@ React.useEffect(()=>{
 
   variables.PostGlobalVariables.POST_AssetsTags.map((Tag)=>{
 
+    
     //---------We test if we already have tags for this specific Image-------------//
     if(Tag.Id==SelectedAssets[0].value)
     {
       let Temp_ListOfBoxes=[]
+      console.log(Tag.Assetags)
       Tag.Assetags.map((tag)=>{
         let BoxObj={
           BoxID:hashRandom(),
