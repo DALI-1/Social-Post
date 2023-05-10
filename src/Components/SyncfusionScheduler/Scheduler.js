@@ -1,7 +1,11 @@
 import * as React from 'react';
 import {AppContext} from "../../context/Context"
 import * as variables from "../../variables/variables"
-import { ScheduleComponent, Day, Week, WorkWeek, Month, Agenda, Inject } from '@syncfusion/ej2-react-schedule';
+import { ScheduleComponent, Day, Week, WorkWeek,
+   Month, Agenda, Inject,MonthAgenda, TimelineViews,
+    TimelineMonth,ViewsDirective, ViewDirective  }
+ from '@syncfusion/ej2-react-schedule';
+ import { extend } from '@syncfusion/ej2-base';
  import CustomCell from "./CustomCell"
  import * as APILib from "../../libs/APIAccessAndVerification"
 import {  toast } from 'react-toastify';
@@ -118,6 +122,7 @@ return (
        </DialogContent>
 
         <DialogActions>
+        <Button variant="outlined"color="primary"  onClick={handleClose}>Cancel</Button>
         <Button variant="outlined"color="primary"  onClick={HandlePreviewPost}>Preview Post</Button>
           <Button variant="outlined"color="primary"  onClick={HandleModifyPost}>Modify Post</Button>
           <Button variant="outlined"color="error"  onClick={HandleDeletePost}>¨Delete Post</Button>
@@ -132,6 +137,7 @@ export default function App() {
   const {GlobalState,Dispatch}=React.useContext(AppContext)
   const [data,setdata]=React.useState([
   ])
+  
   const [ModifyPostShow,setModifyPostShow]=React.useState(false)
   const [DeletePostShow,setDeletePostShow]=React.useState(false)
   const [SelectedPostID,SetSelectedPostID]=React.useState(false)
@@ -207,7 +213,8 @@ if(args.type=="Editor")
 
   }
 };
-const eventSettings = { dataSource: data, fields: fieldsData }
+
+const eventSettings = { dataSource: extend([], data, null, true), fields: fieldsData }
   //eventsettings contanis the data of the scheduled posts we want to show
   return (<>
    <ScheduleComponent
@@ -215,8 +222,27 @@ const eventSettings = { dataSource: data, fields: fieldsData }
     eventSettings={eventSettings}
     cellTemplate={CustomCell}
     popupOpen={popupOpenHandler}
+    width='100%' height='700px' currentView='Month'
+    allowResizing={true}
+    cssClass='schedule-cell-dimension'
     >  
-        <Inject services={[Day, Week,WorkWeek, Month, Agenda]}/>
+    <ViewsDirective>
+
+            <ViewDirective option='Day' />
+            <ViewDirective option='Week' />
+            <ViewDirective option='Month' />
+            <ViewDirective option='Agenda' />
+            
+           {/*
+            <ViewDirective option='MonthAgenda' />
+            <ViewDirective option='TimelineDay' />
+            <ViewDirective option='TimelineWeek' />
+            <ViewDirective option='TimelineMonth' />
+            */
+           }
+            
+          </ViewsDirective>
+    <Inject services={[Day, Week, WorkWeek, Month, Agenda, MonthAgenda, TimelineViews, TimelineMonth ]} />
     </ScheduleComponent>
   {ModifyPostShow&&<ModifyDialog ModifyPostShow={ModifyPostShow} setModifyPostShow={setModifyPostShow} postid={SelectedPostID} setdata={setdata} data={data} DeletePostShow={DeletePostShow} setDeletePostShow={setDeletePostShow}/>}
   {DeletePostShow&&<DeleteConfirmDialog DeletePostShow={DeletePostShow} setDeletePostShow={setDeletePostShow} postid={SelectedPostID} setdata={setdata} data={data}/>}

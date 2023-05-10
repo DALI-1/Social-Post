@@ -28,11 +28,11 @@
   .post-container
   {
     display: block;
-    padding: 0.7rem;
-    background-color: #3179b924
+    background-color: #b93f3124
   }
   .FadedPost
   {
+    margin: 10px;
     box-sizing:border-box;
     background-color: rgb(243, 244, 244);
     border-radius: 6px;
@@ -45,7 +45,8 @@
   { /* or block, depending on your layout */
     background-color: darkgrey;
     color:darkgrey ;
-    margin:1rem;
+    margin-top: 5px;
+    margin-bottom: 5px;
     border-radius: 6px;
     opacity: 0.5;
   }

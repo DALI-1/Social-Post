@@ -58,9 +58,10 @@ const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelectionChange,handleAssetSelectionChange},ref)=> {
   
+ 
   //--------------------Variables specific the posting options------------------------------//
   const editorRef =React.useRef(null)
-  const Post_DateInput=React.useRef(dayjs(variables.PostGlobalVariables.POST_Scheduler_Selected_DateTime))
+  const Post_DateInput=React.useRef(variables.PostGlobalVariables.POST_Scheduler_Selected_DateTime)
   const Post_RepeatCheckbox=React.useRef(false)
   const Post_RepeatingOptionDropDownList=React.useRef(1)
   //const Post_Repeat_EveryInput=React.useRef(null)
@@ -70,7 +71,7 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
   ///-----------------------------------End of variabiles specific to Posting options--------------------///
   const handlePostDateChange = (date) => {
     //dayjs(date.$d)
-    Post_DateInput.current=date.$d
+    Post_DateInput.current=date
   }
   const HandlePost_RepeatCheckbox=(v)=>
   {
@@ -120,6 +121,7 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
   const HandlePostSchedule=(()=>{
 
     let EditorContent=editorRef.current.getContent()
+    
     let Post_Date=Post_DateInput.current
     let Repeat=Post_RepeatCheckbox.current
     let RepeatDropDownListSelection=Post_RepeatingOptionDropDownList.current
@@ -1017,8 +1019,7 @@ const HandleImageTag=(()=>{
           'MobileDateTimePicker'
         ]}
       >
-        {/* defaultValue={dayjs(new Date())}*/}
-          <MobileDateTimePicker label="Post Date" defaultValue={dayjs(variables.PostGlobalVariables.POST_Scheduler_Selected_DateTime).add(-1,"day")}  onChange={handlePostDateChange}  /> 
+          <MobileDateTimePicker label="Post Date" defaultValue={variables.PostGlobalVariables.POST_Scheduler_Selected_DateTime.add(-1,"hour")} onChange={handlePostDateChange}  /> 
       </DemoContainer>
     </LocalizationProvider>
 
@@ -1049,12 +1050,6 @@ const HandleImageTag=(()=>{
 
       </FormControl>
           </Row>
-
-          {/*<Row style={{margin:"1rem"}}>
-            <Col><p style={{marginTop:"1.3rem"}}>Repeat Every </p></Col>
-            <Col><TextField onChange={HandlePost_Repeat_EveryInput} id="outlined-basic" variant="outlined" /></Col>
-            <Col style={{marginTop:"1.3rem"}} >Days</Col>
-      </Row>*/}
           
           <Row style={{margin:"1rem"}}>
                       <FormControl>
@@ -1340,6 +1335,7 @@ export default function Content() {
         variables.PostGlobalVariables.POST_CachedInterestOptions=[]
 
   },[])
+
   return (
     <>  
        <Paper sx={{ width: "100%", height:"100%", m: 1, p: 2, textAlign: "center" }} style={{margin:"1rem",padding:"1rem",boxShadow: '0px 0px 10px 0px rgba(0, 0, 0, 0.2)'}}>

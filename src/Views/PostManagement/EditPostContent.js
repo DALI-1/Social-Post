@@ -58,20 +58,19 @@ import * as SearchLib from "../../libs/Facebook_Search"
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelectionChange,handleAssetSelectionChange,DefaultPostText},ref)=> {
-  
   //--------------------Variables specific the posting options------------------------------//
   const editorRef =React.useRef(null)
-  const Post_DateInput=React.useRef(dayjs(variables.PostGlobalVariables.POST_Scheduler_Selected_DateTime))
-  const Post_RepeatCheckbox=React.useRef(false)
-  const Post_RepeatingOptionDropDownList=React.useRef(1)
+  const Post_DateInput=React.useRef(variables.PostGlobalVariables.EDITPOST_Default_PostDate)
+  const Post_RepeatCheckbox=React.useRef(variables.PostGlobalVariables.EDITPOST_Default_RepeatPost)
+  const Post_RepeatingOptionDropDownList=React.useRef(variables.PostGlobalVariables.EDITPOST_Default_EndRepeatOption)
   //const Post_Repeat_EveryInput=React.useRef(null)
-  const Post_EndRepeatRadioBox=React.useRef(1)
-  const Post_EndRepeatOnNbOfOccurencesInput=React.useRef(null)
-  const Post_EndRepeatAfterDateInput=React.useRef(null)
+  const Post_EndRepeatRadioBox=React.useRef(variables.PostGlobalVariables.EDITPOST_Default_EndRepeatOption)
+  const Post_EndRepeatOnNbOfOccurencesInput=React.useRef(variables.PostGlobalVariables.EDITPOST_Default_EndRepeatOnNbOfOccurences)
+  const Post_EndRepeatAfterDateInput=React.useRef(variables.PostGlobalVariables.EDITPOST_Default_EndRepeatAfterDate)
   ///-----------------------------------End of variabiles specific to Posting options--------------------///
   const handlePostDateChange = (date) => {
     //dayjs(date.$d)
-    Post_DateInput.current=date.$d
+    Post_DateInput.current=date
   }
   const HandlePost_RepeatCheckbox=(v)=>
   {
@@ -753,7 +752,7 @@ const CreateDefaultDynamicFields=()=>{
 }
 
   //this is related to scheduling
-  const [Repeat,setRepeat] = React.useState(false);
+  const [Repeat,setRepeat] = React.useState(variables.PostGlobalVariables.EDITPOST_Default_RepeatPost);
   const [PagesLoaded,SetPagesLoaded] = React.useState(false);
     //repeat things
  
@@ -1018,8 +1017,7 @@ const HandleImageTag=(()=>{
           'MobileDateTimePicker'
         ]}
       >
-        {/* defaultValue={dayjs(new Date())}*/}
-          <MobileDateTimePicker label="Post Date" defaultValue={dayjs(variables.PostGlobalVariables.POST_Scheduler_Selected_DateTime).add(-1,"day")}  onChange={handlePostDateChange}  /> 
+          <MobileDateTimePicker label="Post Date" defaultValue={variables.PostGlobalVariables.EDITPOST_Default_PostDate.add(-1,"hour")}  onChange={handlePostDateChange}  /> 
       </DemoContainer>
     </LocalizationProvider>
 
@@ -1039,7 +1037,7 @@ const HandleImageTag=(()=>{
           labelId="demo-simple-select-helper-label"
           id="demo-simple-select-helper"
           label="Post Repeating Option"
-         defaultValue={1}
+         defaultValue={variables.PostGlobalVariables.EDITPOST_Default_RepeatingOption}
         >
           <MenuItem value={1}>Hourly</MenuItem>
           <MenuItem value={2}>Daily</MenuItem>
@@ -1064,7 +1062,7 @@ const HandleImageTag=(()=>{
              onChange={HandlePost_EndRepeatRadioBox}
               aria-labelledby="demo-radio-buttons-group-label"
               name="radio-buttons-group"
-              defaultValue={1}
+              defaultValue={variables.PostGlobalVariables.EDITPOST_Default_EndRepeatOption}
             >
               <Row style={{margin:"1rem"}}><Col xs={4}>
               <FormControlLabel style={{marginTop:"0.4rem"}} value="1" control={<Radio />} label="Never" defaultChecked />
@@ -1074,7 +1072,7 @@ const HandleImageTag=(()=>{
               </Row>
             <Row style={{margin:"1rem"}}>
             <Col xs={4}><FormControlLabel style={{marginTop:"0.4rem"}} value="2" control={<Radio />} label="On" /></Col>
-            <Col xs={6}><TextField onChange={HandlePost_EndRepeatOnNbOfOccurencesInput} id="outlined-basic" variant="outlined" /></Col>
+            <Col xs={6}><TextField onChange={HandlePost_EndRepeatOnNbOfOccurencesInput} defaultValue={variables.PostGlobalVariables.EDITPOST_Default_EndRepeatOnNbOfOccurences} id="outlined-basic" variant="outlined" /></Col>
             <Col style={{marginTop:"1.3rem"}} >Occurences</Col>
           </Row>
 
@@ -1082,7 +1080,7 @@ const HandleImageTag=(()=>{
             <Col xs={4}><FormControlLabel style={{marginTop:"0.4rem"}} value="3" control={<Radio />} label="After" /></Col>
             <Col xs={6}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <MobileDateTimePicker onChange={HandlePost_EndRepeatAfterDateInput} label="Post Date"/>  
+          <MobileDateTimePicker onChange={HandlePost_EndRepeatAfterDateInput} defaultValue={variables.PostGlobalVariables.EDITPOST_Default_EndRepeatAfterDate} label="Post Date"/>  
          </LocalizationProvider></Col>
          <Col></Col>
             
@@ -1426,8 +1424,8 @@ export default   function Content() {
             "Tag_Y": parseInt(tag.taggedImage_Y),
             "Screen_x":  parseInt(tag.app_Screen_x),
             "Screen_y":  parseInt(tag.app_Screen_y),
-            "ScrollTopValue": parseInt(tag.app_ScrollLeftValue),
-            "ScrollLeftValue": parseInt(tag.app_ScrollTopValue),
+            "ScrollTopValue": parseInt(tag.app_ScrollTopValue),
+            "ScrollLeftValue": parseInt(tag.app_ScrollLeftValue),
             "TaggedPersonPic": tag.taggedPlatformAccount.cachedData_PictureURL,
             "TaggedPersonName": tag.taggedPlatformAccount.cachedData_Name
         }]
@@ -1451,190 +1449,296 @@ export default   function Content() {
       //------END TASK-----//
 
         //------TASK:preparing  the  Text and Mentions -----//
-        let Temp_PostText=response.result.postText
-        const regex = /\@\[(\d+)\]/g;
-        const matches = Temp_PostText.match(regex);
-        const userIds = matches.map(match => match.match(/\d+/)[0]);
-        //Creating an empty mapping variable between the pattern and how the text should be shown to the user
-        let MentionCode_Text=[]
-        let Temp_FormatedMentions=[]
-        response.result.postMentions.map((mention)=>{
-          //Filling the mapping variable here
-          userIds.map((userid,index)=>{
-            if(mention.mentioned_PlatformAccount.platformAccountID==userid)
-           {
-            MentionCode_Text=[...MentionCode_Text,{"MentionCode":matches[index],"MentionText":"@"+mention.mentioned_PlatformAccount.cachedData_Name.replaceAll(" ","")}]
-            Temp_FormatedMentions=[...Temp_FormatedMentions,{
-              "MentionedUserID":mention.mentioned_PlatformAccount.platformAccountID ,
-              "MentionText": "@"+mention.mentioned_PlatformAccount.cachedData_Name.replaceAll(" ",""),
-              "Preview_Name": mention.mentioned_PlatformAccount.cachedData_Name
-            }]
-           }
-          })
-           
-        })
-        // Using the mapping values to replace the string shown to the user
-        MentionCode_Text.map((Mapping)=>{
-          Temp_PostText=Temp_PostText.replaceAll(Mapping.MentionCode, Mapping.MentionText);
-        })
-        variables.PostGlobalVariables.POST_Mentions=Temp_FormatedMentions
 
-      setDefaultPostText(Temp_PostText)
+        if(response.result.postMentions.length>0)
+        {
+            //Case where there is mentions in the text
+            let Temp_PostText=response.result.postText
+            const regex = /\@\[(\d+)\]/g;
+            const matches = Temp_PostText.match(regex);
+            const userIds = matches.map(match => match.match(/\d+/)[0]);
+            //Creating an empty mapping variable between the pattern and how the text should be shown to the user
+            let MentionCode_Text=[]
+            let Temp_FormatedMentions=[]
+            response.result.postMentions.map((mention)=>{
+              //Filling the mapping variable here
+              userIds.map((userid,index)=>{
+                if(mention.mentioned_PlatformAccount.platformAccountID==userid)
+                {
+                MentionCode_Text=[...MentionCode_Text,{"MentionCode":matches[index],"MentionText":"@"+mention.mentioned_PlatformAccount.cachedData_Name.replaceAll(" ","")}]
+                Temp_FormatedMentions=[...Temp_FormatedMentions,{
+                  "MentionedUserID":mention.mentioned_PlatformAccount.platformAccountID ,
+                  "MentionText": "@"+mention.mentioned_PlatformAccount.cachedData_Name.replaceAll(" ",""),
+                  "Preview_Name": mention.mentioned_PlatformAccount.cachedData_Name
+                }]
+                }
+              })
+                
+            })
+            // Using the mapping values to replace the string shown to the user
+            MentionCode_Text.map((Mapping)=>{
+              Temp_PostText=Temp_PostText.replaceAll(Mapping.MentionCode, Mapping.MentionText);
+            })
+            variables.PostGlobalVariables.POST_Mentions=Temp_FormatedMentions
+
+            setDefaultPostText(Temp_PostText)
+        }
+        //Case there is no mentions, just plain text
+        else
+        {
+          setDefaultPostText(response.result.postText)
+        }
+       
+
       //------END TASK-----//
 
 
 
       //------TASK:preparing  the  Targetting Options -----//
       //handling age
-      variables.PostGlobalVariables.POST_TargetedAgeRange.FromAge=response.result.posT_Targeted_AgeRange.min_age   
-      variables.PostGlobalVariables.POST_TargetedAgeRange.ToAge=response.result.posT_Targeted_AgeRange.max_age 
+      //Case where the age is targetted
+      if(response.result.posT_Targeted_AgeRange!=null)
+      {
+        variables.PostGlobalVariables.POST_TargetedAgeRange.FromAge=response.result.posT_Targeted_AgeRange.min_age   
+        variables.PostGlobalVariables.POST_TargetedAgeRange.ToAge=response.result.posT_Targeted_AgeRange.max_age 
+      }
       //Handling Gender
-      variables.PostGlobalVariables.POST_TargetedGenderId=response.result.posT_Targeted_Gender.id
-      //Handling LANGUAGES
-      let Temp_FormatedLanguages=[]
-      response.result.posT_Targeted_Languages.map((lang)=>{
-        Temp_FormatedLanguages=[...Temp_FormatedLanguages,{
-            "name": lang.language_Name,
-            "key": lang.language_PlatformKey       
-        }]
-      })
-      variables.PostGlobalVariables.POST_TargetedLanguages=Temp_FormatedLanguages
-      //Handling Interests
-      let Temp_FormatedInterests=[]
-      let Temp_CachedInterests=[]
-      response.result.posT_Targeted_Interests.map((interest)=>{
-        Temp_FormatedInterests=[...Temp_FormatedInterests,
-        {
-          "id": interest.id,
-        "interest_Name": interest.interest_Name,
-        "interest_PlatformCode": interest.interest_PlatformCode,
-        "interest_Description": interest.interest_Description,
-        "interest_Topic": interest.interest_Topic,
-        "interest_Targeted_Posts": interest.interest_Targeted_Posts,
-        "interest_PlatformId": interest.interest_PlatformId,
-        "interest_Platform": interest.interest_Platform
-        }]
-        //Getting the List of interests with the same name
-        let List_Of_Audience_Interests=SearchLib.Facebook_Get_Audience_Interests(interest.interest_Name)
-        //Filling the options list with the data, so that later it finds it and shows  it checked by default
-        List_Of_Audience_Interests.then((Result)=>{
-          if(Result.length!==0)
-          {
-             Temp_CachedInterests= [...Temp_CachedInterests, ...Result].reduce((acc, curr) => {
-              const found = acc.find(item => item.id === curr.id);
-              if (!found) {
-                acc.push(curr);
-              }
-              return acc;
-            }, [])     
-          }
-        })
-
-       })
-       variables.PostGlobalVariables.POST_CachedInterestOptions=Temp_CachedInterests
-       variables.PostGlobalVariables.POST_TargetedInterests=Temp_FormatedInterests
-
-       //Handling countries
-
-       let Temp_FormatedCountries=[]
-      let Temp_CachedCountries=[]
-      response.result.posT_Targeted_Countries.map((country)=>{
-        Temp_FormatedCountries=[...Temp_FormatedCountries,
-        {
-          "id": country.id,
-          "country_Name": country.country_Name,
-          "country_Key": country.country_Key,
-          "country_PlatformCode": country.country_PlatformCode,
-        }]
-        //Getting the List of interests with the same name
-        let List_Of_Countries=SearchLib.Facebook_Get_Audience_Countries(country.country_Name)
-        //Filling the options list with the data, so that later it finds it and shows  it checked by default
-        List_Of_Countries.then((Result)=>{
-          if(Result.length!==0)
-          {
-           Temp_CachedCountries= [...Temp_CachedCountries, ...Result].reduce((acc, curr) => {
-              const found = acc.find(item => item.id === curr.id);
-              if (!found) {
-                acc.push(curr);
-              }
-              return acc;
-            }, [])     
-          }
-        })
-
-       })
+      //case there is targetted gende"rs
+      if(response.result.posT_Targeted_Gender!=null)
+      {
+        variables.PostGlobalVariables.POST_TargetedGenderId=response.result.posT_Targeted_Gender.id
+      }
       
-       variables.PostGlobalVariables.POST_CachedCountryOptions=Temp_CachedCountries
-       variables.PostGlobalVariables.POST_TargetedCountries=Temp_FormatedCountries
+      //Handling LANGUAGES
+      //Case there is targetted languages
+      if(response.result.posT_Targeted_Languages.length>0)
+      {
+        let Temp_FormatedLanguages=[]
+        response.result.posT_Targeted_Languages.map((lang)=>{
+          Temp_FormatedLanguages=[...Temp_FormatedLanguages,{
+              "name": lang.language_Name,
+              "key": lang.language_PlatformKey       
+          }]
+        })
+        variables.PostGlobalVariables.POST_TargetedLanguages=Temp_FormatedLanguages
+      }
+      //Handling Interests
+      //Case there is targetted Interests
+      if(response.result.posT_Targeted_Interests.length>0)
+      {
+        let Temp_FormatedInterests=[]
+        let Temp_CachedInterests=[]
+        response.result.posT_Targeted_Interests.map((interest)=>{
+          Temp_FormatedInterests=[...Temp_FormatedInterests,
+          {
+            "id": interest.id,
+          "interest_Name": interest.interest_Name,
+          "interest_PlatformCode": interest.interest_PlatformCode,
+          "interest_Description": interest.interest_Description,
+          "interest_Topic": interest.interest_Topic,
+          "interest_Targeted_Posts": interest.interest_Targeted_Posts,
+          "interest_PlatformId": interest.interest_PlatformId,
+          "interest_Platform": interest.interest_Platform
+          }]
+          //Getting the List of interests with the same name
+          let List_Of_Audience_Interests=SearchLib.Facebook_Get_Audience_Interests(interest.interest_Name)
+          //Filling the options list with the data, so that later it finds it and shows  it checked by default
+          List_Of_Audience_Interests.then((Result)=>{
+            if(Result.length!==0)
+            {
+               Temp_CachedInterests= [...Temp_CachedInterests, ...Result].reduce((acc, curr) => {
+                const found = acc.find(item => item.id === curr.id);
+                if (!found) {
+                  acc.push(curr);
+                }
+                return acc;
+              }, [])     
+            }
+          })
+  
+         })
+         variables.PostGlobalVariables.POST_CachedInterestOptions=Temp_CachedInterests
+         variables.PostGlobalVariables.POST_TargetedInterests=Temp_FormatedInterests
+      }
+    
+       //Handling countries
+       //Case there is countries in the list
+       if(response.result.posT_Targeted_Countries.length>0)
+       {
+        let Temp_FormatedCountries=[]
+        let Temp_CachedCountries=[]
+        response.result.posT_Targeted_Countries.map((country)=>{
+          Temp_FormatedCountries=[...Temp_FormatedCountries,
+          {
+            "id": country.id,
+            "country_Name": country.country_Name,
+            "country_Key": country.country_Key,
+            "country_PlatformCode": country.country_PlatformCode,
+          }]
+          //Getting the List of interests with the same name
+          let List_Of_Countries=SearchLib.Facebook_Get_Audience_Countries(country.country_Name)
+          //Filling the options list with the data, so that later it finds it and shows  it checked by default
+          List_Of_Countries.then((Result)=>{
+            if(Result.length!==0)
+            {
+             Temp_CachedCountries= [...Temp_CachedCountries, ...Result].reduce((acc, curr) => {
+                const found = acc.find(item => item.id === curr.id);
+                if (!found) {
+                  acc.push(curr);
+                }
+                return acc;
+              }, [])     
+            }
+          })
+  
+         })
+        
+         variables.PostGlobalVariables.POST_CachedCountryOptions=Temp_CachedCountries
+         variables.PostGlobalVariables.POST_TargetedCountries=Temp_FormatedCountries
+       }
+       
        //Handling Regions
-       let Temp_FormatedRegions=[]
-       let Temp_CachedRegions=[]
-       response.result.posT_Targeted_Regions.map((region)=>{
-        Temp_FormatedRegions=[...Temp_FormatedRegions,
-         {
-          "id": region.id,
-          "region_Name": region.region_Name,
-          "region_PlatformCode": region.region_PlatformCode,
-          "region_CountryId": region.region_CountryId,
-          "region_PlatformId": region.region_PlatformId,
-         }]
-         //Getting the List of Regions with the same name
-         let List_Of_Regions=SearchLib.Facebook_Get_Audience_Regions([region.region_Country],region.region_Name)        
-         //Filling the options list with the data, so that later it finds it and shows  it checked by default
-         List_Of_Regions.then((Result)=>{
-         
-           if(Result.length!==0)
-           {
-             Temp_CachedRegions= [...Temp_CachedRegions, ...Result].reduce((acc, curr) => {
-               const found = acc.find(item => item.id === curr.id);
-               if (!found) {
-                 acc.push(curr);
-               }
-               return acc;
-             }, []) 
-             
-           }
+       //Case there is Regions in the list
+       if(response.result.posT_Targeted_Regions.length>0)
+       {
+        let Temp_FormatedRegions=[]
+        let Temp_CachedRegions=[]
+        response.result.posT_Targeted_Regions.map((region)=>{
+         Temp_FormatedRegions=[...Temp_FormatedRegions,
+          {
+           "id": region.id,
+           "region_Name": region.region_Name,
+           "region_PlatformCode": region.region_PlatformCode,
+           "region_CountryId": region.region_CountryId,
+           "region_PlatformId": region.region_PlatformId,
+          }]
+          //Getting the List of Regions with the same name
+          let List_Of_Regions=SearchLib.Facebook_Get_Audience_Regions([region.region_Country],region.region_Name)        
+          //Filling the options list with the data, so that later it finds it and shows  it checked by default
+          List_Of_Regions.then((Result)=>{
+          
+            if(Result.length!==0)
+            {
+              Temp_CachedRegions= [...Temp_CachedRegions, ...Result].reduce((acc, curr) => {
+                const found = acc.find(item => item.id === curr.id);
+                if (!found) {
+                  acc.push(curr);
+                }
+                return acc;
+              }, []) 
+              
+            }
+          })
+  
          })
- 
-        })
-        variables.PostGlobalVariables.POST_CachedRegionOptions=Temp_CachedRegions
-        variables.PostGlobalVariables.POST_TargetedRegions=Temp_FormatedRegions
-
-
+         variables.PostGlobalVariables.POST_CachedRegionOptions=Temp_CachedRegions
+         variables.PostGlobalVariables.POST_TargetedRegions=Temp_FormatedRegions
+       }
         //Handling Locations
-       let Temp_FormatedLocations=[]
-       let Temp_CachedLocations=[]
-       response.result.posT_Targeted_Locations.map((Location)=>{
-        Temp_FormatedLocations=[...Temp_FormatedLocations,
-         {
-          "id": Location.id,
-          "location_Name": Location.location_Name,
-          "location_Type": Location.location_Type,
-          "location_PlatformCode": Location.location_PlatformCode,
-         }]
-         //Getting the List of Regions with the same name
-         console.log(Location)
-         let List_Of_Locations=SearchLib.Facebook_Get_Audience_Locations([Location.location_Region],Location.location_Name)  
-         console.log([Location.location_Region.region_PlatformCode])     
-         //Filling the options list with the data, so that later it finds it and shows  it checked by default
-         List_Of_Locations.then((Result)=>{
-         
-           if(Result.length!==0)
-           {
-            Temp_CachedLocations= [...Temp_CachedLocations, ...Result].reduce((acc, curr) => {
-               const found = acc.find(item => item.id === curr.id);
-               if (!found) {
-                 acc.push(curr);
-               }
-               return acc;
-             }, []) 
-             
-           }
-         })
- 
-        })
-        variables.PostGlobalVariables.POST_CachedLocationOptions=Temp_CachedLocations
-        variables.PostGlobalVariables.POST_TargetedLocations=Temp_FormatedLocations
+        //case there is targetted locations
+        if(response.result.posT_Targeted_Locations>0)
+        {
+          let Temp_FormatedLocations=[]
+          let Temp_CachedLocations=[]
+          response.result.posT_Targeted_Locations.map((Location)=>{
+           Temp_FormatedLocations=[...Temp_FormatedLocations,
+            {
+             "id": Location.id,
+             "location_Name": Location.location_Name,
+             "location_Type": Location.location_Type,
+             "location_PlatformCode": Location.location_PlatformCode,
+            }]
+            //Getting the List of Regions with the same name
+            console.log(Location)
+            let List_Of_Locations=SearchLib.Facebook_Get_Audience_Locations([Location.location_Region],Location.location_Name)  
+            console.log([Location.location_Region.region_PlatformCode])     
+            //Filling the options list with the data, so that later it finds it and shows  it checked by default
+            List_Of_Locations.then((Result)=>{
+            
+              if(Result.length!==0)
+              {
+               Temp_CachedLocations= [...Temp_CachedLocations, ...Result].reduce((acc, curr) => {
+                  const found = acc.find(item => item.id === curr.id);
+                  if (!found) {
+                    acc.push(curr);
+                  }
+                  return acc;
+                }, []) 
+                
+              }
+            })
+    
+           })
+           variables.PostGlobalVariables.POST_CachedLocationOptions=Temp_CachedLocations
+           variables.PostGlobalVariables.POST_TargetedLocations=Temp_FormatedLocations
+        }
+      
+      //------END TASK-----//
+
+      //updating  post date
+      console.log(dayjs(response.result.postDate))
+      variables.PostGlobalVariables.EDITPOST_Default_PostDate=dayjs(response.result.postDate)
+      //updating repeat option
+      variables.PostGlobalVariables.EDITPOST_Default_RepeatPost=response.result.repeatPost
+      //If the post has repeat option on, we update the repeat options
+      if(variables.PostGlobalVariables.EDITPOST_Default_RepeatPost)
+      { 
+        //We updating the repeat option, hourly, monthly
+        switch (response.result.repeatOption) {
+         case "Hourly":
+           variables.PostGlobalVariables.EDITPOST_Default_RepeatingOption=1
+           break;
+         case "Daily":
+           variables.PostGlobalVariables.EDITPOST_Default_RepeatingOption=2
+           break;
+         case "Weekly":
+           variables.PostGlobalVariables.EDITPOST_Default_RepeatingOption=3
+           break;
+         case "Monthly":
+           variables.PostGlobalVariables.EDITPOST_Default_RepeatingOption=4
+           break;  
+         case "Yearly":
+           variables.PostGlobalVariables.EDITPOST_Default_RepeatingOption=5
+           break;
+         default:
+           variables.PostGlobalVariables.EDITPOST_Default_RepeatingOption=1
+       }
+        //We update the Endrepeat option
+       switch (response.result.endRepeatOption) {
+         case "NoEnd":
+           variables.PostGlobalVariables.EDITPOST_Default_EndRepeatOption=1
+           break;
+         case "EndOccOption":
+           variables.PostGlobalVariables.EDITPOST_Default_EndRepeatOption=2
+           variables.PostGlobalVariables.EDITPOST_Default_EndRepeatOnNbOfOccurences=response.result.post_Occurence
+           break;
+         case "EndDateOption":
+           variables.PostGlobalVariables.EDITPOST_Default_EndRepeatOption=3
+           variables.PostGlobalVariables.EDITPOST_Default_EndRepeatAfterDate=dayjs(response.result.endRepeatAfterDate)
+           break;
+         default:
+           variables.PostGlobalVariables.EDITPOST_Default_EndRepeatOption=2
+           variables.PostGlobalVariables.EDITPOST_Default_EndRepeatOnNbOfOccurences=response.result.post_Occurence
+
+           
+       }
+     
+       
+       
+      }
+      
+    
+   
+console.log(variables.PostGlobalVariables.EDITPOST_Default_RepeatPost,
+  variables.PostGlobalVariables.EDITPOST_Default_EndRepeatAfterDate,
+  variables.PostGlobalVariables.EDITPOST_Default_EndRepeatOnNbOfOccurences,
+  variables.PostGlobalVariables.EDITPOST_Default_PostDate,
+  )
+
+  
+      
+      //-----------preparing the repeat options------------//
+
 
       //------END TASK-----//
 

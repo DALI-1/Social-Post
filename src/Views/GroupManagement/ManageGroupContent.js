@@ -353,7 +353,7 @@ export default function Content() {
       
        <Row>
        {ViewMode==="Tabular"&&<>
-       <Paper sx={{ width: '100%', m: 1 ,textAlign: "center" }}>
+       <Paper sx={{ width: '100%', m: 1 ,textAlign: "center",boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)' }}>
         <div style={{ textAlign: "right" }}>
       <Button  variant="outlined"color="primary"className="mx-2 m-2"startIcon={<AddIcon/>} onClick={handleAddNewGroup}> Add New SubGroup</Button>
       <Button  variant="outlined"color="primary"className="mx-2 m-2"startIcon={<EditIcon/>} onClick={handleModifyParentGroup}>Modifty Group</Button>
@@ -363,7 +363,7 @@ export default function Content() {
         SetDeleteShow(true)}}> Delete Group </Button>
        </div>
        </Paper>
-       <Paper sx={{ width: '100%', m: 1,p:2 ,textAlign: "center" }}>
+       <Paper sx={{ width: '100%', m: 1,p:2 ,textAlign: "center",boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)' }}>
        <TableContainer>
        <div style={{ textAlign: "center", margin:"1rem" }}>
        <Groups2SharpIcon   color="primary" style={{Margin:"1rem"}}/>

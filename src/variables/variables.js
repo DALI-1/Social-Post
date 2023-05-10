@@ -1,5 +1,5 @@
 
-
+import dayjs from 'dayjs';
 export const ProfileTabs=
 {
     ProfileTab:"ProfileTab",
@@ -269,6 +269,13 @@ export var PostGlobalVariables=
     POST_TargetedLanguages:[],
     POST_CachedLanguageOptions:[],
 
-    EDITPOST_SelectedPostID:null
+    //These EDIT values are used by the EDIT, they are the default values that the post should have
+    EDITPOST_SelectedPostID:null,
+    EDITPOST_Default_PostDate:dayjs(new Date()),
+    EDITPOST_Default_RepeatPost:false,
+    EDITPOST_Default_RepeatingOption:1,
+    EDITPOST_Default_EndRepeatOption:1,
+    EDITPOST_Default_EndRepeatOnNbOfOccurences:null,
+    EDITPOST_Default_EndRepeatAfterDate:null
 
 }

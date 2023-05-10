@@ -41,18 +41,18 @@
 {
   display: none !important;
 }
-
+/*This is used by the scheduler for that MORE +1*/
 .e-schedule .e-month-view .e-more-indicator
 {
-  color: #ffffff !important;
+  /*color: #ffffff !important;
   cursor: pointer !important;
   font-size: 15px !important;
   line-height: 18px !important;
   overflow: hidden !important;
-  padding: 2px 4px !important;
-  position: top !important;
-  text-overflow: ellipsis !important;
-  background-color: #317ab9 !important;
+  position: absolute !important;*/
+  top: 66px !important;
+  /*text-overflow: ellipsis !important;
+  background-color: #317ab9 !important;*/
 }
 
 /*This is to fix sheduler post button bug not responsive*/

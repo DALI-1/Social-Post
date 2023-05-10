@@ -1181,7 +1181,7 @@ React.useEffect(()=>{
 <Row>
 <Col>
 <Box sx={{ width: '100%' }}>
-<Paper sx={{ width: '100%', mb: 2 ,textAlign: "right" }}>
+<Paper sx={{ width: '100%', mb: 2 ,textAlign: "right",boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'}}>
 <Button
  variant="outlined"color="primary"
  className="mx-2 m-2"
@@ -1224,7 +1224,7 @@ React.useEffect(()=>{
 <Col>
 
 <Box sx={{ width: '100%' }}>
-      <Paper sx={{ width: '100%', mb: 2 }}>
+      <Paper sx={{ width: '100%', mb: 2,boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)' }}>
         <EnhancedTableToolbar numSelected={selected.length} HandleRemoveUser={HandleRemoveUser} SetFilterModal={SetFilterModal} />
         <TableContainer>
           <Table

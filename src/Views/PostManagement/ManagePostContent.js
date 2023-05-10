@@ -19,10 +19,8 @@ export default function Content() {
     <> 
        <Container>
        <Row>
-        <Col>
-        <Paper sx={{ width: '100%',height:"100%", m: 1,p:2 ,textAlign: "center" }}>
-        {/* <PostScheduler/>*/}  
-
+        <Col md={12}>
+        <Paper sx={{ width: '100%',height:"100%" ,textAlign: "center",boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)' }}>
        <PostSchedularCalendar/>
         </Paper>
         </Col>  

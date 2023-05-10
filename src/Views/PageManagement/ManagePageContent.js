@@ -391,7 +391,7 @@ export default function Content() {
       <Container>
         <Row>
           <Col>
-            <Paper sx={{ width: "100%", m: 1, textAlign: "center" }}>
+            <Paper sx={{ width: "100%",m:1, p: 1, textAlign: "center",boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)' }}>
               <div style={{ textAlign: "right" }}>           
                 <Button
                   variant="outlined"color="primary"
@@ -430,7 +430,7 @@ export default function Content() {
       <Container>
         <Row>
           <Col>
-            <Paper sx={{ width: "100%", m: 1, p: 2, textAlign: "center" }}>
+            <Paper sx={{ width: "100%" ,m:1, p:1 , textAlign: "center",boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'}}>
               {TooManyRequestsError&& 
                    <Alert severity="error">Too Many requests, Limit reached, please wait sometime before trying again</Alert>
               }
