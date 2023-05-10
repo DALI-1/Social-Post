@@ -185,19 +185,19 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
         variables.PostGlobalVariables.POST_TargetedLocations.map((Location)=>{
           ReFormatedTargetedLocations=[...ReFormatedTargetedLocations,
             {
-              location_Name: Location.name,
-              location_Type: Location.type,
-              location_PlatformCode: Location.key,
-              location_RegionId:Location.region_id
+              location_Name: Location.location_Name,
+              location_Type: Location.location_Type,
+              location_PlatformCode: Location.location_PlatformCode,
+              location_RegionId:Location.location_RegionId
           }]
         })      
           //Reformating Regions
         variables.PostGlobalVariables.POST_TargetedRegions.map((Region)=>{
           ReFormatedTargetedRegions=[...ReFormatedTargetedRegions,
             {    
-              region_Name: Region.name,
-              country_PlatformId: Region.country_code,
-              region_PlatformCode: Region.key
+              region_Name: Region.region_Name,
+              country_PlatformId: Region.country_PlatformId,
+              region_PlatformCode: Region.region_PlatformCode
           }]
 
         })   
@@ -206,19 +206,19 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
           ReFormatedTargetedCountries=[...ReFormatedTargetedCountries,
             {
              
-              country_Name: Country.name,
-              country_Key: Country.key,
-              country_PlatformCode: Country.country_code
+              country_Name: Country.country_Name,
+              country_Key: Country.country_Key,
+              country_PlatformCode: Country.country_PlatformCode
           }]
         })
          //Reformating Interests
         variables.PostGlobalVariables.POST_TargetedInterests.map((Interest)=>{
           ReFormatedTargetedInterests=[...ReFormatedTargetedInterests,
             {
-              interest_Name:Interest.name,
-              interest_PlatformCode:Interest.id ,
-              interest_Description: Interest.description,
-              interest_Topic: Interest.topic
+              interest_Name:Interest.interest_Name,
+              interest_PlatformCode:Interest.interest_PlatformCode ,
+              interest_Description: Interest.interest_Description,
+              interest_Topic: Interest.interest_Topic
             
           }]
         })
@@ -231,7 +231,6 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
           Formated_listOfMentionedPlatformAccounts=[...Formated_listOfMentionedPlatformAccounts,{mentionedPlatformAccount_ID:MentionedUser.MentionedUserID}]
           POST_Txt=POST_Txt.replace(MentionedUser.MentionText,"@["+MentionedUser.MentionedUserID+"]")
         })
-         console.log(Formated_listOfMentionedPlatformAccounts)
 
         //-------------------------NOTE: END OF Formating the Mentions for the backened--------------------------//
             var JsonObject = {  
@@ -407,19 +406,19 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
         variables.PostGlobalVariables.POST_TargetedLocations.map((Location)=>{
           ReFormatedTargetedLocations=[...ReFormatedTargetedLocations,
             {
-              location_Name: Location.name,
-              location_Type: Location.type,
-              location_PlatformCode: Location.key,
-              location_RegionId:Location.region_id
+              location_Name: Location.location_Name,
+              location_Type: Location.location_Type,
+              location_PlatformCode: Location.location_PlatformCode,
+              location_RegionId:Location.location_RegionId
           }]
         })      
           //Reformating Regions
         variables.PostGlobalVariables.POST_TargetedRegions.map((Region)=>{
           ReFormatedTargetedRegions=[...ReFormatedTargetedRegions,
             {    
-              region_Name: Region.name,
-              country_PlatformId: Region.country_code,
-              region_PlatformCode: Region.key
+              region_Name: Region.region_Name,
+              country_PlatformId: Region.country_PlatformId,
+              region_PlatformCode: Region.region_PlatformCode
           }]
 
         })   
@@ -428,19 +427,19 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
           ReFormatedTargetedCountries=[...ReFormatedTargetedCountries,
             {
              
-              country_Name: Country.name,
-              country_Key: Country.key,
-              country_PlatformCode: Country.country_code
+              country_Name: Country.country_Name,
+              country_Key: Country.country_Key,
+              country_PlatformCode: Country.country_PlatformCode
           }]
         })
          //Reformating Interests
         variables.PostGlobalVariables.POST_TargetedInterests.map((Interest)=>{
           ReFormatedTargetedInterests=[...ReFormatedTargetedInterests,
             {
-              interest_Name:Interest.name,
-              interest_PlatformCode:Interest.id ,
-              interest_Description: Interest.description,
-              interest_Topic: Interest.topic
+              interest_Name:Interest.interest_Name,
+              interest_PlatformCode:Interest.interest_PlatformCode ,
+              interest_Description: Interest.interest_Description,
+              interest_Topic: Interest.interest_Topic
             
           }]
         })
@@ -492,7 +491,7 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
               if(result.successCode=="Post_Scheduleded")
               {
       
-                toast.success("Post Scheduleded Successfully!", {
+                toast.success("Posted Successfully!", {
                   position: "bottom-left",
                   autoClose: 5000,
                   hideProgressBar: false,
@@ -503,7 +502,7 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
                   theme: "light",
                  
                 });
-                //Dispatch({type:variables.PostSelectedTabActions.SelectManagePosts})
+                 Dispatch({type:variables.PostSelectedTabActions.SelectManagePosts})
               }
               
               

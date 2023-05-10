@@ -31,416 +31,49 @@ import { Avatar } from "@nextui-org/react";
 import Tooltip from '@mui/material/Tooltip';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import IconButton from '@mui/material/IconButton';
-import Fade from '@mui/material/Fade';  
-const Locales=[
-  {
-    "name": "English (US)",
-    "key": 6
-  },
-  {
-    "name": "Catalan",
-    "key": 1
-  },
-  {
-    "name": "Czech",
-    "key": 2
-  },
-  {
-    "name": "Cebuano",
-    "key": 56
-  },
-  {
-    "name": "Welsh",
-    "key": 3
-  },
-  {
-    "name": "Danish",
-    "key": 4
-  },
-  {
-    "name": "German",
-    "key": 5
-  },
-  {
-    "name": "Basque",
-    "key": 59
-  },
-  {
-    "name": "Spanish",
-    "key": 23
-  },
-  {
-    "name": "Spanish (Spain)",
-    "key": 7
-  },
-  {
-    "name": "Guarani",
-    "key": 66
-  },
-  {
-    "name": "Finnish",
-    "key": 8
-  },
-  {
-    "name": "French (France)",
-    "key": 9
-  },
-  {
-    "name": "Galician",
-    "key": 65
-  },
-  {
-    "name": "Hungarian",
-    "key": 30
-  },
-  {
-    "name": "Italian",
-    "key": 10
-  },
-  {
-    "name": "Japanese",
-    "key": 11
-  },
-  {
-    "name": "Korean",
-    "key": 12
-  },
-  {
-    "name": "Norwegian (bokmal)",
-    "key": 13
-  },
-  {
-    "name": "Norwegian (nynorsk)",
-    "key": 84
-  },
-  {
-    "name": "Dutch",
-    "key": 14
-  },
-  {
-    "name": "Frisian",
-    "key": 63
-  },
-  {
-    "name": "Polish",
-    "key": 15
-  },
-  {
-    "name": "Portuguese (Brazil)",
-    "key": 16
-  },
-  {
-    "name": "Portuguese (Portugal)",
-    "key": 31
-  },
-  {
-    "name": "Romanian",
-    "key": 32
-  },
-  {
-    "name": "Russian",
-    "key": 17
-  },
-  {
-    "name": "Slovak",
-    "key": 33
-  },
-  {
-    "name": "Slovenian",
-    "key": 34
-  },
-  {
-    "name": "Swedish",
-    "key": 18
-  },
-  {
-    "name": "Thai",
-    "key": 35
-  },
-  {
-    "name": "Turkish",
-    "key": 19
-  },
-  {
-    "name": "Northern Kurdish (Kurmanji)",
-    "key": 76
-  },
-  {
-    "name": "Simplified Chinese (China)",
-    "key": 20
-  },
-  {
-    "name": "Traditional Chinese (Hong Kong)",
-    "key": 21
-  },
-  {
-    "name": "Traditional Chinese (Taiwan)",
-    "key": 22
-  },
-  {
-    "name": "Afrikaans",
-    "key": 36
-  },
-  {
-    "name": "Albanian",
-    "key": 87
-  },
-  {
-    "name": "Armenian",
-    "key": 68
-  },
-  {
-    "name": "Azerbaijani",
-    "key": 53
-  },
-  {
-    "name": "Belarusian",
-    "key": 54
-  },
-  {
-    "name": "Bengali",
-    "key": 45
-  },
-  {
-    "name": "Bosnian",
-    "key": 55
-  },
-  {
-    "name": "Bulgarian",
-    "key": 37
-  },
-  {
-    "name": "Croatian",
-    "key": 38
-  },
-  {
-    "name": "Flemish",
-    "key": 83
-  },
-  {
-    "name": "English (UK)",
-    "key": 24
-  },
-  {
-    "name": "Esperanto",
-    "key": 57
-  },
-  {
-    "name": "Estonian",
-    "key": 58
-  },
-  {
-    "name": "Faroese",
-    "key": 62
-  },
-  {
-    "name": "French (Canada)",
-    "key": 44
-  },
-  {
-    "name": "Georgian",
-    "key": 72
-  },
-  {
-    "name": "Greek",
-    "key": 39
-  },
-  {
-    "name": "Gujarati",
-    "key": 67
-  },
-  {
-    "name": "Hindi",
-    "key": 46
-  },
-  {
-    "name": "Icelandic",
-    "key": 69
-  },
-  {
-    "name": "Indonesian",
-    "key": 25
-  },
-  {
-    "name": "Irish",
-    "key": 64
-  },
-  {
-    "name": "Javanese",
-    "key": 71
-  },
-  {
-    "name": "Kannada",
-    "key": 75
-  },
-  {
-    "name": "Kazakh",
-    "key": 73
-  },
-  {
-    "name": "Latvian",
-    "key": 78
-  },
-  {
-    "name": "Lithuanian",
-    "key": 40
-  },
-  {
-    "name": "Macedonian",
-    "key": 79
-  },
-  {
-    "name": "Malay",
-    "key": 41
-  },
-  {
-    "name": "Marathi",
-    "key": 81
-  },
-  {
-    "name": "Mongolian",
-    "key": 80
-  },
-  {
-    "name": "Nepali",
-    "key": 82
-  },
-  {
-    "name": "Punjabi",
-    "key": 47
-  },
-  {
-    "name": "Serbian",
-    "key": 42
-  },
-  {
-    "name": "Swahili",
-    "key": 88
-  },
-  {
-    "name": "Filipino",
-    "key": 26
-  },
-  {
-    "name": "Tamil",
-    "key": 48
-  },
-  {
-    "name": "Telugu",
-    "key": 49
-  },
-  {
-    "name": "Malayalam",
-    "key": 50
-  },
-  {
-    "name": "Ukrainian",
-    "key": 52
-  },
-  {
-    "name": "Uzbek",
-    "key": 91
-  },
-  {
-    "name": "Vietnamese",
-    "key": 27
-  },
-  {
-    "name": "Khmer",
-    "key": 74
-  },
-  {
-    "name": "Tajik",
-    "key": 89
-  },
-  {
-    "name": "Arabic",
-    "key": 28
-  },
-  {
-    "name": "Hebrew",
-    "key": 29
-  },
-  {
-    "name": "Urdu",
-    "key": 90
-  },
-  {
-    "name": "Persian",
-    "key": 60
-  },
-  {
-    "name": "Pashto",
-    "key": 85
-  },
-  {
-    "name": "Sinhala",
-    "key": 86
-  },
-  {
-    "name": "Japanese (Kansai)",
-    "key": 70
-  },
-  {
-    "name": "English (All)",
-    "key": 1001
-  },
-  {
-    "name": "Spanish (All)",
-    "key": 1002
-  },
-  {
-    "name": "French (All)",
-    "key": 1003
-  },
-  {
-    "name": "Chinese (All)",
-    "key": 1004
-  },
-  {
-    "name": "Portuguese (All)",
-    "key": 1005
-  }
-]
+import Fade from '@mui/material/Fade'; 
+import LocalesJSON from "../../Data/Locales.json" 
+const Locales=LocalesJSON
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function AlertDialogSlide({SetShowAddTargetDialog}) { 
+export default   function AlertDialogSlide({SetShowAddTargetDialog}) { 
   const handleClose = () => {
     SetShowAddTargetDialog(false)
   };
   //Interests Async Multi Select
   let Already_Searched_Target_Interest_Value= React.useRef("");
   let Target_Interest_MultiSelect_Value= React.useRef("");
+  console.log(variables.PostGlobalVariables.POST_CachedInterestOptions)
   const [Target_Interest_MultiSelect_Values, setTarget_Interest_MultiSelect_Values] = React.useState(variables.PostGlobalVariables.POST_TargetedInterests);
   const [Target_Interest_MultiSelect_open, setTarget_Interest_MultiSelect_Open] = React.useState(false);
   const [Target_Interest_MultiSelect_options, setTarget_Interest_MultiSelect_Options] = React.useState(variables.PostGlobalVariables.POST_CachedInterestOptions);
   const [Target_Interest_MultiSelect_loading,setTarget_Interest_MultiSelect_loading] =React.useState(false)
-  React.useEffect(() => {
-  if(Target_Interest_MultiSelect_Value.current!=="" &&Target_Interest_MultiSelect_Value.current!==Already_Searched_Target_Interest_Value.current)
-  {
+  
+  //----------------------NOTE:This function Updates the Interests options based on the input value------------------------//
+  const HandleInterestsOptionsUpdate=(() => {
+
     Already_Searched_Target_Interest_Value.current=Target_Interest_MultiSelect_Value.current
-    let List_Of_Audience_Interests=Facebook_Search.Facebook_Get_Audience_Interests(Target_Interest_MultiSelect_Value.current)
-    List_Of_Audience_Interests.then((json)=>{
-      if(json.data.length!==0)
+    let List_Of_Audience_Interests= Facebook_Search.Facebook_Get_Audience_Interests(Target_Interest_MultiSelect_Value.current)
+    List_Of_Audience_Interests.then((Result)=>{
+
+      
+      if(Result.length!==0)
       {
-        let Combined_Interests= [...Target_Interest_MultiSelect_options, ...json.data].reduce((acc, curr) => {
+        let Combined_Interests= [...Target_Interest_MultiSelect_options, ...Result].reduce((acc, curr) => {
           const found = acc.find(item => item.id === curr.id);
           if (!found) {
             acc.push(curr);
           }
           return acc;
         }, [])
-        setTarget_Interest_MultiSelect_Options(Combined_Interests)
+        setTarget_Interest_MultiSelect_Options(Combined_Interests)      
       }
-    
+      setTarget_Interest_MultiSelect_loading(false)
     })
-  }
-   
-  setTarget_Interest_MultiSelect_loading(false)
-  }, [Target_Interest_MultiSelect_loading]);
+  });
 
   // Country MultiSelect
   let Country_Target_MultiSelect_Value= React.useRef("");
@@ -448,30 +81,27 @@ export default function AlertDialogSlide({SetShowAddTargetDialog}) {
   const [Country_Target_MultiSelectopen, setCountry_Target_MultiSelectOpen] = React.useState(false);
   const [Country_Target_MultiSelectoptions, setCountry_Target_MultiSelectOptions] = React.useState(variables.PostGlobalVariables.POST_CachedCountryOptions);
   const [Country_Target_MultiSelect_loading,setCountry_Target_MultiSelect_loading] =React.useState(false)
-  React.useEffect(() => {
-    if(Country_Target_MultiSelect_Value.current!=="" &&Country_Target_MultiSelect_Value.current!==Already_Searched_Target_Interest_Value.current)
-    {
+ 
+  //----------------------NOTE:This function Updates the country options based on the input value------------------------//
+  const HandleCountryOptionsUpdate=(() => {
       Already_Searched_Target_Interest_Value.current=Country_Target_MultiSelect_Value.current
-      let List_Of_Audience_Interests=Facebook_Search.Facebook_Get_Audience_Countries(Country_Target_MultiSelect_Value.current)
-      List_Of_Audience_Interests.then((json)=>{
-        if(json.data.length!==0)
+      let CountriesPromise=Facebook_Search.Facebook_Get_Audience_Countries(Country_Target_MultiSelect_Value.current)
+      CountriesPromise.then((json)=>{
+        if(json.length!==0)
         {
-          let Combined_Interests= [...Country_Target_MultiSelectoptions, ...json.data].reduce((acc, curr) => {
-            const found = acc.find(item => item.key === curr.key);
+          let Combined_Countries= [...Country_Target_MultiSelectoptions, ...json].reduce((acc, curr) => {
+            const found = acc.find(item => item.id === curr.id);
             if (!found) {
               acc.push(curr);
             }
             return acc;
           }, [])
-          setCountry_Target_MultiSelectOptions(Combined_Interests)
+          setCountry_Target_MultiSelectOptions(Combined_Countries)
         }
-      
+        setCountry_Target_MultiSelect_loading(false)
       })
-    }
-     
-    setCountry_Target_MultiSelect_loading(false)
-    }, [Country_Target_MultiSelect_loading]);
-
+    })
+ //----------------------END NOTE------------------------//
 
 
   //City/Region Multi Select
@@ -483,30 +113,29 @@ export default function AlertDialogSlide({SetShowAddTargetDialog}) {
   const [Region_Target_MultiSelectoptions, setRegion_Target_MultiSelectOptions] = React.useState(variables.PostGlobalVariables.POST_CachedRegionOptions);
   const [Region_Target_MultiSelect_loading,setRegion_Target_MultiSelect_loading] =React.useState(false)
  
-  React.useEffect(() => {
-    if(Region_Target_MultiSelect_Value.current!=="" &&Region_Target_MultiSelect_Value.current!==Already_Searched_Region_Value.current)
-    {
+   //----------------------NOTE:This function Updates the Regions options based on the input value and Selected Countries------------------------//
+  const HandleRegionOptionsUpdate=(() => {
       Already_Searched_Region_Value.current=Region_Target_MultiSelect_Value.current
       let List_Of_Regions=Facebook_Search.Facebook_Get_Audience_Regions(Country_Target_MultiSelectValues,Region_Target_MultiSelect_Value.current) 
-      if(List_Of_Regions.length!==0)
-      {
+     
         List_Of_Regions.then((json)=>{
+          if(json.length!==0)
+          {
           let Combined_Regions= [...Region_Target_MultiSelectoptions, ...json].reduce((acc, curr) => {
-            const found = acc.find(item => item.key === curr.key);
+            const found = acc.find(item => item.id === curr.id);
             if (!found) {
               acc.push(curr);
             }
             return acc;
           }, [])
           setRegion_Target_MultiSelectOptions(Combined_Regions)
+        }
+        setRegion_Target_MultiSelect_loading(false)
       })
-      }
       
-    }
-     
-    setRegion_Target_MultiSelect_loading(false)
-    }, [Region_Target_MultiSelect_loading]);
-
+      
+    });
+//----------------------END NOTE------------------------//
   //Location Multi Select
 
   let Already_Searched_Location_Value= React.useRef("");
@@ -515,58 +144,34 @@ export default function AlertDialogSlide({SetShowAddTargetDialog}) {
   const [Location_Target_MultiSelectopen, setLocation_Target_MultiSelectOpen] = React.useState(false);
   const [Location_Target_MultiSelectoptions, setLocation_Target_MultiSelectOptions] = React.useState(variables.PostGlobalVariables.POST_CachedLocationOptions);
   const [Location_Target_MultiSelect_loading,setLocation_Target_MultiSelect_loading] =React.useState(false)
-  React.useEffect(() => {
-    if(Location_Target_MultiSelect_Value.current!=="" &&Location_Target_MultiSelect_Value.current!==Already_Searched_Location_Value.current)
-    {
+  //----------------------NOTE:This function Updates the Locations options based on the input value and Selected Regions------------------------//
+  
+ const HandleLocationOptionsUpdate=(() => {
+
       Already_Searched_Location_Value.current=Location_Target_MultiSelect_Value.current
       let List_Of_Regions=Facebook_Search.Facebook_Get_Audience_Locations(Region_Target_MultiSelectValues,Location_Target_MultiSelect_Value.current)
-      
-      if(List_Of_Regions.length!==0)
-      {
         List_Of_Regions.then((json)=>{
+          if(json.length!==0)
+          {
           let Combined_Regions= [...Location_Target_MultiSelectoptions, ...json].reduce((acc, curr) => {
-            const found = acc.find(item => item.key === curr.key);
+            const found = acc.find(item => item.id === curr.id);
             if (!found) {
               acc.push(curr);
             }
             return acc;
           }, [])
-          setLocation_Target_MultiSelectOptions(Combined_Regions)
-        
-      
-      })
-      }
-      
-    }
-     
-    setLocation_Target_MultiSelect_loading(false)
-    }, [Location_Target_MultiSelect_loading]);
+          setLocation_Target_MultiSelectOptions(Combined_Regions)    
+          }
+          setLocation_Target_MultiSelect_loading(false)
+        })
+    });
 
-   
+   //----------------------END NOTE------------------------//
   //Target language Multi Select
   const [Language_Target_MultiSelectValues, setLanguage_Target_MultiSelectValues] = React.useState(variables.PostGlobalVariables.POST_TargetedLanguages);
   const [Language_Target_MultiSelectopen, setLanguage_Target_MultiSelectOpen] = React.useState(false);
   const [Language_Target_MultiSelectoptions, setLanguage_Target_MultiSelectOptions] = React.useState([...Locales]);
-  const Language_Target_MultiSelectloading = Language_Target_MultiSelectopen && Language_Target_MultiSelectoptions.length === 0;
-
-  React.useEffect(() => {
-    let active = true;
-
-    if (!Language_Target_MultiSelectloading) {
-      return undefined;
-    }
-
-    (async () => {
-      if (active) {
-        setLanguage_Target_MultiSelectOptions([...Locales]);
-      }
-    })();
-
-    return () => {
-      active = false;
-    };
-  }, [Language_Target_MultiSelectloading]);
-
+  const Language_Target_MultiSelectloading = false
   //Age  Select
 
   const [From_age, setFrom_Age] = React.useState( variables.PostGlobalVariables.POST_TargetedAgeRange.FromAge);
@@ -801,7 +406,6 @@ export default function AlertDialogSlide({SetShowAddTargetDialog}) {
               
               <Autocomplete
                 multiple
-                limitTags={7}
                 onChange={(event, newValue) => {
                   setCountry_Target_MultiSelectValues(newValue)
                   //if the Country is changed, all the regions should be updated 
@@ -818,15 +422,19 @@ export default function AlertDialogSlide({SetShowAddTargetDialog}) {
               onClose={() => {
                 setCountry_Target_MultiSelectOpen(false);
               }}
-              isOptionEqualToValue={(option, value) => option.key === value.key}
-              getOptionLabel={(option) => option.name}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
+              getOptionLabel={(option) => option.country_Name}
               options={Country_Target_MultiSelectoptions}
               loading={Country_Target_MultiSelect_loading}
               value={Country_Target_MultiSelectValues}
               onInputChange={(e)=>{ 
-                Country_Target_MultiSelect_Value.current=e.target.value 
-                setCountry_Target_MultiSelect_loading(true)
-                 
+                   Country_Target_MultiSelect_Value.current=e.target.value
+                  if(Country_Target_MultiSelect_Value.current!=="" &&Country_Target_MultiSelect_Value.current!=0 &&Country_Target_MultiSelect_Value.current!==Already_Searched_Target_Interest_Value.current)
+                  {                    
+                    setCountry_Target_MultiSelect_loading(true)
+                    HandleCountryOptionsUpdate()
+                  } 
+                        
            }}
               renderInput={(params) => (
                 <TextField
@@ -848,7 +456,6 @@ export default function AlertDialogSlide({SetShowAddTargetDialog}) {
               <Col>
               <Autocomplete
                 multiple
-                limitTags={7}
                 id="multiple-limit-tags" 
                 value={Region_Target_MultiSelectValues}
               open={Region_Target_MultiSelectopen}
@@ -866,14 +473,18 @@ export default function AlertDialogSlide({SetShowAddTargetDialog}) {
                 setRegion_Target_MultiSelectOpen(false);
               }}
               
-              isOptionEqualToValue={(option, value) => option.key === value.key}
-              getOptionLabel={(option) => option.name}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
+              getOptionLabel={(option) => option.region_Name}
               options={Region_Target_MultiSelectoptions}
               loading={Region_Target_MultiSelect_loading}
               onInputChange={(e)=>{ 
-                Region_Target_MultiSelect_Value.current=e.target.value 
-                setRegion_Target_MultiSelect_loading(true)     
-           }}
+                   Region_Target_MultiSelect_Value.current=e.target.value
+                  if(Region_Target_MultiSelect_Value.current!=0 && Region_Target_MultiSelect_Value.current!=="" &&Region_Target_MultiSelect_Value.current!==Already_Searched_Region_Value.current)
+                  {             
+                    setRegion_Target_MultiSelect_loading(true)
+                    HandleRegionOptionsUpdate()  
+                  }     
+                }}
             
               renderInput={(params) => (
                 <TextField
@@ -900,11 +511,15 @@ export default function AlertDialogSlide({SetShowAddTargetDialog}) {
                   setLocation_Target_MultiSelectValues(newValue)
                 }}
                 onInputChange={(e)=>{ 
-                Location_Target_MultiSelect_Value.current=e.target.value 
-                setLocation_Target_MultiSelect_loading(true)     
-                }}
+                  Location_Target_MultiSelect_Value.current=e.target.value           
+                  if(Location_Target_MultiSelect_Value.current!==0 &&Location_Target_MultiSelect_Value.current!=="" &&Location_Target_MultiSelect_Value.current!==Already_Searched_Location_Value.current)
+                    {                 
+                        setLocation_Target_MultiSelect_loading(true)  
+                        HandleLocationOptionsUpdate()
+                    }
+                }   
+              }
                 multiple
-                limitTags={7}
                 id="multiple-limit-tags"  
               open={Location_Target_MultiSelectopen}
               onOpen={() => {
@@ -913,8 +528,8 @@ export default function AlertDialogSlide({SetShowAddTargetDialog}) {
               onClose={() => {
                 setLocation_Target_MultiSelectOpen(false);
               }}
-              isOptionEqualToValue={(option, value) => option.key === value.key}
-              getOptionLabel={(option) => option.name}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
+              getOptionLabel={(option) => option.location_Name}
               options={Location_Target_MultiSelectoptions}
               loading={Location_Target_MultiSelect_loading}
               renderInput={(params) => (
@@ -946,7 +561,6 @@ export default function AlertDialogSlide({SetShowAddTargetDialog}) {
                 setLanguage_Target_MultiSelectValues(newValue)
               }}
                 multiple
-                limitTags={7}
                 id="multiple-limit-tags"  
               open={Language_Target_MultiSelectopen}
               onOpen={() => {
@@ -989,7 +603,6 @@ export default function AlertDialogSlide({SetShowAddTargetDialog}) {
                 setTarget_Interest_MultiSelect_Values(newValue)
               }}
                 multiple
-                limitTags={7}
                 id="multiple-limit-tags"  
               open={Target_Interest_MultiSelect_open}
               onOpen={() => {
@@ -998,13 +611,17 @@ export default function AlertDialogSlide({SetShowAddTargetDialog}) {
               onClose={() => {
                 setTarget_Interest_MultiSelect_Open(false);
               }}
-              isOptionEqualToValue={(option, value) => option.id === value.id}
-              getOptionLabel={(option) => option.name}
+              isOptionEqualToValue={(option, value) => option.id == value.id}
+              getOptionLabel={(option) => option.interest_Name}
               options={Target_Interest_MultiSelect_options}
               loading={Target_Interest_MultiSelect_loading}
               onInputChange={(e)=>{ 
                   Target_Interest_MultiSelect_Value.current=e.target.value 
-                  setTarget_Interest_MultiSelect_loading(true)     
+                  if(Target_Interest_MultiSelect_Value.current!==0&& Target_Interest_MultiSelect_Value.current!=="" &&Target_Interest_MultiSelect_Value.current!==Already_Searched_Target_Interest_Value.current)
+                  {
+                  setTarget_Interest_MultiSelect_loading(true) 
+                  HandleInterestsOptionsUpdate()   
+                  } 
              }}
               renderInput={(params) => (
                 <TextField
@@ -1029,26 +646,6 @@ export default function AlertDialogSlide({SetShowAddTargetDialog}) {
        
         </Accordion.Body>
       </Accordion.Item>
-
-     {/* <Accordion.Item eventKey="1">
-        <Accordion.Header>
-        <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
-            <Row>
-              <Col md={4}>
-              <Avatar size="xl" style={{marginRight:"0.5rem"}} src={process.env.REACT_APP_TWITTERLOGOURL} color="primary" zoomed/>
-              </Col>         
-            </Row>
-            <Row>
-            <Col md={12}>
-               <p style={{marginTop:"1rem"}}>Twitter Targetting Option</p>
-              </Col>
-            </Row>
-          </Container>
-        </Accordion.Header>
-        <Accordion.Body>
-          Under Developement..
-        </Accordion.Body>
-      </Accordion.Item>*/}
                 </Accordion>
           </Col>
           

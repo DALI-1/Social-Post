@@ -11,6 +11,7 @@ import { ChakraBaseProvider, extendBaseTheme } from '@chakra-ui/react'
 import {GlobalContext} from "./context/Context"
 import chakraTheme from '@chakra-ui/theme'
 import { registerLicense,li } from '@syncfusion/ej2-base';
+import ErrorBoundary from './Views/Errors/ErrorBoundary';
 //scheduler styles
 import "@syncfusion/ej2-base/styles/bootstrap.css";
 import "@syncfusion/ej2-buttons/styles/bootstrap.css";
@@ -24,7 +25,6 @@ import "@syncfusion/ej2-splitbuttons/styles/bootstrap.css";
 import "@syncfusion/ej2-react-schedule/styles/bootstrap.css";
 import "@syncfusion/ej2-react-grids/styles/bootstrap.css";
 import 'react-toastify/dist/ReactToastify.css';
-
 //this is for the add post splitter
 import '@syncfusion/ej2-layouts/styles/bootstrap.css';
 const { Button } = chakraTheme.components
@@ -39,31 +39,24 @@ registerLicense(process.env.REACT_APP_SYNCFUSIONLICENSEKEY);
 
 root.render(
   
-  <> 
-    
-    
-    <header>
-    </header>
+  <>  
+  <ErrorBoundary>
     <GlobalContext>
     <ToastContainer
-            position="bottom-left"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="light"
-            />
-  
+    position="bottom-left"
+    autoClose={5000}
+    hideProgressBar={false}
+    newestOnTop={false}
+    closeOnClick
+    rtl={false}
+    pauseOnFocusLoss
+    draggable
+    pauseOnHover
+    theme="light"
+    /> 
     <App/>
-    
-   
-  
     </GlobalContext>
-    
+    </ErrorBoundary>
     
     
     <footer>

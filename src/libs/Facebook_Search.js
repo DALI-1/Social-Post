@@ -2,175 +2,107 @@ import { APIStatuses } from '../variables/variables';
 import {ServerInternalError,ServerConnectionLostError}from "../Exceptions/Exceptions" ;
 import  {APIStatus}from "../variables/variables"
 import {toast } from 'react-toastify';
+import * as APILib from "./APIAccessAndVerification"
 export const Facebook_Get_Audience_Interests = async (Interest_Name)=>{
-   
-  let url="https://graph.facebook.com/v16.0/search?type=adinterest&q="+Interest_Name
-  try {
-    const response = await fetch(url,{
-      method: "GET",
-      headers: { 
-        "Content-Type": "application/json",
-        'Authorization': `Bearer ${process.env.REACT_APP_METAAPP_APPACCESSTOKEN}`
-      },
-    })
-    .catch((e)=>{
-      //Throwing the Connection Lost Exception
-      console.log("DEVELOPER: "+response)
-      throw new ServerConnectionLostError()
-    });
-    const json = await response.json();     
-    APIStatus.Status=APIStatuses.APICallSuccess
-    return(json)
-  } 
-  catch(error)
-  {
-       console.log(error)
-    APIStatus.Status=APIStatuses.ConnectionLost
-      //Handling the Connection Lost Exception
-     if(error instanceof ServerConnectionLostError)
-     {   
-       APIStatus.Status=APIStatuses.ConnectionLost
-       toast.error(error.ErrorMessageUser, {
-         position: "bottom-left",
-         autoClose: 5000,
-         hideProgressBar: false,
-         closeOnClick: true,
-         pauseOnHover: true,
-         draggable: true,
-         progress: undefined,
-         theme: "light",
-         });
-     }
-    
-  }
+  var JsonObject = {"interestName": Interest_Name };
+  let JsonObjectToSend = JSON.stringify(JsonObject);
+  let url2 =process.env.REACT_APP_BACKENDURL + process.env.REACT_APP_SEARCHINTEREST;
+  let UserToken = window.localStorage.getItem("AuthToken");
+  let APIResult = await APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
+    //Case no Error
+    console.log(APIResult)
+    if (APIResult.errorCode == undefined) {
+      if(APIResult.successCode=="Interests_Reterived")
+      {
+        console.log(APIResult.result)
+        return APIResult.result
+         
+      }
+    }
+    //Case there is an error
+    else
+    {
+      return []
+    }
+      
+
 
 }
 
 export const Facebook_Get_Audience_Countries = async (CountryName)=>{
-   
-    let url="https://graph.facebook.com/v16.0/search?type=adgeolocation&location_types=country&q="+CountryName
-    try {
-      const response = await fetch(url,{
-        method: "GET",
-        headers: { 
-          "Content-Type": "application/json",
-          'Authorization': `Bearer ${process.env.REACT_APP_METAAPP_APPACCESSTOKEN}`
-        },
-      })
-      .catch((e)=>{
-        //Throwing the Connection Lost Exception
-        console.log("DEVELOPER: "+response)
-        throw new ServerConnectionLostError()
-      });
-      const json = await response.json();     
-      APIStatus.Status=APIStatuses.APICallSuccess
-      return(json)
-    } 
-    catch(error)
+  var JsonObject = {"countryName": CountryName };
+  let JsonObjectToSend = JSON.stringify(JsonObject);
+  let url2 =process.env.REACT_APP_BACKENDURL + process.env.REACT_APP_SEARCHCOUNTRY;
+  let UserToken = window.localStorage.getItem("AuthToken");
+  let APIResult = await APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
+  if (APIResult.errorCode == undefined) {
+    if(APIResult.successCode=="Countries_Reterived")
     {
-         console.log(error)
-      APIStatus.Status=APIStatuses.ConnectionLost
-        //Handling the Connection Lost Exception
-       if(error instanceof ServerConnectionLostError)
-       {   
-         APIStatus.Status=APIStatuses.ConnectionLost
-         toast.error(error.ErrorMessageUser, {
-           position: "bottom-left",
-           autoClose: 5000,
-           hideProgressBar: false,
-           closeOnClick: true,
-           pauseOnHover: true,
-           draggable: true,
-           progress: undefined,
-           theme: "light",
-           });
-       }
-      
+      console.log(APIResult.result)
+      return APIResult.result
+       
     }
+  }
+  //Case there is an error
+  else
+  {
+    return []
+  }
+
   
   }
 
 
   export const Facebook_Get_Audience_Regions = async (countries,RegionName)=>{
-    let Result=[]
-    try {
-       
-        const promises = countries.map(async (Country) => {
-            const url = "https://graph.facebook.com/v16.0/search?type=adgeolocation&location_types=region&q="+ RegionName+"&country_code="+ Country.key;
-            const response = await fetch(url, {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-                'Authorization': `Bearer ${process.env.REACT_APP_METAAPP_APPACCESSTOKEN}`
-              },
-            });
-            const json = await response.json();
-            APIStatus.Status = APIStatuses.APICallSuccess;
-            Result = [...Result, ...json.data];
-          });
-          await Promise.all(promises);
-          return Result;
-    } 
-    catch(error)
+    //formating the country codes list for the backened
+    let Temp_CountryCodes=[]
+    countries.map((country)=>{
+      Temp_CountryCodes=[...Temp_CountryCodes,country.country_PlatformCode]
+    })
+    var JsonObject = {"countryCodes":Temp_CountryCodes ,"regionName": RegionName };   
+    let JsonObjectToSend = JSON.stringify(JsonObject);
+    let url2 =process.env.REACT_APP_BACKENDURL + process.env.REACT_APP_SEARCHREGION;
+    let UserToken = window.localStorage.getItem("AuthToken");
+    let APIResult = await APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
+    if (APIResult.errorCode == undefined) {
+      console.log(APIResult)
+      if(APIResult.successCode=="Regions_Reterived")
+      {
+        console.log(APIResult.result)
+        return APIResult.result
+         
+      }
+    }
+    //Case there is an error
+    else
     {
-         console.log(error)
-      APIStatus.Status=APIStatuses.ConnectionLost
-        //Handling the Connection Lost Exception
-       if(error instanceof ServerConnectionLostError)
-       {   
-         APIStatus.Status=APIStatuses.ConnectionLost
-         toast.error(error.ErrorMessageUser, {
-           position: "bottom-left",
-           autoClose: 5000,
-           hideProgressBar: false,
-           closeOnClick: true,
-           pauseOnHover: true,
-           draggable: true,
-           progress: undefined,
-           theme: "light",
-           });
-       }    
+      return []
     }
   }
   export const Facebook_Get_Audience_Locations = async (regions,CityName)=>{
-    let Result=[]
-    try {       
-        const promises = regions.map(async (City) => {
-            const url = "https://graph.facebook.com/v16.0/search?type=adgeolocation&location_types=['city']&region_id="+City.key+"&q="+ CityName
-            const response = await fetch(url, {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-                'Authorization': `Bearer ${process.env.REACT_APP_METAAPP_APPACCESSTOKEN}`
-              },
-            });
-            const json = await response.json();
-            APIStatus.Status = APIStatuses.APICallSuccess;
-            Result = [...Result, ...json.data];
-          });
-          await Promise.all(promises);
-          return Result;
-    } 
-    catch(error)
+    console.log(regions)
+    let Temp_RegionCodes=[]
+    regions.map((region)=>{
+      Temp_RegionCodes=[...Temp_RegionCodes,region.region_PlatformCode]
+    })
+    var JsonObject = {"regionCodes":Temp_RegionCodes ,"locationName": CityName};  
+    let JsonObjectToSend = JSON.stringify(JsonObject);
+    let url2 =process.env.REACT_APP_BACKENDURL + process.env.REACT_APP_SEARCHLOCATION;
+    let UserToken = window.localStorage.getItem("AuthToken");
+    let APIResult = await APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
+    if (APIResult.errorCode == undefined) {
+      console.log(APIResult)
+      if(APIResult.successCode=="Locations_Reterived")
+      {
+        console.log(APIResult.result)
+        return APIResult.result
+         
+      }
+    }
+    //Case there is an error
+    else
     {
-         console.log(error)
-      APIStatus.Status=APIStatuses.ConnectionLost
-        //Handling the Connection Lost Exception
-       if(error instanceof ServerConnectionLostError)
-       {   
-         APIStatus.Status=APIStatuses.ConnectionLost
-         toast.error(error.ErrorMessageUser, {
-           position: "bottom-left",
-           autoClose: 5000,
-           hideProgressBar: false,
-           closeOnClick: true,
-           pauseOnHover: true,
-           draggable: true,
-           progress: undefined,
-           theme: "light",
-           });
-       }
-      
+      return []
     }
   
   }

@@ -54,6 +54,7 @@ import ImageTagDialog from "../../components/AddPostComps/AddImageTagDialog"
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import IconButton from '@mui/material/IconButton';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
+import * as SearchLib from "../../libs/Facebook_Search"
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelectionChange,handleAssetSelectionChange,DefaultPostText},ref)=> {
@@ -116,181 +117,46 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
    },[Assets])
 //-----------intiliazing the images by the selection
  
-  const HandlePostSchedule=(()=>{
+const HandlePostSchedule=(()=>{
 
-    let EditorContent=editorRef.current.getContent()
-    let Post_Date=Post_DateInput.current
-    let Repeat=Post_RepeatCheckbox.current
-    let RepeatDropDownListSelection=Post_RepeatingOptionDropDownList.current
-    //let Repeat_Every=Post_Repeat_EveryInput.current
-    let EndRepeatRadioBoxValue=Post_EndRepeatRadioBox.current
-    let EndRepeatOnNbOfOccurencesValue=Post_EndRepeatOnNbOfOccurencesInput.current
-    let EndRepeatAfterDate=Post_EndRepeatAfterDateInput.current
-    let INSTAGRAM_Page_Exist_InSelection_Flag=false
-    let POST_Txt=EditorContent.toString().split("<p>").join("").split("</p>").join("")
-    if(Post_Date!=null)
+  let EditorContent=editorRef.current.getContent()
+  let Post_Date=Post_DateInput.current
+  let Repeat=Post_RepeatCheckbox.current
+  let RepeatDropDownListSelection=Post_RepeatingOptionDropDownList.current
+  //let Repeat_Every=Post_Repeat_EveryInput.current
+  let EndRepeatRadioBoxValue=Post_EndRepeatRadioBox.current
+  let EndRepeatOnNbOfOccurencesValue=Post_EndRepeatOnNbOfOccurencesInput.current
+  let EndRepeatAfterDate=Post_EndRepeatAfterDateInput.current
+  let INSTAGRAM_Page_Exist_InSelection_Flag=false
+  let POST_Txt=EditorContent.toString().split("<p>").join("").split("</p>").join("")
+  if(Post_Date!=null)
+  {
+    if(EditorContent!="")
     {
-      if(EditorContent!="")
+
+      
+      let ListOfPages=[]
+      variables.PostGlobalVariables.POST_SelectedPageInfo.map((page)=>
+      {
+        if(page.PageType==2)
+        {INSTAGRAM_Page_Exist_InSelection_Flag=true}
+      ListOfPages=[...ListOfPages,{"pageID": page.id}]
+      })
+    
+      if(ListOfPages.length!=0)
       {
 
-        
-        let ListOfPages=[]
-        variables.PostGlobalVariables.POST_SelectedPageInfo.map((page)=>
+        var AssetsList=[]
+
+        Assets.map((Asset)=>{
+          AssetsList=[...AssetsList,{ 
+            assetID: Asset.AssetId
+          }]
+        })
+       
+        if(AssetsList.length==0 &&INSTAGRAM_Page_Exist_InSelection_Flag)
         {
-          if(page.PageType==2)
-          {INSTAGRAM_Page_Exist_InSelection_Flag=true}
-        ListOfPages=[...ListOfPages,{"pageID": page.id}]
-        })
-      
-        if(ListOfPages.length!=0)
-        {
-
-          var AssetsList=[]
-
-          Assets.map((Asset)=>{
-            AssetsList=[...AssetsList,{ 
-              assetID: Asset.AssetId
-            }]
-          })
-         
-          if(AssetsList.length==0 &&INSTAGRAM_Page_Exist_InSelection_Flag)
-          {
-            toast.info("You cannot create an Instagram Post without at least having picture added to it", {
-              position: "bottom-left",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "light",
-            });
-          }
-          else
-          {
-            let ReFormatedTargetedLanguages=[]
-            let ReFormatedTargetedLocations=[]
-            let ReFormatedTargetedRegions=[]
-            let ReFormatedTargetedCountries=[]
-            let ReFormatedTargetedInterests=[]
-        variables.PostGlobalVariables.POST_TargetedLanguages.map((Language)=>{
-          ReFormatedTargetedLanguages=[...ReFormatedTargetedLanguages,
-            {
-            language_Name: Language.name,
-            languagePlatform_Key: Language.key
-          }]       
-        })  
-          //Reformating Location
-        variables.PostGlobalVariables.POST_TargetedLocations.map((Location)=>{
-          ReFormatedTargetedLocations=[...ReFormatedTargetedLocations,
-            {
-              location_Name: Location.name,
-              location_Type: Location.type,
-              location_PlatformCode: Location.key,
-              location_RegionId:Location.region_id
-          }]
-        })      
-          //Reformating Regions
-        variables.PostGlobalVariables.POST_TargetedRegions.map((Region)=>{
-          ReFormatedTargetedRegions=[...ReFormatedTargetedRegions,
-            {    
-              region_Name: Region.name,
-              country_PlatformId: Region.country_code,
-              region_PlatformCode: Region.key
-          }]
-
-        })   
-          //Reformating Countries
-        variables.PostGlobalVariables.POST_TargetedCountries.map((Country)=>{    
-          ReFormatedTargetedCountries=[...ReFormatedTargetedCountries,
-            {
-             
-              country_Name: Country.name,
-              country_Key: Country.key,
-              country_PlatformCode: Country.country_code
-          }]
-        })
-         //Reformating Interests
-        variables.PostGlobalVariables.POST_TargetedInterests.map((Interest)=>{
-          ReFormatedTargetedInterests=[...ReFormatedTargetedInterests,
-            {
-              interest_Name:Interest.name,
-              interest_PlatformCode:Interest.id ,
-              interest_Description: Interest.description,
-              interest_Topic: Interest.topic
-            
-          }]
-        })
-
-              //-------------------------NOTE: Formating the Mentions for the backened--------------------------//
-        // 1- Adding the platformaccounts to a list
-        //2- Changing the Text and formating like this @[12345]  1235 is an example, it should be a platformaccountID
-        let Formated_listOfMentionedPlatformAccounts=[]         
-        variables.PostGlobalVariables.POST_Mentions.map((MentionedUser)=>{
-          Formated_listOfMentionedPlatformAccounts=[...Formated_listOfMentionedPlatformAccounts,{mentionedPlatformAccount_ID:MentionedUser.MentionedUserID}]
-          POST_Txt=POST_Txt.replace(MentionedUser.MentionText,"@["+MentionedUser.MentionedUserID+"]")
-        })
-
-        //-------------------------NOTE: END OF Formating the Mentions for the backened--------------------------//
-            var JsonObject = {  
-              postGroupID: GlobalState.SelectedGroup.id,
-              postText: POST_Txt,
-              repeatPost: Repeat,
-              repeatOption: RepeatDropDownListSelection==1?"Hourly":RepeatDropDownListSelection==2?"Daily":RepeatDropDownListSelection==3?"Weekly":RepeatDropDownListSelection==4?"Monthly":RepeatDropDownListSelection==5?"Yearly":"BUG_IMPOSSIBLE_TO_REACH",
-              endRepeatPost: EndRepeatRadioBoxValue==1?false:true,
-              endRepeatOption: EndRepeatRadioBoxValue==1?"NoEnd":EndRepeatRadioBoxValue==2?"EndOccOption":"EndDateOption",
-              endRepeatOnOccurence: EndRepeatRadioBoxValue==2?EndRepeatOnNbOfOccurencesValue:0,
-              endRepeatAfterDate: EndRepeatRadioBoxValue==3?EndRepeatAfterDate:"2023-04-12T23:00:00.000Z",
-              postDate: Post_DateInput.current,
-              listOfPages:ListOfPages,
-              listOfAssets: AssetsList,
-              listOfTags:variables.PostGlobalVariables.POST_AssetsTags,
-              listOfDynamicFields: variables.PostGlobalVariables.POST_AddedDynamicFields,
-
-              listOfMentionedPlatformAccounts:Formated_listOfMentionedPlatformAccounts,
-              target_AgeFrom: variables.PostGlobalVariables.POST_TargetedAgeRange.FromAge,
-              target_AgeTo: variables.PostGlobalVariables.POST_TargetedAgeRange.ToAge,
-              target_Gender: variables.PostGlobalVariables.POST_TargetedGenderId ,
-              target_PlatformId: variables.PostGlobalVariables.POST_TargetSelectedPlatform,
-              targeted_Countries: ReFormatedTargetedCountries,
-              targeted_Regions: ReFormatedTargetedRegions,
-              targeted_Locations: ReFormatedTargetedLocations,
-              targeted_Languages: ReFormatedTargetedLanguages,
-              targeted_Interests: ReFormatedTargetedInterests,
-           };  
-          let JsonObjectToSend = JSON.stringify(JsonObject);
-          let url2 =
-            process.env.REACT_APP_BACKENDURL + 
-            process.env.REACT_APP_ADDPOST;
-          let UserToken = window.localStorage.getItem("AuthToken");
-          let APIResult = APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
-          APIResult.then((result) => {
-            if (result.errorCode == undefined) {
-              if(result.successCode=="Post_Scheduleded")
-              {
-      
-                toast.success("Post Scheduleded Successfully!", {
-                  position: "bottom-left",
-                  autoClose: 5000,
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: true,
-                  progress: undefined,
-                  theme: "light",
-                 
-                });
-                Dispatch({type:variables.PostSelectedTabActions.SelectManagePosts})
-              }
-              
-              
-            }
-          });
-          }
-        }
-        else
-        {
-          toast.info("You cannot create a post without associating at least one page", {
+          toast.info("You cannot create an Instagram Post without at least having picture added to it", {
             position: "bottom-left",
             autoClose: 5000,
             hideProgressBar: false,
@@ -301,11 +167,131 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
             theme: "light",
           });
         }
-        
+        else
+        {
+          let ReFormatedTargetedLanguages=[]
+          let ReFormatedTargetedLocations=[]
+          let ReFormatedTargetedRegions=[]
+          let ReFormatedTargetedCountries=[]
+          let ReFormatedTargetedInterests=[]
+      variables.PostGlobalVariables.POST_TargetedLanguages.map((Language)=>{
+        ReFormatedTargetedLanguages=[...ReFormatedTargetedLanguages,
+          {
+          language_Name: Language.name,
+          languagePlatform_Key: Language.key
+        }]       
+      })  
+        //Reformating Location
+      variables.PostGlobalVariables.POST_TargetedLocations.map((Location)=>{
+        ReFormatedTargetedLocations=[...ReFormatedTargetedLocations,
+          {
+            location_Name: Location.location_Name,
+            location_Type: Location.location_Type,
+            location_PlatformCode: Location.location_PlatformCode,
+            location_RegionId:Location.location_RegionId
+        }]
+      })      
+        //Reformating Regions
+      variables.PostGlobalVariables.POST_TargetedRegions.map((Region)=>{
+        ReFormatedTargetedRegions=[...ReFormatedTargetedRegions,
+          {    
+            region_Name: Region.region_Name,
+            country_PlatformId: Region.country_PlatformId,
+            region_PlatformCode: Region.region_PlatformCode
+        }]
+
+      })   
+        //Reformating Countries
+      variables.PostGlobalVariables.POST_TargetedCountries.map((Country)=>{    
+        ReFormatedTargetedCountries=[...ReFormatedTargetedCountries,
+          {
+           
+            country_Name: Country.country_Name,
+            country_Key: Country.country_Key,
+            country_PlatformCode: Country.country_PlatformCode
+        }]
+      })
+       //Reformating Interests
+      variables.PostGlobalVariables.POST_TargetedInterests.map((Interest)=>{
+        ReFormatedTargetedInterests=[...ReFormatedTargetedInterests,
+          {
+            interest_Name:Interest.interest_Name,
+            interest_PlatformCode:Interest.interest_PlatformCode ,
+            interest_Description: Interest.interest_Description,
+            interest_Topic: Interest.interest_Topic
+          
+        }]
+      })
+
+            //-------------------------NOTE: Formating the Mentions for the backened--------------------------//
+      // 1- Adding the platformaccounts to a list
+      //2- Changing the Text and formating like this @[12345]  1235 is an example, it should be a platformaccountID
+      let Formated_listOfMentionedPlatformAccounts=[]         
+      variables.PostGlobalVariables.POST_Mentions.map((MentionedUser)=>{
+        Formated_listOfMentionedPlatformAccounts=[...Formated_listOfMentionedPlatformAccounts,{mentionedPlatformAccount_ID:MentionedUser.MentionedUserID}]
+        POST_Txt=POST_Txt.replace(MentionedUser.MentionText,"@["+MentionedUser.MentionedUserID+"]")
+      })
+
+      //-------------------------NOTE: END OF Formating the Mentions for the backened--------------------------//
+          var JsonObject = {  
+            postGroupID: GlobalState.SelectedGroup.id,
+            postText: POST_Txt,
+            repeatPost: Repeat,
+            repeatOption: RepeatDropDownListSelection==1?"Hourly":RepeatDropDownListSelection==2?"Daily":RepeatDropDownListSelection==3?"Weekly":RepeatDropDownListSelection==4?"Monthly":RepeatDropDownListSelection==5?"Yearly":"BUG_IMPOSSIBLE_TO_REACH",
+            endRepeatPost: EndRepeatRadioBoxValue==1?false:true,
+            endRepeatOption: EndRepeatRadioBoxValue==1?"NoEnd":EndRepeatRadioBoxValue==2?"EndOccOption":"EndDateOption",
+            endRepeatOnOccurence: EndRepeatRadioBoxValue==2?EndRepeatOnNbOfOccurencesValue:0,
+            endRepeatAfterDate: EndRepeatRadioBoxValue==3?EndRepeatAfterDate:"2023-04-12T23:00:00.000Z",
+            postDate: Post_DateInput.current,
+            listOfPages:ListOfPages,
+            listOfAssets: AssetsList,
+            listOfTags:variables.PostGlobalVariables.POST_AssetsTags,
+            listOfDynamicFields: variables.PostGlobalVariables.POST_AddedDynamicFields,
+
+            listOfMentionedPlatformAccounts:Formated_listOfMentionedPlatformAccounts,
+            target_AgeFrom: variables.PostGlobalVariables.POST_TargetedAgeRange.FromAge,
+            target_AgeTo: variables.PostGlobalVariables.POST_TargetedAgeRange.ToAge,
+            target_Gender: variables.PostGlobalVariables.POST_TargetedGenderId ,
+            target_PlatformId: variables.PostGlobalVariables.POST_TargetSelectedPlatform,
+            targeted_Countries: ReFormatedTargetedCountries,
+            targeted_Regions: ReFormatedTargetedRegions,
+            targeted_Locations: ReFormatedTargetedLocations,
+            targeted_Languages: ReFormatedTargetedLanguages,
+            targeted_Interests: ReFormatedTargetedInterests,
+         };  
+        let JsonObjectToSend = JSON.stringify(JsonObject);
+        let url2 =
+          process.env.REACT_APP_BACKENDURL + 
+          process.env.REACT_APP_ADDPOST;
+        let UserToken = window.localStorage.getItem("AuthToken");
+        let APIResult = APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
+        APIResult.then((result) => {
+          if (result.errorCode == undefined) {
+            if(result.successCode=="Post_Scheduleded")
+            {
+    
+              toast.success("Post Scheduleded Successfully!", {
+                position: "bottom-left",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+               
+              });
+              Dispatch({type:variables.PostSelectedTabActions.SelectManagePosts})
+            }
+            
+            
+          }
+        });
+        }
       }
       else
       {
-        toast.info("You cannot create a post with an empty content", {
+        toast.info("You cannot create a post without associating at least one page", {
           position: "bottom-left",
           autoClose: 5000,
           hideProgressBar: false,
@@ -317,11 +303,10 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
         });
       }
       
-  
     }
     else
     {
-      toast.info("Post date for scheduled Posts cannot be empty, use Post Now instead if you don't want to specify the Post date", {
+      toast.info("You cannot create a post with an empty content", {
         position: "bottom-left",
         autoClose: 5000,
         hideProgressBar: false,
@@ -332,186 +317,67 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
         theme: "light",
       });
     }
+    
 
-   
+  }
+  else
+  {
+    toast.info("Post date for scheduled Posts cannot be empty, use Post Now instead if you don't want to specify the Post date", {
+      position: "bottom-left",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+  }
+
  
-  })
 
-  const HandlePostNow=(()=>{
+})
 
-    let EditorContent=editorRef.current.getContent()
-    let Post_Date=Post_DateInput.current
-    let Repeat=Post_RepeatCheckbox.current
-    let RepeatDropDownListSelection=Post_RepeatingOptionDropDownList.current
-    //let Repeat_Every=Post_Repeat_EveryInput.current
-    let EndRepeatRadioBoxValue=Post_EndRepeatRadioBox.current
-    let EndRepeatOnNbOfOccurencesValue=Post_EndRepeatOnNbOfOccurencesInput.current
-    let EndRepeatAfterDate=Post_EndRepeatAfterDateInput.current
-    let INSTAGRAM_Page_Exist_InSelection_Flag=false
-    let POST_Txt=EditorContent.toString().split("<p>").join("").split("</p>").join("")
-    if(Post_Date!=null)
+const HandlePostNow=(()=>{
+
+  let EditorContent=editorRef.current.getContent()
+  let Post_Date=Post_DateInput.current
+  let Repeat=Post_RepeatCheckbox.current
+  let RepeatDropDownListSelection=Post_RepeatingOptionDropDownList.current
+  //let Repeat_Every=Post_Repeat_EveryInput.current
+  let EndRepeatRadioBoxValue=Post_EndRepeatRadioBox.current
+  let EndRepeatOnNbOfOccurencesValue=Post_EndRepeatOnNbOfOccurencesInput.current
+  let EndRepeatAfterDate=Post_EndRepeatAfterDateInput.current
+  let INSTAGRAM_Page_Exist_InSelection_Flag=false
+  let POST_Txt=EditorContent.toString().split("<p>").join("").split("</p>").join("")
+  if(Post_Date!=null)
+  {
+    if(EditorContent!="")
     {
-      if(EditorContent!="")
+
+      
+      let ListOfPages=[]
+      variables.PostGlobalVariables.POST_SelectedPageInfo.map((page)=>
+      {
+        if(page.PageType==2)
+        {INSTAGRAM_Page_Exist_InSelection_Flag=true}
+      ListOfPages=[...ListOfPages,{"pageID": page.id}]
+      })
+    
+      if(ListOfPages.length!=0)
       {
 
-        
-        let ListOfPages=[]
-        variables.PostGlobalVariables.POST_SelectedPageInfo.map((page)=>
+        var AssetsList=[]
+
+        Assets.map((Asset)=>{
+          AssetsList=[...AssetsList,{ 
+            assetID: Asset.AssetId
+          }]
+        })
+       
+        if(AssetsList.length==0 &&INSTAGRAM_Page_Exist_InSelection_Flag)
         {
-          if(page.PageType==2)
-          {INSTAGRAM_Page_Exist_InSelection_Flag=true}
-        ListOfPages=[...ListOfPages,{"pageID": page.id}]
-        })
-      
-        if(ListOfPages.length!=0)
-        {
-
-          var AssetsList=[]
-
-          Assets.map((Asset)=>{
-            AssetsList=[...AssetsList,{ 
-              assetID: Asset.AssetId
-            }]
-          })
-         
-          if(AssetsList.length==0 &&INSTAGRAM_Page_Exist_InSelection_Flag)
-          {
-            toast.info("You cannot create an Instagram Post without at least having picture added to it", {
-              position: "bottom-left",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "light",
-            });
-          }
-          else
-          {
-            let ReFormatedTargetedLanguages=[]
-            let ReFormatedTargetedLocations=[]
-            let ReFormatedTargetedRegions=[]
-            let ReFormatedTargetedCountries=[]
-            let ReFormatedTargetedInterests=[]
-        variables.PostGlobalVariables.POST_TargetedLanguages.map((Language)=>{
-          ReFormatedTargetedLanguages=[...ReFormatedTargetedLanguages,
-            {
-            language_Name: Language.name,
-            languagePlatform_Key: Language.key
-          }]       
-        })  
-          //Reformating Location
-        variables.PostGlobalVariables.POST_TargetedLocations.map((Location)=>{
-          ReFormatedTargetedLocations=[...ReFormatedTargetedLocations,
-            {
-              location_Name: Location.name,
-              location_Type: Location.type,
-              location_PlatformCode: Location.key,
-              location_RegionId:Location.region_id
-          }]
-        })      
-          //Reformating Regions
-        variables.PostGlobalVariables.POST_TargetedRegions.map((Region)=>{
-          ReFormatedTargetedRegions=[...ReFormatedTargetedRegions,
-            {    
-              region_Name: Region.name,
-              country_PlatformId: Region.country_code,
-              region_PlatformCode: Region.key
-          }]
-
-        })   
-          //Reformating Countries
-        variables.PostGlobalVariables.POST_TargetedCountries.map((Country)=>{    
-          ReFormatedTargetedCountries=[...ReFormatedTargetedCountries,
-            {
-             
-              country_Name: Country.name,
-              country_Key: Country.key,
-              country_PlatformCode: Country.country_code
-          }]
-        })
-         //Reformating Interests
-        variables.PostGlobalVariables.POST_TargetedInterests.map((Interest)=>{
-          ReFormatedTargetedInterests=[...ReFormatedTargetedInterests,
-            {
-              interest_Name:Interest.name,
-              interest_PlatformCode:Interest.id ,
-              interest_Description: Interest.description,
-              interest_Topic: Interest.topic
-            
-          }]
-        })
-          //-------------------------NOTE: Formating the Mentions for the backened--------------------------//
-        // 1- Adding the platformaccounts to a list
-        //2- Changing the Text and formating like this @[12345]  1235 is an example, it should be a platformaccountID
-          let Formated_listOfMentionedPlatformAccounts=[]         
-        variables.PostGlobalVariables.POST_Mentions.map((MentionedUser)=>{
-          Formated_listOfMentionedPlatformAccounts=[...Formated_listOfMentionedPlatformAccounts,{mentionedPlatformAccount_ID:MentionedUser.MentionedUserID}]
-          POST_Txt=POST_Txt.replace(MentionedUser.MentionText,"@["+MentionedUser.MentionedUserID+"]")
-        })
-         
-
-        //-------------------------NOTE: END OF Formating the Mentions for the backened--------------------------//
-            var JsonObject = {  
-              postGroupID: GlobalState.SelectedGroup.id,
-              postText:POST_Txt ,
-              repeatPost: Repeat,
-              repeatOption: RepeatDropDownListSelection==1?"Hourly":RepeatDropDownListSelection==2?"Daily":RepeatDropDownListSelection==3?"Weekly":RepeatDropDownListSelection==4?"Monthly":RepeatDropDownListSelection==5?"Yearly":"BUG_IMPOSSIBLE_TO_REACH",
-              endRepeatPost: EndRepeatRadioBoxValue==1?false:true,
-              endRepeatOption: EndRepeatRadioBoxValue==1?"NoEnd":EndRepeatRadioBoxValue==2?"EndOccOption":"EndDateOption",
-              endRepeatOnOccurence: EndRepeatRadioBoxValue==2?EndRepeatOnNbOfOccurencesValue:0,
-              endRepeatAfterDate: EndRepeatRadioBoxValue==3?EndRepeatAfterDate:"2023-04-12T23:00:00.000Z",
-              postDate: new Date(),
-              listOfMentionedPlatformAccounts:Formated_listOfMentionedPlatformAccounts,
-              listOfPages:ListOfPages,
-              listOfAssets: AssetsList,
-              listOfDynamicFields: variables.PostGlobalVariables.POST_AddedDynamicFields,
-              listOfTags:variables.PostGlobalVariables.POST_AssetsTags,
-              target_AgeFrom: variables.PostGlobalVariables.POST_TargetedAgeRange.FromAge,
-              target_AgeTo: variables.PostGlobalVariables.POST_TargetedAgeRange.ToAge,
-              target_Gender: variables.PostGlobalVariables.POST_TargetedGenderId ,
-              target_PlatformId: variables.PostGlobalVariables.POST_TargetSelectedPlatform,
-              targeted_Countries: ReFormatedTargetedCountries,
-              targeted_Regions: ReFormatedTargetedRegions,
-              targeted_Locations: ReFormatedTargetedLocations,
-              targeted_Languages: ReFormatedTargetedLanguages,
-              targeted_Interests: ReFormatedTargetedInterests,
-           };
-      
-          let JsonObjectToSend = JSON.stringify(JsonObject);
-          let url2 =
-            process.env.REACT_APP_BACKENDURL + 
-            process.env.REACT_APP_ADDPOST;
-          let UserToken = window.localStorage.getItem("AuthToken");
-          let APIResult = APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
-          APIResult.then((result) => {
-            if (result.errorCode == undefined) {
-              if(result.successCode=="Post_Scheduleded")
-              {
-      
-                toast.success("Post Scheduleded Successfully!", {
-                  position: "bottom-left",
-                  autoClose: 5000,
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: true,
-                  progress: undefined,
-                  theme: "light",
-                 
-                });
-                //Dispatch({type:variables.PostSelectedTabActions.SelectManagePosts})
-              }
-              
-              
-            }
-          });
-          }
-        }
-        else
-        {
-          toast.info("You cannot create a post without associating at least one page", {
+          toast.info("You cannot create an Instagram Post without at least having picture added to it", {
             position: "bottom-left",
             autoClose: 5000,
             hideProgressBar: false,
@@ -522,11 +388,131 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
             theme: "light",
           });
         }
-        
+        else
+        {
+          let ReFormatedTargetedLanguages=[]
+          let ReFormatedTargetedLocations=[]
+          let ReFormatedTargetedRegions=[]
+          let ReFormatedTargetedCountries=[]
+          let ReFormatedTargetedInterests=[]
+      variables.PostGlobalVariables.POST_TargetedLanguages.map((Language)=>{
+        ReFormatedTargetedLanguages=[...ReFormatedTargetedLanguages,
+          {
+          language_Name: Language.name,
+          languagePlatform_Key: Language.key
+        }]       
+      })  
+        //Reformating Location
+      variables.PostGlobalVariables.POST_TargetedLocations.map((Location)=>{
+        ReFormatedTargetedLocations=[...ReFormatedTargetedLocations,
+          {
+            location_Name: Location.location_Name,
+            location_Type: Location.location_Type,
+            location_PlatformCode: Location.location_PlatformCode,
+            location_RegionId:Location.location_RegionId
+        }]
+      })      
+        //Reformating Regions
+      variables.PostGlobalVariables.POST_TargetedRegions.map((Region)=>{
+        ReFormatedTargetedRegions=[...ReFormatedTargetedRegions,
+          {    
+            region_Name: Region.region_Name,
+            country_PlatformId: Region.country_PlatformId,
+            region_PlatformCode: Region.region_PlatformCode
+        }]
+
+      })   
+        //Reformating Countries
+      variables.PostGlobalVariables.POST_TargetedCountries.map((Country)=>{    
+        ReFormatedTargetedCountries=[...ReFormatedTargetedCountries,
+          {
+           
+            country_Name: Country.country_Name,
+            country_Key: Country.country_Key,
+            country_PlatformCode: Country.country_PlatformCode
+        }]
+      })
+       //Reformating Interests
+      variables.PostGlobalVariables.POST_TargetedInterests.map((Interest)=>{
+        ReFormatedTargetedInterests=[...ReFormatedTargetedInterests,
+          {
+            interest_Name:Interest.interest_Name,
+            interest_PlatformCode:Interest.interest_PlatformCode ,
+            interest_Description: Interest.interest_Description,
+            interest_Topic: Interest.interest_Topic
+          
+        }]
+      })
+        //-------------------------NOTE: Formating the Mentions for the backened--------------------------//
+      // 1- Adding the platformaccounts to a list
+      //2- Changing the Text and formating like this @[12345]  1235 is an example, it should be a platformaccountID
+        let Formated_listOfMentionedPlatformAccounts=[]         
+      variables.PostGlobalVariables.POST_Mentions.map((MentionedUser)=>{
+        Formated_listOfMentionedPlatformAccounts=[...Formated_listOfMentionedPlatformAccounts,{mentionedPlatformAccount_ID:MentionedUser.MentionedUserID}]
+        POST_Txt=POST_Txt.replace(MentionedUser.MentionText,"@["+MentionedUser.MentionedUserID+"]")
+      })
+       
+
+      //-------------------------NOTE: END OF Formating the Mentions for the backened--------------------------//
+          var JsonObject = {  
+            postGroupID: GlobalState.SelectedGroup.id,
+            postText:POST_Txt ,
+            repeatPost: Repeat,
+            repeatOption: RepeatDropDownListSelection==1?"Hourly":RepeatDropDownListSelection==2?"Daily":RepeatDropDownListSelection==3?"Weekly":RepeatDropDownListSelection==4?"Monthly":RepeatDropDownListSelection==5?"Yearly":"BUG_IMPOSSIBLE_TO_REACH",
+            endRepeatPost: EndRepeatRadioBoxValue==1?false:true,
+            endRepeatOption: EndRepeatRadioBoxValue==1?"NoEnd":EndRepeatRadioBoxValue==2?"EndOccOption":"EndDateOption",
+            endRepeatOnOccurence: EndRepeatRadioBoxValue==2?EndRepeatOnNbOfOccurencesValue:0,
+            endRepeatAfterDate: EndRepeatRadioBoxValue==3?EndRepeatAfterDate:"2023-04-12T23:00:00.000Z",
+            postDate: new Date(),
+            listOfMentionedPlatformAccounts:Formated_listOfMentionedPlatformAccounts,
+            listOfPages:ListOfPages,
+            listOfAssets: AssetsList,
+            listOfDynamicFields: variables.PostGlobalVariables.POST_AddedDynamicFields,
+            listOfTags:variables.PostGlobalVariables.POST_AssetsTags,
+            target_AgeFrom: variables.PostGlobalVariables.POST_TargetedAgeRange.FromAge,
+            target_AgeTo: variables.PostGlobalVariables.POST_TargetedAgeRange.ToAge,
+            target_Gender: variables.PostGlobalVariables.POST_TargetedGenderId ,
+            target_PlatformId: variables.PostGlobalVariables.POST_TargetSelectedPlatform,
+            targeted_Countries: ReFormatedTargetedCountries,
+            targeted_Regions: ReFormatedTargetedRegions,
+            targeted_Locations: ReFormatedTargetedLocations,
+            targeted_Languages: ReFormatedTargetedLanguages,
+            targeted_Interests: ReFormatedTargetedInterests,
+         };
+    
+        let JsonObjectToSend = JSON.stringify(JsonObject);
+        let url2 =
+          process.env.REACT_APP_BACKENDURL + 
+          process.env.REACT_APP_ADDPOST;
+        let UserToken = window.localStorage.getItem("AuthToken");
+        let APIResult = APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
+        APIResult.then((result) => {
+          if (result.errorCode == undefined) {
+            if(result.successCode=="Post_Scheduleded")
+            {
+    
+              toast.success("Posted Successfully!", {
+                position: "bottom-left",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+               
+              });
+              Dispatch({type:variables.PostSelectedTabActions.SelectManagePosts})
+            }
+            
+            
+          }
+        });
+        }
       }
       else
       {
-        toast.info("You cannot create a post with an empty content", {
+        toast.info("You cannot create a post without associating at least one page", {
           position: "bottom-left",
           autoClose: 5000,
           hideProgressBar: false,
@@ -538,11 +524,10 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
         });
       }
       
-  
     }
     else
     {
-      toast.info("Post date for scheduled Posts cannot be empty, use Post Now instead if you don't want to specify the Post date", {
+      toast.info("You cannot create a post with an empty content", {
         position: "bottom-left",
         autoClose: 5000,
         hideProgressBar: false,
@@ -553,12 +538,26 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
         theme: "light",
       });
     }
+    
 
-   
-   
-  })
+  }
+  else
+  {
+    toast.info("Post date for scheduled Posts cannot be empty, use Post Now instead if you don't want to specify the Post date", {
+      position: "bottom-left",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+  }
 
-  
+ 
+ 
+}) 
   //this is related to tiny mce custom buttons
   const LocationIcon=`<svg width="24" height="24" viewBox="-3 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
   <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -1492,29 +1491,151 @@ export default   function Content() {
       //Handling Gender
       variables.PostGlobalVariables.POST_TargetedGenderId=response.result.posT_Targeted_Gender.id
       //Handling LANGUAGES
-      let Temp_FromatedLanguages=[]
+      let Temp_FormatedLanguages=[]
       response.result.posT_Targeted_Languages.map((lang)=>{
-        Temp_FromatedLanguages=[...Temp_FromatedLanguages,{
+        Temp_FormatedLanguages=[...Temp_FormatedLanguages,{
             "name": lang.language_Name,
             "key": lang.language_PlatformKey       
         }]
       })
+      variables.PostGlobalVariables.POST_TargetedLanguages=Temp_FormatedLanguages
       //Handling Interests
-      let Temp_FromatedInterests=[]
+      let Temp_FormatedInterests=[]
+      let Temp_CachedInterests=[]
       response.result.posT_Targeted_Interests.map((interest)=>{
-        Temp_FromatedInterests=[...Temp_FromatedInterests,
+        Temp_FormatedInterests=[...Temp_FormatedInterests,
         {
-          "key": "TN",
-          "name": "Tunisie",
-          "type": "country",
-          "country_code": "TN",
-          "country_name": "Tunisie",
-          "supports_region": true,
-          "supports_city": true
+          "id": interest.id,
+        "interest_Name": interest.interest_Name,
+        "interest_PlatformCode": interest.interest_PlatformCode,
+        "interest_Description": interest.interest_Description,
+        "interest_Topic": interest.interest_Topic,
+        "interest_Targeted_Posts": interest.interest_Targeted_Posts,
+        "interest_PlatformId": interest.interest_PlatformId,
+        "interest_Platform": interest.interest_Platform
         }]
-      })
+        //Getting the List of interests with the same name
+        let List_Of_Audience_Interests=SearchLib.Facebook_Get_Audience_Interests(interest.interest_Name)
+        //Filling the options list with the data, so that later it finds it and shows  it checked by default
+        List_Of_Audience_Interests.then((Result)=>{
+          if(Result.length!==0)
+          {
+             Temp_CachedInterests= [...Temp_CachedInterests, ...Result].reduce((acc, curr) => {
+              const found = acc.find(item => item.id === curr.id);
+              if (!found) {
+                acc.push(curr);
+              }
+              return acc;
+            }, [])     
+          }
+        })
 
+       })
+       variables.PostGlobalVariables.POST_CachedInterestOptions=Temp_CachedInterests
+       variables.PostGlobalVariables.POST_TargetedInterests=Temp_FormatedInterests
+
+       //Handling countries
+
+       let Temp_FormatedCountries=[]
+      let Temp_CachedCountries=[]
+      response.result.posT_Targeted_Countries.map((country)=>{
+        Temp_FormatedCountries=[...Temp_FormatedCountries,
+        {
+          "id": country.id,
+          "country_Name": country.country_Name,
+          "country_Key": country.country_Key,
+          "country_PlatformCode": country.country_PlatformCode,
+        }]
+        //Getting the List of interests with the same name
+        let List_Of_Countries=SearchLib.Facebook_Get_Audience_Countries(country.country_Name)
+        //Filling the options list with the data, so that later it finds it and shows  it checked by default
+        List_Of_Countries.then((Result)=>{
+          if(Result.length!==0)
+          {
+           Temp_CachedCountries= [...Temp_CachedCountries, ...Result].reduce((acc, curr) => {
+              const found = acc.find(item => item.id === curr.id);
+              if (!found) {
+                acc.push(curr);
+              }
+              return acc;
+            }, [])     
+          }
+        })
+
+       })
       
+       variables.PostGlobalVariables.POST_CachedCountryOptions=Temp_CachedCountries
+       variables.PostGlobalVariables.POST_TargetedCountries=Temp_FormatedCountries
+       //Handling Regions
+       let Temp_FormatedRegions=[]
+       let Temp_CachedRegions=[]
+       response.result.posT_Targeted_Regions.map((region)=>{
+        Temp_FormatedRegions=[...Temp_FormatedRegions,
+         {
+          "id": region.id,
+          "region_Name": region.region_Name,
+          "region_PlatformCode": region.region_PlatformCode,
+          "region_CountryId": region.region_CountryId,
+          "region_PlatformId": region.region_PlatformId,
+         }]
+         //Getting the List of Regions with the same name
+         let List_Of_Regions=SearchLib.Facebook_Get_Audience_Regions([region.region_Country],region.region_Name)        
+         //Filling the options list with the data, so that later it finds it and shows  it checked by default
+         List_Of_Regions.then((Result)=>{
+         
+           if(Result.length!==0)
+           {
+             Temp_CachedRegions= [...Temp_CachedRegions, ...Result].reduce((acc, curr) => {
+               const found = acc.find(item => item.id === curr.id);
+               if (!found) {
+                 acc.push(curr);
+               }
+               return acc;
+             }, []) 
+             
+           }
+         })
+ 
+        })
+        variables.PostGlobalVariables.POST_CachedRegionOptions=Temp_CachedRegions
+        variables.PostGlobalVariables.POST_TargetedRegions=Temp_FormatedRegions
+
+
+        //Handling Locations
+       let Temp_FormatedLocations=[]
+       let Temp_CachedLocations=[]
+       response.result.posT_Targeted_Locations.map((Location)=>{
+        Temp_FormatedLocations=[...Temp_FormatedLocations,
+         {
+          "id": Location.id,
+          "location_Name": Location.location_Name,
+          "location_Type": Location.location_Type,
+          "location_PlatformCode": Location.location_PlatformCode,
+         }]
+         //Getting the List of Regions with the same name
+         console.log(Location)
+         let List_Of_Locations=SearchLib.Facebook_Get_Audience_Locations([Location.location_Region],Location.location_Name)  
+         console.log([Location.location_Region.region_PlatformCode])     
+         //Filling the options list with the data, so that later it finds it and shows  it checked by default
+         List_Of_Locations.then((Result)=>{
+         
+           if(Result.length!==0)
+           {
+            Temp_CachedLocations= [...Temp_CachedLocations, ...Result].reduce((acc, curr) => {
+               const found = acc.find(item => item.id === curr.id);
+               if (!found) {
+                 acc.push(curr);
+               }
+               return acc;
+             }, []) 
+             
+           }
+         })
+ 
+        })
+        variables.PostGlobalVariables.POST_CachedLocationOptions=Temp_CachedLocations
+        variables.PostGlobalVariables.POST_TargetedLocations=Temp_FormatedLocations
+
       //------END TASK-----//
 
       }
@@ -1540,33 +1661,6 @@ export default   function Content() {
 
 
     </Paper>
-
-      
-        
-        
-        
-      
-
-       
-        
-     
-      
-      
-
- 
-     
-      
-      
-      
-      
-      
-      
-      
-      
- 
-
-  
-
 </>
   );
 }

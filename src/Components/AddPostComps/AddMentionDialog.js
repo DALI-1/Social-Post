@@ -145,10 +145,7 @@ export default function MentionDialog({SetShowAddMentionDialog,appendText,Remove
     
 
   },[])
-  console.log("----mentioned---")
-  console.log(ListOfMentionedUsers)
-  console.log("----mentionable---")
-console.log(ListOfMentionableUsers)
+
   //----------------------------------------------NOTE:Mention Comp intialization END----------------------------------------//
   return (
     <div>
