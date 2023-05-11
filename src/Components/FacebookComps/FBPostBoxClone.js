@@ -9,8 +9,6 @@ import Button from '@mui/material/Button';
 import ReactHtmlParser, { processNodes, convertNodeToElement, htmlparser2 } from 'react-html-parser'
 import * as variables from "../../variables/variables"
 import Carousel from 'react-material-ui-carousel'
-import ImageList from '@mui/material/ImageList';
-import ImageListItem from '@mui/material/ImageListItem';
 import FbImageLibrary from '../../libs/Facebook_Image_Selector/Facebook_Image_Selector'
 export default function FBPostBoxClone({Text,PageInfo}) {
     const currentDate = new Date();
@@ -32,12 +30,11 @@ export default function FBPostBoxClone({Text,PageInfo}) {
          sx={{ width: '100%', m: 1,p:2 ,textAlign: "center" }}>
             <div className='ClonePostHeader' >
           <Container>
-            <Row noGutters>
+            <Row>
                 <Col sx={4}  style={{ padding: 0 }}>
                     <div className='flex'>
                     <Avatar size="lg" src={PageInfo.PagePic} color="gradient"   rounded zoomed/>
-                    <Col xs={12}><p style={{marginLeft:70,marginTop:-37}}>{PageInfo.label}</p></Col>
-                    <Col xs={12}><span className="grayed-out" style={{marginLeft:50,marginTop:137}}>Published At {dateStr}</span></Col>      
+                    <Col xs={12}><p style={{marginLeft:70,marginTop:-37}}>{PageInfo.label}</p></Col>      
                     </div>
                 
                 </Col>
@@ -46,10 +43,13 @@ export default function FBPostBoxClone({Text,PageInfo}) {
           </Container>
             
             </div>
+            <br></br>
             <div className='ClonePostContent'>
             { ReactHtmlParser(Text) }
-            <hr/>
+            
             </div>
+            <br></br>
+            <hr/>
             <div className='ClonePostFooter'>
             <div class="social-icons">
               <Container>
@@ -76,12 +76,11 @@ export default function FBPostBoxClone({Text,PageInfo}) {
          sx={{ width: '100%', m: 1,p:2 ,textAlign: "center" }}>
             <div className='ClonePostHeader' >
           <Container>
-            <Row noGutters>
+            <Row >
                 <Col sx={4}  style={{ padding: 0 }}>
                     <div className='flex'>
                     <Avatar size="lg" src={PageInfo.PagePic} color="gradient"   rounded zoomed/>
-                    <Col xs={12}><p style={{marginLeft:70,marginTop:-37}}>{PageInfo.label}</p></Col>
-                    <Col xs={12}><span className="grayed-out" style={{marginLeft:50,marginTop:137}}>Published At {dateStr}</span></Col>      
+                    <Col xs={12}><p style={{marginLeft:70,marginTop:-37}}>{PageInfo.label}</p></Col>     
                     </div>
                 
                 </Col>
@@ -90,38 +89,15 @@ export default function FBPostBoxClone({Text,PageInfo}) {
           </Container>
             
             </div>
+            <br></br>
             <div className='ClonePostContent'>
-            { ReactHtmlParser(Text) }
-              
-
-  
+            { ReactHtmlParser(Text) }             
+              <br></br>
             <FbImageLibrary images={ImagesTab}/>
-          
-      {/*variables.PostGlobalVariables.POST_SelectedAssetsInfo.length==1?
-      <img         
-      src={variables.PostGlobalVariables.POST_SelectedAssetsInfo[0].src}
-      style={{width:"100%",height:"300px"}}
-      alt="Post Image"
-      loading="lazy"
-    />:<ImageList
-      variant="quilted"
-      cols={2}
-      rowHeight={300}
-    >
-      {variables.PostGlobalVariables.POST_SelectedAssetsInfo.map((Asset,index) => (
-        <ImageListItem key={index}> 
-          <img         
-            src={Asset.src}
-            style={{width:"100%",height:"100%"}}
-            alt="Post Image"
-            loading="lazy"
-          />
-        </ImageListItem>
-      ))}
-    </ImageList>
-      */}
-            <hr/>
+           
             </div>
+            <br></br>
+            <hr/>
             <div className='ClonePostFooter'>
             <div class="social-icons">
               <Container>
@@ -156,10 +132,11 @@ export default function FBPostBoxClone({Text,PageInfo}) {
       <img src={PageInfo.PagePic} alt="Profile Picture"/>
       <div class="user-info">
         <h2>{PageInfo.label}</h2>
-        <p>Location</p>
+        
       </div>
       <i class="fas fa-ellipsis-h"></i>
     </div>
+    <br></br>
     <div class="image">
       <img src="https://via.placeholder.com/300x300" style={{width:"100%",height:"300px"}} alt="Post Image"/>
     </div>
@@ -173,13 +150,14 @@ export default function FBPostBoxClone({Text,PageInfo}) {
         <i class="far fa-bookmark"></i>
       </div>
     </div>
-    <div class="likes">
-      <img src={PageInfo.PagePic}  alt="Profile Picture"/>
-      <p>Liked by <strong>{PageInfo.label}</strong> and <strong>2 others</strong></p>
-    </div>
+    <br></br>
     <div class="caption">
       <p>{ ReactHtmlParser(Text) }</p>
+      
     </div>
+    <br></br>
+   
+    
   </div>       
             </Paper>
       )
@@ -196,10 +174,11 @@ export default function FBPostBoxClone({Text,PageInfo}) {
       <img src={PageInfo.PagePic} alt="Profile Picture"/>
       <div class="user-info">
         <h2>{PageInfo.label}</h2>
-        <p>Location</p>
+        
       </div>
       <i class="fas fa-ellipsis-h"></i>
     </div>
+    <br></br>
     <div class="image">
     <Carousel
     navButtonsProps={{          // Change the colors of the actual buttons. THIS STYLES BOTH BUTTONS
@@ -223,16 +202,14 @@ export default function FBPostBoxClone({Text,PageInfo}) {
         <i class="far fa-bookmark"></i>
       </div>
     </div>
-    <div class="likes">
-      <img src={PageInfo.PagePic} alt="Profile Picture"/>
-      <p>Liked by <strong>{PageInfo.label}</strong> and <strong>2 others</strong></p>
-    </div>
+    <br></br>
     <div class="caption">
       <p>{ ReactHtmlParser(Text) }</p>
     </div>
-    <div class="timestamp">
-      <p>{dateStr}</p>
-    </div>
+    <br></br>
+  
+    
+
   </div>       
             </Paper>
       )

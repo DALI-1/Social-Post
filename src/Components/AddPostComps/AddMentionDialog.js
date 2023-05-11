@@ -31,6 +31,8 @@ import {  toast } from 'react-toastify';
 import { Avatar } from "@nextui-org/react";
 import * as APILib from "../../libs/APIAccessAndVerification"
 import * as variables from "../../variables/variables"
+import CancelIcon from '@mui/icons-material/Cancel';
+import SaveIcon from '@mui/icons-material/Save';
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -94,6 +96,17 @@ export default function MentionDialog({SetShowAddMentionDialog,appendText,Remove
 
     //Saving them to the global variable
     variables.PostGlobalVariables.POST_Mentions=TempMentionList
+    toast.info("Mentioned Users saved and added or removed from the text editor.", {
+      position: "bottom-left",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+    handleClose()
 
   };
 
@@ -131,12 +144,8 @@ export default function MentionDialog({SetShowAddMentionDialog,appendText,Remove
                 Temp_MentionedUsers=[...Temp_MentionedUsers,mentionableUser]
               }
             })
-            
-
           })
-
-          setListOfMentionedUsers(Temp_MentionedUsers)
-           
+          setListOfMentionedUsers(Temp_MentionedUsers)           
         }
       }
         
@@ -159,7 +168,7 @@ export default function MentionDialog({SetShowAddMentionDialog,appendText,Remove
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle>Post Mentions</DialogTitle>
+        <DialogTitle>Add & Remove Mentioned Users</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
       <Container>
@@ -171,11 +180,10 @@ export default function MentionDialog({SetShowAddMentionDialog,appendText,Remove
             HandleMentionedUserSelection(newValue)
           }}
           value={ListOfMentionedUsers}
-          key={"MultiPageSelect"}
+          key={"MentionMultiSelect"}
           multiple
-          id="checkboxes-tags-demo"
+          id="MentionMultiSelect"
           options={ListOfMentionableUsers}
-          disableCloseOnSelect
           getOptionLabel={(option) => option.Name}
           renderOption={(props, option, { selected }) => {
             return(
@@ -214,8 +222,8 @@ export default function MentionDialog({SetShowAddMentionDialog,appendText,Remove
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={HandleAddMention}>Save Mentioned People List</Button>
+          <Button variant="outlined" color='error' startIcon={<CancelIcon />} onClick={handleClose}>Cancel</Button>
+          <Button variant="outlined" color='primary' startIcon={<SaveIcon/>} onClick={HandleAddMention}>Save Mentioned Peoples</Button>
         </DialogActions>
       </Dialog>
     </div>

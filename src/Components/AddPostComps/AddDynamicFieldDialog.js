@@ -66,7 +66,7 @@ export default function AlertDialogSlide({SetShowDynamicFieldDialog,appendText,R
         <Accordion.Body>
         
               
-        <PatternManagement appendText={appendText} RemoveDynamicFieldText={RemoveDynamicFieldText}/>     
+        <PatternManagement handleClose={handleClose} appendText={appendText} RemoveDynamicFieldText={RemoveDynamicFieldText}/>     
               
         
         </Accordion.Body>

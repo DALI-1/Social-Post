@@ -16,10 +16,13 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
+const TransitionLeft = React.forwardRef(function Transition(props, ref) {
+  return <Slide  direction="left" ref={ref} {...props} />;
 });
 
+const TransitionUp = React.forwardRef(function Transition(props, ref) {
+  return <Slide  direction="up" ref={ref} {...props} />;
+});
 //---------------------------------This Dialog here shows the delete confirmation for the Post-----------------------------//
 export function DeleteConfirmDialog({DeletePostShow,setDeletePostShow,postid,data,setdata}) {
   const [open, setOpen] = React.useState(true);
@@ -66,7 +69,7 @@ APIResult.then((result) => {
 return (
   <>
     <div>      
-      <Dialog fullWidth={true} open={open} TransitionComponent={Transition} >
+      <Dialog fullWidth={true} open={open} TransitionComponent={TransitionLeft} >
         <DialogTitle> Post Settings</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -113,7 +116,7 @@ const HandlePreviewPost=()=>
 return (
   <>
     <div>      
-      <Dialog fullWidth={true} open={open} >
+      <Dialog fullWidth={true} open={open} TransitionComponent={TransitionUp} >
         <DialogTitle> Post Settings</DialogTitle>
         <DialogContent>
           <DialogContentText>

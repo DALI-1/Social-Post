@@ -428,6 +428,7 @@ export default   function AlertDialogSlide({SetShowAddTargetDialog}) {
               loading={Country_Target_MultiSelect_loading}
               value={Country_Target_MultiSelectValues}
               onInputChange={(e)=>{ 
+                    console.log(e)
                    Country_Target_MultiSelect_Value.current=e.target.value
                   if(Country_Target_MultiSelect_Value.current!=="" &&Country_Target_MultiSelect_Value.current!=0 &&Country_Target_MultiSelect_Value.current!==Already_Searched_Target_Interest_Value.current)
                   {                    

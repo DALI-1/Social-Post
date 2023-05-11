@@ -254,7 +254,7 @@ export function AddDynamicFieldDialog(props) {
   {
     DynamicField.listOfPagesDynamicFieldValues=listOfPagesDynamicFieldValues
     variables.PostGlobalVariables.POST_AddedDynamicFields=[...variables.PostGlobalVariables.POST_AddedDynamicFields,DynamicField]
-    toast.info("Pattern Created.", {
+    toast.info("The Custom Dynamic field is Created.", {
       position: "bottom-left",
       autoClose: 5000,
       hideProgressBar: false,
@@ -273,11 +273,12 @@ export function AddDynamicFieldDialog(props) {
           PatternText=Pattern.patternText
         }
     })
-    props.appendText(PatternText)
+    //NOTE: Auto Appened disabled since now you can customize your dynamicfields
+    //props.appendText(PatternText)
   }
   else
   {
-    toast.info("The Selected Pattern is already in use by an other Dynamic FIeld", {
+    toast.info("The Selected Pattern is already in use by an other Dynamic FIeld.", {
       position: "bottom-left",
       autoClose: 5000,
       hideProgressBar: false,
@@ -292,7 +293,7 @@ export function AddDynamicFieldDialog(props) {
 }
 else
 {
-  toast.info("The Input value for Page Dynamic field cannot be empty for Every page!", {
+  toast.info("The Input value for the Dynamic field cannot be empty for Every page.", {
     position: "bottom-left",
     autoClose: 5000,
     hideProgressBar: false,
@@ -325,14 +326,13 @@ else
           aria-describedby="alert-dialog-description"
         >
           <DialogTitle id="alert-dialog-title">
-            Create Dynamic FIeld
+            Create custom Dynamic field.
           </DialogTitle>
           <DialogContent>
             <DialogContentText className='m-2' id="alert-dialog-description">
-
-             Please Input the dynamic fields values for each of the Pages you Selected
-                     for the current Selected Pattern
-
+             <strong>Please Input the dynamic fields values for each of the Pages you Selected
+                     for the current Selected Pattern</strong>
+              <br></br>
             </DialogContentText>
             <Container>
               {variables.PostGlobalVariables.POST_SelectedPageInfo.length===0&&<p>No Selected Pages Found</p>}
@@ -360,9 +360,9 @@ else
           </DialogContent>
           <DialogActions>
          
-            <Button variant="outlined" color="error" startIcon={<CancelIcon />}  onClick={handleClose}>Cancel</Button>
+            <Button variant="outlined" color="error" startIcon={<CancelIcon />}  onClick={handleClose}>Cancel creation.</Button>
             {variables.PostGlobalVariables.POST_SelectedPageInfo.length!==0&&<Button  startIcon={<SaveAltIcon />} variant="outlined" onClick={handleDynamicFieldCreation}>
-              Add Dynamic Field
+              Create Custom Dynamic field.
             </Button>}
           </DialogActions>
         </Dialog>
@@ -725,17 +725,19 @@ function CollapseRow(props) {
         </IconButton>
         </TableCell>
 
-        <TableCell><IconButton onClick={()=>{appendText(" "+patternTxt);SetLocalReRender(!LocalRerender);
-      toast.info("The pattern inserted in the textfield", {
-        position: "bottom-left",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });}}>
+        <TableCell><IconButton  onClick={()=>{appendText(" "+patternTxt);SetLocalReRender(!LocalRerender);
+              toast.info("The Dynamic field is inserted to the text editor.", {
+                position: "bottom-left",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+              });
+              props.handleClose();
+              }}>
           <InputIcon/>
         </IconButton>
         </TableCell>
@@ -779,7 +781,7 @@ function CollapseRow(props) {
                       <TableCell>{patternTxt}</TableCell>
                       <TableCell><TextField id={"PAGEDynamicFieldVAlue"+SRow.pageID}  key={SRow.pageID} variant="outlined" defaultValue={SRow.dynamicFieldValue} /></TableCell>
                       <TableCell><IconButton onClick={()=>{UpdateDynamicField(SRow.pageID,PatternID);
-                        toast.info("The value of the dynamic field Updated!", {
+                        toast.info("The value for the corresponding page saved.", {
                           position: "bottom-left",
                           autoClose: 5000,
                           hideProgressBar: false,
@@ -808,7 +810,7 @@ function CollapseRow(props) {
   );
 }
 
-export  default function EnhancedTable({appendText,RemoveDynamicFieldText}) {
+export  default function EnhancedTable({handleClose,appendText,RemoveDynamicFieldText}) {
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
   const [selected, setSelected] = React.useState([]);
@@ -936,7 +938,7 @@ React.useEffect(()=>{
       
       if(selected.length!==1)
       {
-        toast.info("You need to Select One Pattern Only !", {
+        toast.info("You need to Select a pattern that you want to use for the custom dynamic field you're trying to create.", {
           position: "bottom-left",
           autoClose: 5000,
           hideProgressBar: false,
@@ -950,7 +952,7 @@ React.useEffect(()=>{
       //Here we test if the selected pattern is one of the default patterns or not
       else if(selected[0]==1 ||selected[0]==2||selected[0]==3||selected[0]==4)
       {
-        toast.info("You cannot create a dynamic field using default patterns, please use an other personal one.", {
+        toast.info("You cannot create a custom dynamic field using default Dynamic field pattern, please use a custom one, (Avoid the four first patterns)", {
           position: "bottom-left",
           autoClose: 5000,
           hideProgressBar: false,
@@ -1208,7 +1210,7 @@ TempObject.listOfPatternsToDelete=[...TempObject.listOfPatternsToDelete,{pattern
         <TableBody >
           {variables.PostGlobalVariables.POST_AddedDynamicFields.length==0&& <div className="m-2" style={{display: 'flex',justifyContent: 'center',alignItems: 'center'}}><p>No Dynamic field found</p></div>}
           {variables.PostGlobalVariables.POST_AddedDynamicFields.map((df) => (
-            <CollapseRow appendText={appendText} RemoveDynamicFieldText={RemoveDynamicFieldText} SetLocalReRender={SetLocalReRender} key={"DF"+df.patternID } rows={rows} dfdata={df} LocalRerender={LocalRerender} />
+            <CollapseRow handleClose={handleClose} appendText={appendText} RemoveDynamicFieldText={RemoveDynamicFieldText} SetLocalReRender={SetLocalReRender} key={"DF"+df.patternID } rows={rows} dfdata={df} LocalRerender={LocalRerender} />
           ))}
         </TableBody>
       </Table>

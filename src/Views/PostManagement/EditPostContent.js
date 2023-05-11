@@ -55,8 +55,16 @@ import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import IconButton from '@mui/material/IconButton';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import * as SearchLib from "../../libs/Facebook_Search"
+import CollectionsSharpIcon from '@mui/icons-material/CollectionsSharp';
+import PodcastsIcon from '@mui/icons-material/Podcasts';
+import DynamicFeedIcon from '@mui/icons-material/DynamicFeed';
+import RoomIcon from '@mui/icons-material/Room';
+import FaceRetouchingNaturalIcon from '@mui/icons-material/FaceRetouchingNatural';
+import { renderToStaticMarkup } from 'react-dom/server';
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
+const iconSize = 48;
+const iconColor = 'blue'
 export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelectionChange,handleAssetSelectionChange,DefaultPostText},ref)=> {
   //--------------------Variables specific the posting options------------------------------//
   const editorRef =React.useRef(null)
@@ -228,11 +236,12 @@ const HandlePostSchedule=(()=>{
       let Formated_listOfMentionedPlatformAccounts=[]         
       variables.PostGlobalVariables.POST_Mentions.map((MentionedUser)=>{
         Formated_listOfMentionedPlatformAccounts=[...Formated_listOfMentionedPlatformAccounts,{mentionedPlatformAccount_ID:MentionedUser.MentionedUserID}]
-        POST_Txt=POST_Txt.replace(MentionedUser.MentionText,"@["+MentionedUser.MentionedUserID+"]")
+        POST_Txt=POST_Txt.replaceAll(MentionedUser.MentionText,"@["+MentionedUser.MentionedUserID+"]")
       })
 
       //-------------------------NOTE: END OF Formating the Mentions for the backened--------------------------//
-          var JsonObject = {  
+          var JsonObject = { 
+            postID:variables.PostGlobalVariables.EDITPOST_SelectedPostID, 
             postGroupID: GlobalState.SelectedGroup.id,
             postText: POST_Txt,
             repeatPost: Repeat,
@@ -261,15 +270,15 @@ const HandlePostSchedule=(()=>{
         let JsonObjectToSend = JSON.stringify(JsonObject);
         let url2 =
           process.env.REACT_APP_BACKENDURL + 
-          process.env.REACT_APP_ADDPOST;
+          process.env.REACT_APP_EDITPOST;
         let UserToken = window.localStorage.getItem("AuthToken");
         let APIResult = APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
         APIResult.then((result) => {
           if (result.errorCode == undefined) {
-            if(result.successCode=="Post_Scheduleded")
+            if(result.successCode=="Post_Edited")
             {
     
-              toast.success("Post Scheduleded Successfully!", {
+              toast.success("Post Informations saved!", {
                 position: "bottom-left",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -336,255 +345,15 @@ const HandlePostSchedule=(()=>{
  
 
 })
-
-const HandlePostNow=(()=>{
-
-  let EditorContent=editorRef.current.getContent()
-  let Post_Date=Post_DateInput.current
-  let Repeat=Post_RepeatCheckbox.current
-  let RepeatDropDownListSelection=Post_RepeatingOptionDropDownList.current
-  //let Repeat_Every=Post_Repeat_EveryInput.current
-  let EndRepeatRadioBoxValue=Post_EndRepeatRadioBox.current
-  let EndRepeatOnNbOfOccurencesValue=Post_EndRepeatOnNbOfOccurencesInput.current
-  let EndRepeatAfterDate=Post_EndRepeatAfterDateInput.current
-  let INSTAGRAM_Page_Exist_InSelection_Flag=false
-  let POST_Txt=EditorContent.toString().split("<p>").join("").split("</p>").join("")
-  if(Post_Date!=null)
-  {
-    if(EditorContent!="")
-    {
-
-      
-      let ListOfPages=[]
-      variables.PostGlobalVariables.POST_SelectedPageInfo.map((page)=>
-      {
-        if(page.PageType==2)
-        {INSTAGRAM_Page_Exist_InSelection_Flag=true}
-      ListOfPages=[...ListOfPages,{"pageID": page.id}]
-      })
-    
-      if(ListOfPages.length!=0)
-      {
-
-        var AssetsList=[]
-
-        Assets.map((Asset)=>{
-          AssetsList=[...AssetsList,{ 
-            assetID: Asset.AssetId
-          }]
-        })
-       
-        if(AssetsList.length==0 &&INSTAGRAM_Page_Exist_InSelection_Flag)
-        {
-          toast.info("You cannot create an Instagram Post without at least having picture added to it", {
-            position: "bottom-left",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
-        }
-        else
-        {
-          let ReFormatedTargetedLanguages=[]
-          let ReFormatedTargetedLocations=[]
-          let ReFormatedTargetedRegions=[]
-          let ReFormatedTargetedCountries=[]
-          let ReFormatedTargetedInterests=[]
-      variables.PostGlobalVariables.POST_TargetedLanguages.map((Language)=>{
-        ReFormatedTargetedLanguages=[...ReFormatedTargetedLanguages,
-          {
-          language_Name: Language.name,
-          languagePlatform_Key: Language.key
-        }]       
-      })  
-        //Reformating Location
-      variables.PostGlobalVariables.POST_TargetedLocations.map((Location)=>{
-        ReFormatedTargetedLocations=[...ReFormatedTargetedLocations,
-          {
-            location_Name: Location.location_Name,
-            location_Type: Location.location_Type,
-            location_PlatformCode: Location.location_PlatformCode,
-            location_RegionId:Location.location_RegionId
-        }]
-      })      
-        //Reformating Regions
-      variables.PostGlobalVariables.POST_TargetedRegions.map((Region)=>{
-        ReFormatedTargetedRegions=[...ReFormatedTargetedRegions,
-          {    
-            region_Name: Region.region_Name,
-            country_PlatformId: Region.country_PlatformId,
-            region_PlatformCode: Region.region_PlatformCode
-        }]
-
-      })   
-        //Reformating Countries
-      variables.PostGlobalVariables.POST_TargetedCountries.map((Country)=>{    
-        ReFormatedTargetedCountries=[...ReFormatedTargetedCountries,
-          {
-           
-            country_Name: Country.country_Name,
-            country_Key: Country.country_Key,
-            country_PlatformCode: Country.country_PlatformCode
-        }]
-      })
-       //Reformating Interests
-      variables.PostGlobalVariables.POST_TargetedInterests.map((Interest)=>{
-        ReFormatedTargetedInterests=[...ReFormatedTargetedInterests,
-          {
-            interest_Name:Interest.interest_Name,
-            interest_PlatformCode:Interest.interest_PlatformCode ,
-            interest_Description: Interest.interest_Description,
-            interest_Topic: Interest.interest_Topic
-          
-        }]
-      })
-        //-------------------------NOTE: Formating the Mentions for the backened--------------------------//
-      // 1- Adding the platformaccounts to a list
-      //2- Changing the Text and formating like this @[12345]  1235 is an example, it should be a platformaccountID
-        let Formated_listOfMentionedPlatformAccounts=[]         
-      variables.PostGlobalVariables.POST_Mentions.map((MentionedUser)=>{
-        Formated_listOfMentionedPlatformAccounts=[...Formated_listOfMentionedPlatformAccounts,{mentionedPlatformAccount_ID:MentionedUser.MentionedUserID}]
-        POST_Txt=POST_Txt.replace(MentionedUser.MentionText,"@["+MentionedUser.MentionedUserID+"]")
-      })
-       
-
-      //-------------------------NOTE: END OF Formating the Mentions for the backened--------------------------//
-          var JsonObject = {  
-            postGroupID: GlobalState.SelectedGroup.id,
-            postText:POST_Txt ,
-            repeatPost: Repeat,
-            repeatOption: RepeatDropDownListSelection==1?"Hourly":RepeatDropDownListSelection==2?"Daily":RepeatDropDownListSelection==3?"Weekly":RepeatDropDownListSelection==4?"Monthly":RepeatDropDownListSelection==5?"Yearly":"BUG_IMPOSSIBLE_TO_REACH",
-            endRepeatPost: EndRepeatRadioBoxValue==1?false:true,
-            endRepeatOption: EndRepeatRadioBoxValue==1?"NoEnd":EndRepeatRadioBoxValue==2?"EndOccOption":"EndDateOption",
-            endRepeatOnOccurence: EndRepeatRadioBoxValue==2?EndRepeatOnNbOfOccurencesValue:0,
-            endRepeatAfterDate: EndRepeatRadioBoxValue==3?EndRepeatAfterDate:"2023-04-12T23:00:00.000Z",
-            postDate: new Date(),
-            listOfMentionedPlatformAccounts:Formated_listOfMentionedPlatformAccounts,
-            listOfPages:ListOfPages,
-            listOfAssets: AssetsList,
-            listOfDynamicFields: variables.PostGlobalVariables.POST_AddedDynamicFields,
-            listOfTags:variables.PostGlobalVariables.POST_AssetsTags,
-            target_AgeFrom: variables.PostGlobalVariables.POST_TargetedAgeRange.FromAge,
-            target_AgeTo: variables.PostGlobalVariables.POST_TargetedAgeRange.ToAge,
-            target_Gender: variables.PostGlobalVariables.POST_TargetedGenderId ,
-            target_PlatformId: variables.PostGlobalVariables.POST_TargetSelectedPlatform,
-            targeted_Countries: ReFormatedTargetedCountries,
-            targeted_Regions: ReFormatedTargetedRegions,
-            targeted_Locations: ReFormatedTargetedLocations,
-            targeted_Languages: ReFormatedTargetedLanguages,
-            targeted_Interests: ReFormatedTargetedInterests,
-         };
-    
-        let JsonObjectToSend = JSON.stringify(JsonObject);
-        let url2 =
-          process.env.REACT_APP_BACKENDURL + 
-          process.env.REACT_APP_ADDPOST;
-        let UserToken = window.localStorage.getItem("AuthToken");
-        let APIResult = APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
-        APIResult.then((result) => {
-          if (result.errorCode == undefined) {
-            if(result.successCode=="Post_Scheduleded")
-            {
-    
-              toast.success("Posted Successfully!", {
-                position: "bottom-left",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-               
-              });
-              Dispatch({type:variables.PostSelectedTabActions.SelectManagePosts})
-            }
-            
-            
-          }
-        });
-        }
-      }
-      else
-      {
-        toast.info("You cannot create a post without associating at least one page", {
-          position: "bottom-left",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-      }
-      
-    }
-    else
-    {
-      toast.info("You cannot create a post with an empty content", {
-        position: "bottom-left",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-    }
-    
-
-  }
-  else
-  {
-    toast.info("Post date for scheduled Posts cannot be empty, use Post Now instead if you don't want to specify the Post date", {
-      position: "bottom-left",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
-  }
-
  
- 
-}) 
-  //this is related to tiny mce custom buttons
-  const LocationIcon=`<svg width="24" height="24" viewBox="-3 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-  <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-      <g id="Dribbble-Light-Preview" transform="translate(-223.000000, -5439.000000)" fill="#000000">
-          <g id="icons" transform="translate(56.000000, 160.000000)">
-              <path d="M176,5286.219 C176,5287.324 175.105,5288.219 174,5288.219 C172.895,5288.219 172,5287.324 172,5286.219 C172,5285.114 172.895,5284.219 174,5284.219 C175.105,5284.219 176,5285.114 176,5286.219 M174,5296 C174,5296 169,5289 169,5286 C169,5283.243 171.243,5281 174,5281 C176.757,5281 179,5283.243 179,5286 C179,5289 174,5296 174,5296 M174,5279 C170.134,5279 167,5282.134 167,5286 C167,5289.866 174,5299 174,5299 C174,5299 181,5289.866 181,5286 C181,5282.134 177.866,5279 174,5279" id="pin_sharp_circle-[#624]">
+  //===============================================NOTE: TINYMCE custom Icon Button CONFIGURATION===============================================//
+const LocationIcon=renderToStaticMarkup(<RoomIcon size={iconSize} color={iconColor} />);
+const TargetIcon=renderToStaticMarkup(<PodcastsIcon size={iconSize} color={iconColor} />);
+const MentionIcon= renderToStaticMarkup(<FaceRetouchingNaturalIcon size={iconSize} color={iconColor} />);
+const DynamicFIeldIcon=renderToStaticMarkup(<DynamicFeedIcon size={iconSize} color={iconColor} />);
+const AssetsIcon=renderToStaticMarkup(<CollectionsSharpIcon size={iconSize} color={iconColor} />);
 
-</path>
-          </g>
-      </g>
-  </g>
-</svg>`
-  const TargetIcon=`<svg fill="#000000" width="24" height="24" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-  <path d="M0 8c0-4.418 3.59-8 8-8 4.418 0 8 3.59 8 8 0 4.418-3.59 8-8 8-4.418 0-8-3.59-8-8zm2 0c0 3.307 2.686 6 6 6 3.307 0 6-2.686 6-6 0-3.307-2.686-6-6-6-3.307 0-6 2.686-6 6zm2 0c0-2.21 1.795-4 4-4 2.21 0 4 1.795 4 4 0 2.21-1.795 4-4 4-2.21 0-4-1.795-4-4zm2 0c0 1.112.895 2 2 2 1.112 0 2-.895 2-2 0-1.112-.895-2-2-2-1.112 0-2 .895-2 2z" fill-rule="evenodd"/>
-</svg>`
-  const MentionIcon = `<svg width="24" height="24" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-  <g id="🔍-Product-Icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-      <g id="ic_fluent_mention_24_regular" fill="#212121" fill-rule="nonzero">
-          <path d="M22,12 L22,13.75 C22,15.8210678 20.3210678,17.5 18.25,17.5 C16.7458289,17.5 15.4485014,16.6143971 14.8509855,15.3361594 C14.032894,16.3552078 12.8400151,17 11.5,17 C8.99236936,17 7,14.7419814 7,12 C7,9.25801861 8.99236936,7 11.5,7 C12.6590052,7 13.7079399,7.48235986 14.5009636,8.27192046 L14.5,7.75 C14.5,7.33578644 14.8357864,7 15.25,7 C15.6296958,7 15.943491,7.28215388 15.9931534,7.64822944 L16,7.75 L16,13.75 C16,14.9926407 17.0073593,16 18.25,16 C19.440864,16 20.4156449,15.0748384 20.4948092,13.9040488 L20.5,13.75 L20.5,12 C20.5,7.30557963 16.6944204,3.5 12,3.5 C7.30557963,3.5 3.5,7.30557963 3.5,12 C3.5,16.6944204 7.30557963,20.5 12,20.5 C13.032966,20.5 14.0394669,20.3160231 14.9851556,19.9612482 C15.3729767,19.8157572 15.8053117,20.0122046 15.9508027,20.4000257 C16.0962937,20.7878469 15.8998463,21.2201818 15.5120251,21.3656728 C14.3985007,21.7834112 13.2135869,22 12,22 C6.4771525,22 2,17.5228475 2,12 C2,6.4771525 6.4771525,2 12,2 C17.4292399,2 21.8479317,6.32667079 21.9961582,11.7200952 L22,12 L22,13.75 L22,12 Z M11.5,8.5 C9.86549502,8.5 8.5,10.047561 8.5,12 C8.5,13.952439 9.86549502,15.5 11.5,15.5 C13.134505,15.5 14.5,13.952439 14.5,12 C14.5,10.047561 13.134505,8.5 11.5,8.5 Z" id="🎨-Color">
-
-</path>
-      </g>
-  </g>
-</svg>`
-const DynamicFIeldIcon='<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 384 512"><path d="M0 96C0 60.7 28.7 32 64 32h96c123.7 0 224 100.3 224 224s-100.3 224-224 224H64c-35.3 0-64-28.7-64-64V96zm160 0H64V416h96c88.4 0 160-71.6 160-160s-71.6-160-160-160z"/></svg>'
-const AssetsIcon='<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 576 512"><path d="M160 32c-35.3 0-64 28.7-64 64V320c0 35.3 28.7 64 64 64H512c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H160zM396 138.7l96 144c4.9 7.4 5.4 16.8 1.2 24.6S480.9 320 472 320H328 280 200c-9.2 0-17.6-5.3-21.6-13.6s-2.9-18.2 2.9-25.4l64-80c4.6-5.7 11.4-9 18.7-9s14.2 3.3 18.7 9l17.3 21.6 56-84C360.5 132 368 128 376 128s15.5 4 20 10.7zM192 128a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zM48 120c0-13.3-10.7-24-24-24S0 106.7 0 120V344c0 75.1 60.9 136 136 136H456c13.3 0 24-10.7 24-24s-10.7-24-24-24H136c-48.6 0-88-39.4-88-88V120z"/></svg>'
-
-  const HandleAddMention = () => {
+const HandleAddMention = () => {
     SetShowAddMentionDialog(true)
     
   };
@@ -611,16 +380,33 @@ const init = {
   content_script: [
     '../../libs/tinymce/js/tinymce/tinymce.min.js'
   ],
-  force_br_newlines:false,
-  menubar: false,
+  selector: "textarea",
+  invalid_elements :'strong,bold,b,em,br,span,div,p,img,a,table,td,th,tr,header,font,body,h,h1,h2,h3,h4,h5',
+  invalid_styles: 'color font-size text-decoration font-weight',
+  forced_root_block : "",
+  cleanup: true,
+  remove_linebreaks: true,
+  convert_newlines_to_brs: false,
+  inline_styles : false,
+  entity_encoding: 'raw',
+  entities: '160,nbsp,38,amp,60,lt,62,gt',
   selector: '#my-editor',
   plugins: [
     'wordcount',
     'emoticons',
   ],
+  menu: {
+    format: { // Exclude the "format" menu item
+      title: '',
+      items: ''
+    },
+    insert: { // Exclude the "format" menu item
+      title: '',
+      items: ''
+    }
+  },
   toolbar_location: "top",
-  menubar: false,
-  statusbar: true,
+  statusbar: false,
   toolbar: toolbar,
   setup: (editor) => {
     //Adding the icons for the SVG files
@@ -632,37 +418,39 @@ const init = {
      //adding the Add Target persona button on the menu
      editor.ui.registry.addButton('AddTarget', {
       icon:'Target',
-      tooltip: 'Specify your post targets',
+      tooltip: 'Choose the people that can see your post based on the location, language, age, ect..',
       onAction: HandleAddTarget
     })
     //adding the Add location button on the menu
     editor.ui.registry.addButton('AddLocation', {
       icon:'Location',
-      tooltip: 'Specify your post targets',
+      tooltip: 'Share your location within the post you creating.',
       onAction: HandleAddLocation
     })
     //adding the Add mention button on the menu
     editor.ui.registry.addButton('AddMention', {
       icon:'Mention',
-      tooltip: 'Add Mentions to your Post',
+      tooltip: 'Mention a person within your post',
       onAction: HandleAddMention
     })
     //Adding the the add Dynamic FIeld
     editor.ui.registry.addButton('AddDynamicFIeld', {
       icon:'DynamicField',
-      tooltip: 'Add Dynamic field',
+      tooltip: 'Create a Dynamic variable that changes within the text based on the page',
       onAction: handleDynamicField
     })
 
     //Adding the assets button
     editor.ui.registry.addButton('AddAssets', {
       icon:'Assets',
-      tooltip: 'Add Assets',
+      tooltip: 'Add,Modify, delete Images from your gallery to the post',
       onAction: handleAssets
     })
     
   }
 };
+
+    //===============================================NOTE: END CONFIG===============================================//
 
   
   //this is used for the splitte 
@@ -822,7 +610,7 @@ function RemoveDynamicFieldText(Text) {
   const content = editor.getContent(); // get the current content of the editor
   const regex = new RegExp(Text, 'g'); // create a regular expression with the global 'g' flag to replace all instances
   const newText = ""; // the text to insert
-  const replacedContent = content.replace(regex, newText); // replace all instances of the 'Text' variable with 'newText'
+  const replacedContent = content.replaceAll(regex, newText); // replace all instances of the 'Text' variable with 'newText'
   editor.setContent(replacedContent); // set the new content of the edito
   SetInfoTag(!InfoTag)
 }
@@ -833,7 +621,7 @@ function RemoveMentionedUserText(Text) {
   const content = editor.getContent(); // get the current content of the editor
   const regex = new RegExp(Text, 'g'); // create a regular expression with the global 'g' flag to replace all instances
   const newText = ""; // the text to insert
-  const replacedContent = content.replace(regex, newText); // replace all instances of the 'Text' variable with 'newText'
+  const replacedContent = content.replaceAll(regex, newText); // replace all instances of the 'Text' variable with 'newText'
   editor.setContent(replacedContent); // set the new content of the edito
   SetInfoTag(!InfoTag)
 }
@@ -1017,7 +805,7 @@ const HandleImageTag=(()=>{
           'MobileDateTimePicker'
         ]}
       >
-          <MobileDateTimePicker label="Post Date" defaultValue={variables.PostGlobalVariables.EDITPOST_Default_PostDate.add(-1,"hour")}  onChange={handlePostDateChange}  /> 
+          <MobileDateTimePicker minDate={dayjs(new Date())} label="Post Date" defaultValue={variables.PostGlobalVariables.EDITPOST_Default_PostDate.add(-1,"hour")}  onChange={handlePostDateChange}  /> 
       </DemoContainer>
     </LocalizationProvider>
 
@@ -1048,13 +836,6 @@ const HandleImageTag=(()=>{
 
       </FormControl>
           </Row>
-
-          {/*<Row style={{margin:"1rem"}}>
-            <Col><p style={{marginTop:"1.3rem"}}>Repeat Every </p></Col>
-            <Col><TextField onChange={HandlePost_Repeat_EveryInput} id="outlined-basic" variant="outlined" /></Col>
-            <Col style={{marginTop:"1.3rem"}} >Days</Col>
-      </Row>*/}
-          
           <Row style={{margin:"1rem"}}>
                       <FormControl>
             <FormLabel>End Repeat</FormLabel>
@@ -1080,7 +861,7 @@ const HandleImageTag=(()=>{
             <Col xs={4}><FormControlLabel style={{marginTop:"0.4rem"}} value="3" control={<Radio />} label="After" /></Col>
             <Col xs={6}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <MobileDateTimePicker onChange={HandlePost_EndRepeatAfterDateInput} defaultValue={variables.PostGlobalVariables.EDITPOST_Default_EndRepeatAfterDate} label="Post Date"/>  
+          <MobileDateTimePicker minDate={dayjs(new Date())} onChange={HandlePost_EndRepeatAfterDateInput} defaultValue={variables.PostGlobalVariables.EDITPOST_Default_EndRepeatAfterDate} label="Post Date"/>  
          </LocalizationProvider></Col>
          <Col></Col>
             
@@ -1111,8 +892,7 @@ const HandleImageTag=(()=>{
             {/*-----------------------NOTE: NOTE END--------------------*/}
 <Container>
   <Row>
-  <Col><Button variant="outlined"color="primary" startIcon={<ScheduleSendIcon/>}  className='mx-2 m-3' onClick={HandlePostSchedule}>Schedule Post </Button></Col>
-  <Col><Button variant="outlined"color="primary" startIcon={<SendIcon/>}  className='mx-2 m-3' onClick={HandlePostNow}>Post Now </Button></Col>
+  <Col><Button variant="outlined"color="primary" startIcon={<ScheduleSendIcon/>}  className='mx-2 m-3' onClick={HandlePostSchedule}>Save Post Informations </Button></Col>
   </Row>
 </Container>
       
@@ -1163,7 +943,7 @@ ListOfPagePosts.current=[]
     let LocalText=Text
 
     variables.PostGlobalVariables.POST_Mentions.map((mentionedUser)=>{
-      LocalText=LocalText.replace(mentionedUser.MentionText,mentionedUser.Preview_Name)
+      LocalText=LocalText.replaceAll(mentionedUser.MentionText,mentionedUser.Preview_Name)
     })
 
 //Then we iterate through every dynamic field
@@ -1182,7 +962,7 @@ ListOfPagePosts.current=[]
 
              if (DFPage.pageID===Page.id)
              {
-               LocalText = LocalText.replace(PatternTextValue, DFPage.dynamicFieldValue);
+               LocalText = LocalText.replaceAll(PatternTextValue, DFPage.dynamicFieldValue);
              }
          })
          
@@ -1710,7 +1490,7 @@ export default   function Content() {
            break;
          case "EndOccOption":
            variables.PostGlobalVariables.EDITPOST_Default_EndRepeatOption=2
-           variables.PostGlobalVariables.EDITPOST_Default_EndRepeatOnNbOfOccurences=response.result.post_Occurence
+           variables.PostGlobalVariables.EDITPOST_Default_EndRepeatOnNbOfOccurences=response.result.endRepeatOnOccurence
            break;
          case "EndDateOption":
            variables.PostGlobalVariables.EDITPOST_Default_EndRepeatOption=3
@@ -1718,7 +1498,8 @@ export default   function Content() {
            break;
          default:
            variables.PostGlobalVariables.EDITPOST_Default_EndRepeatOption=2
-           variables.PostGlobalVariables.EDITPOST_Default_EndRepeatOnNbOfOccurences=response.result.post_Occurence
+           variables.PostGlobalVariables.EDITPOST_Default_EndRepeatOnNbOfOccurences=response.result.endRepeatOnOccurence
+
 
            
        }
@@ -1755,10 +1536,8 @@ console.log(variables.PostGlobalVariables.EDITPOST_Default_RepeatPost,
 
 <SplitterComponent id="splitter" height="100%" width="100%" separatorSize={5} >
    <PanesDirective>
-   <PaneDirective  min='20%' content={()=>{return(<FirstPane ref={FirstPaneRef} handleAssetSelectionChange={handleAssetSelectionChange}  handleEditorChange={handleEditorChange} handlePageSelectionChange={handlePageSelectionChange} DefaultPostText={DefaultPostText} />)}} />
-
-   
-     <PaneDirective min='20%' content={()=>{return(<SecondPane  ref={SecondPaneRef} SamplePreview={SamplePreview} LivePreview={LivePreview} TextCode={TextCode} />)}} />
+   <PaneDirective  min='50%' content={()=>{return(<FirstPane ref={FirstPaneRef} handleAssetSelectionChange={handleAssetSelectionChange}  handleEditorChange={handleEditorChange} handlePageSelectionChange={handlePageSelectionChange} DefaultPostText={DefaultPostText} />)}} />
+   <PaneDirective min='20%' content={()=>{return(<SecondPane  ref={SecondPaneRef} SamplePreview={SamplePreview} LivePreview={LivePreview} TextCode={TextCode} />)}} />
      
    </PanesDirective>
 </SplitterComponent> 
