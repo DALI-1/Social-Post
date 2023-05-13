@@ -42,7 +42,7 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import GroupRemoveIcon from '@mui/icons-material/GroupRemove';
-
+import * as PermissionLib from "../../libs/PermissionsChecker"
 export function FilterDialog(props) {
   const [open, setOpen] = React.useState(true);
   const {GlobalState,Dispatch}=React.useContext(AppContext)
@@ -1182,6 +1182,7 @@ React.useEffect(()=>{
 <Col>
 <Box sx={{ width: '100%' }}>
 <Paper sx={{ width: '100%', mb: 2 ,textAlign: "right",boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'}}>
+{PermissionLib.ValidateAction(variables.MenuItems.User_MenuItem,variables.MenuItemActions.Add_UserAction)&&
 <Button
  variant="outlined"color="primary"
  className="mx-2 m-2"
@@ -1189,6 +1190,9 @@ React.useEffect(()=>{
  onClick={HandleAddUser} >
         Add New User
       </Button>
+}
+
+{PermissionLib.ValidateAction(variables.MenuItems.User_MenuItem,variables.MenuItemActions.Edit_UserAction)&&
       <Button 
        variant="outlined"color="primary"
        className="mx-2 m-2"
@@ -1196,16 +1200,19 @@ React.useEffect(()=>{
       onClick={HandleEditUser} >
       Modify Selected User
       </Button>
+}
+{PermissionLib.ValidateAction(variables.MenuItems.User_MenuItem,variables.MenuItemActions.Add_UserAction)&&
      <Button 
+     
       variant="outlined"color="primary"
       className="mx-2 m-2"
       startIcon={<GroupAddIcon/>}
         onClick={HandleAddUserToGroup} >
         Add User to Group
       </Button>
-
+}
       
-
+{PermissionLib.ValidateAction(variables.MenuItems.User_MenuItem,variables.MenuItemActions.Remove_UserAction)&&
       <Button 
        variant="outlined"color="error"
        className="mx-2 m-2"
@@ -1213,7 +1220,7 @@ React.useEffect(()=>{
        onClick={HandleRemoveUserFromGroup} >
         Remove User From Group
       </Button>
-    
+}   
   </Paper>
   </Box>
 </Col>

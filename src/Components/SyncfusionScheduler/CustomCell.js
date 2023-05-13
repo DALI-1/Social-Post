@@ -9,14 +9,17 @@ import SendIcon from '@mui/icons-material/Send';
 import CloseIcon from '@mui/icons-material/Close';
 import dayjs from 'dayjs';
 import IconButton from '@mui/material/IconButton';
+import * as PermissionLib from "../../libs/PermissionsChecker"
+import {  toast } from 'react-toastify';
 export default function CustomCell(props)
 {
+
+  var AddPostisGranted=PermissionLib.ValidateAction(variables.MenuItems.Publish_MenuItem,variables.MenuItemActions.Add_PostAction)
     //props contain the selected date
       const handleCreatePost=()=>{
-        console.log(props)
-        console.log(dayjs(props.date))
-
-        //--------------NOTE: This is done to fix a bug where the time is always -1 hour----------------//
+        if(AddPostisGranted)
+        {
+           //--------------NOTE: This is done to fix a bug where the time is always -1 hour----------------//
         //Here i'm fixing the bug and also adding more hours, making it for months like 12AM instead of PM for a better user experience//
         if(props.type=="monthCells")
         {
@@ -29,6 +32,21 @@ export default function CustomCell(props)
         }
         
         Dispatch({type:variables.PostSelectedTabActions.SelectAddPost})
+        }
+        else
+        {
+          toast.error("You don't have the permission to create posts within this group, contact your administrator.", {
+            position: "bottom-left",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",     
+          });
+        }
+       
       }
     const [isHovered, setIsHovered] = React.useState(false);
     const {GlobalState,Dispatch}=React.useContext(AppContext)

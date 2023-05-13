@@ -137,8 +137,8 @@ export default function FBPostBoxClone({Text,PageInfo}) {
       <i class="fas fa-ellipsis-h"></i>
     </div>
     <br></br>
-    <div class="image">
-      <img src="https://via.placeholder.com/300x300" style={{width:"100%",height:"300px"}} alt="Post Image"/>
+    <div class="image" style={{width:"100%",height:"100%"}}>
+      <img src="https://via.placeholder.com/300x300" style={{width:"100%"}} alt="Post Image"/>
     </div>
     <div class="actions">
       <div class="left">
@@ -167,11 +167,11 @@ export default function FBPostBoxClone({Text,PageInfo}) {
     {
       return (
         <Paper style={{ boxShadow: '2px 2px 5px rgba(0, 0, 0, 0.3)' }}
-         sx={{ width: '100%', m: 1,p:2 ,textAlign: "center" }}>
+         sx={{ width: '100%',m: 1,p:2 ,textAlign: "center",display:"inline-block" }}>
           
-          <div class="post">
+          <div  class="post">
     <div class="header">
-      <img src={PageInfo.PagePic} alt="Profile Picture"/>
+      <img src={PageInfo.PagePic}   loading="lazy" alt="Profile Picture"/>
       <div class="user-info">
         <h2>{PageInfo.label}</h2>
         
@@ -181,14 +181,19 @@ export default function FBPostBoxClone({Text,PageInfo}) {
     <br></br>
     <div class="image">
     <Carousel
+    autoPlay={true}
+    changeOnFirstRender={true}
     navButtonsProps={{          // Change the colors of the actual buttons. THIS STYLES BOTH BUTTONS
       style: {
           backgroundColor: 'white',
-          color:"black"
+          color:"black", 
+          
       }
   }} >
+    
       {variables.PostGlobalVariables.POST_SelectedAssetsInfo.map((Asset)=>{
-       return(<img src={Asset.src} style={{width:"100%",height:"300px"}} alt="Post Image"/>)
+       return(<img loading="lazy" src={Asset.src} alt="Post Image"/>
+        )
       })}   
         </Carousel>
     </div>

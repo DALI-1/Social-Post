@@ -142,7 +142,8 @@ const reducer=(GlobalState,action)=>
                 {
                     variables.UserInformations.info.firstName=action.value  
                 return({...GlobalState,FirstName:action.value})
-                } 
+                }
+
                 case variables.UserActions.UpdateLastName:
                 {
                     variables.UserInformations.info.lastName=action.value
@@ -236,8 +237,6 @@ if(window.localStorage.getItem('SelectedTab')!=null)
         PostSelectedTab:variables.PostTabs.ManagePostsTab,
         SelectedGroup:{group_Name:"Loading..."},
         PageSelectedTab: variables.PageTabs.ManagePage,
-        
-
         PassedGroupID:null,
         Username:null,
         FirstName:"",
@@ -266,9 +265,9 @@ else
         Username:null,
         FirstName:"",
         LastName:"",
+        SelectedGroupInfo:null,
         Email:null,
         UserProfilePicture:null,
-        GroupInformations:null,
         HeadSpinner:false,
         RequestSpinner:false,
         Rerender:false

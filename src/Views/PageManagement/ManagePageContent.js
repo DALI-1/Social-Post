@@ -26,6 +26,7 @@ import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import NoteAltIcon from '@mui/icons-material/NoteAlt'; 
 import Button from '@mui/material/Button';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import * as PermissionLib from "../../libs/PermissionsChecker"
 export default function Content() {
   const { GlobalState, Dispatch } = React.useContext(AppContext);
   //this flag indicate to the system when to show the Facebook Dialog asking the user to  login to Facebook and shows him the possible pages that he can choose.
@@ -392,7 +393,8 @@ export default function Content() {
         <Row>
           <Col>
             <Paper sx={{ width: "100%",m:1, p: 1, textAlign: "center",boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)' }}>
-              <div style={{ textAlign: "right" }}>           
+              <div style={{ textAlign: "right" }}>
+              {PermissionLib.ValidateAction(variables.MenuItems.Page_MenuItem,variables.MenuItemActions.Add_PageAction)&&           
                 <Button
                   variant="outlined"color="primary"
                   className="mx-2 m-2"
@@ -403,6 +405,8 @@ export default function Content() {
                 >
                   Add New Page
                 </Button>
+}
+{PermissionLib.ValidateAction(variables.MenuItems.Page_MenuItem,variables.MenuItemActions.Edit_PageAction)&&
                 <Button
                   variant="outlined"color="primary"
                   className="mx-2 m-2"
@@ -412,7 +416,8 @@ export default function Content() {
                   {" "}
                   Modifty Page
                 </Button>
-
+}
+{PermissionLib.ValidateAction(variables.MenuItems.Page_MenuItem,variables.MenuItemActions.Remove_PageAction)&&
                 <Button
                   variant="outlined"color="error"
                   className="mx-2 m-2"
@@ -421,6 +426,7 @@ export default function Content() {
                 >
                   Delete Page
                 </Button>
+}
               </div>
             </Paper>
           </Col>

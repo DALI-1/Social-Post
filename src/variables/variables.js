@@ -19,6 +19,31 @@ export const GroupTabs=
     ManageGroupTab:"ManageGroupTab"
 }
 
+export const MenuItems=
+{
+    Profile_MenuItem:"0",
+    Group_MenuItem:"1",
+    User_MenuItem:"2",
+    Page_MenuItem:"3",
+    Publish_MenuItem:"4"  
+}
+
+export const MenuItemActions=
+{
+    Add_GroupAction:"1",
+    Edit_GroupAction:"2",
+    Remove_GroupAction:"3",  
+    Add_UserAction:"4",
+    Edit_UserAction:"5",
+    Remove_UserAction:"6",
+    Add_PageAction:"7",
+    Edit_PageAction:"8",
+    Remove_PageAction:"9",
+    Add_PostAction:"10",
+    Edit_PostAction:"11",
+    Remove_PostAction:"12",
+}
+
 export const GroupSelectedTabActions=
 {
     SelectAddGroup:"SwitchToAddGroup",

@@ -42,6 +42,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import * as PermissionLib from "../../libs/PermissionsChecker"
 export function AlertDialog(props) {
   const [open, setOpen] = React.useState(true);
   const {GlobalState,Dispatch}=React.useContext(AppContext)
@@ -173,22 +174,22 @@ function TRow (parameter){
                   {"         "+props.group_Name}
                 </TableCell>
                 <TableCell align="left">
-                <IconButton color="primary" aria-label="Add sub group" onClick={()=>{parameter.HandleGroupAdd(props.id,props.group_Name)}}>
+                {PermissionLib.ValidateAction(variables.MenuItems.Group_MenuItem,variables.MenuItemActions.Add_GroupAction)&&<IconButton color="primary" aria-label="Add sub group" onClick={()=>{parameter.HandleGroupAdd(props.id,props.group_Name)}}>
                 <AddCircleSharpIcon/>
-                </IconButton>
+                </IconButton>}
                
                 
                 </TableCell>  
-                <TableCell> <IconButton color="primary" aria-label="Edit sub group" onClick={()=>{parameter.HandleGroupEdit(props.id,props.group_Name)}}> 
+                <TableCell> {PermissionLib.ValidateAction(variables.MenuItems.Group_MenuItem,variables.MenuItemActions.Edit_GroupAction)&&<IconButton color="primary" aria-label="Edit sub group" onClick={()=>{parameter.HandleGroupEdit(props.id,props.group_Name)}}> 
                 <SettingsApplicationsSharpIcon/>
-                </IconButton></TableCell>
-                <TableCell><IconButton color="error" aria-label="delete sub group"onClick={()=>{
+                </IconButton>}</TableCell>
+                <TableCell>{PermissionLib.ValidateAction(variables.MenuItems.Group_MenuItem,variables.MenuItemActions.Remove_GroupAction)&&<IconButton color="error" aria-label="delete sub group"onClick={()=>{
                   parameter.SetGroupID.current=props.id
                   parameter.SetGroupName.current=props.group_Name
                   parameter.SetDeleteModal(true)
                   }}>
                 <HighlightOffSharpIcon/>
-                </IconButton></TableCell>
+                </IconButton>}</TableCell>
               </TableRow>
               
               
@@ -281,17 +282,20 @@ export default function Content() {
                       <TreeNode key={index}  label={<div id={"DIVGROUP"+group.id}
                        ><Groups2SharpIcon  /> <p>{group.group_Name}</p>
 
-                    <IconButton color="primary" className='m-0' id={"ADD"+group.id}  aria-label="Add sub group"
+
+                   
+{PermissionLib.ValidateAction(variables.MenuItems.Group_MenuItem,variables.MenuItemActions.Add_GroupAction)&&<IconButton color="primary" className='m-0' id={"ADD"+group.id}  aria-label="Add sub group"
                    onClick={()=>{HandleGroupAdd(group.id,group.group_Name)}}
                     >
                         <AddCircleSharpIcon />
                         </IconButton>
-                          <IconButton color="primary"  className='m-0' id={"MODIFY"+group.id} aria-label="Modify sub group"
+                      }
+                          {PermissionLib.ValidateAction(variables.MenuItems.Group_MenuItem,variables.MenuItemActions.Edit_GroupAction)&&<IconButton color="primary"  className='m-0' id={"MODIFY"+group.id} aria-label="Modify sub group"
                           onClick={()=>{HandleGroupEdit(group.id,group.group_Name)}}
                           >
                         <SettingsApplicationsSharpIcon/>
-                        </IconButton>
-                        <IconButton color="error" className='m-0' id={"DELETE"+group.Id} aria-label="delete sub group" onClick={
+                        </IconButton>}
+                        {PermissionLib.ValidateAction(variables.MenuItems.Group_MenuItem,variables.MenuItemActions.Remove_GroupAction)&&<IconButton color="error" className='m-0' id={"DELETE"+group.Id} aria-label="delete sub group" onClick={
                           ()=>{
                             SelectedGroupID.current=group.id
                             SelectedGroupName.current=group.group_Name
@@ -299,7 +303,7 @@ export default function Content() {
                           }
                         }>
                         <HighlightOffSharpIcon/>
-                        </IconButton>
+                        </IconButton>}
                         </div>}>
                       {generateList(group.subGroups)}  
                       </TreeNode>
@@ -355,12 +359,13 @@ export default function Content() {
        {ViewMode==="Tabular"&&<>
        <Paper sx={{ width: '100%', m: 1 ,textAlign: "center",boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)' }}>
         <div style={{ textAlign: "right" }}>
-      <Button  variant="outlined"color="primary"className="mx-2 m-2"startIcon={<AddIcon/>} onClick={handleAddNewGroup}> Add New SubGroup</Button>
-      <Button  variant="outlined"color="primary"className="mx-2 m-2"startIcon={<EditIcon/>} onClick={handleModifyParentGroup}>Modifty Group</Button>
-      <Button  variant="outlined"color="error"className="mx-2 m-2"startIcon={<DeleteIcon/>} onClick={()=>{
+        
+{PermissionLib.ValidateAction(variables.MenuItems.Group_MenuItem,variables.MenuItemActions.Add_GroupAction)&&<Button  variant="outlined"color="primary"className="mx-2 m-2"startIcon={<AddIcon/>} onClick={handleAddNewGroup}> Add New SubGroup</Button>}
+{PermissionLib.ValidateAction(variables.MenuItems.Group_MenuItem,variables.MenuItemActions.Edit_GroupAction)&& <Button  variant="outlined"color="primary"className="mx-2 m-2"startIcon={<EditIcon/>} onClick={handleModifyParentGroup}>Modifty Group</Button>}
+{PermissionLib.ValidateAction(variables.MenuItems.Group_MenuItem,variables.MenuItemActions.Remove_GroupAction)&&<Button  variant="outlined"color="error"className="mx-2 m-2"startIcon={<DeleteIcon/>} onClick={()=>{
         SelectedGroupID.current=variables.UserInformations.info.joinedGroups[0].id
         SelectedGroupName.current=variables.UserInformations.info.joinedGroups[0].group_Name
-        SetDeleteShow(true)}}> Delete Group </Button>
+        SetDeleteShow(true)}}> Delete Group </Button>}
        </div>
        </Paper>
        <Paper sx={{ width: '100%', m: 1,p:2 ,textAlign: "center",boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)' }}>

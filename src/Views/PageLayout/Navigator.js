@@ -20,6 +20,7 @@ import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import Groups2RoundedIcon from '@mui/icons-material/Groups2Rounded';
 import PersonPinCircleRoundedIcon from '@mui/icons-material/PersonPinCircleRounded';
 import DescriptionRoundedIcon from '@mui/icons-material/DescriptionRounded';
+import * as PermissionsLib from "../../libs/PermissionsChecker"
 const item = {
   py: '2px',
   px: 3,
@@ -97,9 +98,10 @@ export default function Navigator(props) {
            
           Dispatch({type:NavigatorSelectedTabActions.SelectManagePages})
         }
-  const categories = [
+  const MenuItems = [
     {
       id: 'Publish Managmeent',
+      Identificator:variables.MenuItems.Publish_MenuItem,
       children: [
         { id: 'Manage Posts', icon: <CalendarMonthRoundedIcon />,refrence:NavigatorTabs.ManagePostsTab, clickmethod:()=>{HandlePost()} },
         /*{ id: 'View Posts', icon: <PreviewRoundedIcon /> },*/
@@ -108,6 +110,7 @@ export default function Navigator(props) {
     },
     {
       id: 'Group Managmeent',
+      Identificator:variables.MenuItems.Group_MenuItem,
       children: [
         { id: 'Manage Groups', icon: <Groups2RoundedIcon />,refrence:NavigatorTabs.ManageGroupsTab, clickmethod:()=>{HandleGroup()} },
         /*{ id: 'View Groups', icon: <PreviewRoundedIcon/> },*/
@@ -116,6 +119,7 @@ export default function Navigator(props) {
     },
     {
       id: 'User Managmeent',
+      Identificator:variables.MenuItems.User_MenuItem,
       children: [
         { id: 'Manage Users', icon: <PersonPinCircleRoundedIcon />,refrence:NavigatorTabs.ManageUsersTab, clickmethod:()=>{HandleUsers()} },
        /* { id: 'View Pages', icon: <PreviewRoundedIcon/> },*/
@@ -124,6 +128,7 @@ export default function Navigator(props) {
     },
     {
       id: 'Page Managmeent',
+      Identificator:variables.MenuItems.Page_MenuItem,
       children: [
         { id: 'Manage Pages', icon: <DescriptionRoundedIcon />,refrence:NavigatorTabs.ManagePagesTab, clickmethod:()=>{HandlePage()} },
        /* { id: 'View Pages', icon: <PreviewRoundedIcon/> },*/
@@ -132,7 +137,9 @@ export default function Navigator(props) {
     },
     
     {
-      id: 'Account Management',
+      
+      id:'Account Management' ,
+      Identificator:variables.MenuItems.Profile_MenuItem,
       children: [
         {
           id: 'Manage Personal informatons',
@@ -145,18 +152,12 @@ export default function Navigator(props) {
          ,refrence:NavigatorTabs.LogoutTab
          , clickmethod:()=>{HandleLogOut()}
            }
-        /*{ id: 'Database', icon: <DnsRoundedIcon /> },
-        { id: 'Storage', icon: <PermMediaOutlinedIcon /> },
-        { id: 'Hosting', icon: <PublicIcon /> },
-        { id: 'Functions', icon: <SettingsEthernetIcon /> },
-        {
-          id: 'Machine learning',
-          icon: <SettingsInputComponentIcon />,
-        },*/
       ],
     },
     
   ];
+  
+  const MenuItems_Filtered=[...MenuItems.filter((p)=>PermissionsLib.ValidateMenuItem(p.Identificator)),MenuItems[4]]
   return (
     <Drawer variant="permanent" {...other}>
       <List disablePadding>
@@ -208,7 +209,7 @@ export default function Navigator(props) {
         </Box>
         
         
-        {categories.map(({ id, children }) => (
+        {MenuItems_Filtered.map(({ id, children }) => (
           <Box key={id} sx={{ bgcolor: '#101F33' }}>
             <ListItem sx={{ py: 2, px: 3 }}>
               <ListItemText sx={{ color: '#fff' }}>{id}</ListItemText>
