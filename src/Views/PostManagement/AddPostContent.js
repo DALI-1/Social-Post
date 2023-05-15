@@ -59,12 +59,14 @@ import CollectionsSharpIcon from '@mui/icons-material/CollectionsSharp';
 import PodcastsIcon from '@mui/icons-material/Podcasts';
 import DynamicFeedIcon from '@mui/icons-material/DynamicFeed';
 import RoomIcon from '@mui/icons-material/Room';
+import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 const iconSize = 48;
 const iconColor = 'blue'; 
 export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelectionChange,handleAssetSelectionChange},ref)=> {
   
+
  
   //--------------------Variables specific the posting options------------------------------//
   const editorRef =React.useRef(null)
@@ -75,10 +77,12 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
   const Post_EndRepeatRadioBox=React.useRef(1)
   const Post_EndRepeatOnNbOfOccurencesInput=React.useRef(null)
   const Post_EndRepeatAfterDateInput=React.useRef(null)
+  let [DateTimePickerState,setDateTimePickerState]=React.useState(variables.PostGlobalVariables.POST_Scheduler_Selected_DateTime.add(-1,"hour"));
   ///-----------------------------------End of variabiles specific to Posting options--------------------///
   const handlePostDateChange = (date) => {
     //dayjs(date.$d)
-    Post_DateInput.current=date
+    Post_DateInput.current=date.add(+1,"hour")
+    setDateTimePickerState(date)
   }
   const HandlePost_RepeatCheckbox=(v)=>
   {
@@ -122,8 +126,72 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
     variables.PostGlobalVariables.POST_SelectedAssetsInfo=Assets
     handleAssetSelectionChange()
    },[Assets])
+   const handleOptimalTimeSet=(()=>{
 
-   
+      
+    let ListOfPages=[]
+    variables.PostGlobalVariables.POST_SelectedPageInfo.map((page)=>
+    {
+    ListOfPages=[...ListOfPages,{"id": page.id}]
+    })
+
+    var JsonObject = {  
+      listOfPages:ListOfPages , 
+      postDatetime: Post_DateInput.current   
+   };
+   //The case where the user selected the pages
+   if(ListOfPages!=0)
+   {
+    let JsonObjectToSend = JSON.stringify(JsonObject);
+    let url2 =
+      process.env.REACT_APP_BACKENDURL + 
+      process.env.REACT_APP_GETOPTIMALPUBLISHDATE;
+    let UserToken = window.localStorage.getItem("AuthToken");
+    let APIResult = APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
+    APIResult.then((result) => {
+      console.log(result)
+      if (result.errorCode == undefined) {
+        if(result.successCode=="OptimalDateTime_Retreived")
+        {
+          toast.success("Optimal time is Applied!", {
+            position: "bottom-left",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+           
+          });          
+          const [day, month, year, hours, minutes, seconds] = result.result.split(/[/: ]/);
+          // Note: JavaScript counts months from 0 to 11, so subtract 1 from the month value
+          const date = new Date(year, month - 1, day, hours, minutes, seconds);
+          handlePostDateChange(dayjs(date))
+          setDateTimePickerState(dayjs(date))
+          
+        }     
+      }
+    });
+   }
+   //The case the user didn't select any pages and asked for a datetime
+   else
+   {
+    toast.info("You need to select the pages you want us to recommend you a time for!", {
+      position: "bottom-left",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+     
+    });
+   }
+ 
+  })
+
    
   const HandlePostSchedule=(()=>{
 
@@ -1017,15 +1085,27 @@ const HandleImageTag=(()=>{
         <Accordion.Body>
         <div>
  
+             <Container>
+              <Row>
+                <Col md={8}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DemoContainer
         components={[
           'MobileDateTimePicker'
         ]}
       >
-          <MobileDateTimePicker minDate={dayjs(new Date())} label="Post Date" defaultValue={variables.PostGlobalVariables.POST_Scheduler_Selected_DateTime.add(-1,"hour")} onChange={handlePostDateChange}  /> 
+          <MobileDateTimePicker minDate={dayjs(new Date())} label="Post Date" defaultValue={variables.PostGlobalVariables.POST_Scheduler_Selected_DateTime.add(-1,"hour")} value={DateTimePickerState} onChange={handlePostDateChange}  /> 
       </DemoContainer>
-    </LocalizationProvider>
+    </LocalizationProvider></Col>
+                <Col md={4} style={{marginTop:"1rem"}}>
+                <Button variant="contained" color="primary" endIcon={<AutoGraphIcon />} onClick={handleOptimalTimeSet}>
+                 Use Optimal time.
+               </Button> 
+              </Col>
+              </Row>
+              
+             </Container>
+               
 
     <FormControlLabel control={<Checkbox checked={Repeat} onChange={(e)=>{HandlePost_RepeatCheckbox(e);setRepeat(!Repeat)}} />} label="Repeat" />
 <br></br>
