@@ -70,7 +70,7 @@ export const UserSelectedTabActions=
 export const PostTabs=
 {
     AddPost:"AddPostTab",
-    SelectPostGroup:"SelectPostGroup",
+    ViewPostInseights:"ViewPostInseights",
     EditPost:"EditPostTab",
     PreviewPost:"PreviewPostTab",
     ManagePostsTab:"ManagePostsTab"
@@ -80,7 +80,7 @@ export const PostTabs=
 export const PostSelectedTabActions=
 {
     SelectAddPost:"SwitchToAddPost",
-    SelectPostGroup:"SelectPostGroup",
+    SelectViewPostInseights:"SelectViewPostInseights",
     SelectEditPost:"SwitchToEditPost",
     SelectPreviewPost:"SwitchToPreviewPost",
     SelectManagePosts:"SwitchToManagePostsTab"
@@ -151,8 +151,9 @@ export var UserInformations=
 }
 
 export var Group=
-{
-    //This SelectGroup Variable indicate which Group the user selected
+{//This SelectGroup Variable indicate which Group the user selected when //INSIDE APP //
+    App_SelectedGroup:null,
+    //This SelectGroup Variable indicate which Group the user selected when //INSIDE GROUP MANAGEMENT//
     SelectedGroup:null,
      //This SelectedGroupName Variable is the name of the group that the user selected
     SelectedGroupName:null,

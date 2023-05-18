@@ -10,11 +10,11 @@ export const Facebook_Get_Audience_Interests = async (Interest_Name)=>{
   let UserToken = window.localStorage.getItem("AuthToken");
   let APIResult = await APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
     //Case no Error
-    console.log(APIResult)
+    
     if (APIResult.errorCode == undefined) {
       if(APIResult.successCode=="Interests_Reterived")
       {
-        console.log(APIResult.result)
+        
         return APIResult.result
          
       }
@@ -38,7 +38,7 @@ export const Facebook_Get_Audience_Countries = async (CountryName)=>{
   if (APIResult.errorCode == undefined) {
     if(APIResult.successCode=="Countries_Reterived")
     {
-      console.log(APIResult.result)
+      
       return APIResult.result
        
     }
@@ -65,10 +65,10 @@ export const Facebook_Get_Audience_Countries = async (CountryName)=>{
     let UserToken = window.localStorage.getItem("AuthToken");
     let APIResult = await APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
     if (APIResult.errorCode == undefined) {
-      console.log(APIResult)
+      
       if(APIResult.successCode=="Regions_Reterived")
       {
-        console.log(APIResult.result)
+        
         return APIResult.result
          
       }
@@ -80,7 +80,7 @@ export const Facebook_Get_Audience_Countries = async (CountryName)=>{
     }
   }
   export const Facebook_Get_Audience_Locations = async (regions,CityName)=>{
-    console.log(regions)
+    
     let Temp_RegionCodes=[]
     regions.map((region)=>{
       Temp_RegionCodes=[...Temp_RegionCodes,region.region_PlatformCode]
@@ -91,10 +91,10 @@ export const Facebook_Get_Audience_Countries = async (CountryName)=>{
     let UserToken = window.localStorage.getItem("AuthToken");
     let APIResult = await APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
     if (APIResult.errorCode == undefined) {
-      console.log(APIResult)
+    
       if(APIResult.successCode=="Locations_Reterived")
       {
-        console.log(APIResult.result)
+       
         return APIResult.result
          
       }

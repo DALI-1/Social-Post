@@ -24,6 +24,7 @@ import {UserSelectedTabActions,UserTabs,HeaderSpinnerActions,HeaderSpinner,User}
 import * as variables from "../../variables/variables"
 import {APIStatus,APIStatuses}  from '../../variables/variables';
 import { Avatar } from "@nextui-org/react";
+import MainCard from "../../components/UI/cards/MainCard"
 export default function Content() {
 
     const {GlobalState,Dispatch}=React.useContext(AppContext)
@@ -63,7 +64,7 @@ export default function Content() {
      LastName.current.value=result.lastName
     PhoneNumber.current.value=result.phoneNumber             
     Username.current.value=result.userName
-     Age.current.value=result.age
+     Age.current.value=result.birthdayDate
     Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner})
   })
 
@@ -201,7 +202,7 @@ export default function Content() {
        
         
            
-            <div className="card mb-4 ">
+            <MainCard className="card mb-4 ">
                 <div className="card-header">Account Details</div>
                 <div className="card-body">
                     <form onSubmit={handlesubmit}>
@@ -237,8 +238,8 @@ export default function Content() {
                                 <input ref={PhoneNumber} className="form-control" name="phoneNumber" id="inputPhone" type="tel" placeholder="Enter your phone number" />
                             </div>
                             <div className="col-md-6">
-                                <label className="small mb-1" htmlFor="inputPhone">Age</label>
-                                <input ref={Age} className="form-control" name="age" id="age" type="number" placeholder="Enter your age" />
+                                <label className="small mb-1" htmlFor="BirthdayDate">Birthday Date</label>
+                                <input ref={Age} className="form-control" name="BirthdayDate" id="BirthdayDate" type="date" placeholder="Enter your Birthday date" />
                             </div>
                             
                         </div>
@@ -246,7 +247,7 @@ export default function Content() {
                         <input type="submit" value="Save Changes" className="btn btn-primary"/>
                     </form>
                 </div>
-            </div>
+            </MainCard>
         
    
       

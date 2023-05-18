@@ -32,7 +32,7 @@ import {hashRandom } from 'react-hash-string'
 import Row from 'react-bootstrap/Row';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-
+import MainCard from "../../components/UI/cards/MainCard"
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -340,6 +340,8 @@ export default function Content() {
       variables.Group.SelectedGroupName=variables.UserInformations.info.joinedGroups[0].group_Name
       Dispatch({type:GroupSelectedTabActions.SelectEditGroup})
     }
+   
+   
   return (
     <>
       
@@ -357,7 +359,7 @@ export default function Content() {
       
        <Row>
        {ViewMode==="Tabular"&&<>
-       <Paper sx={{ width: '100%', m: 1 ,textAlign: "center",boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)' }}>
+       <MainCard sx={{ width: '100%', m: 1 ,textAlign: "center",boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)' }}>
         <div style={{ textAlign: "right" }}>
         
 {PermissionLib.ValidateAction(variables.MenuItems.Group_MenuItem,variables.MenuItemActions.Add_GroupAction)&&<Button  variant="outlined"color="primary"className="mx-2 m-2"startIcon={<AddIcon/>} onClick={handleAddNewGroup}> Add New SubGroup</Button>}
@@ -367,8 +369,8 @@ export default function Content() {
         SelectedGroupName.current=variables.UserInformations.info.joinedGroups[0].group_Name
         SetDeleteShow(true)}}> Delete Group </Button>}
        </div>
-       </Paper>
-       <Paper sx={{ width: '100%', m: 1,p:2 ,textAlign: "center",boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)' }}>
+       </MainCard>
+       <MainCard sx={{ width: '100%', m: 1,p:2 ,textAlign: "center",boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)' }}>
        <TableContainer>
        <div style={{ textAlign: "center", margin:"1rem" }}>
        <Groups2SharpIcon   color="primary" style={{Margin:"1rem"}}/>
@@ -394,7 +396,8 @@ export default function Content() {
             })
 
             
-          }  
+          } 
+           
           {variables.UserInformations.info.joinedGroups[0].subGroups.length===0&&<><TableRow>
             <TableCell> </TableCell>
             
@@ -406,12 +409,12 @@ export default function Content() {
       </Table>
       
     </TableContainer>
-    </Paper>
+    </MainCard>
     </>
 }
 
 {ViewMode==="Tree"&&
-        <div className="card mb-4 mb-xl-0">      
+        <MainCard className="card mb-4 mb-xl-0">      
                 <div className="card-header d-flex justify-content-center"> List Of Groups</div>
                 <div className="card-body text-center">
                 <div className="mb-3">
@@ -427,7 +430,7 @@ export default function Content() {
                     </div>  
                 </div>
                 
-        </div> }
+        </MainCard> }
         </Row>  
     
  

@@ -1,10 +1,5 @@
 import * as React from "react";
 import Button from "@mui/material/Button";
-import { DropDownTree } from "@progress/kendo-react-dropdowns";
-import {
-  processTreeData,
-  expandedState,
-} from "../../components/tree-data-operations";
 import {  toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./ModifyPageContent.css";
@@ -22,14 +17,13 @@ import ProgressBar from "react-bootstrap/ProgressBar";
 import { AppContext } from "../../context/Context";
 import * as variables from "../../variables/variables";
 import { Avatar } from "@nextui-org/react";
-import { mapTree, extendDataItem } from "@progress/kendo-react-common";
-import DeleteModal from "../../components/DeletePagesModal";
+import DeleteModal from "../../components/PageManagementComps/DeletePageComps/DeletePagesModal";
 import {
   ListView,
   ListViewHeader,
   ListViewFooter,
 } from "@progress/kendo-react-listview";
-
+import MainCard from "../../components/UI/cards/MainCard"
 export default function Content() {
   let uploadTask = React.useRef(null);
   const [Associated_By_Page, setAssociated_By_Page] = React.useState([]);
@@ -63,7 +57,7 @@ export default function Content() {
         Dispatch({ type: variables.HeaderSpinnerActions.TurnOnRequestSpinner });
         APIResult3.then((response) => {
           if (response.ErrorCode == undefined) {
-            console.log(response)
+            
             //Handling Facebook result
               PageName.current.value = response.result.cachedData_PageName;
               PageAbout.current.value = response.result.cachedData_About;
@@ -72,7 +66,7 @@ export default function Content() {
               setList_Of_Associated_Pages(response.result.associatedPlatformPages)
               if(response.result.associatedByPlatformPage!=null)
               {
-                console.log([response.result.associatedByPlatformPage])
+                
                 setAssociated_By_Page([response.result.associatedByPlatformPage])
               }
               
@@ -190,7 +184,7 @@ export default function Content() {
         const progress = Math.round(
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100
         );
-        console.log(progress)
+        
         setUploadProgress(progress);
       },
       //This async function is executed when there is an error with the upload
@@ -307,8 +301,8 @@ export default function Content() {
   return (
     <div className="container-xl px-4 mt-4">
       <div className="row d-flex">
-        <div className="col-xl-4 d-flex">
-          <div className="card mb-4 ">
+        <div className="col-xl-6 d-flex">
+        <MainCard className="card mb-4">
             <div className="card-header d-flex justify-content-center">
               {" "}
               Page Picture
@@ -364,10 +358,10 @@ export default function Content() {
                 </form>
 
             </div>
-          </div>
+            </MainCard>
         </div>
-        <div className="col-xl-8 d-flex">
-          <div className="card mb-4 ">
+        <div className="col-xl-6 d-flex">
+        <MainCard className="card mb-4">
             <div className="card-header d-flex justify-content-center">
               {" "}
               Page Details
@@ -426,12 +420,12 @@ export default function Content() {
                     />
               </form>
             </div>
-          </div>
+          </MainCard>
         </div>
       </div>
       <div className="row d-flex">
-        <div className="col-xl-4 d-flex">
-          <div className="card mb-4 ">
+        <div className="col-xl-6 d-flex">
+        <MainCard className="card mb-4">
             <div className="card-header d-flex justify-content-center">
               {" "}
               Delete Page
@@ -454,17 +448,17 @@ export default function Content() {
                 value="Delete Page"
               />
             </div>
-          </div>
+            </MainCard>
         </div>
-        <div className="col-xl-8 d-flex">
-          <div className="card mb-4 ">
+        <div className="col-xl-6 d-flex">
+        <MainCard className="card mb-4">
             <div className="card-header d-flex justify-content-center">
               {" "}
               Modify Page Association
             </div>
-    {
+              {
       
-      <div className="card-body text-center ">     
+                <div className="card-body text-center ">     
                 <>
                   <ListView
                     data={List_Of_Associated_Pages}
@@ -500,7 +494,7 @@ export default function Content() {
             </div>
     }
             
-          </div>
+            </MainCard>
         </div>
       </div>
     </div>

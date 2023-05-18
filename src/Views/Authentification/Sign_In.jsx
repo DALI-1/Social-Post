@@ -1,13 +1,14 @@
 import './Sign_in.css';
 import React,{ useState,useRef } from 'react';
 import {MDBContainer, MDBCol, MDBRow, MDBBtn, MDBIcon, MDBInput, MDBCheckbox } from 'mdb-react-ui-kit';
-import LoadingSpinner from '../../components/LoadingSpinner'
-import { ChakraProvider } from '@chakra-ui/react'
+import LoadingSpinner from '../../components/UI/SpinnerComps/LoadingSpinner'
 import { PasswordRecovery } from './PasswordRecovery';
 import logo from '../../Assets/SocialPost-Logo.png';
 import { toast } from 'react-toastify';
 import {CALLAPI} from '../../libs/APIAccessAndVerification'
+import { useTheme } from '@mui/material/styles';
 function App() {
+  const theme = useTheme();
   let [LoadingSpinnerStatus, setLoadingSpinnerStatus] = useState(false);
   let [PasswordRecoveryStatus, setPasswordRecoveryStatus] = useState(false);
   let UserNameDontExist= useRef(false);
@@ -147,7 +148,7 @@ setPasswordRecoveryStatus(false)
 
   
   return (
-    <ChakraProvider>
+    
     <MDBContainer fluid className="p-3 my-5 h-custom">
    
       <MDBRow>
@@ -163,8 +164,8 @@ setPasswordRecoveryStatus(false)
         </MDBCol>
         
 
-        <MDBCol col='4' md='6'>
-
+        <MDBCol col='4' md='6' >
+            {/* 
           <div className="d-flex flex-row align-items-center justify-content-center">
 
             <p className="lead fw-normal mb-0 me-3">Sign in with</p>
@@ -182,13 +183,14 @@ setPasswordRecoveryStatus(false)
             </MDBBtn>
 
           </div>
-
+            
           <div className="divider d-flex align-items-center my-4">
             <p className="text-center fw-bold mx-3 mb-0">Or</p>
           </div>
-          <form onSubmit={handlesubmit}>  
-          <MDBInput wrapperClass='mb-4' label='Username' name="userName" id='formControl1' type='text' size="lg"/>
-          <MDBInput wrapperClass='mb-4' label='Password' name="password" id='formControl2' type='password' size="lg"/>
+          */}
+          <form onSubmit={handlesubmit} >  
+          <MDBInput wrapperClass='m-4' label='Username' name="userName" id='formControl1' type='text' size="lg"/>
+          <MDBInput wrapperClass='m-4' label='Password' name="password" id='formControl2' type='password' size="lg"/>
 
           <div className="d-flex justify-content-between mb-4">
             <MDBCheckbox name='RememberMe' value='on'type="checkbox" id='flexCheckDefault' label='Remember me' />
@@ -208,7 +210,7 @@ setPasswordRecoveryStatus(false)
                  
                           
               </div> 
-            <p className="small fw-bold mt-2 pt-1 mb-2">Don't have an account? <a href="/Register" className="link-danger">Register</a></p>
+            <p className="small fw-bold mt-2 pt-1 mb-2">Don't have an account? <a href="/Register" style={{color:"#3b71ca"}}>Register</a></p>
           </div>
           
           </form>
@@ -220,7 +222,7 @@ setPasswordRecoveryStatus(false)
 
     </MDBContainer>
     
-    </ChakraProvider>
+    
   );
 }
 

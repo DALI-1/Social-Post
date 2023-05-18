@@ -8,25 +8,26 @@ import {
 import { AppContext } from "../../context/Context";
 import * as variables from "../../variables/variables";
 import "./ManagePageContent.css";
-import PageManagementTable from "../../components/Table/PageManagementTable";
+import PageManagementTable from "../../components/PageManagementComps/PageManagementTable";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import { MDBBtn } from "mdb-react-ui-kit";
 import Paper from "@mui/material/Paper";
 import { useEffect } from "react";
-import SelectPlatformModal from "../../components/PlatformModal/SelectPlatformModal";
-import SelectFacebookPagesModal from "../../components/FacebookComps/SelectFacebookPagesModal";
-import SelectInstagramPagesModal from "../../components/InstagramComps/SelectInstagramPagesModal";
-import OptionalINFBSelectModal from "../../components/InstagramComps/OptionalFBSelectModal";
-import OptionalFBINSelectModal from "../../components/FacebookComps/OptionalINSTASelectModal";
-import DeleteModal from "../../components/DeletePagesModal";
+import SelectPlatformModal from "../../components/PageManagementComps/AddPageComps/SelectPlatformDialog/SelectPlatformModal";
+import SelectFacebookPagesModal from "../../components/PageManagementComps/AddPageComps/AddFacebookPageDialog/SelectFacebookPagesModal";
+import SelectInstagramPagesModal from "../../components/PageManagementComps/AddPageComps/AddInstagramPageDialog/SelectInstagramPagesModal";
+import OptionalINFBSelectModal from "../../components/PageManagementComps/AddPageComps/AddInstagramPageDialog/OptionalFBSelectModal";
+import OptionalFBINSelectModal from "../../components/PageManagementComps/AddPageComps/AddFacebookPageDialog/OptionalINSTASelectModal";
+import DeleteModal from "../../components/PageManagementComps/DeletePageComps/DeletePagesModal";
 import Alert from '@mui/material/Alert';
 import NoteAddIcon from '@mui/icons-material/NoteAdd'; 
 import NoteAltIcon from '@mui/icons-material/NoteAlt'; 
 import Button from '@mui/material/Button';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import * as PermissionLib from "../../libs/PermissionsChecker"
+import MainCard from "../../components/UI/cards/MainCard"
 export default function Content() {
   const { GlobalState, Dispatch } = React.useContext(AppContext);
   //this flag indicate to the system when to show the Facebook Dialog asking the user to  login to Facebook and shows him the possible pages that he can choose.
@@ -87,7 +88,7 @@ export default function Content() {
   const handleAddINPages = () => {
     //Test if the select platform is Facebook or Instagram
     //This is the Facebook Case
-    console.log(variables.Pages)
+  
     if (variables.Pages.SelectedPlatformID == 1) {
       //formating the request based on the backend DTO
       var JsonObject = {
@@ -104,7 +105,7 @@ export default function Content() {
       variables.Pages.FBSelectedPagesList.map((Selected_Facebook_Page) => {
         //This Flag indicate if he selected the optional Facebook Page of the current Insta Page or not, by default its false until we found it in the INsta optional facebook list
         var OptionalSelected = false;
-        console.log(variables.Pages.FBINGSelectedOptionalPagesList);
+        
         variables.Pages.FBINGSelectedOptionalPagesList.map(
           (SelectedOptionalFBKPage) => {
             if (SelectedOptionalFBKPage.id == Selected_Facebook_Page.id) {
@@ -186,7 +187,7 @@ export default function Content() {
       
     }
 
-    console.log(variables.FacebookUser.LoggedFacebookUserInfo)
+   
     //This is the Instagram Case
     if (variables.Pages.SelectedPlatformID == 2) {
       //formating the request based on the backend DTO
@@ -345,7 +346,7 @@ export default function Content() {
       APIResult.then((result) => {
         if (result.errorCode == undefined) {
           variables.Pages.CurrentGroupPages = [];
-          console.log(result.result)
+         
           result.result.map((Page) => {
             variables.Pages.CurrentGroupPages = [
               ...variables.Pages.CurrentGroupPages,Page
@@ -389,10 +390,10 @@ export default function Content() {
 
   return (
     <>
-      <Container>
+      
         <Row>
-          <Col>
-            <Paper sx={{ width: "100%",m:1, p: 1, textAlign: "center",boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)' }}>
+          
+            <MainCard sx={{ m:1, p:1 , textAlign: "center"}}>
               <div style={{ textAlign: "right" }}>
               {PermissionLib.ValidateAction(variables.MenuItems.Page_MenuItem,variables.MenuItemActions.Add_PageAction)&&           
                 <Button
@@ -428,15 +429,15 @@ export default function Content() {
                 </Button>
 }
               </div>
-            </Paper>
-          </Col>
+            </MainCard>
+            
         </Row>
-      </Container>
+      
 
-      <Container>
+      
         <Row>
-          <Col>
-            <Paper sx={{ width: "100%" ,m:1, p:1 , textAlign: "center",boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'}}>
+          
+            <MainCard sx={{ m:1, p:1 , textAlign: "center"}}>
               {TooManyRequestsError&& 
                    <Alert severity="error">Too Many requests, Limit reached, please wait sometime before trying again</Alert>
               }
@@ -451,10 +452,10 @@ export default function Content() {
               {DataLoaded &&!TooManyRequestsError && (
                 <PageManagementTable data={variables.Pages.CurrentGroupPages} />
               )}
-            </Paper>
-          </Col>
+            </MainCard>
+          
         </Row>
-      </Container>
+      
 
       {/*This Gonna show the Select Platform Dialog if the SelectPlatformModlFlag is True */}
       {SelectPlatformModalFlag && (

@@ -8,8 +8,8 @@ import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import { MDBBtn } from 'mdb-react-ui-kit';
 import Paper from '@mui/material/Paper';
-import PostSchedularCalendar from "../../components/SyncfusionScheduler/Scheduler"
-
+import PostSchedularCalendar from "../../components/PostManagementComps/Post_SchedulerComps/Scheduler"
+import MainCard from "../../components/UI/cards/MainCard"
 export default function Content() {
 
     const {GlobalState,Dispatch}=React.useContext(AppContext)
@@ -20,9 +20,9 @@ export default function Content() {
        <Container>
        <Row>
         <Col md={12}>
-        <Paper sx={{ width: '100%',height:"100%" ,textAlign: "center",boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)' }}>
+        <MainCard sx={{ width: '100%',height:"100%" ,textAlign: "center",boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)' }}>
        <PostSchedularCalendar/>
-        </Paper>
+        </MainCard>
         </Col>  
       </Row>
        

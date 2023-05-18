@@ -11,10 +11,11 @@ import * as APILib from "../../libs/APIAccessAndVerification"
 import dayjs from 'dayjs';
 import { Box, Button } from '@mui/material';
 import Pagination from '@mui/material/Pagination';
-import FacebookPostClone from "../../components/FacebookComps/FBPostBoxClone"
+import FacebookPostClone from "../../components/PostManagementComps/PostCloneComps/Clone_Generator"
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import * as SearchLib from "../../libs/Facebook_Search"
+import MainCard from "../../components/UI/cards/MainCard"
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
@@ -515,9 +516,9 @@ export default function Content() {
   return (
     <>  
       
-       <Paper sx={{ width: "100%", height:"100%", m: 1, p: 2, textAlign: "center" }} style={{margin:"1rem",padding:"1rem",boxShadow: '0px 0px 10px 0px rgba(0, 0, 0, 0.2)'}}> 
+       <MainCard sx={{ width: "100%", height:"100%", m: 1, p: 2, textAlign: "center" }} style={{margin:"1rem",padding:"1rem",boxShadow: '0px 0px 10px 0px rgba(0, 0, 0, 0.2)'}}> 
       <Preview  TextCode={DefaultPostText} />     
-    </Paper>
+    </MainCard>
 </>
   );
 }

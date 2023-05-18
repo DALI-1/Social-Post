@@ -1,22 +1,11 @@
 import React, {useState,useRef } from 'react';
-import {
-    Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalFooter,
-    ModalBody,
-    ModalCloseButton,
-    Button
-  } from '@chakra-ui/react'
-  import emailjs from '@emailjs/browser';
-  
-  import {
-    FormControl,
-    FormLabel,
-    FormErrorMessage,
-    FormHelperText,Input
-  } from '@chakra-ui/react'
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import emailjs from '@emailjs/browser';
+import Button from '@mui/material/Button';
   import {CALLAPI} from '../../libs/APIAccessAndVerification'
   import {toast } from 'react-toastify';
 
@@ -126,48 +115,39 @@ export const PasswordRecovery=(props)=> {
     return (
       <>
      
-        <Modal isOpen={isOpen} onClose={()=>{setisOpen(false)
-                props.passedhandleclose()}}>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Password Recovery</ModalHeader>
-            <ModalCloseButton />
-            
-
-            
-            <ModalBody>
-            <FormControl isInvalid={isError}>
-      <FormLabel>Email</FormLabel>
-      <form ref={form}>
-
-      
-      <Input ref={Email} type='email' name="email" defaultValue={input} onChange={handleInputChange} />
-      <Input ref={token} type='text' name="token"  hidden={true} />
-      <Input  type='text' name="BackLink" defaultValue={process.env.REACT_APP_FRONTENDURL+"/ChangePassword"}  hidden={true} />
-      </form>
-      {!isError ? (
-        <FormHelperText>
+     <Dialog fullWidth={true} open={isOpen} onClose={()=>{setisOpen(false)
+                props.passedhandleclose()}} >
+        <DialogTitle> Password Recovery</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+          {!isError ? (
+        <p>
           Enter the email you'd like to receive the recovery mail on
-        </FormHelperText>
+        </p>
       ) : (
-        <FormErrorMessage>Email is required.</FormErrorMessage>
+        <strong>Email is required.</strong>
       )}
-    </FormControl>
-              
-            </ModalBody>
-  
-            <ModalFooter>
-              <Button colorScheme='blue' mr={3} onClick={()=>{
+          </DialogContentText>
+          <form ref={form}>
+          <input ref={Email} className="form-control" type='email' name="email" defaultValue={input} onChange={handleInputChange} />
+      <input ref={token}className="form-control"  type='text' name="token"  hidden={true} />
+      <input  type='text'  className="form-control" name="BackLink" defaultValue={process.env.REACT_APP_FRONTENDURL+"/ChangePassword"}  hidden={true} />
+      </form>
+      
+      
+       </DialogContent>
+
+
+        <DialogActions>
+        <Button variant="outlined"color="primary" mr={3} onClick={()=>{
                 setisOpen(false)
                 props.passedhandleclose()
             }}>Close
               </Button>
-              <Button colorScheme='blue' mr={3} type="submit" onClick={handleEmailsubmit}> Send to recovery Email
+              <Button variant="outlined"color="primary" mr={3} type="submit" onClick={handleEmailsubmit}> Send to recovery Email
               </Button>
-            </ModalFooter>
-            
-          </ModalContent>
-        </Modal>
+        </DialogActions>
+      </Dialog>
       </>
     )
   }

@@ -1,7 +1,7 @@
 import './Sign_in.css';
 import React,{ useState,useRef } from 'react';
 import {MDBContainer, MDBCol, MDBRow, MDBBtn, MDBIcon, MDBInput} from 'mdb-react-ui-kit';
-import LoadingSpinner from '../../components/LoadingSpinner'
+import LoadingSpinner from '../../components/UI/SpinnerComps/LoadingSpinner'
 import { ChakraProvider } from '@chakra-ui/react'
 import {CALL_API_With_JWTToken} from '../../libs/APIAccessAndVerification'
 import { toast } from 'react-toastify';

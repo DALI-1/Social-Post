@@ -22,7 +22,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-
+import MainCard from "../../components/UI/cards/MainCard"
 export function AlertDialog(props) {
   const [open, setOpen] = React.useState(true);
   const {GlobalState,Dispatch}=React.useContext(AppContext)
@@ -409,7 +409,7 @@ SetListOfPermToShow([])
             }
           })
 
-         console.log(JsonObject)
+        
         JsonObject=JSON.stringify(JsonObject)
          let url2=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_MOVEGROUP
          let UserToken=window.localStorage.getItem("AuthToken")
@@ -769,7 +769,7 @@ const HandleChangeName=()=>{
          
            
             <Col className="d-flex">
-            <div className="card mb-4 ">
+            <MainCard className="card mb-4 ">
                <div className="card-header d-flex justify-content-center">Group permissions</div>
                <div className="card-body ">
                 {GlobalState.RequestSpinner===true?<p className="d-flex justify-content-center">Please wait, loading your group permissions....</p>:
@@ -948,15 +948,18 @@ const HandleChangeName=()=>{
                   
                    
                </div>
+               <div className="d-flex justify-content-center">
                <input className="btn btn-primary"style={{margin:"1rem"}} onClick={HandlePermissionSave} type="submit" value="Save Permissions"/> 
-           </div>
+                  </div>
+               
+           </MainCard>
             
             
             </Col>
 
             <Col className="d-flex">
           
-          <div className="card mb-4" style={{margin:"2px"}}>   
+          <MainCard className="card mb-4" style={{margin:"2px"}}>   
                   <div className="card-header d-flex justify-content-center">
                     Select where you wanna move the group {variables.Group.SelectedGroupName} under
                   </div>
@@ -971,32 +974,38 @@ const HandleChangeName=()=>{
                              
                           </div>
                   </div>
+                  <div className="d-flex justify-content-center">
                   <input className="btn btn-primary"style={{margin:"1rem"}} onClick={MoveGroup} type="submit" value="Move Group"/>
                   <input className="btn btn-primary"style={{margin:"1rem"}} onClick={CancelGroupMove} type="submit" value="Cancel Group Move"/>
-              </div>
+                  </div>
+              </MainCard>
               </Col>
         
       </Row>
 
       <Row>
       <Col className="d-flex">
-      <div className="card mb-4 mb-xl-0 mt-2" style={{margin:"2px"}}>   
+      <MainCard className="card mb-4 mb-xl-0 mt-2" style={{margin:"2px"}}>   
                 <div className="card-header d-flex justify-content-center">
                   Change Group Name
                 </div>
                 <div className="card-body text-center">
                 <div className="mb-3">
                  <label className="small mb-1" htmlFor="inputUsername">Modify Group Name</label>
-                 <input ref={GroupNameInput}  className="form-control" name="GroupName"  type="text" placeholder="Enter your Group Name" required={true}/>           
+                 <div className="d-flex justify-content-center">
+                 <input ref={GroupNameInput}  className="form-control" name="GroupName"  type="text" placeholder="Enter your Group Name" required={true}/>  
+                 </div>
+                 
+                </div>         
                         </div>
              
-                </div>
+               
                 <input  onClick={HandleChangeName} style={{margin:"1rem"}} className="btn btn-primary" type="submit" value="Change Group Name"/>
-            </div>
+            </MainCard>
         </Col>
 
         <Col  className="d-flex">
-        <div className="card mb-4 mb-xl-0 mt-2" style={{margin:"2px"}}>   
+        <MainCard className="card mb-4 mb-xl-0 mt-2" style={{margin:"2px"}}>   
                 <div className="card-header d-flex justify-content-center">
                  Delete Group
                 </div>
@@ -1007,12 +1016,13 @@ const HandleChangeName=()=>{
                         {DeleteModal&&<AlertDialog SetDeleteModal={SetDeleteModal} GroupName={variables.Group.SelectedGroupName} GroupID={variables.Group.SelectedGroup}/> }
                         </div>
                 </div>
-               
+                <div className="d-flex justify-content-center">
                 <input className="btn btn-danger"style={{margin:"1rem"}} onClick={()=>{
                 
                   SetDeleteModal(!DeleteModal)
                 }} type="submit" value="Delete Group"/>
-            </div>
+                </div>
+            </MainCard>
             </Col>
         
       </Row>

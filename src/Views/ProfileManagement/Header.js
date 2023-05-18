@@ -16,7 +16,7 @@ import Typography from '@mui/material/Typography';
 import {AppContext} from "../../context/Context"
 import { ProfileSelectedTabActions,ProfileTabs } from '../../variables/variables';
 import { Avatar } from "@nextui-org/react";
-import LinearLoadingSpinner from '../../components/LinearLoadingSpinner'
+import LinearLoadingSpinner from '../../components/UI/SpinnerComps/LinearLoadingSpinner'
 import SecurityIcon from '@mui/icons-material/Security';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 const lightColor = 'rgba(255, 255, 255, 0.7)';

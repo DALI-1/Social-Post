@@ -31,18 +31,18 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormLabel from '@mui/material/FormLabel';
 import { MultiSelectComponent } from '@syncfusion/ej2-react-dropdowns';
-import FacebookPostClone from "../../components/FacebookComps/FBPostBoxClone"
-import AddMentionDialog from "../../components/AddPostComps/AddMentionDialog"
-import AddTargetDialog from "../../components/AddPostComps/AddTargetDialog"
-import AddLocationDialog from "../../components/AddPostComps/AddLocationDialog"
-import AddDynamicFieldDialog from "../../components/AddPostComps/AddDynamicFieldDialog"
-import AddAssetsDialog from "../../components/AddPostComps/AddAssetsDialog"
+import FacebookPostClone from "../../components/PostManagementComps/PostCloneComps/Clone_Generator"
+import AddMentionDialog from "../../components/PostManagementComps/AddPostComps/AddMentionDialog"
+import AddTargetDialog from "../../components/PostManagementComps/AddPostComps/AddTargetDialog"
+import AddLocationDialog from "../../components/PostManagementComps/AddPostComps/AddLocationDialog"
+import AddDynamicFieldDialog from "../../components/PostManagementComps/AddPostComps/AddDynamicFieldDialog"
+import AddAssetsDialog from "../../components/PostManagementComps/AddPostComps/AddAssetsDialog"
 import SendIcon from '@mui/icons-material/Send';
 import ScheduleSendIcon from '@mui/icons-material/ScheduleSend';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import CircularProgress from '@mui/material/CircularProgress';
-import ImageDeleter from "../../components/PostAssetsManagement/ImageDeleter"
+import ImageDeleter from "../../components/PostManagementComps/PostAssetsComps/Post_ImageSelector"
 
 import DeleteIcon from '@mui/icons-material/Delete';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
@@ -50,7 +50,7 @@ import Filter1Icon from '@mui/icons-material/Filter1';
 import Autocomplete from '@mui/material/Autocomplete';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import {hashRandom } from 'react-hash-string'
-import ImageTagDialog from "../../components/AddPostComps/AddImageTagDialog"
+import ImageTagDialog from "../../components/PostManagementComps/AddPostComps/AddImageTagDialog"
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import IconButton from '@mui/material/IconButton';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
@@ -62,6 +62,7 @@ import RoomIcon from '@mui/icons-material/Room';
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 import FaceRetouchingNaturalIcon from '@mui/icons-material/FaceRetouchingNatural';
 import { renderToStaticMarkup } from 'react-dom/server';
+import MainCard from "../../components/UI/cards/MainCard"
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 const iconSize = 48;
@@ -151,7 +152,7 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
     let UserToken = window.localStorage.getItem("AuthToken");
     let APIResult = APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
     APIResult.then((result) => {
-      console.log(result)
+     
       if (result.errorCode == undefined) {
         if(result.successCode=="OptimalDateTime_Retreived")
         {
@@ -973,7 +974,7 @@ const HandleImageTag=(()=>{
             {/*-----------------------NOTE: NOTE END--------------------*/}
 <Container>
   <Row>
-  <Col><Button variant="outlined"color="primary" startIcon={<ScheduleSendIcon/>}  className='mx-2 m-3' onClick={HandlePostSchedule}>Save Post Informations </Button></Col>
+  <Col><Button variant="contained"color="primary" startIcon={<ScheduleSendIcon/>}  className='mx-2 m-3' onClick={HandlePostSchedule}>Save Post Informations </Button></Col>
   </Row>
 </Container>
       
@@ -1192,8 +1193,8 @@ export default   function Content() {
       let Temp_Formated_DynamicFieldList=[]
       let ListOfPlatformPageID_ID=[]
                  //-------------------------------END NOTE--------------------//
-                 console.log("Response result")
-     console.log(response.result)
+               
+    
       //------TASK:preparing selected pages,Temp_Formated_SelectedPagesList-----//
       response.result.pages.map((page)=>{
         Temp_Formated_SelectedPagesList=[...Temp_Formated_SelectedPagesList,{
@@ -1209,7 +1210,7 @@ export default   function Content() {
       })
       variables.PostGlobalVariables.POST_SelectedPageIds=Temp_Formated_SelectedPagesList
       variables.PostGlobalVariables.POST_SelectedPageInfo=Temp_Formated_SelectedPagesList
-      console.log(variables.PostGlobalVariables.POST_SelectedPageIds)
+    
       //------END TASK-----//
 
       //------TASK:preparing  the dynamicfields & Patterns-----//
@@ -1248,7 +1249,7 @@ export default   function Content() {
       })
       //Updating the Dynamicfield List with the formated one
        variables.PostGlobalVariables.POST_AddedDynamicFields=Temp_Formated_DynamicFieldList
-      console.log(variables.PostGlobalVariables.POST_AddedDynamicFields)
+      
       //Calling the API to fetch the group patterns so we load the patterns by default and have our dynamic fields shown properly
       var JsonObject = {
         groupID: GlobalState.SelectedGroup.id,
@@ -1304,8 +1305,7 @@ export default   function Content() {
       
       variables.PostGlobalVariables.POST_SelectedAssetsInfo=Temp_Formated_AssetsList
       variables.PostGlobalVariables.POST_AssetsTags=Temp_Formated_TagsList
-      console.log(variables.PostGlobalVariables.POST_SelectedAssetsInfo)
-      console.log(variables.PostGlobalVariables.POST_AssetsTags)
+   
       
       //------END TASK-----//
 
@@ -1510,9 +1510,9 @@ export default   function Content() {
              "location_PlatformCode": Location.location_PlatformCode,
             }]
             //Getting the List of Regions with the same name
-            console.log(Location)
+   
             let List_Of_Locations=SearchLib.Facebook_Get_Audience_Locations([Location.location_Region],Location.location_Name)  
-            console.log([Location.location_Region.region_PlatformCode])     
+             
             //Filling the options list with the data, so that later it finds it and shows  it checked by default
             List_Of_Locations.then((Result)=>{
             
@@ -1537,7 +1537,7 @@ export default   function Content() {
       //------END TASK-----//
 
       //updating  post date
-      console.log(dayjs(response.result.postDate))
+  
       variables.PostGlobalVariables.EDITPOST_Default_PostDate=dayjs(response.result.postDate)
       //updating repeat option
       variables.PostGlobalVariables.EDITPOST_Default_RepeatPost=response.result.repeatPost
@@ -1591,11 +1591,6 @@ export default   function Content() {
       
     
    
-console.log(variables.PostGlobalVariables.EDITPOST_Default_RepeatPost,
-  variables.PostGlobalVariables.EDITPOST_Default_EndRepeatAfterDate,
-  variables.PostGlobalVariables.EDITPOST_Default_EndRepeatOnNbOfOccurences,
-  variables.PostGlobalVariables.EDITPOST_Default_PostDate,
-  )
 
   
       
@@ -1613,7 +1608,7 @@ console.log(variables.PostGlobalVariables.EDITPOST_Default_RepeatPost,
 
   return (
     <>  
-       <Paper sx={{ width: "100%", height:"100%", m: 1, p: 2, textAlign: "center" }} style={{margin:"1rem",padding:"1rem",boxShadow: '0px 0px 10px 0px rgba(0, 0, 0, 0.2)'}}>
+       <MainCard sx={{ width: "100%", height:"100%", m: 1, p: 2, textAlign: "center" }} style={{margin:"1rem",padding:"1rem",boxShadow: '0px 0px 10px 0px rgba(0, 0, 0, 0.2)'}}>
 
 <SplitterComponent id="splitter" height="100%" width="100%" separatorSize={5} >
    <PanesDirective>
@@ -1624,7 +1619,7 @@ console.log(variables.PostGlobalVariables.EDITPOST_Default_RepeatPost,
 </SplitterComponent> 
 
 
-    </Paper>
+    </MainCard>
 </>
   );
 }

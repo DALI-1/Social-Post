@@ -114,7 +114,7 @@ export default function Content() {
 
 
       const onChange = (currentNode, selectedNodes) => {
-        console.log('onChange::', currentNode, selectedNodes)
+       
          
         var res=[]
          selectedNodes.map((n)=>{
@@ -131,10 +131,10 @@ export default function Content() {
         
       }
       const onAction = (node, action) => {
-        console.log('onAction::', action, node)
+        
       }
       const onNodeToggle = currentNode => {
-        console.log('onNodeToggle::', currentNode)
+        
       }
    
   
@@ -151,7 +151,7 @@ export default function Content() {
         "userName": Username.current.value,
         "firstName": FirstName.current.value,
         "lastName": LastName.current.value,
-        "age": Age.current.value,
+        "BirthdayDate": Age.current.value,
         "email": Email.current.value,
         "phoneNumber": PhoneNumber.current.value
       }
@@ -345,8 +345,8 @@ React.useEffect(()=>{
                                 <input ref={PhoneNumber} className="form-control" name="phoneNumber" id="inputPhone" type="tel" placeholder="Enter your phone number" />
                             </div>
                             <div className="col-md-6">
-                                <label className="small mb-1" htmlFor="inputPhone">Age</label>
-                                <input ref={Age} className="form-control" name="age" id="age" type="number" placeholder="Enter your age" />
+                                <label className="small mb-1" htmlFor="inputPhone">Birthday Date</label>
+                                <input ref={Age} className="form-control" name="BirthdayDate" id="BirthdayDate" type="date" placeholder="Enter your birthday date" />
                             </div>
 
                             

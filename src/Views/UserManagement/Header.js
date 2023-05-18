@@ -13,7 +13,7 @@ import Tabs from '@mui/material/Tabs';
 import Toolbar from '@mui/material/Toolbar';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
-import LinearLoadingSpinner from '../../components/LinearLoadingSpinner'
+import LinearLoadingSpinner from '../../components/UI/SpinnerComps/LinearLoadingSpinner'
 import {AppContext} from "../../context/Context"
 import { ProfileSelectedTabActions,ProfileTabs,GroupSelectedTabActions,GroupTabs, UserTabs,UserSelectedTabActions } from '../../variables/variables';
 import { Avatar } from "@nextui-org/react";

@@ -17,6 +17,7 @@ import {hashRandom } from 'react-hash-string'
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import {HeaderSpinnerActions}  from '../../variables/variables'
+import MainCard from "../../components/UI/cards/MainCard"
 export default function Content() {
 
     const {GlobalState,Dispatch}=React.useContext(AppContext)
@@ -265,7 +266,7 @@ if(document.getElementById(RadioButton).checked)
 
        <Row className="d-flex">
         <Col className="d-flex">
-        <div className="card mb-4 mb-xl-0">
+        <MainCard className="card mb-4 mb-xl-0">
                <form onSubmit={CreateSubGroup}>
                 <div className="card-header d-flex justify-content-center"> Sub Group Details</div>
                 <div className="card-body text-center">
@@ -286,10 +287,10 @@ if(document.getElementById(RadioButton).checked)
                     
                 </div>
                 </form>
-            </div>
+            </MainCard>
         </Col>
         <Col className="d-flex">
-        <div className="card mb-4 mb-xl-0">
+        <MainCard className="card mb-4 mb-xl-0">
                <div className="card-header d-flex justify-content-center"> Sub Group permissions</div>
                <div className="card-body">
                    <Container>
@@ -343,7 +344,7 @@ if(document.getElementById(RadioButton).checked)
                    </Container>
                </div>
                
-           </div>
+           </MainCard>
         </Col>
       
       </Row>  

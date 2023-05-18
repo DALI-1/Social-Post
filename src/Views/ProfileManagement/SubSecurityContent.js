@@ -13,6 +13,7 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import { ToastContainer, toast } from 'react-toastify';
 import {CALL_API_With_JWTToken,CALL_API_With_JWTToken_GET} from '../../libs/APIAccessAndVerification'
 import './SubSecurityContent.css';
+import MainCard from "../../components/UI/cards/MainCard"
 export default function Content() {
   let NewPassword=React.useRef()
   let NewPasswordC=React.useRef()
@@ -114,8 +115,8 @@ export default function Content() {
       
         <div class="row">
             <div class="col-lg-8">
-               
-                <div class="card mb-4">
+            
+                <MainCard class="card mb-4">
                     <div class="card-header">Change Password</div>
                     <div class="card-body">
                         <form onSubmit={HandleSub}>
@@ -137,9 +138,9 @@ export default function Content() {
                             <input class="btn btn-primary" type="submit" value="Change Password"/>
                         </form>
                     </div>
-                </div>
+                </MainCard>
                 
-                <div class="card mb-4">
+                <MainCard class="card mb-4">
                     <div class="card-header">Security Preferences</div>
                     <div class="card-body">
                        
@@ -170,11 +171,11 @@ export default function Content() {
                             </div>
                         </form>
                     </div>
-                </div>
+                </MainCard>
             </div>
             <div class="col-lg-4">
                 
-                <div class="card mb-4">
+                <MainCard class="card mb-4">
                     <div class="card-header">Two-Factor Authentication</div>
                     <div class="card-body">
                         <p>Add another level of security to your account by enabling two-factor authentication. We will send you a text message to verify your login attempts on unrecognized devices and browsers.</p>
@@ -193,15 +194,15 @@ export default function Content() {
                             </div>
                         </form>
                     </div>
-                </div>
+                </MainCard>
               
-                <div class="card mb-4">
+                <MainCard class="card mb-4">
                     <div class="card-header">Delete Account</div>
                     <div class="card-body">
                         <p>Deleting your account is a permanent action and cannot be undone. If you are sure you want to delete your account, select the button below.</p>
                         <button class="btn btn-danger-soft text-danger" type="button">I understand, delete my account</button>
                     </div>
-                </div>
+                </MainCard>
             </div>
         </div>
     

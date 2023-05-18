@@ -31,12 +31,12 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormLabel from '@mui/material/FormLabel';
 import { MultiSelectComponent } from '@syncfusion/ej2-react-dropdowns';
-import FacebookPostClone from "../../components/FacebookComps/FBPostBoxClone"
-import AddMentionDialog from "../../components/AddPostComps/AddMentionDialog"
-import AddTargetDialog from "../../components/AddPostComps/AddTargetDialog"
-import AddLocationDialog from "../../components/AddPostComps/AddLocationDialog"
-import AddDynamicFieldDialog from "../../components/AddPostComps/AddDynamicFieldDialog"
-import AddAssetsDialog from "../../components/AddPostComps/AddAssetsDialog"
+import FacebookPostClone from "../../components/PostManagementComps/PostCloneComps/Clone_Generator"
+import AddMentionDialog from "../../components/PostManagementComps/AddPostComps/AddMentionDialog"
+import AddTargetDialog from "../../components/PostManagementComps/AddPostComps/AddTargetDialog"
+import AddLocationDialog from "../../components/PostManagementComps/AddPostComps/AddLocationDialog"
+import AddDynamicFieldDialog from "../../components/PostManagementComps/AddPostComps/AddDynamicFieldDialog"
+import AddAssetsDialog from "../../components/PostManagementComps/AddPostComps/AddAssetsDialog"
 import SendIcon from '@mui/icons-material/Send';
 import ScheduleSendIcon from '@mui/icons-material/ScheduleSend';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -44,14 +44,14 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import CircularProgress from '@mui/material/CircularProgress';
 import FaceRetouchingNaturalIcon from '@mui/icons-material/FaceRetouchingNatural';
 import { renderToStaticMarkup } from 'react-dom/server';
-import ImageDeleter from "../../components/PostAssetsManagement/ImageDeleter"
+import ImageDeleter from "../../components/PostManagementComps/PostAssetsComps/Post_ImageSelector"
 import DeleteIcon from '@mui/icons-material/Delete';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import Filter1Icon from '@mui/icons-material/Filter1';
 import Autocomplete from '@mui/material/Autocomplete';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import {hashRandom } from 'react-hash-string'
-import ImageTagDialog from "../../components/AddPostComps/AddImageTagDialog"
+import ImageTagDialog from "../../components/PostManagementComps/AddPostComps/AddImageTagDialog"
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import IconButton from '@mui/material/IconButton';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
@@ -60,6 +60,7 @@ import PodcastsIcon from '@mui/icons-material/Podcasts';
 import DynamicFeedIcon from '@mui/icons-material/DynamicFeed';
 import RoomIcon from '@mui/icons-material/Room';
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
+import MainCard from "../../components/UI/cards/MainCard"
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 const iconSize = 48;
@@ -149,7 +150,7 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
     let UserToken = window.localStorage.getItem("AuthToken");
     let APIResult = APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
     APIResult.then((result) => {
-      console.log(result)
+    
       if (result.errorCode == undefined) {
         if(result.successCode=="OptimalDateTime_Retreived")
         {
@@ -755,7 +756,7 @@ const handlePageValueChange = (newValue) => {
 let SelectedPagesInfos=[]
 newValue.map((v)=>{
 
-  console.log(v)
+
   //here we will be itterating through the List of Pages to grab each page's info
   PagesList.map((p)=>{
    if(p.id===v.id)
@@ -1191,8 +1192,8 @@ const HandleImageTag=(()=>{
             {/*-----------------------NOTE: NOTE END--------------------*/}
 <Container>
   <Row>
-  <Col><Button variant="outlined"color="primary" startIcon={<ScheduleSendIcon/>}  className='mx-2 m-3' onClick={HandlePostSchedule}>Schedule Post </Button></Col>
-  <Col><Button variant="outlined"color="primary" startIcon={<SendIcon/>}  className='mx-2 m-3' onClick={HandlePostNow}>Post Now </Button></Col>
+  <Col><Button variant="contained"color="primary" startIcon={<ScheduleSendIcon/>}  className='mx-2 m-3' onClick={HandlePostSchedule}>Schedule Post </Button></Col>
+  <Col><Button variant="contained"color="primary" startIcon={<SendIcon/>}  className='mx-2 m-3' onClick={HandlePostNow}>Post Now </Button></Col>
   </Row>
 </Container>
       
@@ -1422,7 +1423,7 @@ export default function Content() {
 
   return (
     <>  
-       <Paper sx={{ width: "100%", height:"100%", m: 1, p: 2, textAlign: "center" }} style={{margin:"1rem",padding:"1rem",boxShadow: '0px 0px 10px 0px rgba(0, 0, 0, 0.2)'}}>
+       <MainCard sx={{ width: "100%", height:"100%", m: 1, p: 2, textAlign: "center" }} style={{margin:"1rem",padding:"1rem",boxShadow: '0px 0px 10px 0px rgba(0, 0, 0, 0.2)'}}>
 
 <SplitterComponent id="splitter" height="100%" width="100%" separatorSize={5} >
    <PanesDirective>
@@ -1433,7 +1434,7 @@ export default function Content() {
 </SplitterComponent> 
 
 
-    </Paper>
+    </MainCard>
 
       
         

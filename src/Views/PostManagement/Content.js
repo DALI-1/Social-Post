@@ -7,6 +7,7 @@ import ManagePostContent from "./ManagePostContent";
 import AddPostContent from "./AddPostContent";
 import EditPostContent from "./EditPostContent";
 import PreviewPostContent from "./PreviewPostContent";
+import ViewPostInseights from "./ViewPostInseightsContent";
 export default function Content() {
   const { GlobalState, Dispatch } = React.useContext(AppContext);
   return (
@@ -20,6 +21,7 @@ export default function Content() {
                  {GlobalState.PostSelectedTab ==variables.PostTabs.AddPost &&<AddPostContent/>}
                  {GlobalState.PostSelectedTab ==variables.PostTabs.EditPost &&<EditPostContent/>}
                  {GlobalState.PostSelectedTab ==variables.PostTabs.PreviewPost &&<PreviewPostContent/>}
+                 {GlobalState.PostSelectedTab ==variables.PostTabs.ViewPostInseights &&<ViewPostInseights/>}
               </Container>
             </>
           ) : (

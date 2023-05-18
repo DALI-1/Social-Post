@@ -1,15 +1,5 @@
 import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Tooltip from '@mui/material/Tooltip';
-import IconButton from '@mui/material/IconButton';
-import SearchIcon from '@mui/icons-material/Search';
-import RefreshIcon from '@mui/icons-material/Refresh';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './SubProfileContent.css';
@@ -23,6 +13,7 @@ import {AppContext} from "../../context/Context"
 import * as variables from "../../variables/variables"
 import {APIStatus,APIStatuses}  from '../../variables/variables';
 import { Avatar } from "@nextui-org/react";
+import MainCard from "../../components/UI/cards/MainCard"
 export default function Content() {
 
     const {GlobalState,Dispatch}=React.useContext(AppContext)
@@ -43,7 +34,7 @@ export default function Content() {
                          LastName.current.value= variables.UserInformations.info.lastName
                         PhoneNumber.current.value= variables.UserInformations.info.phoneNumber             
                         Username.current.value=variables.UserInformations.info.userName
-                         Age.current.value=variables.UserInformations.info.age
+                         Age.current.value=variables.UserInformations.info.birthdayDate
                          UserProfilePicture.current.src=variables.UserInformations.info.profilePictureURL 
      
       },[]);
@@ -212,9 +203,9 @@ export default function Content() {
                         Dispatch({type:variables.UserActions.UpdateFirstName,value:FirstName.current.value}) 
                         Dispatch({type:variables.UserActions.UpdateLastName,value:LastName.current.value})
                         Dispatch({type:variables.UserActions.UpdateUsername,value:Username.current.value})
-                        Dispatch({type:variables.UserActions.UpdateEmail,value:Email.current.value})
-                        PhoneNumber.current.value= variables.UserInformations.info.phoneNumber               
-                        Age.current.value=variables.UserInformations.info.age
+                        Dispatch({type:variables.UserActions.UpdateEmail,value:Email.current.value})                
+                        variables.UserInformations.info.phoneNumber =PhoneNumber.current.value            
+                        variables.UserInformations.info.birthdayDate=Age.current.value
                         
                         toast.success('Personal Informations updated successfully!', {
                             position: "bottom-left",
@@ -295,8 +286,8 @@ export default function Content() {
       <div className="container-xl px-4 mt-4">
     <div className="row d-flex" >
         <div className="col-xl-4 d-flex">
+        <MainCard className="card mb-4">
             
-            <div className="card mb-4 ">
                 <div className="card-header d-flex justify-content-center">Profile Picture</div>
                 <div className="card-body text-center ">
                     {/*Test if User has a profile picture if not show default*/}
@@ -318,11 +309,12 @@ export default function Content() {
                     <input className="btn btn-primary" type="submit" value="Save Image"/>
                     </form>
                 </div>
-            </div>
+            
+            </MainCard>
         </div>
         <div className="col-xl-8 d-flex">
            
-            <div className="card mb-4 ">
+        <MainCard className="card mb-4">
                 <div className="card-header">Account Details</div>
                 <div className="card-body">
                     <form onSubmit={handlesubmit}>
@@ -370,8 +362,8 @@ export default function Content() {
                                 <input ref={PhoneNumber} className="form-control" name="phoneNumber" id="inputPhone" type="tel" placeholder="Enter your phone number" />
                             </div>
                             <div className="col-md-6">
-                                <label className="small mb-1" htmlFor="inputPhone">Age</label>
-                                <input ref={Age} className="form-control" name="age" id="age" type="number" placeholder="Enter your age" />
+                                <label className="small mb-1" htmlFor="BirthdayDate">Birthday Date</label>
+                                <input ref={Age} className="form-control" name="BirthdayDate" id="BirthdayDate" type="date" placeholder="Enter your age" />
                             </div>
                             
                         </div>
@@ -379,10 +371,10 @@ export default function Content() {
                         <input type="submit" value="Save Changes" className="btn btn-primary"/>
                     </form>
                 </div>
-            </div>
+                </MainCard>
         </div>
     </div>
 </div>
-      
+ 
   );
 }

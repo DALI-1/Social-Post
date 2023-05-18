@@ -43,6 +43,7 @@ import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import GroupRemoveIcon from '@mui/icons-material/GroupRemove';
 import * as PermissionLib from "../../libs/PermissionsChecker"
+import MainCard from "../../components/UI/cards/MainCard"
 export function FilterDialog(props) {
   const [open, setOpen] = React.useState(true);
   const {GlobalState,Dispatch}=React.useContext(AppContext)
@@ -91,8 +92,8 @@ return (
 
 
         <DialogActions>
-          <Button onClick={cancelFilter}>Remove Filter</Button>
-          <Button onClick={FilterUsers}>Apply Filter</Button>
+          <Button variant="outlined"color="primary" onClick={cancelFilter}>Remove Filter</Button>
+          <Button variant="outlined"color="primary" onClick={FilterUsers}>Apply Filter</Button>
         </DialogActions>
       </Dialog>
     </div>
@@ -183,7 +184,7 @@ const UpdateData=(Grp,SelectedNode)=>
 
 
   const onChange = (currentNode, selectedNodes) => {
-    console.log('onChange::', currentNode, selectedNodes)
+    
      
     var res=[]
      selectedNodes.map((n)=>{
@@ -198,10 +199,10 @@ const UpdateData=(Grp,SelectedNode)=>
        })
   }
   const onAction = (node, action) => {
-    console.log('onAction::', action, node)
+    
   }
   const onNodeToggle = currentNode => {
-    console.log('onNodeToggle::', currentNode)
+    
   }
 
   React.useEffect(()=>{
@@ -336,8 +337,8 @@ return (
 
 
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={AddUsersToGroups}>Add User to the selected Groups</Button>
+          <Button variant="outlined"color="primary" onClick={handleClose}>Cancel</Button>
+          <Button variant="outlined"color="warning" onClick={AddUsersToGroups}>Add User to the selected Groups</Button>
         </DialogActions>
       </Dialog>
     </div>
@@ -358,9 +359,6 @@ export function AlertDialog2(props) {
   let ListOfGroups=React.useRef([])
   let [GroupsDropDownList,SetGroupsDropDownList]=React.useState({})
   let UsersID=props.UserIDs
-  let SetAddGroupModal=props.SetAddGroupModal
-
-
   function CreateHiearchyData(Grp) {
     if(Grp.subGroups!=null)
    {
@@ -428,7 +426,7 @@ const FillData=()=>
 SetGroupsDropDownList(res)
 }
   const onChange = (currentNode, selectedNodes) => {
-    console.log('onChange::', currentNode, selectedNodes)
+    
      
     var res=[]
      selectedNodes.map((n)=>{
@@ -444,10 +442,10 @@ SetGroupsDropDownList(res)
        })
   }
   const onAction = (node, action) => {
-    console.log('onAction::', action, node)
+   
   }
   const onNodeToggle = currentNode => {
-    console.log('onNodeToggle::', currentNode)
+   
   }
 
   React.useEffect(()=>{
@@ -570,7 +568,7 @@ Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner})
 
 const handleClose = () => {
   setOpen(false);
-  props.SetAddGroupModal(false)
+  props.SetRemoveGroupModal(false)
 };
 
 
@@ -601,8 +599,8 @@ return (
 
 
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={AddUsersToGroups}>Remove The selected users from the groups</Button>
+          <Button variant="outlined"color="primary" onClick={handleClose}>Cancel</Button>
+          <Button variant="outlined"color="warning" onClick={AddUsersToGroups}>Remove The selected users from the groups</Button>
         </DialogActions>
       </Dialog>
     </div>
@@ -1175,13 +1173,10 @@ React.useEffect(()=>{
 
     return (
     <>
-<Container>
-
 
 <Row>
-<Col>
 <Box sx={{ width: '100%' }}>
-<Paper sx={{ width: '100%', mb: 2 ,textAlign: "right",boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'}}>
+<MainCard sx={{ width: '100%', mb: 2 ,textAlign: "right",boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'}}>
 {PermissionLib.ValidateAction(variables.MenuItems.User_MenuItem,variables.MenuItemActions.Add_UserAction)&&
 <Button
  variant="outlined"color="primary"
@@ -1221,17 +1216,16 @@ React.useEffect(()=>{
         Remove User From Group
       </Button>
 }   
-  </Paper>
+  </MainCard>
   </Box>
-</Col>
+
 
 </Row>
  
 <Row>
-<Col>
 
 <Box sx={{ width: '100%' }}>
-      <Paper sx={{ width: '100%', mb: 2,boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)' }}>
+      <MainCard sx={{ width: '100%', mb: 2,boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)' }}>
         <EnhancedTableToolbar numSelected={selected.length} HandleRemoveUser={HandleRemoveUser} SetFilterModal={SetFilterModal} />
         <TableContainer>
           <Table
@@ -1328,15 +1322,13 @@ React.useEffect(()=>{
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-      </Paper>
+      </MainCard>
       <FormControlLabel
         control={<Switch checked={dense} onChange={handleChangeDense} />}
         label="Dense padding"
       />
     </Box>
-</Col>
 </Row>
-</Container>
 {AddGroupModal&&<AlertDialog SetAddGroupModal={SetAddGroupModal}  UserIDs={selected}/> }
 {RemoveGroupModal&&<AlertDialog2 SetRemoveGroupModal={SetRemoveGroupModal}  UserIDs={selected}/> }
 {RemoveUserModal&&<AlertDialog3 SetRemoveGroupModal={SetRemoveUserModal}  UserIDs={selected}/> }

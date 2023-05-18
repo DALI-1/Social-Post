@@ -16,7 +16,7 @@ export  const  ValidateAction =  (MenuItemID,MenuItemActionID)=>
     var MenuItemActionExist_Flag=false
     if(variables.UserInformations.info!=null)
     {
-      console.log("helo")
+  
           //We iterate through the groups till we find the group we in and their permissions
           variables.UserInformations.info.joinedGroups.map((Group)=>{
             if(Group.id==Selected_GroupID)

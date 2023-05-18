@@ -1,7 +1,7 @@
 import './Sign_up.css';
 
 import React,{ useState,useRef  } from 'react';
-import LoadingSpinner from '../../components/LoadingSpinner'
+import LoadingSpinner from '../../components/UI/SpinnerComps/LoadingSpinner'
 import {
   MDBBtn,
   MDBContainer,
@@ -13,12 +13,14 @@ import {
   MDBIcon
 }
 from 'mdb-react-ui-kit';
-import { ChakraProvider } from '@chakra-ui/react'
+import { useTheme } from '@mui/material/styles';
 import logo from '../../Assets/SocialPost-Logo.png';
 import {CALLAPI} from '../../libs/APIAccessAndVerification'
 import { toast } from 'react-toastify';
 import {APIStatus,APIStatuses}  from '../../variables/variables';
+import MainCard from "../../components/UI/cards/MainCard"
 function App() {
+  const theme = useTheme();
   let [LoadingSpinnerStatus, setLoadingSpinnerStatus] = useState(false);
   let UserExistStatus= useRef(false); //Flag indicated if the User exist or not
   let GroupExistStatus = useRef(false); //flag indicate if the default group name exist or not
@@ -172,10 +174,11 @@ function App() {
         progress: undefined,
         theme: "light",
         });
+        setLoadingSpinnerStatus(false) 
         window.location.replace('/login')
     }
     }
-      setLoadingSpinnerStatus(false) 
+      
      
  }).catch(error=>{
   console.log(error)
@@ -217,7 +220,7 @@ else
 
 
   return (
-    <ChakraProvider>
+    
     <MDBContainer fluid className=' background-radial-gradient overflow-hidden' style={{backgroundImage: `url("https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp")`,backgroundRepeat:"no-repeat"}}>
       <MDBRow>
 
@@ -236,7 +239,11 @@ else
           <div id="radius-shape-1" className="position-absolute rounded-circle shadow-5-strong"></div>
           <div id="radius-shape-2" className="position-absolute shadow-5-strong"></div>
 
-          <MDBCard className='my-5 bg-glass'>
+          <MainCard className='my-5 bg-glass' style={{borderColor: theme.palette.divider ,
+                    boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
+                    ':hover': {
+                        boxShadow: "0 0 10px rgba(0, 0, 0, 0.4)",
+                    }}}>
             <MDBCardBody className='p-5'>
              <form onSubmit={handlesubmit}>     
               <MDBRow>
@@ -250,25 +257,25 @@ else
               </MDBRow>
               <MDBInput wrapperClass='mb-4' label='Username' id='form3' type='text' name="UserName" required={true}/>
               <MDBInput wrapperClass='mb-4' label='Email' id='form4' type='email' name="Email" required={true}/>
-              <MDBInput wrapperClass='mb-4' label='Age' id='form5' type='number'name="Age" required={true}/>
+              <MDBInput wrapperClass='mb-4' label='Birthday Date' id='form5' type='date'name="BirthdayDate" required={true}/>
               <MDBInput wrapperClass='mb-4' label='Campaign Name' id='form6' name="CampaignName" type='text' required={true}/>
               <MDBInput wrapperClass='mb-4' label='Phone Number' id='form7' name="PhoneNumber" type='number' required={true}/>
               <MDBInput wrapperClass='mb-4' label='Password' id='form8' name="Password" type='password' required={true}/>
               <MDBInput wrapperClass='mb-4' label='Confirm Password' id='form9' name="CPassword" type='password' required={true}/>
               <div className='d-flex justify-content-center mb-4'>
                 {/*<MDBCheckbox name='flexCheck' value='' id='flexCheckDefault' label='Subscribe to our newsletter' />*/}
-                <p className="small fw-bold mt-2 pt-1">You Already have an account?  <a href="/Login" className="link-danger">Sign In</a></p>
+                <p className="small fw-bold mt-2 pt-1">You Already have an account?  <a href="/Login" style={{color:"#3b71ca"}}>Sign In</a></p>
               </div>
 
               <MDBBtn className='w-100 mb-4' size='md' type='submit'>sign up</MDBBtn>
               <div className='d-flex justify-content-center '>
-                {LoadingSpinnerStatus&&<LoadingSpinner id="Spinner"/>}             
+                {LoadingSpinnerStatus&&<LoadingSpinner/>}             
               </div> 
                
               </form>
               
-            
-              <div className="text-center">
+            {/*
+            <div className="text-center">
 
                 <p>Or sign up with:</p>
 
@@ -285,16 +292,18 @@ else
                 
 
               </div>
+             */}
+              
 
             </MDBCardBody>
-          </MDBCard>
+          </MainCard>
 
         </MDBCol>
 
       </MDBRow>
 
     </MDBContainer>
-    </ChakraProvider>
+    
   );
 }
 

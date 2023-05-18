@@ -175,6 +175,7 @@ export default function Paperbase() {
   const isSmUp = useMediaQuery(theme.breakpoints.up('sm'));
 
   const handleDrawerToggle = () => {
+    console.log("Opening!")
     setMobileOpen(!mobileOpen);
   };
       // This is executed only at the first render
@@ -219,7 +220,11 @@ Dispatch({type:HeaderSpinnerActions.TurnOnSpinner})
           component="nav"
           sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
         >
-          {isSmUp ? null : (
+          {isSmUp ? <Navigator
+            PaperProps={{ style: { width: drawerWidth } }}
+            sx={{ display: { sm: 'block', xs: 'none' } }}
+            variant="permanent"
+          /> : (
             <Navigator
               PaperProps={{ style: { width: drawerWidth } }}
               variant="temporary"
@@ -227,13 +232,10 @@ Dispatch({type:HeaderSpinnerActions.TurnOnSpinner})
               onClose={handleDrawerToggle}
             />
           )}
-          <Navigator
-            PaperProps={{ style: { width: drawerWidth } }}
-            sx={{ display: { sm: 'block', xs: 'none' } }}
-          />
+          
         </Box>
         <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-          <HeaderSelector />
+          <HeaderSelector handleDrawerToggle={handleDrawerToggle} />
           <Box component="main" sx={{ flex: 1, py: 6, px: 4, bgcolor: '#eaeff1' }}>
             <ContentSelector/>
           </Box>

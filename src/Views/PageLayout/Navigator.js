@@ -159,21 +159,11 @@ export default function Navigator(props) {
   
   const MenuItems_Filtered=[...MenuItems.filter((p)=>PermissionsLib.ValidateMenuItem(p.Identificator)),MenuItems[4]]
   return (
-    <Drawer variant="permanent" {...other}>
+    <Drawer {...other}>
       <List disablePadding>
-        <ListItem sx={{ ...item, ...itemCategory, fontSize: 22, color: '#ffff' }}>
-        
-        <img src={logo} className="img-fluid" alt="Sample image" />
-       
-        
-        
+        <ListItem sx={{ ...item, ...itemCategory, fontSize: 22, color: '#ffff' }}>   
+        <img src={logo} className="img-fluid" alt="Sample image" /> 
         </ListItem>
-
-        
-
-        
-
-
         <ListItem sx={{ ...item, ...itemCategory }}>
           <ListItemIcon>
             <HomeIcon />

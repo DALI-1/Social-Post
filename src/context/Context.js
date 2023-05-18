@@ -76,10 +76,10 @@ const reducer=(GlobalState,action)=>
                   return({...GlobalState,PostSelectedTab:variables.PostTabs.ManagePostsTab})
                     }
 
-                    case variables.PostSelectedTabActions.SelectPostGroup:
+                    case variables.PostSelectedTabActions.SelectViewPostInseights:
                     {
                        
-                  return({...GlobalState,PostSelectedTab:variables.PostTabs.SelectPostGroup})
+                  return({...GlobalState,PostSelectedTab:variables.PostTabs.ViewPostInseights})
                     }
 
 

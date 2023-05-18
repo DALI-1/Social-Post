@@ -1,11 +1,8 @@
 import * as React from "react";
-import PropTypes from "prop-types";
 import AppBar from "@mui/material/AppBar";
-import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import HelpIcon from "@mui/icons-material/Help";
 import IconButton from "@mui/material/IconButton";
-import Link from "@mui/material/Link";
 import MenuIcon from "@mui/icons-material/Menu";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import Tab from "@mui/material/Tab";
@@ -13,18 +10,17 @@ import Tabs from "@mui/material/Tabs";
 import Toolbar from "@mui/material/Toolbar";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
-import LinearLoadingSpinner from "../../components/LinearLoadingSpinner";
+import LinearLoadingSpinner from "../../components/UI/SpinnerComps/LinearLoadingSpinner";
 import { AppContext } from "../../context/Context";
 import SendIcon from '@mui/icons-material/Send';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import * as variables from "../../variables/variables";
 import { Avatar } from "@nextui-org/react";
 import EditIcon from "@mui/icons-material/Edit";
-import TuneIcon from "@mui/icons-material/Tune";
+import BarChartIcon from '@mui/icons-material/BarChart';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-const lightColor = "rgba(255, 255, 255, 0.7)";
-
 function Header(props) {
+  
   const { onDrawerToggle } = props;
   const { GlobalState, Dispatch } = React.useContext(AppContext);
   let [TabMenu, SetTabMenu] = React.useState(0);
@@ -40,16 +36,18 @@ function Header(props) {
     if (GlobalState.PostSelectedTab == variables.PostTabs.ManagePostsTab) {
       SetTabMenu(0);
     }
-
-    if (GlobalState.PostSelectedTab == variables.PostTabs.AddPost) {
+    if (GlobalState.PostSelectedTab == variables.PostTabs.ViewPostInseights) {
       SetTabMenu(1);
+    }
+    if (GlobalState.PostSelectedTab == variables.PostTabs.AddPost) {
+      SetTabMenu(2);
     }
 
     if (GlobalState.PostSelectedTab == variables.PostTabs.EditPost) {
-      SetTabMenu(1);
+      SetTabMenu(2);
     }
     if (GlobalState.PostSelectedTab == variables.PostTabs.PreviewPost) {
-      SetTabMenu(1);
+      SetTabMenu(2);
     }
   }, [GlobalState]);
   return (
@@ -134,6 +132,17 @@ function Header(props) {
             }
             onClick={() => {
               Dispatch({ type: variables.PostSelectedTabActions.SelectManagePosts });
+            }}
+          />
+
+          <Tab
+            label={
+              <>
+                <BarChartIcon/> <p>View inseights</p>
+              </>
+            }
+            onClick={() => {
+              Dispatch({ type: variables.PostSelectedTabActions.SelectViewPostInseights });
             }}
           />
 
