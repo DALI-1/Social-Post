@@ -207,7 +207,8 @@ const reducer=(GlobalState,action)=>
                         
                         case variables.SelectGroupActions.SetSelectedGroup:
                             {                              
-                             variables.Group.SelectedGroup=variables.UserInformations.info.joinedGroups[action.value].id
+                             variables.Group.App_Selected_Group_ID=variables.UserInformations.info.joinedGroups[action.value].id
+                             variables.Group.App_Selected_GroupInfo=variables.UserInformations.info.joinedGroups[action.value]
                             return({...GlobalState,SelectedGroup:variables.UserInformations.info.joinedGroups[action.value]})
                            
                             } 

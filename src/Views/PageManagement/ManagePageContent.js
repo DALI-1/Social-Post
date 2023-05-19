@@ -92,7 +92,7 @@ export default function Content() {
     if (variables.Pages.SelectedPlatformID == 1) {
       //formating the request based on the backend DTO
       var JsonObject = {
-        groupID: variables.Group.SelectedGroup,
+        groupID: variables.Group.App_Selected_Group_ID,
         ownerFBid: variables.FacebookUser.LoggedFacebookUserInfo.userID,
         ownerFB_shortLivedToken:
           variables.FacebookUser.LoggedFacebookUserInfo.accessToken,
@@ -193,7 +193,7 @@ export default function Content() {
       //formating the request based on the backend DTO
 
       var JsonObject = {
-        groupID: variables.Group.SelectedGroup,
+        groupID: variables.Group.App_Selected_Group_ID,
         ownerFBid: variables.FacebookUser.LoggedFacebookUserInfo.id,
         ownerFB_shortLivedToken:
           variables.FacebookUser.LoggedFacebookUserInfo.accessToken,

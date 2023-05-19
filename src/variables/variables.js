@@ -152,7 +152,8 @@ export var UserInformations=
 
 export var Group=
 {//This SelectGroup Variable indicate which Group the user selected when //INSIDE APP //
-    App_SelectedGroup:null,
+    App_Selected_Group_ID:null,
+    App_Selected_GroupInfo:null,
     //This SelectGroup Variable indicate which Group the user selected when //INSIDE GROUP MANAGEMENT//
     SelectedGroup:null,
      //This SelectedGroupName Variable is the name of the group that the user selected
