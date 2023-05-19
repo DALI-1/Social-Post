@@ -161,7 +161,7 @@ export default function Content() {
       let IDOfGroup=props.target.id.replace("GROUP","")
       ListOfActions= GetPermissionList(variables.UserInformations.info.joinedGroups,IDOfGroup)
       
-      AllMenuItems=variables.UserInformations.info.joinedGroups[0].menuItems
+      AllMenuItems=variables.UserInformations.info.joinedGroups.filter((p)=>p.id==GlobalState.SelectedGroup.id)[0].menuItems
      let ListOfVisibleMenuItemsForTheSelection=[]
    
       if(ListOfActions!=null)
@@ -290,11 +290,11 @@ export default function Content() {
     React.useEffect(()=>{
       //Saving all the checkboxes Ids in the table so later we can access the checkbox buttons and know which one is selected
       //ListOfRadioButtons.current=[...ListOfRadioButtons.current,"GROUP"+variables.UserInformations.info.joinedGroups[0].id]
-      GenerateRadioBoxList(variables.UserInformations.info.joinedGroups)
+      GenerateRadioBoxList([variables.UserInformations.info.joinedGroups.filter((p)=>p.id==GlobalState.SelectedGroup.id)[0]])
      let ListOfActions= GetPermissionList(variables.UserInformations.info.joinedGroups,variables.Group.SelectedGroup)
      //Calculating the menu items that this group can see
         variables.Group.SelectedGroupPermissions=ListOfActions
-       var AllMenuItems=variables.UserInformations.info.joinedGroups[0].menuItems
+       var AllMenuItems=variables.UserInformations.info.joinedGroups.filter((p)=>p.id==GlobalState.SelectedGroup.id)[0].menuItems
        
         let ListOfVisibleMenuItemsForTheSelection=[]
         if(ListOfActions!=null)
@@ -327,7 +327,7 @@ export default function Content() {
           variables.Group.GroupMenuItems=ListOfVisibleMenuItemsForTheSelection
 
 
-          let JsonObjectToSend="{\"groupId\":"+"\""+GetParentID(variables.UserInformations.info.joinedGroups,variables.Group.SelectedGroup)+"\"}"
+          let JsonObjectToSend="{\"groupId\":"+"\""+GetParentID([variables.UserInformations.info.joinedGroups.filter((p)=>p.id==GlobalState.SelectedGroup.id)[0]],variables.Group.SelectedGroup)+"\"}"
           
           let url2=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_GETGROUPINFO
           let UserToken=window.localStorage.getItem("AuthToken")
@@ -599,11 +599,11 @@ Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner})
                                                variables.UserInformations.info=result
                                                variables.UserInformations.info.passwordHash=null
                                                variables.UserInformations.info.passwordSalt=null
-                                               GenerateRadioBoxList(variables.UserInformations.info.joinedGroups)
+                                               GenerateRadioBoxList([variables.UserInformations.info.joinedGroups.filter((p)=>p.id==GlobalState.SelectedGroup.id)[0]])
                                                let ListOfActions= GetPermissionList(variables.UserInformations.info.joinedGroups,variables.Group.SelectedGroup)
                                                //Calculating the menu items that this group can see
                                                   variables.Group.SelectedGroupPermissions=ListOfActions
-                                                 var AllMenuItems=variables.UserInformations.info.joinedGroups[0].menuItems
+                                                 var AllMenuItems=variables.UserInformations.info.joinedGroups.filter((p)=>p.id==GlobalState.SelectedGroup.id)[0].menuItems
                                                  
                                                   let ListOfVisibleMenuItemsForTheSelection=[]
                                                   if(ListOfActions!=null)
@@ -636,7 +636,7 @@ Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner})
                                                     variables.Group.GroupMenuItems=ListOfVisibleMenuItemsForTheSelection
                                           
                                           
-                                                    let JsonObjectToSend="{\"groupId\":"+"\""+GetParentID(variables.UserInformations.info.joinedGroups,variables.Group.SelectedGroup)+"\"}"
+                                                    let JsonObjectToSend="{\"groupId\":"+"\""+GetParentID([variables.UserInformations.info.joinedGroups.filter((p)=>p.id==GlobalState.SelectedGroup.id)[0]],variables.Group.SelectedGroup)+"\"}"
                                                     
                                                     let url2=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_GETGROUPINFO
                                                     let UserToken=window.localStorage.getItem("AuthToken")
@@ -967,7 +967,7 @@ const HandleChangeName=()=>{
                   <div className="mb-3">
                    <MDBContainer breakpoint="sm">
                   <Tree key={"MOVETREE"} label={<p><AdjustSharpIcon/></p>}>
-                     {generateList(variables.UserInformations.info.joinedGroups)}
+                     {generateList([variables.UserInformations.info.joinedGroups.filter((p)=>p.id==GlobalState.SelectedGroup.id)[0]])}
                         </Tree> 
      
                               </MDBContainer> 

@@ -23,7 +23,13 @@ export default function CustomCell(props)
         //Here i'm fixing the bug and also adding more hours, making it for months like 12AM instead of PM for a better user experience//
         if(props.type=="monthCells")
         {
-          variables.PostGlobalVariables.POST_Scheduler_Selected_DateTime=dayjs(props.date).add(+1,"hour").add(+1,"second")
+          
+          let CurrentDate=new Date()
+          let Temp_Date=new Date(props.date)           
+          Temp_Date.setHours(CurrentDate.getHours());          
+          Temp_Date.setMinutes(CurrentDate.getMinutes());        
+          Temp_Date.setSeconds(CurrentDate.getSeconds());         
+          variables.PostGlobalVariables.POST_Scheduler_Selected_DateTime=dayjs(Temp_Date).add(+1,"hour").add(+1,"second")
         }
         //For the cells that specific time
         else

@@ -74,80 +74,152 @@ var PreviousLikesValue=0
 var Temp_Likes_diff=0
 var  Temp_Shares_diff=0
 var Temp_Comments_diff=0
-
+console.log(Data)
   //=======================Comments===================///
     Data.postsInseights.map((post)=>{
       
-      post.inseightsInfo.map((Info)=>{
-      //We search for the Y values of the Comments inseights for the post
-     
-       if(Info.type=='Comments')
-       {
-        RecentCommentValue= parseInt(Info.y_Values[(Info.y_Values.length)-1])
-        PreviousCommentValue=parseInt(Info.y_Values[(Info.y_Values.length)-2])
-       }
- //==============================Likes============================//
-  
+      //Case where we have mutliple readings from the post
+      if(post.inseightsInfo[0].y_Values.length!=1 &&post.inseightsInfo[0].y_Values.length!=0)
+      {
       
-      //We search for the Y values of the Comments inseights for the post
-     
-       if(Info.type=='Likes')
-       {
-        RecentLikesValue= parseInt(Info.y_Values[(Info.y_Values.length)-1])
-        PreviousLikesValue=parseInt(Info.y_Values[(Info.y_Values.length)-2])
-       } 
-  //===================Shares=================//
-      //We search for the Y values of the Comments inseights for the post
-     
-       if(Info.type=='Shares')
-       {
-        RecentSharesValue= parseInt(Info.y_Values[(Info.y_Values.length)-1])
-        PreviousSharesValue=parseInt(Info.y_Values[(Info.y_Values.length)-2])
-       }
-                 
-       Temp_Likes_diff+=Temp_Likes_diff+RecentLikesValue-PreviousLikesValue
-       Temp_Shares_diff+=Temp_Shares_diff+RecentSharesValue-PreviousSharesValue
-       Temp_Comments_diff+=Temp_Comments_diff+RecentCommentValue-PreviousCommentValue
-
-       Total_RecentCommentValue+=RecentCommentValue
-       Total_PreviousCommentValue+=PreviousCommentValue
-       Total_RecentSharesValue+=RecentSharesValue
-       Total_PreviousSharesValue+=PreviousSharesValue
-       Total_RecentLikesValue+=RecentLikesValue
-       Total_PreviousLikesValue+=PreviousLikesValue
+        post.inseightsInfo.map((Info)=>{
+          //We search for the Y values of the Comments inseights for the post
+         
+           if(Info.type=='Comments')
+           {
+            RecentCommentValue= parseInt(Info.y_Values[(Info.y_Values.length)-1])
+            PreviousCommentValue=parseInt(Info.y_Values[(Info.y_Values.length)-2])
+           }
+     //==============================Likes============================//
+      
+          
+          //We search for the Y values of the Comments inseights for the post
+         
+           if(Info.type=='Likes')
+           {
+            RecentLikesValue= parseInt(Info.y_Values[(Info.y_Values.length)-1])
+            PreviousLikesValue=parseInt(Info.y_Values[(Info.y_Values.length)-2])
+           } 
+      //===================Shares=================//
+          //We search for the Y values of the Comments inseights for the post
+         
+           if(Info.type=='Shares')
+           {
+            RecentSharesValue= parseInt(Info.y_Values[(Info.y_Values.length)-1])
+            PreviousSharesValue=parseInt(Info.y_Values[(Info.y_Values.length)-2])
+           }
+                     
+           Temp_Likes_diff+=Temp_Likes_diff+RecentLikesValue-PreviousLikesValue
+           Temp_Shares_diff+=Temp_Shares_diff+RecentSharesValue-PreviousSharesValue
+           Temp_Comments_diff+=Temp_Comments_diff+RecentCommentValue-PreviousCommentValue
     
-     
-    })    
+           Total_RecentCommentValue+=RecentCommentValue
+           Total_PreviousCommentValue+=PreviousCommentValue
+           Total_RecentSharesValue+=RecentSharesValue
+           Total_PreviousSharesValue+=PreviousSharesValue
+           Total_RecentLikesValue+=RecentLikesValue
+           Total_PreviousLikesValue+=PreviousLikesValue
+        
+         
+        })   
+      }
+      //The case where we have only one reading about the post
+      else
+      {
+        if(post.inseightsInfo[0].y_Values.length==1)
+        {
+          console.log("Single 1")
+          post.inseightsInfo.map((Info)=>{
+            //We search for the Y values of the Comments inseights for the post
+           
+             if(Info.type=='Comments')
+             {
+              RecentCommentValue= parseInt(Info.y_Values[(Info.y_Values.length)-1])
+             
+             }
+       //==============================Likes============================//
+        
+            
+            //We search for the Y values of the Comments inseights for the post
+           
+             if(Info.type=='Likes')
+             {
+              RecentLikesValue= parseInt(Info.y_Values[(Info.y_Values.length)-1])
+              
+             } 
+        //===================Shares=================//
+            //We search for the Y values of the Comments inseights for the post
+           
+             if(Info.type=='Shares')
+             {
+              RecentSharesValue= parseInt(Info.y_Values[(Info.y_Values.length)-1])
+              
+             }
+                       
+             Temp_Likes_diff+=Temp_Likes_diff+RecentLikesValue
+             Temp_Shares_diff+=Temp_Shares_diff+RecentSharesValue
+             Temp_Comments_diff+=Temp_Comments_diff+RecentCommentValue
+      
+             Total_RecentCommentValue+=RecentCommentValue
+            
+             Total_RecentSharesValue+=RecentSharesValue
+             
+             Total_RecentLikesValue+=RecentLikesValue
+             
+          
+           
+          })  
+        }
+
+        if(post.inseightsInfo[0].y_Values.length==0)
+        {
+          console.log("Single 0")
+          Temp_Likes_diff+=0
+             Temp_Shares_diff+=0
+             Temp_Comments_diff+=0
+      
+             Total_RecentCommentValue+=0
+            
+             Total_RecentSharesValue+=0
+             
+             Total_RecentLikesValue+=0
+        }
+        
+      }
+      
 })
 
-          //Updating the state with the calculated Diffs
-          setLikes_diff(Temp_Likes_diff)
-          setShares_diff(Temp_Shares_diff)
-          setComments_diff(Temp_Comments_diff)
-          //Updating percentage
-          if(Total_PreviousLikesValue!=0)
-     {
-      setLikes_Percentage(((Total_RecentLikesValue-Total_PreviousLikesValue)*100/Total_PreviousLikesValue).toFixed(2))
-     }else
-     {
-      setLikes_Percentage((Total_RecentLikesValue)*100)
-     }
+    //Updating the state with the calculated Diffs
+    setLikes_diff(Temp_Likes_diff)
+    setShares_diff(Temp_Shares_diff)
+    setComments_diff(Temp_Comments_diff)
+    //Updating percentage
+    if(Total_PreviousLikesValue!=0)
+{
+setLikes_Percentage(((Total_RecentLikesValue-Total_PreviousLikesValue)*100/Total_PreviousLikesValue).toFixed(2))
+}else
+{
+setLikes_Percentage((Total_RecentLikesValue)*100)
+}
 
-     if(Total_PreviousSharesValue!=0)
-     {
-      setShares_Percentage(((Total_RecentSharesValue-Total_PreviousSharesValue)*100/Total_PreviousSharesValue).toFixed(2))
-     }else
-     {
-      setShares_Percentage(Total_RecentSharesValue*100)
-     }
+if(Total_PreviousSharesValue!=0)
+{
+setShares_Percentage(((Total_RecentSharesValue-Total_PreviousSharesValue)*100/Total_PreviousSharesValue).toFixed(2))
+}else
+{
+setShares_Percentage(Total_RecentSharesValue*100)
+}
 
-     if(Total_PreviousCommentValue!=0)
-     {
-      setComments_Percentage(((Total_RecentCommentValue-Total_PreviousCommentValue)*100/Total_PreviousCommentValue).toFixed(2))
-     }else
-     {
-      setComments_Percentage(Total_RecentCommentValue*100)
-     }
+if(Total_PreviousCommentValue!=0)
+{
+setComments_Percentage(((Total_RecentCommentValue-Total_PreviousCommentValue)*100/Total_PreviousCommentValue).toFixed(2))
+}else
+{
+setComments_Percentage(Total_RecentCommentValue*100)
+}
+
+
+      
 })
   return (
     <> 

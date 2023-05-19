@@ -654,9 +654,9 @@ export default   function AlertDialogSlide({SetShowAddTargetDialog}) {
       </Container>
           </DialogContentText>
         </DialogContent>
-        <DialogActions>
-          <Button variant="outlined" color='error' startIcon={<CancelIcon />} onClick={handleClose}>Cancel</Button>
-          <Button variant="outlined" color='primary' startIcon={<ModeStandbyIcon />} onClick={HandleTargetApply}>Apply Targetting</Button>
+        <DialogActions style={{display: 'flex',justifyContent: 'center',alignItems: 'center'}}>
+          <Button variant="outlined" color='primary' startIcon={<CancelIcon />} onClick={handleClose}>Close Tab</Button>
+          <Button variant="outlined" color='warning' startIcon={<ModeStandbyIcon />} onClick={HandleTargetApply}>Apply Targetting</Button>
         </DialogActions>
       </Dialog>
     </div>

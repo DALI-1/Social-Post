@@ -96,76 +96,133 @@ const file = new File([blob], fileName, { type: mimeType });
 return(file);
 }
 
+
+const AspectRatio_IsValid = (imageFile) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(imageFile);
+
+    reader.onload = function (event) {
+      const image = new Image();
+      image.src = event.target.result;
+
+      image.onload = function () {
+        const aspectRatio = image.naturalWidth / image.naturalHeight;
+  
+        if (aspectRatio <= 1.91 && aspectRatio >= 4/5) {
+          resolve(true);
+        } else {
+          resolve(false);
+        }
+      };
+
+      image.onerror = function () {
+        reject(new Error('Failed to load image.'));
+      };
+    };
+
+    reader.onerror = function () {
+      reject(new Error('Failed to read file.'));
+    };
+  });
+};
+
 const handleImageUpdate=(ImageUrl)=>
     { 
         setUploadProgress(0)
-        if(ImageUrl===null || ImageUrl=="") return; 
-        let file=Convert_URLImageData_ToFile(ImageUrl)
-        let HashedFileName=hashRandom()
-        const storageRef=ref(storage,`/AssetsPictures/${HashedFileName}`)
-        //Uploading the new image to FireBase
-        uploadTask.current=uploadBytesResumable(storageRef,file)
-        uploadTask.current.on("state_changed",
-        //This async function is executed many times during the upload to indicate progress
-        (snapshot)=>
-        {
-            const progress=Math.round((snapshot.bytesTransferred/snapshot.totalBytes)*100)
-            setUploadProgress(progress)
-            
-            if(ProgressSpinnerRef.current!=null)
-            {
-              const SpinnerProgressBarStateSetter= ProgressSpinnerRef.current.GetSpinnerProgressBarStateSetter;
-              SpinnerProgressBarStateSetter(progress)
-            }
-              
-              
-        },
-        //This async function is executed when there is an error with the upload
-        (error)=>{
-            console.log(error)
-        }
-        ,
-        //This function is executed when the state changes, we gonna use it for the state changing to complete
-        ()=>{
-         getDownloadURL(uploadTask.current.snapshot.ref)
-         .then(url=>
-            {   //Sending a POST HTTP To the API with the Json Object     
-              var JsonObject = { 
-                groupID: GlobalState.SelectedGroup.id,
-                assetName: file.name,
-                assetType: file.type,
-                resourceURL: url        
-          };
-          let JsonObjectToSend = JSON.stringify(JsonObject);
-          let url2 =
-            process.env.REACT_APP_BACKENDURL + 
-            process.env.REACT_APP_ADDASSET;
-          let UserToken = window.localStorage.getItem("AuthToken");
-          let APIResult = APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
-          APIResult.then((result) => {
-            if (result.errorCode == undefined) {
-              if(result.successCode=="Asset_Added")
-              {
-                toast.success('Image saved to the Gallery', {
-                  position: "bottom-left",
-                  autoClose: 5000,
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: true,
-                  progress: undefined,
-                  theme: "light",
-                  });
-                  
-                SetGallery([...Gallery,result.result])     
-              }
-            }
-          });
 
-            }
-            )
+        
+        
+        if(ImageUrl===null || ImageUrl=="") return; 
+        
+        let file=Convert_URLImageData_ToFile(ImageUrl)
+        AspectRatio_IsValid(file).then((IsAspectRatioValid)=>{
+          if(IsAspectRatioValid)
+        {
+          let HashedFileName=hashRandom()
+          const storageRef=ref(storage,`/AssetsPictures/${HashedFileName}`)
+          //Uploading the new image to FireBase
+          uploadTask.current=uploadBytesResumable(storageRef,file)
+          uploadTask.current.on("state_changed",
+          //This async function is executed many times during the upload to indicate progress
+          (snapshot)=>
+          {
+              const progress=Math.round((snapshot.bytesTransferred/snapshot.totalBytes)*100)
+              setUploadProgress(progress)
+              
+              if(ProgressSpinnerRef.current!=null)
+              {
+                const SpinnerProgressBarStateSetter= ProgressSpinnerRef.current.GetSpinnerProgressBarStateSetter;
+                SpinnerProgressBarStateSetter(progress)
+              }
+                
+                
+          },
+          //This async function is executed when there is an error with the upload
+          (error)=>{
+              console.log(error)
+          }
+          ,
+          //This function is executed when the state changes, we gonna use it for the state changing to complete
+          ()=>{
+           getDownloadURL(uploadTask.current.snapshot.ref)
+           .then(url=>
+              {   //Sending a POST HTTP To the API with the Json Object     
+                var JsonObject = { 
+                  groupID: GlobalState.SelectedGroup.id,
+                  assetName: file.name,
+                  assetType: file.type,
+                  resourceURL: url        
+            };
+            let JsonObjectToSend = JSON.stringify(JsonObject);
+            let url2 =
+              process.env.REACT_APP_BACKENDURL + 
+              process.env.REACT_APP_ADDASSET;
+            let UserToken = window.localStorage.getItem("AuthToken");
+            let APIResult = APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
+            APIResult.then((result) => {
+              if (result.errorCode == undefined) {
+                if(result.successCode=="Asset_Added")
+                {
+                  toast.success('Image saved to the Gallery', {
+                    position: "bottom-left",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    });
+                    
+                  SetGallery([...Gallery,result.result])     
+                }
+              }
+            });
+  
+              }
+              )
+          }
+          )
         }
-        )
+        else
+        {
+          toast.info('The selected Image Aspect ratio is not valid, please pick something between 4:5 and 1.91:1 ', {
+            position: "bottom-left",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            });
+        }
+        
+
+        })
+        
+        
 
 
     }  
@@ -379,20 +436,19 @@ const handleImageUpdate=(ImageUrl)=>
     </Accordion>
           </DialogContentText>
         </DialogContent>
-        <DialogActions>
-          <Container style={{display: 'flex',justifyContent: 'center',alignItems: 'center',margin:"1rem"}}>
-            <Row>
+        <DialogActions style={{display: 'flex',justifyContent: 'center',alignItems: 'center'}}>
+          
         
-              <Col><Button variant="outlined" style={{minHeight:"3.5rem"}} color='primary' startIcon={<CancelIcon />} onClick={handleClose}>Cancel Assets Add</Button></Col>
-              <Col>
-              {(UploadProgress==0 ||UploadProgress==100 )&&<Button variant="outlined" color='primary' startIcon={<AddAPhotoIcon />} onClick={HandleAddImageToGallery}>Add Imported Image To  Gallery</Button>}
-              {(UploadProgress!=0&&UploadProgress!=100)&&<Button variant="outlined" color='error' startIcon={<CancelIcon />} onClick={CancelImageUpload}>Cancel Image Upload</Button>}
-              </Col>
-              <Col><Button variant="outlined" color='error' startIcon={<DeleteIcon />} onClick={HandleDeleteSelectedImages}>Delete Selected Images from  Gallery</Button></Col>
-              <Col><Button variant="outlined" color='primary' startIcon={<PostAddIcon />} onClick={HandleAddSelectedPictures_ToTheEditor}>Add Selected Images To Post</Button></Col>
-            </Row>
+              <Button variant="outlined"  color='primary' startIcon={<CancelIcon />} onClick={handleClose}>Close Tab </Button>
+              
+              {(UploadProgress==0 ||UploadProgress==100 )&&<Button variant="outlined" color='primary' startIcon={<AddAPhotoIcon />} onClick={HandleAddImageToGallery}>Add To  Gallery</Button>}
+              {(UploadProgress!=0&&UploadProgress!=100)&&<Button variant="outlined" color='error' startIcon={<CancelIcon />} onClick={CancelImageUpload}>Cancel Upload</Button>}
+              
+              <Button variant="outlined" color='error' startIcon={<DeleteIcon />} onClick={HandleDeleteSelectedImages}>Delete from Gallery</Button>
+              <Button variant="outlined" color='primary' startIcon={<PostAddIcon />} onClick={HandleAddSelectedPictures_ToTheEditor}>Insert To Post</Button>
             
-          </Container>
+            
+
         </DialogActions>
       </Dialog>
     </div>

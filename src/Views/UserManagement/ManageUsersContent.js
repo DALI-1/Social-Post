@@ -954,7 +954,8 @@ export default function EnhancedTable() {
   
 //Loading All user from DB
   React.useEffect(()=>{
- var JsonObject={}
+
+ var JsonObject={"groupId":GlobalState.SelectedGroup.id}
  JsonObject=JSON.stringify(JsonObject)
  
   let url2=process.env.REACT_APP_BACKENDURL+process.env.REACT_APP_GETSLAVEUSERS
@@ -976,7 +977,7 @@ Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner})
 React.useEffect(()=>{
 
     
-  var JsonObject={}
+  var JsonObject={"groupId":GlobalState.SelectedGroup.id}
  
   JsonObject=JSON.stringify(JsonObject)
   
@@ -991,7 +992,7 @@ React.useEffect(()=>{
  
  Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner})
    })
- },[GlobalState.Rerender])
+ },[GlobalState.Rerender,GlobalState.SelectedGroup])
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';

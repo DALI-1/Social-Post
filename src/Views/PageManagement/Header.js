@@ -25,7 +25,7 @@ function Header(props) {
   let [PicStatus, SetPicStatus] = React.useState();
   React.useEffect(() => {
     if (GlobalState.UserProfilePicture == "") {
-      SetPicStatus("/static/images/avatar/1.jpg");
+      SetPicStatus("https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2Ffavicon.ico.png?alt=media&token=67706ea6-c3ae-4cdd-bb9e-4f61c39d0505");
     } else {
       SetPicStatus(GlobalState.UserProfilePicture);
     }
@@ -100,7 +100,7 @@ function Header(props) {
             </Grid>
 
             <Grid item>
-              <Tooltip title="Help">
+              <Tooltip title="Social Post is an application that lets you schedule, create posts efficently within an organized group, pages management.">
                 <IconButton color="inherit">
                   <HelpIcon />
                 </IconButton>

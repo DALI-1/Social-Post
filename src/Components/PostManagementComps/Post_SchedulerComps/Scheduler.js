@@ -295,7 +295,7 @@ APIResult.then((result) => {
     setIsDataLoaded(true)
   }
 });
-},[])
+},[GlobalState.SelectedGroup])
  
 const popupOpenHandler = (args) => {
  

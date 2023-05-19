@@ -221,8 +221,8 @@ export default function MentionDialog({SetShowAddMentionDialog,appendText,Remove
     
           </DialogContentText>
         </DialogContent>
-        <DialogActions>
-          <Button variant="outlined" color='error' startIcon={<CancelIcon />} onClick={handleClose}>Cancel</Button>
+        <DialogActions style={{display: 'flex',justifyContent: 'center',alignItems: 'center'}}>
+          <Button variant="outlined" color='warning' startIcon={<CancelIcon />} onClick={handleClose}>Close Tab</Button>
           <Button variant="outlined" color='primary' startIcon={<SaveIcon/>} onClick={HandleAddMention}>Save Mentioned Peoples</Button>
         </DialogActions>
       </Dialog>

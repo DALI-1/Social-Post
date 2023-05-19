@@ -42,8 +42,61 @@ export default function Navigator(props) {
 
   const { ...other } = props;
   const {GlobalState,Dispatch}=React.useContext(AppContext)
+  //This variable indicate if it's gonna be disabled when we're editing or not, to avoid conflicsts and bugs
+  let [IsDisabled,SetIsDisabled]=React.useState(false);
+
+  //This useeffect handle the show and hide of the group selection List
+  React.useEffect(()=>{
 
 
+    if(GlobalState.NavigatorSelectedTab==variables.NavigatorTabs.ManageGroupsTab)
+    {
+      if(GlobalState.GroupSelectedTab==variables.GroupTabs.ManageGroupTab)
+      {
+        SetIsDisabled(false)
+      }
+      else
+      {
+        SetIsDisabled(true)
+      }
+    }else if(GlobalState.NavigatorSelectedTab==variables.NavigatorTabs.ManagePagesTab)
+    {
+      if(GlobalState.PageSelectedTab==variables.PageTabs.ManagePage)
+      {
+        SetIsDisabled(false)
+      }
+      else
+      {
+        SetIsDisabled(true)
+      }
+    }else if(GlobalState.NavigatorSelectedTab==variables.NavigatorTabs.ManageUsersTab)
+    {
+      if(GlobalState.UserSelectedTab==variables.UserTabs.ManageUserTab)
+      {
+        SetIsDisabled(false)
+      }
+      else
+      {
+        SetIsDisabled(true)
+      }
+    }else if(GlobalState.NavigatorSelectedTab==variables.NavigatorTabs.ManagePostsTab)
+  {
+    if(GlobalState.PostSelectedTab==variables.PostTabs.ManagePostsTab)
+    {
+      SetIsDisabled(false)
+    }
+    else
+    {
+      SetIsDisabled(true)
+    }
+  }
+  },[GlobalState.SelectedGroup,
+    GlobalState.NavigatorSelectedTab,
+    GlobalState.PostSelectedTab,
+    GlobalState.UserSelectedTab,
+    GlobalState.PageSelectedTab,
+    GlobalState.GroupSelectedTab])
+  
   const handleGroupSelect=(index)=>
   {
     
@@ -187,7 +240,7 @@ export default function Navigator(props) {
         variables.UserInformations.info!=null&&
         variables.UserInformations.info.joinedGroups.map((grp,index)=>{
             return(
-              <MDBDropdownItem key={index}  onClick={()=>{handleGroupSelect(index)}} link>{grp.group_Name}</MDBDropdownItem>
+              <MDBDropdownItem disabled={IsDisabled} key={index}  onClick={()=>{handleGroupSelect(index)}} link>{grp.group_Name}</MDBDropdownItem>
             )
           })}
         
@@ -206,7 +259,7 @@ export default function Navigator(props) {
             </ListItem>
             {children.map(({ id: childId, icon, active,clickmethod,refrence }) =>{
                 return( <ListItem disablePadding key={childId}>
-                  <ListItemButton selected={GlobalState.NavigatorSelectedTab==refrence?true:false} sx={item} onClick={clickmethod}
+                  <ListItemButton  selected={GlobalState.NavigatorSelectedTab==refrence?true:false} sx={item} onClick={clickmethod}
                     
                  >
                     <ListItemIcon>{icon}</ListItemIcon>

@@ -50,8 +50,11 @@ export function AlertDialog(props) {
   let handleGroupDelete=()=>{
  let GroupID=props.GroupID;
 
+   if(GroupID!=GlobalState.SelectedGroup.id)
+   {
 
- var JsonObject={"groupId":GroupID.toString()}
+   
+        var JsonObject={"groupId":GroupID.toString()}
 
         JsonObject=JSON.stringify(JsonObject)
         
@@ -114,6 +117,22 @@ export function AlertDialog(props) {
    
 Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner}) 
   })
+
+}
+else
+{
+  toast.info("You cant delete the group that you currently using, if you wanna delete this group, do it from a group that's higher in the hiearchy !", {
+    position: "bottom-left",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    });
+    handleClose()
+}
 }
 
   const handleClose = () => {
@@ -244,9 +263,9 @@ export default function Content() {
   React.useEffect(()=>{
     //Saving all the checkboxes Ids in the table so later we can access the checkbox buttons and know which one is selected
     //ListOfRadioButtons.current=[...ListOfRadioButtons.current,"GROUP"+variables.UserInformations.info.joinedGroups[0].id]
-    GenerateRadioBoxList(variables.UserInformations.info.joinedGroups)
+    GenerateRadioBoxList([variables.UserInformations.info.joinedGroups.filter((p)=>p.id==GlobalState.SelectedGroup.id)[0]])
   },[])
-    const {Dispatch}=React.useContext(AppContext)  
+    const {GlobalState,Dispatch}=React.useContext(AppContext)  
     let SelectedGroupName=React.useRef("")
     let SelectedGroupID=React.useRef("")
     let ListOfRadioButtons=React.useRef([])
@@ -284,7 +303,7 @@ export default function Content() {
 
 
                    
-{PermissionLib.ValidateAction(variables.MenuItems.Group_MenuItem,variables.MenuItemActions.Add_GroupAction)&&<IconButton color="primary" className='m-0' id={"ADD"+group.id}  aria-label="Add sub group"
+                   {PermissionLib.ValidateAction(variables.MenuItems.Group_MenuItem,variables.MenuItemActions.Add_GroupAction)&&<IconButton color="primary" className='m-0' id={"ADD"+group.id}  aria-label="Add sub group"
                    onClick={()=>{HandleGroupAdd(group.id,group.group_Name)}}
                     >
                         <AddCircleSharpIcon />
@@ -331,50 +350,39 @@ export default function Content() {
     } 
     
     let handleAddNewGroup=()=>{
-      variables.Group.SelectedGroup=variables.UserInformations.info.joinedGroups[0].id
-      variables.Group.SelectedGroupName=variables.UserInformations.info.joinedGroups[0].group_Name
+      variables.Group.SelectedGroup=variables.UserInformations.info.joinedGroups.filter((p)=>p.id==GlobalState.SelectedGroup.id)[0].id
+      variables.Group.SelectedGroupName=variables.UserInformations.info.joinedGroups.filter((p)=>p.id==GlobalState.SelectedGroup.id)[0].group_Name
       Dispatch({type:GroupSelectedTabActions.SelectAddGroup})
     }
     let handleModifyParentGroup=()=>{
-      variables.Group.SelectedGroup=variables.UserInformations.info.joinedGroups[0].id
-      variables.Group.SelectedGroupName=variables.UserInformations.info.joinedGroups[0].group_Name
+      variables.Group.SelectedGroup=variables.UserInformations.info.joinedGroups.filter((p)=>p.id==GlobalState.SelectedGroup.id)[0].id
+      variables.Group.SelectedGroupName=variables.UserInformations.info.joinedGroups.filter((p)=>p.id==GlobalState.SelectedGroup.id)[0].group_Name
       Dispatch({type:GroupSelectedTabActions.SelectEditGroup})
     }
-   
+ 
    
   return (
     <>
-      
-      <Row>
-      <FormControlLabel className='mb-3'
-          control={
-            <Switch  name="ViewMode" onClick={()=>{ViewMode==="Tabular"?SetViewMode("Tree"):SetViewMode("Tabular")}} />
-          }
-          label={ViewMode+" Mode"}
-        />
-      </Row>
-      
-      
-      
-      
        <Row>
        {ViewMode==="Tabular"&&<>
        <MainCard sx={{ width: '100%', m: 1 ,textAlign: "center",boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)' }}>
         <div style={{ textAlign: "right" }}>
         
 {PermissionLib.ValidateAction(variables.MenuItems.Group_MenuItem,variables.MenuItemActions.Add_GroupAction)&&<Button  variant="outlined"color="primary"className="mx-2 m-2"startIcon={<AddIcon/>} onClick={handleAddNewGroup}> Add New SubGroup</Button>}
+{/*
 {PermissionLib.ValidateAction(variables.MenuItems.Group_MenuItem,variables.MenuItemActions.Edit_GroupAction)&& <Button  variant="outlined"color="primary"className="mx-2 m-2"startIcon={<EditIcon/>} onClick={handleModifyParentGroup}>Modifty Group</Button>}
 {PermissionLib.ValidateAction(variables.MenuItems.Group_MenuItem,variables.MenuItemActions.Remove_GroupAction)&&<Button  variant="outlined"color="error"className="mx-2 m-2"startIcon={<DeleteIcon/>} onClick={()=>{
-        SelectedGroupID.current=variables.UserInformations.info.joinedGroups[0].id
-        SelectedGroupName.current=variables.UserInformations.info.joinedGroups[0].group_Name
+        SelectedGroupID.current=variables.UserInformations.info.joinedGroups.filter((p)=>p.id==GlobalState.SelectedGroup.id)[0].id
+        SelectedGroupName.current=variables.UserInformations.info.joinedGroups.filter((p)=>p.id==GlobalState.SelectedGroup.id)[0].group_Name
         SetDeleteShow(true)}}> Delete Group </Button>}
+*/}
        </div>
        </MainCard>
        <MainCard sx={{ width: '100%', m: 1,p:2 ,textAlign: "center",boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)' }}>
        <TableContainer>
        <div style={{ textAlign: "center", margin:"1rem" }}>
        <Groups2SharpIcon   color="primary" style={{Margin:"1rem"}}/>
-        <h4>{"Groups Of "+variables.UserInformations.info.joinedGroups[0].group_Name}</h4>
+        <h4>{"Groups Of "+variables.UserInformations.info.joinedGroups.filter((p)=>p.id==GlobalState.SelectedGroup.id)[0].group_Name}</h4>
         </div>
       <Table aria-label="collapsible table">
         <TableHead>
@@ -391,14 +399,14 @@ export default function Content() {
         {DeleteShow&&<AlertDialog SetDeleteModal={SetDeleteShow} GroupName={SelectedGroupName.current} GroupID={SelectedGroupID.current} DeleteShow={DeleteShow}/> }
           {
             
-            variables.UserInformations.info.joinedGroups[0].subGroups.map((Group)=>{
+            variables.UserInformations.info.joinedGroups.filter((p)=>p.id==GlobalState.SelectedGroup.id)[0].subGroups.map((Group)=>{
             return(<TRow key={hashRandom()} HandleGroupAdd={HandleGroupAdd} HandleGroupEdit={HandleGroupEdit}  SetGroupName={SelectedGroupName} SetGroupID={SelectedGroupID} SetDeleteModal={SetDeleteShow} Group={Group}/>)
             })
 
             
           } 
            
-          {variables.UserInformations.info.joinedGroups[0].subGroups.length===0&&<><TableRow>
+          {variables.UserInformations.info.joinedGroups.filter((p)=>p.id==GlobalState.SelectedGroup.id)[0].subGroups.length===0&&<><TableRow>
             <TableCell> </TableCell>
             
             <TableCell><div className="card-body text-center"><p >You don't have any sub groups</p></div> </TableCell>
@@ -414,13 +422,27 @@ export default function Content() {
 }
 
 {ViewMode==="Tree"&&
-        <MainCard className="card mb-4 mb-xl-0">      
+<>
+<MainCard sx={{ width: '100%', m: 1 ,textAlign: "center",boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)' }}>
+<div style={{ textAlign: "right" }}>
+
+{PermissionLib.ValidateAction(variables.MenuItems.Group_MenuItem,variables.MenuItemActions.Add_GroupAction)&&<Button  variant="outlined"color="primary"className="mx-2 m-2"startIcon={<AddIcon/>} onClick={handleAddNewGroup}> Add New SubGroup</Button>}
+
+{/*{PermissionLib.ValidateAction(variables.MenuItems.Group_MenuItem,variables.MenuItemActions.Edit_GroupAction)&& <Button  variant="outlined"color="primary"className="mx-2 m-2"startIcon={<EditIcon/>} onClick={handleModifyParentGroup}>Modifty Group</Button>}
+{PermissionLib.ValidateAction(variables.MenuItems.Group_MenuItem,variables.MenuItemActions.Remove_GroupAction)&&<Button  variant="outlined"color="error"className="mx-2 m-2"startIcon={<DeleteIcon/>} onClick={()=>{
+SelectedGroupID.current=variables.UserInformations.info.joinedGroups.filter((p)=>p.id==GlobalState.SelectedGroup.id)[0].id
+SelectedGroupName.current=variables.UserInformations.info.joinedGroups.filter((p)=>p.id==GlobalState.SelectedGroup.id)[0].group_Name
+SetDeleteShow(true)}}> Delete Group </Button>}
+*/}
+</div>
+</MainCard>
+        <MainCard sx={{ width: '100%', m: 1 ,textAlign: "center",boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)' }}>      
                 <div className="card-header d-flex justify-content-center"> List Of Groups</div>
                 <div className="card-body text-center">
                 <div className="mb-3">
                  <MDBContainer breakpoint="sm">
                 <Tree  key={"NAVTREE"} label={<p><AdjustSharpIcon/></p>}>
-                   {(generateList(variables.UserInformations.info.joinedGroups))}
+                   {(generateList(variables.UserInformations.info.joinedGroups.filter((p)=>p.id==GlobalState.SelectedGroup.id)[0].subGroups))}
                       </Tree> 
                       {DeleteShow&&<AlertDialog SetDeleteModal={SetDeleteShow} GroupName={SelectedGroupName.current} GroupID={SelectedGroupID.current} DeleteShow={DeleteShow}/> }
                             </MDBContainer> 
@@ -430,8 +452,17 @@ export default function Content() {
                     </div>  
                 </div>
                 
-        </MainCard> }
-        </Row>  
+        </MainCard></> }
+        </Row>
+
+        <Row>
+      <FormControlLabel className='mb-3'
+          control={
+            <Switch  name="ViewMode" onClick={()=>{ViewMode==="Tabular"?SetViewMode("Tree"):SetViewMode("Tabular")}} />
+          }
+          label={ViewMode+" Mode"}
+        />
+      </Row>  
     
  
 

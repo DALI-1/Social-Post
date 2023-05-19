@@ -369,7 +369,7 @@ export default function Content() {
       });
      
     }
-  }, [GlobalState.Rerender]);
+  }, [GlobalState.Rerender,GlobalState.SelectedGroup]);
   const HandlePageDelete = () => {
     //This function is gonna turn on the delete modal flag and redirect the request to it so it handles the delete
     if (variables.Pages.ListOfSelectedPages.length > 0) {
@@ -393,7 +393,7 @@ export default function Content() {
       
         <Row>
           
-            <MainCard sx={{ m:1, p:1 , textAlign: "center"}}>
+            <MainCard sx={{ m:1 , textAlign: "right"}}>
               <div style={{ textAlign: "right" }}>
               {PermissionLib.ValidateAction(variables.MenuItems.Page_MenuItem,variables.MenuItemActions.Add_PageAction)&&           
                 <Button

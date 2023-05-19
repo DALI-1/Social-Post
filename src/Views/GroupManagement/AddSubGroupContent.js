@@ -37,7 +37,7 @@ export default function Content() {
       let IDOfGroup=props.target.id.replace("GROUP","")
       ListOfActions= GetPermissionList(variables.UserInformations.info.joinedGroups,IDOfGroup)
       
-      AllMenuItems=variables.UserInformations.info.joinedGroups[0].menuItems
+      AllMenuItems=variables.UserInformations.info.joinedGroups.filter((p)=>p.id==GlobalState.SelectedGroup.id)[0].menuItems
      let ListOfVisibleMenuItemsForTheSelection=[]
    
       if(ListOfActions!==null)
@@ -137,7 +137,7 @@ export default function Content() {
     React.useEffect(()=>{
       //Saving all the checkboxes Ids in the table so later we can access the checkbox buttons and know which one is selected
       //ListOfRadioButtons.current=[...ListOfRadioButtons.current,"GROUP"+variables.UserInformations.info.joinedGroups[0].id]
-      GenerateRadioBoxList(variables.UserInformations.info.joinedGroups)
+      GenerateRadioBoxList([variables.UserInformations.info.joinedGroups.filter((p)=>p.id==GlobalState.SelectedGroup.id)[0]])
       var defaultselectedGroup=document.getElementById("GROUP"+variables.Group.SelectedGroup)
          defaultselectedGroup.click()
     },[])
@@ -273,9 +273,9 @@ if(document.getElementById(RadioButton).checked)
                 <div className="mb-3">
                  <MDBContainer breakpoint="sm">
                 <Tree key={"ADDTREE"} label={<p><AdjustSharpIcon/></p>}>
-                   {generateList(variables.UserInformations.info.joinedGroups)}
+                   {generateList([variables.UserInformations.info.joinedGroups.filter((p)=>p.id==GlobalState.SelectedGroup.id)[0]])}
                       </Tree> 
-                      {GenerateRadioBoxList(variables.UserInformations.info.joinedGroups)}
+                      {GenerateRadioBoxList([variables.UserInformations.info.joinedGroups.filter((p)=>p.id==GlobalState.SelectedGroup.id)[0]])}
                             <label className="small mb-1" htmlFor="inputUsername">Sub Group Name</label>
                             <input ref={GroupNameInput} className="form-control" name="GroupName" id="inputUsername" type="text" placeholder="Enter your Group Name" required />
                             </MDBContainer> 

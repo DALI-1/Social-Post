@@ -76,7 +76,7 @@ export default function AlertDialogSlide({SetShowDynamicFieldDialog,appendText,R
           </DialogContentText>
         </DialogContent>
         <DialogActions style={{display: 'flex',justifyContent: 'center',alignItems: 'center'}}> 
-        <Button variant="outlined" color='primary' startIcon={<CancelIcon />} onClick={handleClose}>Cancel</Button>  
+        <Button variant="outlined" color='primary' startIcon={<CancelIcon />} onClick={handleClose}>Close Tab</Button>  
         </DialogActions>
       </Dialog>
     </div>
