@@ -392,7 +392,7 @@ const handleImageUpdate=(ImageUrl)=>
         <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
             <Row>
               <Col md={4}>
-              <Avatar size="xl"  style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/AssetsPictures%2F-764526288?alt=media&token=5e4d8bfb-5e2d-4a22-a2d2-82940fb36f87" color="primary" zoomed/>
+              <Avatar size="xl"  style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2F251-2518917_ui-system-apps-by-blackvariant-gallery-icon-png.png?alt=media&token=55c34a88-e987-4454-a944-4d7d69feec77" color="primary" zoomed/>
               </Col>              
             </Row>
 

@@ -10,12 +10,8 @@ import Accordion from 'react-bootstrap/Accordion';
 import Autocomplete from '@mui/material/Autocomplete';
 import CircularProgress from '@mui/material/CircularProgress';
 import TextField from '@mui/material/TextField';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Container from 'react-bootstrap/Container';
 import SellIcon from '@mui/icons-material/Sell';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import CloseIcon from '@mui/icons-material/Close';
 import AppBar from '@mui/material/AppBar';
@@ -28,11 +24,19 @@ import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import Checkbox from '@mui/material/Checkbox';
 import { Box } from '@mui/material';
 import {  toast } from 'react-toastify';
-import { Avatar } from "@nextui-org/react";
 import * as APILib from "../../../libs/APIAccessAndVerification"
 import * as variables from "../../../variables/variables"
 import CancelIcon from '@mui/icons-material/Cancel';
 import SaveIcon from '@mui/icons-material/Save';
+
+import { Avatar } from "@nextui-org/react";
+import Tooltip from '@mui/material/Tooltip';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import Fade from '@mui/material/Fade'; 
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container'; 
+import IconButton from '@mui/material/IconButton';
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -168,10 +172,41 @@ export default function MentionDialog({SetShowAddMentionDialog,appendText,Remove
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle>Add & Remove Mentioned Users</DialogTitle>
+        <DialogTitle>
+        
+          </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-      <Container>
+
+
+          <Container>
+        <Row>
+          <Col md={12}>
+          <Accordion className='m-2' defaultActiveKey="0">
+      <Accordion.Item eventKey="0">
+        <Accordion.Header>
+        <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
+            <Row>
+              <Col md={4}>
+              <Avatar size="xl"  style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2F99789adb-d585-443e-a28b-ff53d311e036.png?alt=media&token=ab57f950-f811-44a4-9994-60202ce59659" color="primary" zoomed/>
+              </Col>              
+            </Row>
+
+
+            
+            <Row>
+            <Col md={10}>
+               <p style={{marginTop:"1rem"}}>Manage Post Mentions</p>
+              </Col>
+              <Col md={2}>
+              <Tooltip style={{marginTop:"0.5rem"}} title="Here you can manage Who to mention in your post and who to not, once you click save, if you removed any users it will remove them from the text editor as well." TransitionComponent={Fade} TransitionProps={{ timeout: 600 }}><IconButton> <HelpOutlineIcon /></IconButton></Tooltip> 
+              </Col>
+            </Row>
+          </Container>
+        </Accordion.Header>
+        <Accordion.Body> 
+        
+        <Container>
         <Row>
           <Col md={12}>
      
@@ -217,6 +252,18 @@ export default function MentionDialog({SetShowAddMentionDialog,appendText,Remove
           
         </Row>
       </Container>
+        </Accordion.Body>
+      </Accordion.Item>
+     
+    </Accordion>
+          </Col>
+          
+        </Row>
+      </Container>
+
+    
+          
+      
 
     
           </DialogContentText>

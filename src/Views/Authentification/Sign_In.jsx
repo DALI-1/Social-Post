@@ -6,9 +6,8 @@ import { PasswordRecovery } from './PasswordRecovery';
 import logo from '../../Assets/SocialPost-Logo.png';
 import { toast } from 'react-toastify';
 import {CALLAPI} from '../../libs/APIAccessAndVerification'
-import { useTheme } from '@mui/material/styles';
 function App() {
-  const theme = useTheme();
+
   let [LoadingSpinnerStatus, setLoadingSpinnerStatus] = useState(false);
   let [PasswordRecoveryStatus, setPasswordRecoveryStatus] = useState(false);
   let UserNameDontExist= useRef(false);
@@ -97,7 +96,7 @@ setPasswordRecoveryStatus(false)
                  UserNameDontExist.current=true
                  
                
-                toast.info('The username you inserted doesnt exist.', {
+                toast.info('The username you inserted doesnt exist or the account is disabled.', {
                   position: "bottom-left",
                   autoClose: 5000,
                   hideProgressBar: false,

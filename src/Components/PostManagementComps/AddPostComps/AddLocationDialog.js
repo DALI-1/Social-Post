@@ -10,19 +10,22 @@ import Accordion from 'react-bootstrap/Accordion';
 import Autocomplete from '@mui/material/Autocomplete';
 import CircularProgress from '@mui/material/CircularProgress';
 import TextField from '@mui/material/TextField';
+import { Avatar } from "@nextui-org/react";
+import Tooltip from '@mui/material/Tooltip';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import Fade from '@mui/material/Fade'; 
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Container from 'react-bootstrap/Container';
+import Container from 'react-bootstrap/Container'; 
+import IconButton from '@mui/material/IconButton';
+import CancelIcon from '@mui/icons-material/Cancel';
+import SaveIcon from '@mui/icons-material/Save';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 
-function sleep(delay = 0) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, delay);
-  });
-}
+
 export default function AlertDialogSlide({SetShowAddLocationDialog}) {
       //this is used for tags
   const [selected, setSelected] = React.useState(["#Gaming"]);
@@ -35,32 +38,7 @@ export default function AlertDialogSlide({SetShowAddLocationDialog}) {
 
   const [open, setOpen] = React.useState(false);
   const [options, setOptions] = React.useState([]);
-  const loading = open && options.length === 0;
-  React.useEffect(() => {
-    let active = true;
 
-    if (!loading) {
-      return undefined;
-    }
-
-    (async () => {
-      await sleep(1e3); // For demo purposes.
-
-      if (active) {
-        setOptions([...topFilms]);
-      }
-    })();
-
-    return () => {
-      active = false;
-    };
-  }, [loading]);
-
-  React.useEffect(() => {
-    if (!open) {
-      setOptions([]);
-    }
-  }, [open]);
 
   return (
     <div>
@@ -73,7 +51,9 @@ export default function AlertDialogSlide({SetShowAddLocationDialog}) {
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle>Post Location</DialogTitle>
+        <DialogTitle>
+        
+        </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
       <Container>
@@ -81,39 +61,28 @@ export default function AlertDialogSlide({SetShowAddLocationDialog}) {
           <Col md={12}>
           <Accordion className='m-2' defaultActiveKey="0">
       <Accordion.Item eventKey="0">
-        <Accordion.Header>Post Location</Accordion.Header>
+        <Accordion.Header>
+        <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
+            <Row>
+              <Col md={4}>
+              <Avatar size="xl"  style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2Feps10-blue-pin-point-or-location-solid-icon-for-website-ui-and-mobile-isolated-on-white-background-free-vector.webp?alt=media&token=96e803ed-888f-404f-835d-9ad0013c95a2" color="primary" zoomed/>
+              </Col>              
+            </Row>
+
+
+            
+            <Row>
+            <Col md={10}>
+               <p style={{marginTop:"1rem"}}>Manage Post Location</p>
+              </Col>
+              <Col md={2}>
+              <Tooltip style={{marginTop:"0.5rem"}} title="Here you can select the location you're referring to for you blog" TransitionComponent={Fade} TransitionProps={{ timeout: 600 }}><IconButton> <HelpOutlineIcon /></IconButton></Tooltip> 
+              </Col>
+            </Row>
+          </Container>
+        </Accordion.Header>
         <Accordion.Body> 
-        <Autocomplete
-        multiple
-        limitTags={7}
-        id="multiple-limit-tags"  
-      open={open}
-      onOpen={() => {
-        setOpen(true);
-      }}
-      onClose={() => {
-        setOpen(false);
-      }}
-      isOptionEqualToValue={(option, value) => option.title === value.title}
-      getOptionLabel={(option) => option.title}
-      options={options}
-      loading={loading}
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          label="Asynchronous"
-          InputProps={{
-            ...params.InputProps,
-            endAdornment: (
-              <React.Fragment>
-                {loading ? <CircularProgress color="inherit" size={20} /> : null}
-                {params.InputProps.endAdornment}
-              </React.Fragment>
-            ),
-          }}
-        />
-      )}
-    />
+        Feature Disabled, under development.
         </Accordion.Body>
       </Accordion.Item>
      
@@ -127,60 +96,10 @@ export default function AlertDialogSlide({SetShowAddLocationDialog}) {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClose}>Add Selected Tags</Button>
+        <Button variant="outlined" color='warning' startIcon={<CancelIcon />} onClick={handleClose}>Close Tab</Button>
+          <Button variant="outlined" color='primary' startIcon={<SaveIcon/>} onClick={handleClose}>Save Location</Button>
         </DialogActions>
       </Dialog>
     </div>
   );
 }
-
-const topFilms = [
-  { title: 'The Shawshank Redemption', year: 1994 },
-  { title: 'The Godfather', year: 1972 },
-  { title: 'The Godfather: Part II', year: 1974 },
-  { title: 'The Dark Knight', year: 2008 },
-  { title: '12 Angry Men', year: 1957 },
-  { title: "Schindler's List", year: 1993 },
-  { title: 'Pulp Fiction', year: 1994 },
-  {
-    title: 'The Lord of the Rings: The Return of the King',
-    year: 2003,
-  },
-  { title: 'The Good, the Bad and the Ugly', year: 1966 },
-  { title: 'Fight Club', year: 1999 },
-  {
-    title: 'The Lord of the Rings: The Fellowship of the Ring',
-    year: 2001,
-  },
-  {
-    title: 'Star Wars: Episode V - The Empire Strikes Back',
-    year: 1980,
-  },
-  { title: 'Forrest Gump', year: 1994 },
-  { title: 'Inception', year: 2010 },
-  {
-    title: 'The Lord of the Rings: The Two Towers',
-    year: 2002,
-  },
-  { title: "One Flew Over the Cuckoo's Nest", year: 1975 },
-  { title: 'Goodfellas', year: 1990 },
-  { title: 'The Matrix', year: 1999 },
-  { title: 'Seven Samurai', year: 1954 },
-  {
-    title: 'Star Wars: Episode IV - A New Hope',
-    year: 1977,
-  },
-  { title: 'City of God', year: 2002 },
-  { title: 'Se7en', year: 1995 },
-  { title: 'The Silence of the Lambs', year: 1991 },
-  { title: "It's a Wonderful Life", year: 1946 },
-  { title: 'Life Is Beautiful', year: 1997 },
-  { title: 'The Usual Suspects', year: 1995 },
-  { title: 'Léon: The Professional', year: 1994 },
-  { title: 'Spirited Away', year: 2001 },
-  { title: 'Saving Private Ryan', year: 1998 },
-  { title: 'Once Upon a Time in the West', year: 1968 },
-  { title: 'American History X', year: 1998 },
-  { title: 'Interstellar', year: 2014 },
-];

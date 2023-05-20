@@ -215,7 +215,7 @@ const reducer=(GlobalState,action)=>
 
                             case variables.SelectGroupActions.SetSelectedGroupToDefault:
                             {   
-                                variables.Group.SelectedGroup=0
+                                variables.Group.App_Selected_Group_ID=0
                             return({...GlobalState,SelectedGroup:0})
                            
                             }

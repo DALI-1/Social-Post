@@ -17,4 +17,14 @@
     }
   }
 
-  module.exports = { ServerInternalError, ServerConnectionLostError };
+  //This exceptions is used to handle when the user dont have authorization
+  class UnAuthorized extends Error {
+    constructor() {
+      super("UnAuthorized");
+      this.ErrorType="E0002"
+      this.ErrorMessageDev = "Access token is not Valid for this request"
+      this.ErrorMessageUser = "You don't have access to perform this action Or your session is no longer valid";
+    }
+  }
+
+  module.exports = { ServerInternalError, ServerConnectionLostError,UnAuthorized };

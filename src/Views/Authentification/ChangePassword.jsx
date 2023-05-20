@@ -145,7 +145,7 @@ setPasswordRecoveryStatus(false)
 
         <MDBCol col='4' md='6'>
 
-          <div className="d-flex flex-row align-items-center justify-content-center">
+          {/*<div className="d-flex flex-row align-items-center justify-content-center">
 
             <p className="lead fw-normal mb-0 me-3">Sign in with</p>
 
@@ -162,10 +162,11 @@ setPasswordRecoveryStatus(false)
             </MDBBtn>
 
           </div>
-
+          
           <div className="divider d-flex align-items-center my-4">
             <p className="text-center fw-bold mx-3 mb-0">Or</p>
           </div>
+          */}
           <form onSubmit={handlesubmit}>  
           <MDBInput wrapperClass='mb-4' label='Email' name="Email" id='formControl1' type='text' size="lg" value={Email.current}/>
           <MDBInput ref={Password} wrapperClass='mb-4' label='Password' name="Password" id='formControl2' type='password' size="lg"/>

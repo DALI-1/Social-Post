@@ -1,14 +1,8 @@
 import React from 'react';
-import { MDBSpinner } from 'mdb-react-ui-kit';
-import { Spinner } from '@chakra-ui/react'
+import CircularProgress from '@mui/material/CircularProgress';
 export default function App() {
   return (
-    <Spinner
-  thickness='4px'
-  speed='0.65s'
-  emptyColor='gray.200'
-  color='blue.500'
-  size='xl'
-/>
+    <CircularProgress style={{margin:"1rem"}} color="primary" />
+ 
   );
 }

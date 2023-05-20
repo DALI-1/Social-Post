@@ -90,6 +90,7 @@ function App() {
             progress: undefined,
             theme: "light",
             });
+            setLoadingSpinnerStatus(false) 
         }
         else
         {
@@ -112,6 +113,7 @@ function App() {
             progress: undefined,
             theme: "light",
             });
+            setLoadingSpinnerStatus(false) 
         }
         else
         {
@@ -132,6 +134,7 @@ function App() {
             progress: undefined,
             theme: "light",
             });
+            setLoadingSpinnerStatus(false) 
           
         }
         else
@@ -153,6 +156,7 @@ function App() {
             progress: undefined,
             theme: "light",
             });
+            setLoadingSpinnerStatus(false) 
         }
         else
         {
@@ -197,6 +201,7 @@ else
     progress: undefined,
     theme: "light",
     });
+    setLoadingSpinnerStatus(false) 
 }
  }
 else
@@ -212,6 +217,7 @@ else
     progress: undefined,
     theme: "light",
     });
+    setLoadingSpinnerStatus(false) 
 }
 
 

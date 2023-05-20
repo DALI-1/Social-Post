@@ -50,10 +50,6 @@ export function AlertDialog(props) {
   let handleGroupDelete=()=>{
  let GroupID=props.GroupID;
 
-   if(GroupID!=GlobalState.SelectedGroup.id)
-   {
-
-   
         var JsonObject={"groupId":GroupID.toString()}
 
         JsonObject=JSON.stringify(JsonObject)
@@ -102,15 +98,36 @@ export function AlertDialog(props) {
                                let APIResult=CALL_API_With_JWTToken_GET(url,UserToken)
                                Dispatch({type:HeaderSpinnerActions.TurnOnRequestSpinner})
                                APIResult.then(result=>{ 
-                                        variables.UserInformations.info=result
-                                        variables.UserInformations.info.passwordHash=null
-                                        variables.UserInformations.info.passwordSalt=null
+                                for( var property in result)
+                                {
+                                  if(property=="UserExistButNoGroup_deleting")
+                                  {
+                                   
+                                    
+                                    window.localStorage.removeItem("AuthToken")
+                                    window.localStorage.setItem("IsRemembered",false)
+                                    window.localStorage.removeItem('SelectedTab')                                          
+                                    window.location.replace('/login')
+                                    handleClose()
+                                    
+                                    
+                                  } else
+                                  {
+                                    variables.UserInformations.info=result
+                                    variables.UserInformations.info.passwordHash=null
+                                    variables.UserInformations.info.passwordSalt=null
+                                    Dispatch({type:variables.SelectGroupActions.SetSelectedGroup,value:0})
+                                    Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner})
+                                    handleClose()
+                                  }
+                                }
                                         
-                                        Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner})
+                                       
+                                        
                                  })
                                  
-                                  Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner}) 
-                                  handleClose()
+                                  
+                                  
                                   
   })
   .catch(()=>{
@@ -118,21 +135,9 @@ export function AlertDialog(props) {
 Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner}) 
   })
 
-}
-else
-{
-  toast.info("You cant delete the group that you currently using, if you wanna delete this group, do it from a group that's higher in the hiearchy !", {
-    position: "bottom-left",
-    autoClose: 5000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: "light",
-    });
-    handleClose()
-}
+
+
+
 }
 
   const handleClose = () => {
@@ -369,13 +374,53 @@ export default function Content() {
         <div style={{ textAlign: "right" }}>
         
 {PermissionLib.ValidateAction(variables.MenuItems.Group_MenuItem,variables.MenuItemActions.Add_GroupAction)&&<Button  variant="outlined"color="primary"className="mx-2 m-2"startIcon={<AddIcon/>} onClick={handleAddNewGroup}> Add New SubGroup</Button>}
-{/*
-{PermissionLib.ValidateAction(variables.MenuItems.Group_MenuItem,variables.MenuItemActions.Edit_GroupAction)&& <Button  variant="outlined"color="primary"className="mx-2 m-2"startIcon={<EditIcon/>} onClick={handleModifyParentGroup}>Modifty Group</Button>}
+
+{PermissionLib.ValidateAction(variables.MenuItems.Group_MenuItem,variables.MenuItemActions.Edit_GroupAction)&& <Button  variant="outlined"color="primary"className="mx-2 m-2"startIcon={<EditIcon/>} onClick={
+  ()=>
+  {
+    if(variables.UserInformations.info.joinedGroups.filter((p)=>p.id==GlobalState.SelectedGroup.id)[0].createdUserId==variables.UserInformations.info.id)
+    {
+      handleModifyParentGroup()
+    }
+    else
+    {
+      toast.error("You don't have the permission to Edit this group, you're not the owner.", {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        });
+    }
+  }
+  
+  
+  }>Modifty Group</Button>}
 {PermissionLib.ValidateAction(variables.MenuItems.Group_MenuItem,variables.MenuItemActions.Remove_GroupAction)&&<Button  variant="outlined"color="error"className="mx-2 m-2"startIcon={<DeleteIcon/>} onClick={()=>{
-        SelectedGroupID.current=variables.UserInformations.info.joinedGroups.filter((p)=>p.id==GlobalState.SelectedGroup.id)[0].id
+        if(variables.UserInformations.info.joinedGroups.filter((p)=>p.id==GlobalState.SelectedGroup.id)[0].createdUserId==variables.UserInformations.info.id)
+        {
+          SelectedGroupID.current=variables.UserInformations.info.joinedGroups.filter((p)=>p.id==GlobalState.SelectedGroup.id)[0].id
         SelectedGroupName.current=variables.UserInformations.info.joinedGroups.filter((p)=>p.id==GlobalState.SelectedGroup.id)[0].group_Name
-        SetDeleteShow(true)}}> Delete Group </Button>}
-*/}
+        SetDeleteShow(true)
+        }
+        else
+        {
+          toast.error("You don't have the permission to delete this group, you're not the owner.", {
+            position: "bottom-left",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            });
+        }
+        }}> Delete Group </Button>}
+
        </div>
        </MainCard>
        <MainCard sx={{ width: '100%', m: 1,p:2 ,textAlign: "center",boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)' }}>
@@ -428,12 +473,52 @@ export default function Content() {
 
 {PermissionLib.ValidateAction(variables.MenuItems.Group_MenuItem,variables.MenuItemActions.Add_GroupAction)&&<Button  variant="outlined"color="primary"className="mx-2 m-2"startIcon={<AddIcon/>} onClick={handleAddNewGroup}> Add New SubGroup</Button>}
 
-{/*{PermissionLib.ValidateAction(variables.MenuItems.Group_MenuItem,variables.MenuItemActions.Edit_GroupAction)&& <Button  variant="outlined"color="primary"className="mx-2 m-2"startIcon={<EditIcon/>} onClick={handleModifyParentGroup}>Modifty Group</Button>}
+{PermissionLib.ValidateAction(variables.MenuItems.Group_MenuItem,variables.MenuItemActions.Edit_GroupAction)&& <Button  variant="outlined"color="primary"className="mx-2 m-2"startIcon={<EditIcon/>} onClick={
+  ()=>
+  {
+    if(variables.UserInformations.info.joinedGroups.filter((p)=>p.id==GlobalState.SelectedGroup.id)[0].createdUserId==variables.UserInformations.info.id)
+    {
+      handleModifyParentGroup()
+    }
+    else
+    {
+      toast.error("You don't have the permission to Edit this group, you're not the owner.", {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        });
+    }
+  }
+  
+  
+  }>Modifty Group</Button>}
 {PermissionLib.ValidateAction(variables.MenuItems.Group_MenuItem,variables.MenuItemActions.Remove_GroupAction)&&<Button  variant="outlined"color="error"className="mx-2 m-2"startIcon={<DeleteIcon/>} onClick={()=>{
-SelectedGroupID.current=variables.UserInformations.info.joinedGroups.filter((p)=>p.id==GlobalState.SelectedGroup.id)[0].id
-SelectedGroupName.current=variables.UserInformations.info.joinedGroups.filter((p)=>p.id==GlobalState.SelectedGroup.id)[0].group_Name
-SetDeleteShow(true)}}> Delete Group </Button>}
-*/}
+        if(variables.UserInformations.info.joinedGroups.filter((p)=>p.id==GlobalState.SelectedGroup.id)[0].createdUserId==variables.UserInformations.info.id)
+        {
+          SelectedGroupID.current=variables.UserInformations.info.joinedGroups.filter((p)=>p.id==GlobalState.SelectedGroup.id)[0].id
+        SelectedGroupName.current=variables.UserInformations.info.joinedGroups.filter((p)=>p.id==GlobalState.SelectedGroup.id)[0].group_Name
+        SetDeleteShow(true)
+        }
+        else
+        {
+          toast.error("You don't have the permission to delete this group, you're not the owner.", {
+            position: "bottom-left",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            });
+        }
+        }}> Delete Group </Button>}
+
 </div>
 </MainCard>
         <MainCard sx={{ width: '100%', m: 1 ,textAlign: "center",boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)' }}>      
