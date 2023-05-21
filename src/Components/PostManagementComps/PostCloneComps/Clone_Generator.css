@@ -1,0 +1,120 @@
+.ClonePostHeader
+{
+  align-items:flex-start;
+  align-content: flex-start;
+  text-align: left;
+}
+.grayed-out {
+  color: #999;
+  opacity: 0.5;
+}
+
+.ClonePostContent
+{
+  
+  text-align: left;
+  margin-top: 1rem;
+ 
+}
+
+.social-icons {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin: 5 auto;
+}
+
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
+.header img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.user-info h2 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.user-info p {
+  font-size: 14px;
+  color: #999;
+  margin: 0;
+}
+
+.header i {
+  font-size: 24px;
+  margin-left: auto;
+}
+
+.image img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.actions i {
+  font-size: 24px;
+  margin-right: 10px;
+}
+
+.likes {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
+.likes img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 10px;
+  }
+  
+  .likes p {
+  font-size: 14px;
+  margin: 0;
+  margin-left: 10px;
+  }
+  
+  .likes strong {
+  font-weight: 600;
+  }
+  
+  .caption {
+  padding: 10px;
+  }
+  
+  .caption p {
+  font-size: 14px;
+  margin: 0;
+  }
+  
+  .comments {
+  padding: 10px;
+  }
+  
+  .comments p {
+  font-size: 14px;
+  margin: 0;
+  margin-bottom: 5px;
+  }
+  
+  .timestamp {
+  padding: 10px;
+  font-size: 14px;
+  color: #999;
+  }
