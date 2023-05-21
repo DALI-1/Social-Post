@@ -16,13 +16,25 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import {HeaderSpinnerActions,GroupSelectedTabActions}  from '../../variables/variables'
-import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import MainCard from "../../components/UI/cards/MainCard"
+import { Avatar } from "@nextui-org/react";
+import Button from '@mui/material/Button';
+import MoveDownIcon from '@mui/icons-material/MoveDown';
+import DeleteIcon from '@mui/icons-material/Delete';
+import CancelIcon from '@mui/icons-material/Cancel';
+import SecurityIcon from '@mui/icons-material/Security';
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import Tooltip from '@mui/material/Tooltip';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import Fade from '@mui/material/Fade'; 
+import IconButton from '@mui/material/IconButton';
+import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
+import Accordion from 'react-bootstrap/Accordion';
 export function AlertDialog(props) {
   const [open, setOpen] = React.useState(true);
   const {GlobalState,Dispatch}=React.useContext(AppContext)
@@ -765,12 +777,33 @@ const HandleChangeName=()=>{
   return (
     <>
         
-        <Row className="d-flex">
+        <Row>
          
            
-            <Col className="d-flex">
-            <MainCard className="card mb-4 ">
-               <div className="card-header d-flex justify-content-center">Group permissions</div>
+            <Col>
+            <MainCard>
+            <Accordion  defaultActiveKey="0">
+      <Accordion.Item eventKey="0">
+        <Accordion.Header>
+        <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
+            <Row>
+              <Col>
+              <Avatar size="xl" style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2FCyber-Security-Logo-PNG.png?alt=media&token=86492f23-f2b2-4786-ae38-06b922d017f6" color="primary" zoomed/>
+              </Col>              
+            
+            
+            
+            <Col>
+               <p style={{marginTop:"1rem"}}>Group Permissions</p>
+              </Col>
+              <Col >
+              <Tooltip style={{marginTop:"0.5rem"}} title="Here you can change the selected group permissions, NOTE: the available permissions change based on the parent group, if it lacks a permission, it won't show here, make sure to include it in the parent group for it to be available here." TransitionComponent={Fade} TransitionProps={{ timeout: 600 }}><IconButton> <HelpOutlineIcon /></IconButton></Tooltip> 
+              </Col>
+            </Row>
+          </Container>
+          </Accordion.Header>
+        <Accordion.Body>
+        
                <div className="card-body ">
                 {GlobalState.RequestSpinner===true?<p className="d-flex justify-content-center">Please wait, loading your group permissions....</p>:
                 
@@ -781,8 +814,8 @@ const HandleChangeName=()=>{
 
                    return(
                      <Col key={index} className="d-flex">
-                    <div className="card mb-4">
-                    <div className="card-header d-flex justify-content-center" style={{minWidth:"250px"}}>{view.menuItemName}</div>
+                    <MainCard>
+                    <div>{view.menuItemName}</div>
                     <div className="card-body">
                     
 
@@ -851,7 +884,7 @@ const HandleChangeName=()=>{
                      })}
 
                     </div>
-                    </div>
+                    </MainCard>
                     </Col>
                    )
                  })}
@@ -862,11 +895,11 @@ const HandleChangeName=()=>{
                  {SelectedParentGroupMenuItems.map((view,index)=>{
 
                    return(
-                     <Col key={index} className="d-flex">
-                    <div className="card mb-4">
+                     <Col key={index} >
+                    <MainCard className="mb-1">
                      
-                    <div className="card-header d-flex justify-content-center" style={{minWidth:"250px"}}>{view.menuItemName}</div>
-                    <div className="card-body ">
+                    <div style={{alignItems:"center"}}>{view.menuItemName}</div>
+                    <div className="card-body">
                        {SelectedParentGroupActions.map((action)=>{
                          //Showing the action if the action is in the proper menu
                          if(action.menuItemId===view.id)
@@ -934,7 +967,7 @@ const HandleChangeName=()=>{
                        })}
 
                     </div>
-                    </div>
+                    </MainCard>
                     
                     </Col>
                    )
@@ -949,22 +982,51 @@ const HandleChangeName=()=>{
                    
                </div>
                <div className="d-flex justify-content-center">
-               <input className="btn btn-primary"style={{margin:"1rem"}} onClick={HandlePermissionSave} type="submit" value="Save Permissions"/> 
-                  </div>
+               <Button variant="outlined" className='form-control m-1' color='primary' type="submit" startIcon={<SecurityIcon />} onClick={HandlePermissionSave} > Save Group Permissions</Button>
                
+                  </div>
+
+        </Accordion.Body>
+      </Accordion.Item>
+     
+    </Accordion>   
            </MainCard>
             
             
             </Col>
 
-            <Col className="d-flex">
+            <Col>
           
-          <MainCard className="card mb-4" style={{margin:"2px"}}>   
-                  <div className="card-header d-flex justify-content-center">
-                    Select where you wanna move the group {variables.Group.SelectedGroupName} under
+          <MainCard style={{margin:"2px"}}>
+
+
+               <Accordion  defaultActiveKey="0">
+      <Accordion.Item eventKey="0">
+        <Accordion.Header>
+        <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
+            <Row>
+              <Col>
+              <Avatar size="xl" style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2Fgroup-icon-png-15.png?alt=media&token=a5459dd5-4176-49bf-a4b7-95a559dd93cf" color="primary" zoomed/>
+              </Col>              
+            
+            
+            
+            <Col>
+               <p style={{marginTop:"1rem"}}>Group Relocation</p>
+              </Col>
+              <Col >
+              <Tooltip style={{marginTop:"0.5rem"}} title="Here you can move the selected group under a different group, you select the circle button to indicate that you wanna move the current group under it, the greyed group is the group you want to move." TransitionComponent={Fade} TransitionProps={{ timeout: 600 }}><IconButton> <HelpOutlineIcon /></IconButton></Tooltip> 
+              </Col>
+            </Row>
+          </Container>
+          </Accordion.Header>
+        <Accordion.Body>
+
+        <div>
+                    Please select where you wanna move the group {variables.Group.SelectedGroupName} under.
                   </div>
                   <div className="card-body text-center">
-                  <div className="mb-3">
+                  <div >
                    <MDBContainer breakpoint="sm">
                   <Tree key={"MOVETREE"} label={<p><AdjustSharpIcon/></p>}>
                      {generateList([variables.UserInformations.info.joinedGroups.filter((p)=>p.id==GlobalState.SelectedGroup.id)[0]])}
@@ -975,53 +1037,118 @@ const HandleChangeName=()=>{
                           </div>
                   </div>
                   <div className="d-flex justify-content-center">
-                  <input className="btn btn-primary"style={{margin:"1rem"}} onClick={MoveGroup} type="submit" value="Move Group"/>
-                  <input className="btn btn-primary"style={{margin:"1rem"}} onClick={CancelGroupMove} type="submit" value="Cancel Group Move"/>
+                  <Button variant="outlined" className='form-control m-1' color='primary' type="submit" startIcon={<CancelIcon />} onClick={CancelGroupMove} >Cancel Group Move</Button>
+                  <Button variant="outlined" className='form-control m-1' color='primary' type="submit" startIcon={<MoveDownIcon />} onClick={MoveGroup} >Move Group</Button>
+
+
+                  
+                 
                   </div>
+        </Accordion.Body>
+      </Accordion.Item>
+     
+    </Accordion>  
+                 
               </MainCard>
               </Col>
         
       </Row>
 
       <Row>
-      <Col className="d-flex">
-      <MainCard className="card mb-4 mb-xl-0 mt-2" style={{margin:"2px"}}>   
-                <div className="card-header d-flex justify-content-center">
-                  Change Group Name
-                </div>
+      <Col>
+      <MainCard style={{margin:"2px"}}>  
+
+      <Accordion  defaultActiveKey="0">
+      <Accordion.Item eventKey="0">
+        <Accordion.Header>
+        <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
+            <Row>
+              <Col>
+              <Avatar size="xl" style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2Fgroup-icon-png-15.png?alt=media&token=a5459dd5-4176-49bf-a4b7-95a559dd93cf" color="primary" zoomed/>
+              </Col>              
+            
+            
+            
+            <Col>
+               <p style={{marginTop:"1rem"}}> Group Informations</p>
+              </Col>
+              <Col >
+              <Tooltip style={{marginTop:"0.5rem"}} title="Here you can change the group name." TransitionComponent={Fade} TransitionProps={{ timeout: 600 }}><IconButton> <HelpOutlineIcon /></IconButton></Tooltip> 
+              </Col>
+            </Row>
+          </Container>
+          </Accordion.Header>
+        <Accordion.Body>
                 <div className="card-body text-center">
                 <div className="mb-3">
-                 <label className="small mb-1" htmlFor="inputUsername">Modify Group Name</label>
+                 <label className="small mb-1" htmlFor="inputUsername">Group Name</label>
                  <div className="d-flex justify-content-center">
+                  
                  <input ref={GroupNameInput}  className="form-control" name="GroupName"  type="text" placeholder="Enter your Group Name" required={true}/>  
                  </div>
                  
                 </div>         
                         </div>
+                        
+                        <Button variant="outlined" className='form-control m-1' color='primary' type="submit" startIcon={<DriveFileRenameOutlineIcon />} onClick={HandleChangeName} > Change Group Name</Button>
+        </Accordion.Body>
+      </Accordion.Item>
+     
+    </Accordion>
+
+              
+                        
+                        
              
-               
-                <input  onClick={HandleChangeName} style={{margin:"1rem"}} className="btn btn-primary" type="submit" value="Change Group Name"/>
             </MainCard>
         </Col>
 
-        <Col  className="d-flex">
-        <MainCard className="card mb-4 mb-xl-0 mt-2" style={{margin:"2px"}}>   
-                <div className="card-header d-flex justify-content-center">
-                 Delete Group
-                </div>
-                <div className="card-body text-center">
-                <div className="mb-3">
+        <Col >
+        <MainCard style={{margin:"2px"}}>
+
+        <Accordion  defaultActiveKey="0">
+      <Accordion.Item eventKey="0">
+        <Accordion.Header>
+        <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
+            <Row>
+              <Col>
+              <Avatar size="xl" style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2Fdelete-icon-14.png?alt=media&token=9caa2567-ef2d-40cd-b8ad-1d9b1e32635b" color="primary" zoomed/>
+              </Col>              
+            
+            
+            
+            <Col>
+               <p style={{marginTop:"1rem"}}>Delete Group</p>
+              </Col>
+              <Col >
+              <Tooltip style={{marginTop:"0.5rem"}} title="Here you delete the group and all of it's childs." TransitionComponent={Fade} TransitionProps={{ timeout: 600 }}><IconButton> <HelpOutlineIcon /></IconButton></Tooltip> 
+              </Col>
+            </Row>
+          </Container>
+          </Accordion.Header>
+        <Accordion.Body>
+                <div className="card-body text-center mb-3">
+                <div >
                 
-                     <p>If you want to delete the group from the hiearchy click her, Be careful, if the group is deleted, there is no come back, this is permanent!</p>      
+                     <p>NOTE: Deleting the group is permanent and will also delete all of the subgroups within this group.</p>    
                         {DeleteModal&&<AlertDialog SetDeleteModal={SetDeleteModal} GroupName={variables.Group.SelectedGroupName} GroupID={variables.Group.SelectedGroup}/> }
                         </div>
+                        <br></br><br></br>
                 </div>
                 <div className="d-flex justify-content-center">
-                <input className="btn btn-danger"style={{margin:"1rem"}} onClick={()=>{
-                
+                <Button variant="outlined" className=' m-1' color='error' type="submit"
+                 startIcon={<DeleteIcon />} onClick={()=>{            
                   SetDeleteModal(!DeleteModal)
-                }} type="submit" value="Delete Group"/>
+                }} > Delete Group</Button>
+                
                 </div>
+
+        </Accordion.Body>
+      </Accordion.Item>
+     
+    </Accordion>
+
+               
             </MainCard>
             </Col>
         

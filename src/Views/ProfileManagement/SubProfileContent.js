@@ -14,6 +14,18 @@ import * as variables from "../../variables/variables"
 import {APIStatus,APIStatuses}  from '../../variables/variables';
 import { Avatar } from "@nextui-org/react";
 import MainCard from "../../components/UI/cards/MainCard"
+import DeleteIcon from '@mui/icons-material/Delete';
+import CancelIcon from '@mui/icons-material/Cancel';
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import Tooltip from '@mui/material/Tooltip';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import Fade from '@mui/material/Fade'; 
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container'; 
+import IconButton from '@mui/material/IconButton';
+import Accordion from 'react-bootstrap/Accordion';
+import SaveIcon from '@mui/icons-material/Save';
 export default function Content() {
 
     const {GlobalState,Dispatch}=React.useContext(AppContext)
@@ -283,40 +295,36 @@ export default function Content() {
 }
   return (
     
-      <div className="container-xl px-4 mt-4">
-    <div className="row d-flex" >
-        <div className="col-xl-4 d-flex">
-        <MainCard className="card mb-4">
-            
-                <div className="card-header d-flex justify-content-center">Profile Picture</div>
-                <div className="card-body text-center ">
-                    {/*Test if User has a profile picture if not show default*/}
-                    
-                    <img   style={{ display:"inline-block",maxWidth:"20rem",maxHeight:"20rem", margin: 'auto',borderRadius:"50%" }} ref={UserProfilePicture} className=" rounded-5  shadow-5 mb-5 border border-primary"  alt=""/>
-                    
-                    
-                    <form onSubmit={handleImageUpdate}>
-                    
-                    <div className="small font-italic text-muted mb-4">
-                    <input className="form-control" name="file" id="inputUsername" type="file" accept="image/png, image/gif, image/jpeg" />
-                    {/* Show uploadprogress comp if the Uploadprogress state>0 */}
-                    {UploadProgress!=0&&<ProgressBar  className='m-4' now={UploadProgress} />}
-                    
-                    {UploadProgress!=0&&<span>Uploading Image please wait...</span>}
-
-                    {UploadProgress!=0&&<Button onClick={CancelImageUpload} variant="outline-primary">Cancel Upload</Button>}
-                    </div>
-                    <input className="btn btn-primary" type="submit" value="Save Image"/>
-                    </form>
-                </div>
-            
-            </MainCard>
-        </div>
-        <div className="col-xl-8 d-flex">
+      <Container>
+    <Row className="d-flex" >
+        
+        <Col>
            
-        <MainCard className="card mb-4">
-                <div className="card-header">Account Details</div>
-                <div className="card-body">
+        <MainCard>
+
+        <Accordion  defaultActiveKey="0">
+      <Accordion.Item eventKey="0">
+        <Accordion.Header>
+        <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
+            <Row>
+              <Col>
+              <Avatar size="xl" style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2F950771.png?alt=media&token=0c02747d-8ede-4696-9333-86d9c9e47f7f" color="primary" zoomed/>
+              </Col>              
+            
+            
+            
+            <Col>
+               <p style={{marginTop:"1rem"}}>Profile Basic Informations</p>
+              </Col>
+              <Col >
+              <Tooltip style={{marginTop:"0.5rem"}} title="The is a Tree visualization of your groups hiearchy." TransitionComponent={Fade} TransitionProps={{ timeout: 600 }}><IconButton> <HelpOutlineIcon /></IconButton></Tooltip> 
+              </Col>
+            </Row>
+          </Container>
+          </Accordion.Header>
+        <Accordion.Body>
+
+        <div className="card-body">
                     <form onSubmit={handlesubmit}>
                       
                         <div className="mb-3">
@@ -336,19 +344,6 @@ export default function Content() {
                                 <input ref={LastName} className="form-control" name="lastName" id="inputLastName" type="text" placeholder="Enter your last name" />
                             </div>
                         </div>
-                       
-                        {/*<div className="row gx-3 mb-3">
-                           
-                            <div className="col-md-6">
-                                <label className="small mb-1" htmlFor="inputOrgName">Organization name</label>
-                                <input className="form-control" id="inputOrgName" type="text" placeholder="Enter your organization name" />
-                            </div>
-                            
-                            <div className="col-md-6">
-                                <label className="small mb-1" htmlFor="inputLocation">Location</label>
-                                <input className="form-control" id="inputLocation" type="text" placeholder="Enter your location" />
-                            </div>
-                        </div>*/ }
                         
                         <div className="mb-3">
                             <label className="small mb-1" htmlFor="inputEmailAddress">Email address</label>
@@ -367,14 +362,78 @@ export default function Content() {
                             </div>
                             
                         </div>
+                        <div className="d-flex justify-content-center">
+<Button variant="outlined" color='primary' type="submit" startIcon={<SaveIcon />}>Save Changes</Button>
+</div>
                         
-                        <input type="submit" value="Save Changes" className="btn btn-primary"/>
                     </form>
                 </div>
+        </Accordion.Body>
+      </Accordion.Item>
+     
+    </Accordion>  
+                
+                
                 </MainCard>
-        </div>
-    </div>
+        </Col>
+        <Col>
+        <MainCard>
+
+            <Accordion  defaultActiveKey="0">
+      <Accordion.Item eventKey="0">
+        <Accordion.Header>
+        <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
+            <Row>
+              <Col>
+              <Avatar size="xl" style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2F251-2518917_ui-system-apps-by-blackvariant-gallery-icon-png.png?alt=media&token=55c34a88-e987-4454-a944-4d7d69feec77" color="primary" zoomed/>
+              </Col>              
+            
+            
+            
+            <Col>
+               <p style={{marginTop:"1rem"}}>Profile Picture</p>
+              </Col>
+              <Col >
+              <Tooltip style={{marginTop:"0.5rem"}} title="Here you can change your profile picture" TransitionComponent={Fade} TransitionProps={{ timeout: 600 }}><IconButton> <HelpOutlineIcon /></IconButton></Tooltip> 
+              </Col>
+            </Row>
+          </Container>
+          </Accordion.Header>
+        <Accordion.Body>
+
+        <div className="card-body text-center ">
+                    {/*Test if User has a profile picture if not show default*/}
+                    
+                    <img   style={{ display:"inline-block",maxWidth:"20rem",maxHeight:"20rem", margin: 'auto',borderRadius:"50%" }} ref={UserProfilePicture} className=" rounded-5  shadow-5 mb-5 border border-primary"  alt=""/>
+                    
+                    
+                    <form onSubmit={handleImageUpdate}>
+                    
+                    <div className="small font-italic text-muted mb-4">
+                    <input className="form-control" name="file" id="inputUsername" type="file" accept="image/png, image/gif, image/jpeg" />
+                    {/* Show uploadprogress comp if the Uploadprogress state>0 */}
+                    {UploadProgress!=0&&<ProgressBar  className='m-4' now={UploadProgress} />}
+                    
+                    {UploadProgress!=0&&<span>Uploading Image please wait...</span>}
+
+                    {UploadProgress!=0&&<Button onClick={CancelImageUpload} variant="outline-primary">Cancel Upload</Button>}
+                    </div>
+                    <div className="d-flex justify-content-center">
+<Button variant="outlined" color='primary' type="submit" startIcon={<SaveIcon />}>Save Changes</Button>
 </div>
+                    </form>
+                </div>
+        </Accordion.Body>
+      </Accordion.Item>
+     
+    </Accordion>   
+                
+               
+            
+            </MainCard>
+        </Col>
+    </Row>
+</Container>
  
   );
 }

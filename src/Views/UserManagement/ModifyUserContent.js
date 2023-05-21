@@ -25,6 +25,16 @@ import * as variables from "../../variables/variables"
 import {APIStatus,APIStatuses}  from '../../variables/variables';
 import { Avatar } from "@nextui-org/react";
 import MainCard from "../../components/UI/cards/MainCard"
+import DeleteIcon from '@mui/icons-material/Delete';
+import CancelIcon from '@mui/icons-material/Cancel';
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import Fade from '@mui/material/Fade'; 
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container'; 
+import Accordion from 'react-bootstrap/Accordion';
+import SaveIcon from '@mui/icons-material/Save';
 export default function Content() {
 
     const {GlobalState,Dispatch}=React.useContext(AppContext)
@@ -202,51 +212,81 @@ export default function Content() {
        
         
            
-            <MainCard className="card mb-4 ">
-                <div className="card-header">Account Details</div>
-                <div className="card-body">
-                    <form onSubmit={handlesubmit}>
+            <MainCard >
+                 <Accordion className='m-2' defaultActiveKey="0">
+      <Accordion.Item eventKey="0">
+        <Accordion.Header>
+        <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
+            <Row>
+              <Col md={4}>
+              <Avatar size="xl" style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2Fhome-icon-Unrivalled-functionality.png?alt=media&token=3777def1-531d-40b6-baed-8c33e7ec466b" color="primary" zoomed/>
+              </Col>              
+            </Row>
+            
+            <Row>
+            <Col md={10}>
+               <p style={{marginTop:"1rem"}}> Edit User</p>
+              </Col>
+              <Col md={2}>
+              <Tooltip style={{marginTop:"0.5rem"}} title="Here you can edit a user's information" TransitionComponent={Fade} TransitionProps={{ timeout: 600 }}><IconButton> <HelpOutlineIcon /></IconButton></Tooltip> 
+              </Col>
+            </Row>
+          </Container>
+          </Accordion.Header>
+        <Accordion.Body>
+        
+        <form onSubmit={handlesubmit}>
                       
-                        <div className="mb-3">
-                            <label className="small mb-1" htmlFor="inputUsername">Username (how your name will appear to other users on the site)</label>
-                            <input ref={Username} className="form-control" name="userName" id="inputUsername" type="text" placeholder="Enter your username" />
-                        </div>
-                       
-                        <div className="row gx-3 mb-3">
-                        
-                            <div className="col-md-6">
-                                <label className="small mb-1" htmlFor="inputFirstName">First name</label>
-                                <input ref={FirstName} className="form-control" name="firstName" id="inputFirstName" type="text" placeholder="Enter your first name" />
-                            </div>
-                           
-                            <div className="col-md-6">
-                                <label className="small mb-1" htmlFor="inputLastName">Last name</label>
-                                <input ref={LastName} className="form-control" name="lastName" id="inputLastName" type="text" placeholder="Enter your last name" />
-                            </div>
-                        </div>
+                      <div className="mb-3">
+                          <label className="small mb-1" htmlFor="inputUsername">Username</label>
+                          <input ref={Username} className="form-control" name="userName" id="inputUsername" type="text" placeholder="Enter your username" />
+                      </div>
+                     
+                      <div className="row gx-3 mb-3">
+                      
+                          <div className="col-md-6">
+                              <label className="small mb-1" htmlFor="inputFirstName">First name</label>
+                              <input ref={FirstName} className="form-control" name="firstName" id="inputFirstName" type="text" placeholder="Enter your first name" />
+                          </div>
+                         
+                          <div className="col-md-6">
+                              <label className="small mb-1" htmlFor="inputLastName">Last name</label>
+                              <input ref={LastName} className="form-control" name="lastName" id="inputLastName" type="text" placeholder="Enter your last name" />
+                          </div>
+                      </div>
 
-                        
-                        <div className="mb-3">
-                            <label className="small mb-1" htmlFor="inputEmailAddress">Email address</label>
-                            <input ref={Email} className="form-control" name="email" id="inputEmailAddress" type="email" placeholder="Enter your email address" />
+                      
+                      <div className="mb-3">
+                          <label className="small mb-1" htmlFor="inputEmailAddress">Email address</label>
+                          <input ref={Email} className="form-control" name="email" id="inputEmailAddress" type="email" placeholder="Enter your email address" />
+                      </div>
+                      
+                      <div className="row gx-3 mb-3">
+                          
+                      <div className="col-md-6 ">
+                              <label className="small mb-1" htmlFor="inputPhone">Phone number</label>
+                              <input ref={PhoneNumber} className="form-control" name="phoneNumber" id="inputPhone" type="tel" placeholder="Enter your phone number" />
+                          </div>
+                          <div className="col-md-6">
+                              <label className="small mb-1" htmlFor="BirthdayDate">Birthday Date</label>
+                              <input ref={Age} className="form-control" name="BirthdayDate" id="BirthdayDate" type="date" placeholder="Enter your Birthday date" />
+                          </div>
+                          
+                      </div>
+                      <div className="d-flex justify-content-center">
+                        <Button variant="outlined" color='primary' type="submit" startIcon={<SaveIcon />}> Save User Informations</Button>
                         </div>
                         
-                        <div className="row gx-3 mb-3">
-                            
-                        <div className="col-md-6 ">
-                                <label className="small mb-1" htmlFor="inputPhone">Phone number</label>
-                                <input ref={PhoneNumber} className="form-control" name="phoneNumber" id="inputPhone" type="tel" placeholder="Enter your phone number" />
-                            </div>
-                            <div className="col-md-6">
-                                <label className="small mb-1" htmlFor="BirthdayDate">Birthday Date</label>
-                                <input ref={Age} className="form-control" name="BirthdayDate" id="BirthdayDate" type="date" placeholder="Enter your Birthday date" />
-                            </div>
-                            
-                        </div>
-                        
-                        <input type="submit" value="Save Changes" className="btn btn-primary"/>
-                    </form>
-                </div>
+                     
+                  </form>
+           
+              
+        
+        </Accordion.Body>
+      </Accordion.Item>
+     
+    </Accordion>
+                
             </MainCard>
         
    

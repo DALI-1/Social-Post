@@ -14,6 +14,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import {CALL_API_With_JWTToken,CALL_API_With_JWTToken_GET} from '../../libs/APIAccessAndVerification'
 import './SubSecurityContent.css';
 import MainCard from "../../components/UI/cards/MainCard"
+import LockResetIcon from '@mui/icons-material/LockReset';
 export default function Content() {
   let NewPassword=React.useRef()
   let NewPasswordC=React.useRef()
@@ -117,7 +118,7 @@ export default function Content() {
             <div class="col-lg-8">
             
                 <MainCard class="card mb-4">
-                    <div class="card-header">Change Password</div>
+                    <div className='m-2'>Change Password</div>
                     <div class="card-body">
                         <form onSubmit={HandleSub}>
                             
@@ -135,13 +136,15 @@ export default function Content() {
                                 <label class="small mb-1" htmlFor="confirmPassword">Confirm Password</label>
                                 <input ref={NewPasswordC} class="form-control" id="confirmPassword" name="nPasswordC" type="password" placeholder="Confirm new password"/>
                             </div>
-                            <input class="btn btn-primary" type="submit" value="Change Password"/>
+                            <div className="d-flex justify-content-center">
+<Button variant="outlined" color='primary' type="submit" startIcon={<LockResetIcon />}>Change Password </Button>
+</div>
                         </form>
                     </div>
                 </MainCard>
                 
                 <MainCard class="card mb-4">
-                    <div class="card-header">Security Preferences</div>
+                    <div className='m-2'>Security Preferences</div>
                     <div class="card-body">
                        
                         <h5 class="mb-1">Account Privacy</h5>
@@ -176,7 +179,7 @@ export default function Content() {
             <div class="col-lg-4">
                 
                 <MainCard class="card mb-4">
-                    <div class="card-header">Two-Factor Authentication</div>
+                    <div className='m-2'>Two-Factor Authentication</div>
                     <div class="card-body">
                         <p>Add another level of security to your account by enabling two-factor authentication. We will send you a text message to verify your login attempts on unrecognized devices and browsers.</p>
                         <form>
@@ -197,7 +200,7 @@ export default function Content() {
                 </MainCard>
               
                 <MainCard class="card mb-4">
-                    <div class="card-header">Delete Account</div>
+                    <div className='m-2'>Delete Account</div>
                     <div class="card-body">
                         <p>Deleting your account is a permanent action and cannot be undone. If you are sure you want to delete your account, select the button below.</p>
                         <button class="btn btn-danger-soft text-danger" type="button">I understand, delete my account</button>

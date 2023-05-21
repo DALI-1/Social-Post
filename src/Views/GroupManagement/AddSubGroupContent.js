@@ -18,6 +18,14 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import {HeaderSpinnerActions}  from '../../variables/variables'
 import MainCard from "../../components/UI/cards/MainCard"
+import Button from '@mui/material/Button';
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import Tooltip from '@mui/material/Tooltip';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import Fade from '@mui/material/Fade'; 
+import IconButton from '@mui/material/IconButton';
+import Accordion from 'react-bootstrap/Accordion';
+import { Avatar } from "@nextui-org/react";
 export default function Content() {
 
     const {GlobalState,Dispatch}=React.useContext(AppContext)
@@ -264,44 +272,93 @@ if(document.getElementById(RadioButton).checked)
   return (
     <>
 
-       <Row className="d-flex">
-        <Col className="d-flex">
-        <MainCard className="card mb-4 mb-xl-0">
-               <form onSubmit={CreateSubGroup}>
-                <div className="card-header d-flex justify-content-center"> Sub Group Details</div>
-                <div className="card-body text-center">
+       <Row >
+        <Col >
+        <MainCard>
+
+        <Accordion  defaultActiveKey="0">
+      <Accordion.Item eventKey="0">
+        <Accordion.Header>
+        <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
+            <Row>
+              <Col>
+              <Avatar size="xl" style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2Fgroup-icon-png-15.png?alt=media&token=a5459dd5-4176-49bf-a4b7-95a559dd93cf" color="primary" zoomed/>
+              </Col>              
+            
+            
+            
+            <Col>
+               <p style={{marginTop:"1rem"}}>Group Details & Location.</p>
+              </Col>
+              <Col >
+              <Tooltip style={{marginTop:"0.5rem"}} title="Here you can choose where to create the sub-group within the hiearchy and input the group name" TransitionComponent={Fade} TransitionProps={{ timeout: 600 }}><IconButton> <HelpOutlineIcon /></IconButton></Tooltip> 
+              </Col>
+            </Row>
+          </Container>
+          </Accordion.Header>
+        <Accordion.Body>
+        <form onSubmit={CreateSubGroup}>
+                
+               
                 <div className="mb-3">
                  <MDBContainer breakpoint="sm">
                 <Tree key={"ADDTREE"} label={<p><AdjustSharpIcon/></p>}>
                    {generateList([variables.UserInformations.info.joinedGroups.filter((p)=>p.id==GlobalState.SelectedGroup.id)[0]])}
                       </Tree> 
                       {GenerateRadioBoxList([variables.UserInformations.info.joinedGroups.filter((p)=>p.id==GlobalState.SelectedGroup.id)[0]])}
-                            <label className="small mb-1" htmlFor="inputUsername">Sub Group Name</label>
+                      
+                            <label  className="small m-2" htmlFor="GroupName">Sub Group Name</label>
                             <input ref={GroupNameInput} className="form-control" name="GroupName" id="inputUsername" type="text" placeholder="Enter your Group Name" required />
                             </MDBContainer> 
                         </div>
                     
-                    <div className="small font-italic text-muted mb-4">
-                    </div>
-                    <input className="btn btn-primary" type="submit" value="Add Sub Group"/>
-                    
-                </div>
+                    <Button variant="outlined" color='primary' className="m-1 form-control"type="submit" startIcon={<GroupAddIcon />}>Create Sub Group</Button>
+                   
+              
                 </form>
+
+        </Accordion.Body>
+      </Accordion.Item>
+     
+    </Accordion>  
+               
             </MainCard>
         </Col>
-        <Col className="d-flex">
-        <MainCard className="card mb-4 mb-xl-0">
-               <div className="card-header d-flex justify-content-center"> Sub Group permissions</div>
-               <div className="card-body">
-                   <Container>
-                   <Row>
+        <Col>
+        <MainCard>
+               
+        <Accordion  defaultActiveKey="0">
+      <Accordion.Item eventKey="0">
+        <Accordion.Header>
+        <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
+            <Row>
+              <Col>
+              <Avatar size="xl" style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2FCyber-Security-Logo-PNG.png?alt=media&token=86492f23-f2b2-4786-ae38-06b922d017f6" color="primary" zoomed/>
+              </Col>              
+            
+            
+            
+            <Col >
+               <p style={{marginTop:"1rem"}}> Group Permissions</p>
+              </Col>
+              <Col >
+              <Tooltip style={{marginTop:"0.5rem"}} title="Here is the permissions you want your sub-group to have.
+                    NOTE: The permissions that you can see depend heavily on the parent group's permissions, if it doesn't have a permission, so is this, it won't have it as an option , you need to change the parent's permissions in order for it to be available for all of the subgroups." TransitionComponent={Fade} TransitionProps={{ timeout: 600 }}><IconButton> <HelpOutlineIcon /></IconButton></Tooltip> 
+              </Col>
+            </Row>
+          </Container>
+          </Accordion.Header>
+        <Accordion.Body>
+
+        <Container>
+                   <Row >
                    {ListOfViewsToShow.length===0&&<p className='d-flex justify-content-center'>Select a group to view the possible permissions under that group</p>}
                     {ListOfViewsToShow.map((view,index)=>{
 
                       return(
-                        <Col key={index} >
-                       <div className="card mb-4">
-                       <div className="card-header d-flex justify-content-center" style={{minWidth:"250px"}}>{view.menuItemName}</div>
+                        <Col   key={index} >
+                       <MainCard className="mb-4">
+                       <div>{view.menuItemName}</div>
                        <div className="card-body">
                         {ListOfPermToShow.length===0&&<p>Select a group to view the possible permissions under that group</p>}
 
@@ -334,7 +391,7 @@ if(document.getElementById(RadioButton).checked)
                         })}
 
                        </div>
-                       </div>
+                       </MainCard>
                        </Col>
                       )
                     })}
@@ -342,7 +399,12 @@ if(document.getElementById(RadioButton).checked)
                    </Row>
                    
                    </Container>
-               </div>
+        </Accordion.Body>
+      </Accordion.Item>
+     
+    </Accordion> 
+                   
+               
                
            </MainCard>
         </Col>
@@ -350,9 +412,7 @@ if(document.getElementById(RadioButton).checked)
       </Row>  
   
 
-      <Row>
-      
-      </Row>
+    
  
 
   

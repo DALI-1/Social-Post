@@ -44,6 +44,11 @@ import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import GroupRemoveIcon from '@mui/icons-material/GroupRemove';
 import * as PermissionLib from "../../libs/PermissionsChecker"
 import MainCard from "../../components/UI/cards/MainCard"
+import { Avatar } from "@nextui-org/react";
+
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import Fade from '@mui/material/Fade'; 
+import Accordion from 'react-bootstrap/Accordion';
 export function FilterDialog(props) {
   const [open, setOpen] = React.useState(true);
   const {GlobalState,Dispatch}=React.useContext(AppContext)
@@ -319,20 +324,46 @@ return (
     <div>
       
       <Dialog fullWidth={true} open={open} >
-        <DialogTitle> Add Selected Users to Group</DialogTitle>
+      
         <DialogContent>
-          <DialogContentText>
-           Please Select the groups you want to add the users at
+
+        <Accordion className='m-2' defaultActiveKey="0">
+      <Accordion.Item eventKey="0">
+        <Accordion.Header>
+        <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
+            <Row>
+              <Col md={4}>
+              <Avatar size="xl" style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2Fhome-icon-Unrivalled-functionality.png?alt=media&token=3777def1-531d-40b6-baed-8c33e7ec466b" color="primary" zoomed/>
+              </Col>              
+            </Row>
+            
+            <Row>
+            <Col md={10}>
+               <p style={{marginTop:"1rem"}}>Associate groups to the selected users.</p>
+              </Col>
+              <Col md={2}>
+              <Tooltip style={{marginTop:"0.5rem"}} title="Here after you selected the users you can choose which groups to add them to, NOTE: Selecting groups that they already in won't change a thing.." TransitionComponent={Fade} TransitionProps={{ timeout: 600 }}><IconButton> <HelpOutlineIcon /></IconButton></Tooltip> 
+              </Col>
+            </Row>
+          </Container>
+          </Accordion.Header>
+        <Accordion.Body>
+        
+        <DialogContentText>
+           Select the groups that you want your selected users to be in.
           </DialogContentText>
           
           <br/>
 <DropdownTreeSelect data={GroupsDropDownList} onChange={onChange} onAction={onAction} onNodeToggle={onNodeToggle} /> 
-<br/>
-          <br/>
-          <br/>
-          <br/>
-          <br/>
-          <br/>
+           
+              
+        
+        </Accordion.Body>
+      </Accordion.Item>
+     
+    </Accordion>
+          
+
        </DialogContent>
 
 
@@ -581,20 +612,44 @@ return (
     <div>
       
       <Dialog fullWidth={true} open={open} >
-        <DialogTitle> Remove Users from the group</DialogTitle>
+        
         <DialogContent>
-          <DialogContentText>
-           Please Select the groups you want the selected users removed from
-          </DialogContentText>
           
-          <br/>
+        <Accordion className='m-2' defaultActiveKey="0">
+      <Accordion.Item eventKey="0">
+        <Accordion.Header>
+        <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
+            <Row>
+              <Col md={4}>
+              <Avatar size="xl" style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2Fhome-icon-Unrivalled-functionality.png?alt=media&token=3777def1-531d-40b6-baed-8c33e7ec466b" color="primary" zoomed/>
+              </Col>              
+            </Row>
+            
+            <Row>
+            <Col md={10}>
+               <p style={{marginTop:"1rem"}}>Un-associate groups</p>
+              </Col>
+              <Col md={2}>
+              <Tooltip style={{marginTop:"0.5rem"}} title="Here you can unassociate some users from certain groups, NOTE: Leaving a user without any groups will result on his account being disabled and unusable." TransitionComponent={Fade} TransitionProps={{ timeout: 600 }}><IconButton> <HelpOutlineIcon /></IconButton></Tooltip> 
+              </Col>
+            </Row>
+          </Container>
+          </Accordion.Header>
+        <Accordion.Body>
+        
+        <DialogContentText>
+           Please Select the groups that you don't want your users to be in, <strong>NOTE: Leaving a user without any groups will result on his account being disabled and unusable.</strong>
+          </DialogContentText>
 <DropdownTreeSelect data={GroupsDropDownList} onChange={onChange} onAction={onAction} onNodeToggle={onNodeToggle} /> 
-<br/>
-          <br/>
-          <br/>
-          <br/>
-          <br/>
-          <br/>
+           
+              
+        
+        </Accordion.Body>
+      </Accordion.Item>
+     
+    </Accordion>
+         
+
        </DialogContent>
 
 

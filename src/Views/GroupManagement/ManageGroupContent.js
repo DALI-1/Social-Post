@@ -29,7 +29,6 @@ import {MDBContainer} from 'mdb-react-ui-kit';
 import Groups2SharpIcon from '@mui/icons-material/Groups2Sharp';
 import AdjustSharpIcon from '@mui/icons-material/AdjustSharp';
 import {hashRandom } from 'react-hash-string'
-import Row from 'react-bootstrap/Row';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import MainCard from "../../components/UI/cards/MainCard"
@@ -42,7 +41,15 @@ import DialogTitle from '@mui/material/DialogTitle';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import Accordion from 'react-bootstrap/Accordion';
 import * as PermissionLib from "../../libs/PermissionsChecker"
+import Tooltip from '@mui/material/Tooltip';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import Fade from '@mui/material/Fade'; 
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container';
+import { Avatar } from "@nextui-org/react";
 export function AlertDialog(props) {
   const [open, setOpen] = React.useState(true);
   const {GlobalState,Dispatch}=React.useContext(AppContext)
@@ -424,7 +431,29 @@ export default function Content() {
        </div>
        </MainCard>
        <MainCard sx={{ width: '100%', m: 1,p:2 ,textAlign: "center",boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)' }}>
-       <TableContainer>
+
+       <Accordion  defaultActiveKey="0">
+      <Accordion.Item eventKey="0">
+        <Accordion.Header>
+        <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
+            <Row>
+              <Col>
+              <Avatar size="xl" style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2Fgroup-icon-png-15.png?alt=media&token=a5459dd5-4176-49bf-a4b7-95a559dd93cf" color="primary" zoomed/>
+              </Col>              
+            
+            
+            
+            <Col>
+               <p style={{marginTop:"1rem"}}>List Of SubGroups</p>
+              </Col>
+              <Col >
+              <Tooltip style={{marginTop:"0.5rem"}} title="The is a Tabular visualization of your groups hiearchy." TransitionComponent={Fade} TransitionProps={{ timeout: 600 }}><IconButton> <HelpOutlineIcon /></IconButton></Tooltip> 
+              </Col>
+            </Row>
+          </Container>
+          </Accordion.Header>
+        <Accordion.Body>
+        <TableContainer>
        <div style={{ textAlign: "center", margin:"1rem" }}>
        <Groups2SharpIcon   color="primary" style={{Margin:"1rem"}}/>
         <h4>{"Groups Of "+variables.UserInformations.info.joinedGroups.filter((p)=>p.id==GlobalState.SelectedGroup.id)[0].group_Name}</h4>
@@ -462,6 +491,12 @@ export default function Content() {
       </Table>
       
     </TableContainer>
+
+        </Accordion.Body>
+      </Accordion.Item>
+     
+    </Accordion>  
+      
     </MainCard>
     </>
 }
@@ -521,21 +556,51 @@ export default function Content() {
 
 </div>
 </MainCard>
-        <MainCard sx={{ width: '100%', m: 1 ,textAlign: "center",boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)' }}>      
-                <div className="card-header d-flex justify-content-center"> List Of Groups</div>
-                <div className="card-body text-center">
-                <div className="mb-3">
+        <MainCard sx={{ width: '100%', m: 1 ,textAlign: "center",boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)' }}> 
+
+        <Accordion  defaultActiveKey="0">
+      <Accordion.Item eventKey="0">
+        <Accordion.Header>
+        <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
+            <Row>
+              <Col>
+              <Avatar size="xl" style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2Fgroup-icon-png-15.png?alt=media&token=a5459dd5-4176-49bf-a4b7-95a559dd93cf" color="primary" zoomed/>
+              </Col>              
+            
+            
+            
+            <Col>
+               <p style={{marginTop:"1rem"}}>List Of SubGroups</p>
+              </Col>
+              <Col >
+              <Tooltip style={{marginTop:"0.5rem"}} title="The is a Tree visualization of your groups hiearchy." TransitionComponent={Fade} TransitionProps={{ timeout: 600 }}><IconButton> <HelpOutlineIcon /></IconButton></Tooltip> 
+              </Col>
+            </Row>
+          </Container>
+          </Accordion.Header>
+        <Accordion.Body>
+        
+              
+        
+               
+                
                  <MDBContainer breakpoint="sm">
                 <Tree  key={"NAVTREE"} label={<p><AdjustSharpIcon/></p>}>
                    {(generateList(variables.UserInformations.info.joinedGroups.filter((p)=>p.id==GlobalState.SelectedGroup.id)[0].subGroups))}
                       </Tree> 
                       {DeleteShow&&<AlertDialog SetDeleteModal={SetDeleteShow} GroupName={SelectedGroupName.current} GroupID={SelectedGroupID.current} DeleteShow={DeleteShow}/> }
                             </MDBContainer> 
-                        </div>
+                        
                     
-                    <div className="small font-italic text-muted mb-4">
-                    </div>  
-                </div>
+                    
+                
+                
+              
+        
+        </Accordion.Body>
+      </Accordion.Item>
+     
+    </Accordion>     
                 
         </MainCard></> }
         </Row>

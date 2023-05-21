@@ -1,5 +1,4 @@
 import * as React from "react";
-import Button from "@mui/material/Button";
 import {  toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./ModifyPageContent.css";
@@ -24,6 +23,18 @@ import {
   ListViewFooter,
 } from "@progress/kendo-react-listview";
 import MainCard from "../../components/UI/cards/MainCard"
+import Button from '@mui/material/Button';
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import Tooltip from '@mui/material/Tooltip';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import SaveIcon from '@mui/icons-material/Save';
+import Fade from '@mui/material/Fade'; 
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container'; 
+import IconButton from '@mui/material/IconButton';
+import Accordion from 'react-bootstrap/Accordion';
+import DeleteIcon from '@mui/icons-material/Delete';
 export default function Content() {
   let uploadTask = React.useRef(null);
   const [Associated_By_Page, setAssociated_By_Page] = React.useState([]);
@@ -300,14 +311,31 @@ export default function Content() {
   };
   return (
     <div className="container-xl px-4 mt-4">
-      <div className="row d-flex">
-        <div className="col-xl-6 d-flex">
-        <MainCard className="card mb-4">
-            <div className="card-header d-flex justify-content-center">
-              {" "}
-              Page Picture
-            </div>
-            <div className="card-body text-center ">
+      <Row className="m-2">
+        <Col>
+        <MainCard>
+        <Accordion  defaultActiveKey="0">
+      <Accordion.Item eventKey="0">
+        <Accordion.Header>
+        <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
+            <Row>
+              <Col>
+              <Avatar size="xl"  style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2F251-2518917_ui-system-apps-by-blackvariant-gallery-icon-png.png?alt=media&token=55c34a88-e987-4454-a944-4d7d69feec77" color="primary" zoomed/>
+              </Col>              
+            
+            
+            
+            <Col>
+               <p style={{marginTop:"1rem"}}>Page Picture</p>
+              </Col>
+              <Col >
+              <Tooltip style={{marginTop:"0.5rem"}} title="Here you can change a Page's picture, NOTE: This is disabled for Instagram until further notice." TransitionComponent={Fade} TransitionProps={{ timeout: 600 }}><IconButton> <HelpOutlineIcon /></IconButton></Tooltip> 
+              </Col>
+            </Row>
+          </Container>
+          </Accordion.Header>
+        <Accordion.Body>
+        <div className="card-body text-center ">
               {/*Test if User has a profile picture if not show default*/}
 
               <img
@@ -315,12 +343,12 @@ export default function Content() {
                 style={{
                   display: "block",
                   margin: "auto",
-                  minWidth: "10rem",
-                  minHeight: "10rem",
-                  maxHeight: "10rem",
-                  maxWidth: "10rem",
+                  minWidth: "6.6rem",
+                  minHeight: "6.6rem",
+                  maxHeight: "6.6rem",
+                  maxWidth: "6.6rem",
                 }}
-                className="rounded-5 shadow-2 mb-5 border border-primary"
+                className="rounded-5 shadow-2 mb-1 border border-primary"
                 alt=""
               />
                 <form onSubmit={handleImageUpdate}>
@@ -350,23 +378,45 @@ export default function Content() {
                       </Button>
                     )}
                   </div>
-                  <input
-                    className="btn btn-primary"
-                    type="submit"
-                    value="Save Image"
-                  />
+                  <div className="d-flex justify-content-center">
+<Button variant="outlined" color='primary' type="submit" startIcon={<SaveIcon />}>Save Informations</Button>
+</div>
                 </form>
 
             </div>
+
+        </Accordion.Body>
+      </Accordion.Item>
+     
+    </Accordion>   
             </MainCard>
-        </div>
-        <div className="col-xl-6 d-flex">
-        <MainCard className="card mb-4">
-            <div className="card-header d-flex justify-content-center">
-              {" "}
-              Page Details
-            </div>
-            <div className="card-body text-center ">
+        </Col>
+        <Col>
+        <MainCard>
+
+        <Accordion  defaultActiveKey="0">
+      <Accordion.Item eventKey="0">
+        <Accordion.Header>
+        <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
+            <Row>
+              <Col>
+              <Avatar size="xl" squared style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2FSocialPost_PAGE_ICON.png?alt=media&token=c13966be-f386-42e9-a40f-12344d678e76" color="primary" zoomed/>
+              </Col>              
+            
+            
+            
+            <Col>
+               <p style={{marginTop:"1rem"}}>Page basic informations</p>
+              </Col>
+              <Col >
+              <Tooltip style={{marginTop:"0.5rem"}} title="Here is some basic informations about the page, NOTE: Change to Instagram Pages is disabled until further notice." TransitionComponent={Fade} TransitionProps={{ timeout: 600 }}><IconButton> <HelpOutlineIcon /></IconButton></Tooltip> 
+              </Col>
+            </Row>
+          </Container>
+          </Accordion.Header>
+        <Accordion.Body>
+
+        <div className="card-body text-center ">
               <form onSubmit={handlesubmit}>
                 <div className="mb-3">
                   <label className="small mb-1" htmlFor="Pname">
@@ -413,52 +463,51 @@ export default function Content() {
                     />
                   </div>
                 </div>
-                <input
-                      type="submit"
-                      value="Save Changes"
-                      className="btn btn-primary"
-                    />
+                <div className="d-flex justify-content-center">
+<Button variant="outlined" color='primary' type="submit" startIcon={<SaveIcon />}>Save Informations</Button>
+</div>
+
+
               </form>
             </div>
+
+        </Accordion.Body>
+      </Accordion.Item>
+     
+    </Accordion>   
+
+            
           </MainCard>
-        </div>
-      </div>
-      <div className="row d-flex">
-        <div className="col-xl-6 d-flex">
-        <MainCard className="card mb-4">
-            <div className="card-header d-flex justify-content-center">
-              {" "}
-              Delete Page
-            </div>
-            <div className="card-body text-center ">
-              <p>
-                If you want to delete the Page from the List, Be careful, if the
-                Page is deleted, there is no come back, this is permanent!
-              </p>
-              {DeleteModalShow && (
-                <DeleteModal SetShowDeleteModal={setDeleteModalShow} />
-              )}
-              <input
-                className="btn btn-danger"
-                style={{ margin: "1rem" }}
-                onClick={() => {
-                  setDeleteModalShow(!DeleteModalShow);
-                }}
-                type="submit"
-                value="Delete Page"
-              />
-            </div>
-            </MainCard>
-        </div>
-        <div className="col-xl-6 d-flex">
-        <MainCard className="card mb-4">
-            <div className="card-header d-flex justify-content-center">
-              {" "}
-              Modify Page Association
-            </div>
-              {
-      
-                <div className="card-body text-center ">     
+        </Col>
+      </Row>
+      <Row className="m-2">
+       
+        <Col>
+        <MainCard>
+
+
+        <Accordion  defaultActiveKey="0">
+      <Accordion.Item eventKey="0">
+        <Accordion.Header>
+        <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
+            <Row>
+              <Col>
+              <Avatar size="xl" squared style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2FSocialPost_PAGE_ICON.png?alt=media&token=c13966be-f386-42e9-a40f-12344d678e76" color="primary" zoomed/>
+              </Col>              
+            
+            
+            
+            <Col>
+               <p style={{marginTop:"1rem"}}>Page Associations</p>
+              </Col>
+              <Col >
+              <Tooltip style={{marginTop:"0.5rem"}} title="This shows which page is associated to which page." TransitionComponent={Fade} TransitionProps={{ timeout: 600 }}><IconButton> <HelpOutlineIcon /></IconButton></Tooltip> 
+              </Col>
+            </Row>
+          </Container>
+          </Accordion.Header>
+        <Accordion.Body>
+        <div className="card-body text-center ">     
                 <>
                   <ListView
                     data={List_Of_Associated_Pages}
@@ -492,11 +541,65 @@ export default function Content() {
                   )}
                 </> 
             </div>
-    }
+
+        </Accordion.Body>
+      </Accordion.Item>
+     
+    </Accordion>   
+
+            </MainCard>
+        </Col>
+        <Col>
+        <MainCard >
+           
+        <Accordion  defaultActiveKey="0">
+      <Accordion.Item eventKey="0">
+        <Accordion.Header>
+        <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
+            <Row>
+              <Col>
+              <Avatar size="xl" style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2Fdelete-icon-14.png?alt=media&token=9caa2567-ef2d-40cd-b8ad-1d9b1e32635b" color="primary" zoomed/>
+              </Col>              
+            
+            
+            
+            <Col>
+               <p style={{marginTop:"1rem"}}>Discard Page</p>
+              </Col>
+              <Col >
+              <Tooltip style={{marginTop:"0.5rem"}} title="Here you can remove the page from the group that you currently in." TransitionComponent={Fade} TransitionProps={{ timeout: 600 }}><IconButton> <HelpOutlineIcon /></IconButton></Tooltip> 
+              </Col>
+            </Row>
+          </Container>
+          </Accordion.Header>
+        <Accordion.Body>
+        <div className="card-body text-center ">
+              <strong> NOTE: This only deletes it from the Group, it won't delete the page from Instagram nor Facebook. </strong>
+              {DeleteModalShow && (
+                <DeleteModal SetShowDeleteModal={setDeleteModalShow} />
+              )}
+
+<div className="d-flex justify-content-center">
+<Button variant="outlined" color='error' type="submit"
+style={{ margin: "1rem" }}
+onClick={() => {
+  setDeleteModalShow(!DeleteModalShow);
+}}
+startIcon={<DeleteIcon />}> Remove the page from the Group</Button>
+</div>
+
+
+              
+            </div>
+
+        </Accordion.Body>
+      </Accordion.Item>
+     
+    </Accordion>   
             
             </MainCard>
-        </div>
-      </div>
+        </Col>
+      </Row>
     </div>
   );
 }

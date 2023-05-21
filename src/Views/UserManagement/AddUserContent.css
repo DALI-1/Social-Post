@@ -7,12 +7,11 @@ body{margin-top:20px;
         width: 12rem;
     }
     .img-accountAvatar-profile {
-        max-width: 2.5rem;
-        Max-height: 2.5rem;
-        
+        height: 2.5rem;
+        width: 2.5rem;
     }
     .rounded-circle {
-        border-radius: 20% !important;
+        border-radius: 50% !important;
     }
     .card {
         box-shadow: 0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%);
@@ -26,12 +25,6 @@ body{margin-top:20px;
         .card {
           min-height: 100px; /* adjust as needed */
         }
-    }
-
-    .AddUserLogo
-    {
-        max-width: 1rem;
-        max-height: 1rem;
     }
     .d-flex {
         display: flex !important;
@@ -82,3 +75,5 @@ body{margin-top:20px;
         margin-left: 1rem;
         margin-right: 1rem;
     }
+
+    
