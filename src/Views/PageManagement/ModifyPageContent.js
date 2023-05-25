@@ -254,7 +254,7 @@ export default function Content() {
                 }
                 else
                 {
-                  toast.error("Page Picture Change failed.", {
+                  toast.info("Page Picture Change failed, make sure the image is not too small.", {
                     position: "bottom-left",
                     autoClose: 5000,
                     hideProgressBar: false,
@@ -294,7 +294,7 @@ export default function Content() {
         theme: "light",
       });
     } else {
-      toast.error("Image Change cancel failed, please contact Dev team", {
+      toast.info("Image Change cancel failed, please contact Dev team", {
         position: "bottom-left",
         autoClose: 5000,
         hideProgressBar: false,
