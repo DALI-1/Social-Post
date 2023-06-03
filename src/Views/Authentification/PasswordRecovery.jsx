@@ -122,7 +122,7 @@ export const PasswordRecovery=(props)=> {
           <DialogContentText>
           {!isError ? (
         <p>
-          Enter the email you'd like to receive the recovery mail on
+          Please enter your account Email Address.
         </p>
       ) : (
         <strong>Email is required.</strong>
