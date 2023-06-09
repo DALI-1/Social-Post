@@ -1392,6 +1392,7 @@ export default function Content() {
     variables.PostGlobalVariables.POST_SelectedPageIds=[]
     variables.PostGlobalVariables.POST_AssetsTags=[]
     variables.PostGlobalVariables.POST_Mentions=[]
+     variables.PostGlobalVariables.POST_SelectedPageInfo=[]
     //initializing the POST variables in /variables.js
         //initializing Age
         variables.PostGlobalVariables.POST_TargetedAgeRange.FromAge=""
@@ -1418,6 +1419,7 @@ export default function Content() {
         variables.PostGlobalVariables.POST_TargetedInterests=[]
         // initializing Caching InterestsoptionList
         variables.PostGlobalVariables.POST_CachedInterestOptions=[]
+
 
   },[])
 
