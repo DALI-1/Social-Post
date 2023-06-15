@@ -43,7 +43,8 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import CircularProgress from '@mui/material/CircularProgress';
 import ImageDeleter from "../../components/PostManagementComps/PostAssetsComps/Post_ImageSelector"
-
+import ImageSearchIcon from '@mui/icons-material/ImageSearch';
+import ThumbnailPicker from "../../components/PostManagementComps/AddPostComps/ThumbnailPickerDialog"
 import DeleteIcon from '@mui/icons-material/Delete';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import Filter1Icon from '@mui/icons-material/Filter1';
@@ -63,11 +64,15 @@ import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 import FaceRetouchingNaturalIcon from '@mui/icons-material/FaceRetouchingNatural';
 import { renderToStaticMarkup } from 'react-dom/server';
 import MainCard from "../../components/UI/cards/MainCard"
+import {Upload_Thumbnail_Image} from "../../libs/FireBase"
+import {HeaderSpinnerActions}  from '../../variables/variables'
+import LinearUncertainSpinner from "../../components/UI/SpinnerComps/LinearLoadingSpinner"
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 const iconSize = 48;
 const iconColor = 'blue'
 export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelectionChange,handleAssetSelectionChange,DefaultPostText},ref)=> {
+
   //--------------------Variables specific the posting options------------------------------//
   const editorRef =React.useRef(null)
   const Post_DateInput=React.useRef(variables.PostGlobalVariables.EDITPOST_Default_PostDate)
@@ -121,11 +126,30 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
    const [SelectedAssets,SetSelectedAssets]=React.useState([])
    const [ShowImageTagDialog,SetShowImageTagDialog]=React.useState(false)
    const [InfoTag,SetInfoTag]=React.useState(false)
+   var DefaultvideoValue=[]
+
+   if(variables.PostGlobalVariables.POST_SelectedVideoAssetsInfo!=null && variables.PostGlobalVariables.POST_SelectedVideoAssetsInfo!=undefined)
+   {
+    DefaultvideoValue=[...DefaultvideoValue,variables.PostGlobalVariables.POST_SelectedVideoAssetsInfo]
+   }
+    const [VideoAssets,SetVideoAssets]=React.useState(DefaultvideoValue)
+ 
+   const [ShowThumbnailPickerDialog,SetShowThumbnailDialog]=React.useState(false)
    //----------------------------------------End of Variables related to the Options, DynamicField, Assets, mentions--------------------///
-   React.useEffect(()=>{
-    variables.PostGlobalVariables.POST_SelectedAssetsInfo=Assets
-    handleAssetSelectionChange()
-   },[Assets])
+
+
+    //==========NOTE: This useeffect Updates the Side Preview========//
+    React.useEffect(()=>{
+      variables.PostGlobalVariables.POST_SelectedAssetsInfo=Assets
+      handleAssetSelectionChange()
+     },[Assets])
+   //=========END NOTE========//
+  //==========NOTE: This useeffect Updates the Side Preview========//
+     React.useEffect(()=>{
+      variables.PostGlobalVariables.POST_SelectedVideoAssetsInfo=VideoAssets[0];
+      handleAssetSelectionChange()
+     },[VideoAssets])
+  //=========END NOTE========//
 
 
 
@@ -196,7 +220,7 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
   })
 //-----------intiliazing the images by the selection
  
-const HandlePostSchedule=(()=>{
+const HandlePostSchedule=( async()=>{
 
   let EditorContent=editorRef.current.getContent()
   let Post_Date=Post_DateInput.current
@@ -226,16 +250,25 @@ const HandlePostSchedule=(()=>{
       {
 
         var AssetsList=[]
+        var VideoAssetsList=[]
 
         Assets.map((Asset)=>{
           AssetsList=[...AssetsList,{ 
             assetID: Asset.AssetId
           }]
         })
+
+        VideoAssets.map( (Asset)=>{      
+          VideoAssetsList=[...VideoAssetsList,{ 
+            asset_ID: Asset.id,
+            thumbnailURL:"NotUploadedYet"
+          }]
+                  
+        })
        
-        if(AssetsList.length==0 &&INSTAGRAM_Page_Exist_InSelection_Flag)
+        if(AssetsList.length==0 &&VideoAssetsList.length==0 &&INSTAGRAM_Page_Exist_InSelection_Flag)
         {
-          toast.info("You cannot create an Instagram Post without at least having picture added to it", {
+          toast.info("You cannot create an Instagram Post without at least having picture or a video added to it", {
             position: "bottom-left",
             autoClose: 5000,
             hideProgressBar: false,
@@ -248,6 +281,36 @@ const HandlePostSchedule=(()=>{
         }
         else
         {
+
+          //==============NOTE: Here we gonna upload the Thumbnail=============//
+          VideoAssetsList=[]
+          const promises=VideoAssets.map(async (Asset)=>{    
+            let ThumbnailURL="No_Thumbnail_Specified"
+            if(variables.PostGlobalVariables.POST_SelectedVideoThumbnail!="")
+            {
+              toast.warning("Saving your post, please wait...", {
+                position: "bottom-left", 
+                autoClose: 4000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+              });
+              ThumbnailURL=await Upload_Thumbnail_Image(variables.PostGlobalVariables.POST_SelectedVideoThumbnail)
+            }    
+              VideoAssetsList=[...VideoAssetsList,{ 
+                asset_ID: Asset.id,
+                thumbnailURL:ThumbnailURL
+              }]
+                      
+            })
+  
+            await Promise.all(promises);
+
+            //==============END NOTE=============//
+
           let ReFormatedTargetedLanguages=[]
           let ReFormatedTargetedLocations=[]
           let ReFormatedTargetedRegions=[]
@@ -325,6 +388,7 @@ const HandlePostSchedule=(()=>{
             postDate: Post_DateInput.current,
             listOfPages:ListOfPages,
             listOfAssets: AssetsList,
+            listOfVideoAssets: VideoAssetsList,
             listOfTags:variables.PostGlobalVariables.POST_AssetsTags,
             listOfDynamicFields: variables.PostGlobalVariables.POST_AddedDynamicFields,
 
@@ -338,7 +402,7 @@ const HandlePostSchedule=(()=>{
             targeted_Locations: ReFormatedTargetedLocations,
             targeted_Languages: ReFormatedTargetedLanguages,
             targeted_Interests: ReFormatedTargetedInterests,
-         };  
+         }; 
         let JsonObjectToSend = JSON.stringify(JsonObject);
         let url2 =
           process.env.REACT_APP_BACKENDURL + 
@@ -350,6 +414,7 @@ const HandlePostSchedule=(()=>{
             if(result.successCode=="Post_Edited")
             {
     
+             
               toast.success("Post Informations saved!", {
                 position: "bottom-left",
                 autoClose: 5000,
@@ -371,6 +436,7 @@ const HandlePostSchedule=(()=>{
       }
       else
       {
+       
         toast.info("You cannot create a post without associating at least one page", {
           position: "bottom-left",
           autoClose: 5000,
@@ -386,6 +452,7 @@ const HandlePostSchedule=(()=>{
     }
     else
     {
+      
       toast.info("You cannot create a post with an empty content", {
         position: "bottom-left",
         autoClose: 5000,
@@ -402,6 +469,7 @@ const HandlePostSchedule=(()=>{
   }
   else
   {
+   
     toast.info("Post date for scheduled Posts cannot be empty, use Post Now instead if you don't want to specify the Post date", {
       position: "bottom-left",
       autoClose: 5000,
@@ -658,13 +726,11 @@ function appendText(Text) {
   editorRef.current.execCommand('mceInsertContent', false, Text+" ")
 }
 
-//Old Version of AppenedAssets, it ads them directly to the HTML
-/*function AppenedAsset(Asset)
-{
-  editorRef.current.execCommand('mceInsertContent', false,Asset) 
-}*/
+
+
 function AppenedAsset(NewAssetsList)
 {  
+  SetVideoAssets([])
   let localNewAssetsList=[...Assets]
   NewAssetsList.map((Asset)=>{
     //We just adding unique randomlly generated ID for the picture since the Assets can use the same image multiple times
@@ -674,6 +740,13 @@ function AppenedAsset(NewAssetsList)
   SetAssets(localNewAssetsList)
 }
 
+
+function AppenedVideoAsset(SelectedVideo)
+{  //Clearing the Images 
+  SetAssets([])
+  SetVideoAssets(SelectedVideo)
+  
+}
 
 
 //This is used to Remove the Dynamic Field  text from TinyMCEEditor in case the Dynamic FIeld is deleted
@@ -841,22 +914,57 @@ const HandleImageTag=(()=>{
             {Assets.length!=0&&
                     <Accordion className='m-2' defaultActiveKey="0" style={{boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)'}}>
                     <Accordion.Item eventKey="0">
-                      <Accordion.Header>Selected Assets</Accordion.Header>
+                      <Accordion.Header>Selected Images </Accordion.Header>
                       <Accordion.Body>
                         {SelectedAssets.length>0&& <div style={{  float: "right"}}>
                           {/*This Gonna tag ppl in the pictures */}
-      <IconButton color="primary" aria-label="Tag" size="large" onClick={HandleImageTag} >
-        <LocalOfferIcon fontSize="inherit" />
-      </IconButton>
-                          
-                          <IconButton color="error" aria-label="delete" size="large" onClick={HandleAssetUnAssign}>
-        <DeleteIcon fontSize="inherit" />
-      </IconButton>
-      
-      </div>
+                  <IconButton color="primary" aria-label="Tag" size="large" onClick={HandleImageTag} >
+                    <LocalOfferIcon fontSize="inherit" />
+                  </IconButton>
+                                      
+                                      <IconButton color="error" aria-label="delete" size="large" onClick={HandleAssetUnAssign}>
+                    <DeleteIcon fontSize="inherit" />
+                  </IconButton>
+                  
+                  </div>
                         }
                        
                       <ImageDeleter Gallery={Assets} SetSelectedAssets={SetSelectedAssets} />
+                      </Accordion.Body>
+                    </Accordion.Item>
+              
+                   
+                  </Accordion> 
+            
+            }
+
+
+            {VideoAssets.length!=0&&
+                    <Accordion className='m-2' defaultActiveKey="0" style={{boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)'}}>
+                    <Accordion.Item eventKey="0">
+                      <Accordion.Header>Selected Video</Accordion.Header>
+                      <Accordion.Body>
+                      <div style={{  float: "right"}}>
+                      
+                      <IconButton color="primary" aria-label="Tag" size="large" onClick={()=>{SetShowThumbnailDialog(true)}} >
+                  <ImageSearchIcon fontSize="inherit" />
+                </IconButton>
+                                    
+                                    <IconButton color="error" aria-label="delete" size="large" onClick={()=>{SetVideoAssets([])}}>
+                  <DeleteIcon fontSize="inherit" />
+                </IconButton>
+                </div>
+                          {VideoAssets.map((vid,index)=>{
+
+                            return(
+                      <video
+                      key={index}
+                      height="100%"
+                      width="100%"
+                      controls
+                      src={vid.resourceURL}
+                        />
+                     )})}
                       </Accordion.Body>
                     </Accordion.Item>
               
@@ -987,11 +1095,12 @@ const HandleImageTag=(()=>{
             </Container>
             {/*-----------------------------This Part here handles Dialog showing------------------------------------------*/}
           {ShowAddMentionDialog&&<AddMentionDialog SetShowAddMentionDialog={SetShowAddMentionDialog} appendText={appendText} RemoveMentionedUserText={RemoveMentionedUserText}/>}
-          {ShowAssetsDialog&&<AddAssetsDialog AppenedAsset={AppenedAsset} SetShowAssetsDialog={SetShowAssetsDialog}/>}
+          {ShowAssetsDialog&&<AddAssetsDialog AppenedAsset={AppenedAsset} AppenedVideoAsset={AppenedVideoAsset} SetShowAssetsDialog={SetShowAssetsDialog}/>}
           {ShowDynamicFieldDialog&&<AddDynamicFieldDialog appendText={appendText} RemoveDynamicFieldText={RemoveDynamicFieldText} SetShowDynamicFieldDialog={SetShowDynamicFieldDialog}/>} 
           {ShowAddLocationDialog&&<AddLocationDialog SetShowAddLocationDialog={SetShowAddLocationDialog}/>}
           {ShowAddTargetDialog&&<AddTargetDialog SetShowAddTargetDialog={SetShowAddTargetDialog}/>} 
           {ShowImageTagDialog&&<ImageTagDialog ShowImageTagDialog={ShowImageTagDialog} SetShowImageTagDialog={SetShowImageTagDialog} SelectedAssets={SelectedAssets}/>}
+          {ShowThumbnailPickerDialog&&<ThumbnailPicker SetShowThumbnailDialog={SetShowThumbnailDialog} Video={VideoAssets[0]} />}
             {/*-----------------------------End Of the Part that handles Dialog showing------------------------------------------*/}
           </div>
   )
@@ -1131,9 +1240,11 @@ ListOfPagePosts.current=[]
     </div>
   )
 })
-export default   function Content() {
+export default function Content() {
   const { GlobalState, Dispatch } = React.useContext(AppContext);
-  const [DefaultPostText,setDefaultPostText]=React.useState();
+  const [ReadyToDisplay, SetReadyToDisplay] = React.useState(false);
+  var DefaultPostText=React.useRef("Empty")
+  
   const FirstPaneRef=React.useRef(null)
   const SecondPaneRef=React.useRef(null)
    //Preview Related
@@ -1168,9 +1279,8 @@ export default   function Content() {
     
   }
  
-  React.useEffect(()=>{
+   async function InitializeData(){
 
-    
 
     //--------NOTE: THE intialiazing should be done after the pages are loaded and configured properly to avoid early buggy clicks--------
     var JsonObject = {  
@@ -1181,8 +1291,8 @@ export default   function Content() {
     process.env.REACT_APP_BACKENDURL + 
     process.env.REACT_APP_GETPOSTINFO;
   let UserToken = window.localStorage.getItem("AuthToken");
-  let APIResult = APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
-  APIResult.then((response) => {
+  var response = await APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
+
     if (response.errorCode == undefined) {
       if(response.successCode=="PostInfo_Reterived")
       {
@@ -1257,13 +1367,12 @@ export default   function Content() {
         let JsonObjectToSend = JSON.stringify(JsonObject);
         let url2 =process.env.REACT_APP_BACKENDURL + process.env.REACT_APP_GETGROUPATTERNS;
         let UserToken = window.localStorage.getItem("AuthToken");
-        let APIResult = APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
-        APIResult.then((result) => {
+        let result = await APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
         if (result.ErrorCode == undefined) {
          //updating Patterns info, this will be used in the preview to replace the pattern values with their specific values
         variables.PostGlobalVariables.POST_PatternsInfo=result.result
         }
-        });
+       
 
       //------END TASK-----//
 
@@ -1271,7 +1380,8 @@ export default   function Content() {
       
       let Temp_Formated_AssetsList=[]
       let Temp_Formated_TagsList=[]
-      response.result.usedAssets.map((Asset)=>{
+      let Temp_Formated_Video=null
+      response.result.usedAssets.filter((Asset)=>Asset.asset.assetType=="image/jpeg").map((Asset)=>{
         Temp_Formated_AssetsList=[...Temp_Formated_AssetsList,{
           "src":Asset.asset.resourceURL,
         "value":Asset.id,
@@ -1303,6 +1413,13 @@ export default   function Content() {
          }
       })
       
+
+      //=============Handling the video=============//
+      response.result.usedAssets.filter((Asset)=>Asset.asset.assetType=="video/mp4").map((Asset)=>{
+        Temp_Formated_Video=Asset.asset
+      });
+
+      variables.PostGlobalVariables.POST_SelectedVideoAssetsInfo=Temp_Formated_Video;
       variables.PostGlobalVariables.POST_SelectedAssetsInfo=Temp_Formated_AssetsList
       variables.PostGlobalVariables.POST_AssetsTags=Temp_Formated_TagsList
    
@@ -1342,12 +1459,14 @@ export default   function Content() {
             })
             variables.PostGlobalVariables.POST_Mentions=Temp_FormatedMentions
 
-            setDefaultPostText(Temp_PostText)
+
+            DefaultPostText.current=Temp_PostText
         }
         //Case there is no mentions, just plain text
         else
         {
-          setDefaultPostText(response.result.postText)
+
+          DefaultPostText.current=response.result.postText
         }
        
 
@@ -1402,7 +1521,7 @@ export default   function Content() {
           "interest_Platform": interest.interest_Platform
           }]
           //Getting the List of interests with the same name
-          let List_Of_Audience_Interests=SearchLib.Facebook_Get_Audience_Interests(interest.interest_Name)
+          let List_Of_Audience_Interests= SearchLib.Facebook_Get_Audience_Interests(interest.interest_Name)
           //Filling the options list with the data, so that later it finds it and shows  it checked by default
           List_Of_Audience_Interests.then((Result)=>{
             if(Result.length!==0)
@@ -1593,7 +1712,7 @@ export default   function Content() {
    
 
   
-      
+    
       //-----------preparing the repeat options------------//
 
 
@@ -1601,18 +1720,29 @@ export default   function Content() {
 
       }
     }
-  });
-  },[])
-  
+ 
+  }
 
+  new Promise((resolve,reject)=>{
+    InitializeData().then(()=>{
 
+      resolve()
+    })
+    
+  }).then(()=>{
+    
+    SetReadyToDisplay(true)
+  })
+
+if(ReadyToDisplay)
+{
   return (
     <>  
        <MainCard sx={{ width: "100%", height:"100%", m: 1, p: 2, textAlign: "center" }} style={{margin:"1rem",padding:"1rem",boxShadow: '0px 0px 10px 0px rgba(0, 0, 0, 0.2)'}}>
 
 <SplitterComponent id="splitter" height="100%" width="100%" separatorSize={5} >
    <PanesDirective>
-   <PaneDirective  min='50%' content={()=>{return(<FirstPane ref={FirstPaneRef} handleAssetSelectionChange={handleAssetSelectionChange}  handleEditorChange={handleEditorChange} handlePageSelectionChange={handlePageSelectionChange} DefaultPostText={DefaultPostText} />)}} />
+   <PaneDirective  min='50%' content={()=>{return(<FirstPane ref={FirstPaneRef} handleAssetSelectionChange={handleAssetSelectionChange}  handleEditorChange={handleEditorChange} handlePageSelectionChange={handlePageSelectionChange} DefaultPostText={DefaultPostText.current}  />)}} />
    <PaneDirective min='20%' content={()=>{return(<SecondPane  ref={SecondPaneRef} SamplePreview={SamplePreview} LivePreview={LivePreview} TextCode={TextCode} />)}} />
      
    </PanesDirective>
@@ -1622,5 +1752,15 @@ export default   function Content() {
     </MainCard>
 </>
   );
+}else
+{
+  return(<MainCard sx={{ width: "100%", height:"100%", m: 1, p: 2, textAlign: "center" }} style={{margin:"1rem",padding:"1rem",boxShadow: '0px 0px 10px 0px rgba(0, 0, 0, 0.2)'}}>
+
+  <strong>Loading the post data.....</strong>
+  <LinearUncertainSpinner/>
+  
+      </MainCard>)
+}
+
 }
 

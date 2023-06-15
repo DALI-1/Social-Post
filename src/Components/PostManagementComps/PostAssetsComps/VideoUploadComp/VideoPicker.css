@@ -1,0 +1,47 @@
+.VideoSelector {
+    display: inline-block;
+    position: relative;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding-left:12px;
+    padding-top: 12px;
+    padding-right: 12px;
+    margin: 10px;
+  }
+
+  .VideoSelector:hover
+  {
+    border: 2px solid #009be5;
+    box-shadow: 0 0 5px rgba(0,0,0, 0.3);
+  }
+
+  .VideoSelector:active {
+    opacity: 0.5;
+  }
+
+  .SelectedVideoIcon
+  {
+    position: absolute;
+    display: inline-flex;
+    right: 15px;
+    
+    width: 15%;
+    height: 20%;
+    background-image: url("../../../../Assets/ImagePicker/Checkbox.png");
+    background-size: cover;
+    opacity: 1;
+    z-index: 1000;
+  }
+
+  .SelectZone
+  {
+    position: relative;
+    display: inline-block;
+    content: "";
+    width: 100%;
+    height: 30px;
+    margin-top: 10px;
+    border: 1px solid #009be5;
+    border-radius: 5px;
+  
+  }

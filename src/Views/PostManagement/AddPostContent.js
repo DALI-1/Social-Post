@@ -61,6 +61,10 @@ import DynamicFeedIcon from '@mui/icons-material/DynamicFeed';
 import RoomIcon from '@mui/icons-material/Room';
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 import MainCard from "../../components/UI/cards/MainCard"
+import ImageSearchIcon from '@mui/icons-material/ImageSearch';
+import ThumbnailPicker from "../../components/PostManagementComps/AddPostComps/ThumbnailPickerDialog"
+import {Upload_Thumbnail_Image} from "../../libs/FireBase"
+import {HeaderSpinnerActions}  from '../../variables/variables'
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 const iconSize = 48;
@@ -119,14 +123,29 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
    const [ShowAssetsDialog,SetShowAssetsDialog]=React.useState(false)
    const [ShowDynamicFieldDialog,SetShowDynamicFieldDialog]=React.useState(false)
    const [Assets,SetAssets]=React.useState([])
+   const [VideoAssets,SetVideoAssets]=React.useState([])
    const [SelectedAssets,SetSelectedAssets]=React.useState([])
    const [ShowImageTagDialog,SetShowImageTagDialog]=React.useState(false)
    const [InfoTag,SetInfoTag]=React.useState(false)
+   const [ShowThumbnailPickerDialog,SetShowThumbnailDialog]=React.useState(false)
    //----------------------------------------End of Variables related to the Options, DynamicField, Assets, mentions--------------------///
+
+
+   //==========NOTE: This useeffect Updates the Side Preview========//
    React.useEffect(()=>{
     variables.PostGlobalVariables.POST_SelectedAssetsInfo=Assets
     handleAssetSelectionChange()
    },[Assets])
+ //=========END NOTE========//
+//==========NOTE: This useeffect Updates the Side Preview========//
+   React.useEffect(()=>{
+    console.log(VideoAssets)
+    variables.PostGlobalVariables.POST_SelectedVideoAssetsInfo=VideoAssets[0];
+    handleAssetSelectionChange()
+   },[VideoAssets])
+//=========END NOTE========//
+
+
    const handleOptimalTimeSet=(()=>{
 
       
@@ -193,9 +212,14 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
  
   })
 
-   
-  const HandlePostSchedule=(()=>{
+     
 
+ 
+ 
+   
+  const HandlePostSchedule=( async ()=>{
+
+   
     let EditorContent=editorRef.current.getContent()
     
     let Post_Date=Post_DateInput.current
@@ -225,16 +249,25 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
         {
 
           var AssetsList=[]
+          var VideoAssetsList=[]
 
           Assets.map((Asset)=>{
             AssetsList=[...AssetsList,{ 
               assetID: Asset.AssetId
             }]
           })
+
+          VideoAssets.map( (Asset)=>{      
+            VideoAssetsList=[...VideoAssetsList,{ 
+              asset_ID: Asset.id,
+              thumbnailURL:"NotUploadedYet"
+            }]
+                    
+          })
          
-          if(AssetsList.length==0 &&INSTAGRAM_Page_Exist_InSelection_Flag)
+          if(AssetsList.length==0 &&VideoAssetsList.length==0 &&INSTAGRAM_Page_Exist_InSelection_Flag)
           {
-            toast.info("You cannot create an Instagram Post without at least having picture added to it", {
+            toast.info("You cannot create an Instagram Post without at least having picture Or a video added to it", {
               position: "bottom-left",
               autoClose: 5000,
               hideProgressBar: false,
@@ -247,6 +280,36 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
           }
           else
           {
+
+            //==============NOTE: Here we gonna upload the Thumbnail=============//
+            VideoAssetsList=[]
+            const promises=VideoAssets.map(async (Asset)=>{    
+              let ThumbnailURL="No_Thumbnail_Specified"
+              if(variables.PostGlobalVariables.POST_SelectedVideoThumbnail!="")
+              {
+                toast.warning("Scheduling your post, please wait...", {
+                  position: "bottom-left", 
+                  autoClose: 4000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "light",
+                });
+                ThumbnailURL=await Upload_Thumbnail_Image(variables.PostGlobalVariables.POST_SelectedVideoThumbnail)
+              }    
+                VideoAssetsList=[...VideoAssetsList,{ 
+                  asset_ID: Asset.id,
+                  thumbnailURL:ThumbnailURL
+                }]
+                        
+              })
+    
+              await Promise.all(promises);
+
+              //==============END NOTE=============//
+
             let ReFormatedTargetedLanguages=[]
             let ReFormatedTargetedLocations=[]
             let ReFormatedTargetedRegions=[]
@@ -323,9 +386,9 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
               postDate: Post_DateInput.current,
               listOfPages:ListOfPages,
               listOfAssets: AssetsList,
+              listOfVideoAssets: VideoAssetsList,
               listOfTags:variables.PostGlobalVariables.POST_AssetsTags,
               listOfDynamicFields: variables.PostGlobalVariables.POST_AddedDynamicFields,
-
               listOfMentionedPlatformAccounts:Formated_listOfMentionedPlatformAccounts,
               target_AgeFrom: variables.PostGlobalVariables.POST_TargetedAgeRange.FromAge,
               target_AgeTo: variables.PostGlobalVariables.POST_TargetedAgeRange.ToAge,
@@ -337,6 +400,9 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
               targeted_Languages: ReFormatedTargetedLanguages,
               targeted_Interests: ReFormatedTargetedInterests,
            };  
+
+
+
           let JsonObjectToSend = JSON.stringify(JsonObject);
           let url2 =
             process.env.REACT_APP_BACKENDURL + 
@@ -347,7 +413,7 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
             if (result.errorCode == undefined) {
               if(result.successCode=="Post_Scheduleded")
               {
-      
+                
                 toast.success("Post Scheduleded Successfully!", {
                   position: "bottom-left",
                   autoClose: 5000,
@@ -369,6 +435,7 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
         }
         else
         {
+          
           toast.info("You cannot create a post without associating at least one page", {
             position: "bottom-left",
             autoClose: 5000,
@@ -384,6 +451,7 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
       }
       else
       {
+        
         toast.info("You cannot create a post with an empty content", {
           position: "bottom-left",
           autoClose: 5000,
@@ -400,6 +468,7 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
     }
     else
     {
+      
       toast.info("Post date for scheduled Posts cannot be empty, use Post Now instead if you don't want to specify the Post date", {
         position: "bottom-left",
         autoClose: 5000,
@@ -416,7 +485,8 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
  
   })
 
-  const HandlePostNow=(()=>{
+  const HandlePostNow=(async ()=>{
+
 
     let EditorContent=editorRef.current.getContent()
     let Post_Date=Post_DateInput.current
@@ -446,16 +516,28 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
         {
 
           var AssetsList=[]
+          var VideoAssetsList=[]
 
           Assets.map((Asset)=>{
             AssetsList=[...AssetsList,{ 
               assetID: Asset.AssetId
             }]
           })
+
+          VideoAssets.map( (Asset)=>{      
+              VideoAssetsList=[...VideoAssetsList,{ 
+                asset_ID: Asset.id,
+                thumbnailURL:"NotUploadedYet"
+              }]
+                      
+            })
+
+        
          
-          if(AssetsList.length==0 &&INSTAGRAM_Page_Exist_InSelection_Flag)
+          
+          if(AssetsList.length==0&&VideoAssetsList.length==0 &&INSTAGRAM_Page_Exist_InSelection_Flag)
           {
-            toast.info("You cannot create an Instagram Post without at least having picture added to it", {
+            toast.info("You cannot create an Instagram Post without at least having picture or a Video added to it", {
               position: "bottom-left",
               autoClose: 5000,
               hideProgressBar: false,
@@ -468,6 +550,41 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
           }
           else
           {
+
+            //==============NOTE: Here we gonna upload the Thumbnail=============//
+            VideoAssetsList=[]
+            const promises=VideoAssets.map(async (Asset)=>{    
+              let ThumbnailURL="No_Thumbnail_Specified"
+              if(variables.PostGlobalVariables.POST_SelectedVideoThumbnail!="")
+              {
+                toast.warning("Posting, please wait...", {
+                  position: "bottom-left", 
+                  autoClose: 4000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "light",
+                });
+                ThumbnailURL=await Upload_Thumbnail_Image(variables.PostGlobalVariables.POST_SelectedVideoThumbnail)
+              }    
+                VideoAssetsList=[...VideoAssetsList,{ 
+                  asset_ID: Asset.id,
+                  thumbnailURL:ThumbnailURL
+                }]
+                        
+              })
+    
+              await Promise.all(promises);
+
+              //==============END NOTE=============//
+
+
+
+
+
+
             let ReFormatedTargetedLanguages=[]
             let ReFormatedTargetedLocations=[]
             let ReFormatedTargetedRegions=[]
@@ -545,6 +662,7 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
               listOfMentionedPlatformAccounts:Formated_listOfMentionedPlatformAccounts,
               listOfPages:ListOfPages,
               listOfAssets: AssetsList,
+              listOfVideoAssets: VideoAssetsList,
               listOfDynamicFields: variables.PostGlobalVariables.POST_AddedDynamicFields,
               listOfTags:variables.PostGlobalVariables.POST_AssetsTags,
               target_AgeFrom: variables.PostGlobalVariables.POST_TargetedAgeRange.FromAge,
@@ -558,6 +676,8 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
               targeted_Interests: ReFormatedTargetedInterests,
            };
       
+          
+
           let JsonObjectToSend = JSON.stringify(JsonObject);
           let url2 =
             process.env.REACT_APP_BACKENDURL + 
@@ -569,6 +689,7 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
               if(result.successCode=="Post_Scheduleded")
               {
       
+                
                 toast.success("Posted Successfully!", {
                   position: "bottom-left",
                   autoClose: 5000,
@@ -590,6 +711,7 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
         }
         else
         {
+          
           toast.info("You cannot create a post without associating at least one page", {
             position: "bottom-left",
             autoClose: 5000,
@@ -605,6 +727,7 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
       }
       else
       {
+        
         toast.info("You cannot create a post with an empty content", {
           position: "bottom-left",
           autoClose: 5000,
@@ -621,6 +744,7 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
     }
     else
     {
+      
       toast.info("Post date for scheduled Posts cannot be empty, use Post Now instead if you don't want to specify the Post date", {
         position: "bottom-left",
         autoClose: 5000,
@@ -877,13 +1001,10 @@ function appendText(Text) {
   editorRef.current.execCommand('mceInsertContent', false, Text+" ")
 }
 
-//Old Version of AppenedAssets, it ads them directly to the HTML
-/*function AppenedAsset(Asset)
-{
-  editorRef.current.execCommand('mceInsertContent', false,Asset) 
-}*/
+
 function AppenedAsset(NewAssetsList)
 {  
+  SetVideoAssets([])
   let localNewAssetsList=[...Assets]
   NewAssetsList.map((Asset)=>{
     //We just adding unique randomlly generated ID for the picture since the Assets can use the same image multiple times
@@ -893,7 +1014,12 @@ function AppenedAsset(NewAssetsList)
   SetAssets(localNewAssetsList)
 }
 
-
+function AppenedVideoAsset(SelectedVideo)
+{  //Clearing the Images 
+  SetAssets([])
+  SetVideoAssets(SelectedVideo)
+  
+}
 
 //This is used to Remove the Dynamic Field  text from TinyMCEEditor in case the Dynamic FIeld is deleted
 function RemoveDynamicFieldText(Text) {
@@ -1052,11 +1178,11 @@ const HandleImageTag=(()=>{
         />
            
             </div>
-
+            
             {Assets.length!=0&&
                     <Accordion className='m-2' defaultActiveKey="0" style={{boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)'}}>
                     <Accordion.Item eventKey="0">
-                      <Accordion.Header>Selected Assets</Accordion.Header>
+                      <Accordion.Header>Selected Images</Accordion.Header>
                       <Accordion.Body>
                         {SelectedAssets.length>0&& <div style={{  float: "right"}}>
                           {/*This Gonna tag ppl in the pictures */}
@@ -1072,6 +1198,38 @@ const HandleImageTag=(()=>{
                         }
                        
                       <ImageDeleter Gallery={Assets} SetSelectedAssets={SetSelectedAssets} />
+                      </Accordion.Body>
+                    </Accordion.Item>
+              
+                   
+                  </Accordion> 
+            
+            }
+
+      {VideoAssets.length!=0&&
+                    <Accordion className='m-2' defaultActiveKey="0" style={{boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)'}}>
+                    <Accordion.Item eventKey="0">
+                      <Accordion.Header>Selected Video</Accordion.Header>
+                      <Accordion.Body>
+                      <div style={{  float: "right"}}>
+                      
+                      <IconButton color="primary"  aria-label="Tag" size="large" onClick={()=>{SetShowThumbnailDialog(true)}} >
+        <ImageSearchIcon fontSize="inherit" />
+      </IconButton>
+                          
+                          <IconButton color="error" aria-label="delete" size="large" onClick={()=>{SetVideoAssets([])}}>
+        <DeleteIcon fontSize="inherit" />
+      </IconButton>
+      </div>
+                     {VideoAssets.map((vid,index)=>{return(
+                      <video
+                      key={index}
+                      height="100%"
+                      width="100%"
+                      controls
+                      src={vid.resourceURL}
+                        />
+                     )})}
                       </Accordion.Body>
                     </Accordion.Item>
               
@@ -1206,11 +1364,13 @@ const HandleImageTag=(()=>{
             </Container>
             {/*-----------------------------This Part here handles Dialog showing------------------------------------------*/}
           {ShowAddMentionDialog&&<AddMentionDialog SetShowAddMentionDialog={SetShowAddMentionDialog} appendText={appendText} RemoveMentionedUserText={RemoveMentionedUserText}/>}
-          {ShowAssetsDialog&&<AddAssetsDialog AppenedAsset={AppenedAsset} SetShowAssetsDialog={SetShowAssetsDialog}/>}
+          {ShowAssetsDialog&&<AddAssetsDialog AppenedAsset={AppenedAsset} AppenedVideoAsset={AppenedVideoAsset} SetShowAssetsDialog={SetShowAssetsDialog}/>}
           {ShowDynamicFieldDialog&&<AddDynamicFieldDialog appendText={appendText} RemoveDynamicFieldText={RemoveDynamicFieldText} SetShowDynamicFieldDialog={SetShowDynamicFieldDialog}/>} 
           {ShowAddLocationDialog&&<AddLocationDialog SetShowAddLocationDialog={SetShowAddLocationDialog}/>}
           {ShowAddTargetDialog&&<AddTargetDialog SetShowAddTargetDialog={SetShowAddTargetDialog}/>} 
           {ShowImageTagDialog&&<ImageTagDialog ShowImageTagDialog={ShowImageTagDialog} SetShowImageTagDialog={SetShowImageTagDialog} SelectedAssets={SelectedAssets}/>}
+
+          {ShowThumbnailPickerDialog&&<ThumbnailPicker SetShowThumbnailDialog={SetShowThumbnailDialog} Video={VideoAssets[0]} />}
             {/*-----------------------------End Of the Part that handles Dialog showing------------------------------------------*/}
           </div>
   )
@@ -1393,6 +1553,9 @@ export default function Content() {
     variables.PostGlobalVariables.POST_AssetsTags=[]
     variables.PostGlobalVariables.POST_Mentions=[]
      variables.PostGlobalVariables.POST_SelectedPageInfo=[]
+     variables.PostGlobalVariables.POST_SelectedVideoThumbnail=""
+     variables.PostGlobalVariables.POST_SelectedVideoAssetsInfo=null
+     variables.PostGlobalVariables.POST_SelectedAssetsInfo=[]
     //initializing the POST variables in /variables.js
         //initializing Age
         variables.PostGlobalVariables.POST_TargetedAgeRange.FromAge=""

@@ -31,11 +31,14 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container'; 
 import IconButton from '@mui/material/IconButton';
+import VideoInput from '../PostAssetsComps/VideoUploadComp/VideoInput';
+import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
+import VideoPicker from "../PostAssetsComps/VideoUploadComp/VideoPicker"
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function AlertDialogSlide({SetShowAssetsDialog,AppenedAsset}) {
+export default function AlertDialogSlide({SetShowAssetsDialog,AppenedAsset,AppenedVideoAsset}) {
   const {GlobalState,Dispatch}=React.useContext(AppContext)
 const [UploadedImage,SetUploadedImage]=React.useState()
 let SelectedPictures=React.useRef([])
@@ -47,7 +50,8 @@ const [UploadProgress,setUploadProgress]=React.useState(0)
   const handleClose = () => {
     SetShowAssetsDialog(false)
   };
-
+  //This state tells which tab is selected, Images or Videos, used to Update the buttons.
+  const [SelectedOption,SetSelectedOption]=React.useState([])
 
 const HandleAddImageToGallery=()=>{
   if(UploadedImage===null)
@@ -348,29 +352,253 @@ const handleImageUpdate=(ImageUrl)=>
   },[])
 
   
-  //Old Version of HandleAddSelectedPicture_ToEditor, this one adds it to the Editor
-  /*const HandleAddSelectedPictures_ToTheEditor=()=>
-  {
-      let AssetsHTML_ToInsert=""
-
-      SelectedPictures.current.map((Asset)=>{
-       
-      AssetsHTML_ToInsert=AssetsHTML_ToInsert+"<img src="+Asset.src+" style=\"width: 70px; height: 70px;\" alt=\"image_description\"/>"
-      })
-    AppenedAsset(AssetsHTML_ToInsert)
-    handleClose()
-  }*/
-
     const HandleAddSelectedPictures_ToTheEditor=()=>
   {
       let ListOfAssets=[]
-
       SelectedPictures.current.map((Asset)=>{  
         ListOfAssets=[...ListOfAssets,Asset]
       })
     AppenedAsset(ListOfAssets)
     handleClose()
   }
+
+
+
+  
+//=================================VIDEO RELATED FUNCTIONS & STATES========================================//
+const [SelectedVideo_Local_URL,setSelectedVideo_Local_URL]=React.useState(null)
+const [Video_Gallery,SetVideo_Gallery]=React.useState([])
+const [VideoGalleryLoading,SetVideoGalleryLoading]=React.useState(false)
+const [SelectedVideo,Set_SelectedVideo]=React.useState(false)
+
+  //Loading the Group Video assets
+  React.useEffect(()=>{
+    var JsonObject = {      
+        groupID: GlobalState.SelectedGroup.id
+  };
+  
+  let JsonObjectToSend = JSON.stringify(JsonObject);
+  let url2 =
+    process.env.REACT_APP_BACKENDURL + 
+    process.env.REACT_APP_GETGROUPVIDEOASSETS;
+  let UserToken = window.localStorage.getItem("AuthToken");
+  SetVideoGalleryLoading(true)
+  let APIResult = APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
+  APIResult.then((result) => {
+    if (result.errorCode == undefined) {
+      if(result.successCode=="Assets_Retrieved")
+      {
+        SetVideo_Gallery(result.result)
+        SetVideoGalleryLoading(false)       
+      }
+    }
+  });
+  },[])
+//=========This function add a video to the Gallery=======//
+const HandleAddVideoToGallery=()=>{
+  if(SelectedVideo_Local_URL===null)
+  {
+    toast.info("Please Upload an Video in order to add it to the Gallery", {
+      position: "bottom-left",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+  }
+  else
+  {
+    UploadVideo_To_FireBase(SelectedVideo_Local_URL)
+  }
+}
+
+//=========This function Converts a Blob URL to a File =======//
+function convertBlobUrlToVideoFile(blobUrl) {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', blobUrl);
+    xhr.responseType = 'blob';
+    xhr.onload = () => {
+      if (xhr.status === 200) {
+        const videoBlob = xhr.response;
+        const videoFile = new File([videoBlob], 'video.mp4', { type: videoBlob.type });
+        resolve(videoFile);
+      } else {
+        reject(new Error('Failed to convert blob URL to video file.'));
+      }
+    };
+    xhr.onerror = () => {
+      reject(new Error('Failed to convert blob URL to video file.'));
+    };
+    xhr.send();
+  });
+}
+//=========This function uploads the video to the Firebase and saves it to the DB in The Assets Table=======//
+const UploadVideo_To_FireBase=(ImageUrl)=>
+    { 
+        setUploadProgress(0) 
+        if(ImageUrl===null || ImageUrl=="") return; 
+        
+        convertBlobUrlToVideoFile(ImageUrl).then((file)=>{
+          let HashedFileName=hashRandom()
+          const storageRef=ref(storage,`/AssetsVideos/${HashedFileName}`)
+          //Uploading the new image to FireBase
+          uploadTask.current=uploadBytesResumable(storageRef,file)
+          uploadTask.current.on("state_changed",
+          //This async function is executed many times during the upload to indicate progress
+          (snapshot)=>
+          {
+              const progress=Math.round((snapshot.bytesTransferred/snapshot.totalBytes)*100)
+              setUploadProgress(progress)
+              
+              if(ProgressSpinnerRef.current!=null)
+              {
+                const SpinnerProgressBarStateSetter= ProgressSpinnerRef.current.GetSpinnerProgressBarStateSetter;
+                SpinnerProgressBarStateSetter(progress)
+              }
+                
+                
+          },
+          //This async function is executed when there is an error with the upload
+          (error)=>{
+              console.log(error)
+          }
+          ,
+          //This function is executed when the state changes, we gonna use it for the state changing to complete
+          ()=>{
+           getDownloadURL(uploadTask.current.snapshot.ref)
+           .then(url=>
+              {   //Sending a POST HTTP To the API with the Json Object     
+                var JsonObject = { 
+                  groupID: GlobalState.SelectedGroup.id,
+                  assetName: file.name,
+                  assetType: file.type,
+                  resourceURL: url        
+            };
+            let JsonObjectToSend = JSON.stringify(JsonObject);
+            let url2 =
+              process.env.REACT_APP_BACKENDURL + 
+              process.env.REACT_APP_ADDASSET;
+            let UserToken = window.localStorage.getItem("AuthToken");
+            let APIResult = APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
+            APIResult.then((result) => {
+              if (result.errorCode == undefined) {
+                if(result.successCode=="Asset_Added")
+                {
+                  toast.success('Video saved to the Gallery', {
+                    position: "bottom-left",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    });
+                    SetVideo_Gallery([...Video_Gallery,result.result])     
+                }
+              }
+            });
+  
+          }
+              )
+          }
+          )
+       
+        })
+    } 
+
+    const HandleDeleteSelectedVideo=()=>{
+      var JsonObject = {        
+          listOfAssets: [{assetID:SelectedVideo}]   
+                       };
+  let JsonObjectToSend = JSON.stringify(JsonObject);
+  let url2 =
+    process.env.REACT_APP_BACKENDURL + 
+    process.env.REACT_APP_DELETEGROUPASSET;
+  let UserToken = window.localStorage.getItem("AuthToken");
+  let APIResult = APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
+  APIResult.then((result) => {
+    if (result.errorCode == undefined) {
+      if(result.successCode=="Asset_Deleted")
+      {
+        toast.success('Video deleted Successfully !', {
+          position: "bottom-left",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          });
+            //Deleting the old picture from FireBase
+            SelectedPictures.current.map((Pic)=>{
+              const fileRef = ref(storage,Pic.src);
+              deleteObject(fileRef).then()
+            })     
+
+        SetVideo_Gallery(Video_Gallery.filter(item => item.id!=SelectedVideo))
+        Set_SelectedVideo(null)
+      }
+    }
+    else
+    {
+      if(result.result=="Invalid Asset ID")
+      {
+        toast.error('Error, One of the Selected Videos cannot be deleted! !', {
+          position: "bottom-left",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          });      
+      }
+    }
+  });
+
+    }
+
+    const HandleAddSelectedVideo_ToTheEditor=()=>
+    {
+        let ListOfVideos=[]
+        Video_Gallery.map((Video)=>{  
+          if(Video.id==SelectedVideo)
+          ListOfVideos=[Video]
+        })
+        if(ListOfVideos.length>0)
+        {
+          variables.PostGlobalVariables.POST_SelectedVideoThumbnail=""
+          AppenedVideoAsset(ListOfVideos)
+        handleClose()
+        }
+        else
+        {
+          toast.info('Please select a video You want to insert.', {
+            position: "bottom-left",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            }); 
+        }
+
+
+        
+    }
+    
+
+
+
   return (
     <div>
       <Dialog
@@ -386,7 +614,7 @@ const handleImageUpdate=(ImageUrl)=>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
           
-          <Accordion className='m-2' defaultActiveKey="0">
+          <Accordion className='m-2' defaultActiveKey="-1" onSelect={(e)=>{e==0?SetSelectedOption("ImageUploader"):e==1?SetSelectedOption("VideoUploader"):SetSelectedOption("NothingSelected")}}>
       <Accordion.Item eventKey="0">
         <Accordion.Header>
         <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
@@ -400,7 +628,7 @@ const handleImageUpdate=(ImageUrl)=>
             
             <Row>
             <Col md={10}>
-               <p style={{marginTop:"1rem"}}>Manage Post Images & Group Gallery</p>
+               <p style={{marginTop:"1rem"}}>Images Gallery</p>
               </Col>
               <Col md={2}>
               <Tooltip style={{marginTop:"0.5rem"}} title="Here you can manage your Group Gallery, Add new repeatitive pictures like logos and use them directly and also add the pictures to your posts" TransitionComponent={Fade} TransitionProps={{ timeout: 600 }}><IconButton> <HelpOutlineIcon /></IconButton></Tooltip> 
@@ -423,7 +651,7 @@ const handleImageUpdate=(ImageUrl)=>
              }
               {!AssetsLoading&&
               <Row>
-              <ImagePickerList  SelectedPictures={SelectedPictures} Gallery={Gallery} SetGallery={SetGallery}/>     
+              <ImagePickerList   SelectedPictures={SelectedPictures} Gallery={Gallery} SetGallery={SetGallery}/>     
               </Row>
               }
               
@@ -432,22 +660,64 @@ const handleImageUpdate=(ImageUrl)=>
             
         </Accordion.Body>
       </Accordion.Item>
+
+      <Accordion.Item eventKey="1">
+        <Accordion.Header>
+        <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
+            <Row>
+              <Col md={4}>
+              <Avatar size="xl"  style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2F251-2518917_ui-system-apps-by-blackvariant-gallery-icon-png.png?alt=media&token=55c34a88-e987-4454-a944-4d7d69feec77" color="primary" zoomed/>
+              </Col>              
+            </Row>
+
+
+            
+            <Row>
+            <Col md={10}>
+               <p style={{marginTop:"1rem"}}> Videos Gallery</p>
+              </Col>
+              <Col md={2}>
+              <Tooltip style={{marginTop:"0.5rem"}} title="Here you can manage your videos." TransitionComponent={Fade} TransitionProps={{ timeout: 600 }}><IconButton> <HelpOutlineIcon /></IconButton></Tooltip> 
+              </Col>
+            </Row>
+          </Container>
+        </Accordion.Header>
+        <Accordion.Body>
+           {/*This progress is to indicate the image upload */}
+         
+        {UploadProgress!=0&&UploadProgress!=100&& <LinearWithValueLabel style={{margin:"10px"}} ref={ProgressSpinnerRef} value={UploadProgress} />} 
+        {VideoGalleryLoading&&<LinearProgress />}
+        {VideoGalleryLoading==false&&<VideoInput width={400} height={300} setSelectedVideo_Local_URL={setSelectedVideo_Local_URL}/>}          
+        {VideoGalleryLoading==false&&<VideoPicker  Video_Gallery={Video_Gallery} SelectedVideo_State={SelectedVideo} Set_SelectedVideo={Set_SelectedVideo}/>}
+
+        </Accordion.Body>
+      </Accordion.Item>
      
     </Accordion>
           </DialogContentText>
         </DialogContent>
         <DialogActions style={{display: 'flex',justifyContent: 'center',alignItems: 'center'}}>
-          
-        
-              <Button variant="outlined"  color='primary' startIcon={<CancelIcon />} onClick={handleClose}>Close Tab </Button>
+        <Button variant="outlined"  color='primary' startIcon={<CancelIcon />} onClick={handleClose}>Close Tab </Button>
+        {SelectedOption=="ImageUploader"&&
+        <>                  
+              {(UploadProgress==0 ||UploadProgress==100 )&&<Button variant="outlined" color='primary' startIcon={<AddAPhotoIcon />} onClick={HandleAddImageToGallery}>Add To Images Gallery</Button>}
+              {(UploadProgress!=0&&UploadProgress!=100)&&<Button variant="outlined" color='warning' startIcon={<CancelIcon />} onClick={CancelImageUpload}>Cancel Image Upload</Button>}
               
-              {(UploadProgress==0 ||UploadProgress==100 )&&<Button variant="outlined" color='primary' startIcon={<AddAPhotoIcon />} onClick={HandleAddImageToGallery}>Add To  Gallery</Button>}
-              {(UploadProgress!=0&&UploadProgress!=100)&&<Button variant="outlined" color='error' startIcon={<CancelIcon />} onClick={CancelImageUpload}>Cancel Upload</Button>}
+              <Button variant="outlined" color='error' startIcon={<DeleteIcon />} onClick={HandleDeleteSelectedImages}>Delete Image from Gallery</Button>
+              <Button variant="outlined" color='primary' startIcon={<PostAddIcon />} onClick={HandleAddSelectedPictures_ToTheEditor}>Insert Image To Post</Button>
+        </> 
+        }
+          {SelectedOption=="VideoUploader"&&
+        <>
+         
               
-              <Button variant="outlined" color='error' startIcon={<DeleteIcon />} onClick={HandleDeleteSelectedImages}>Delete from Gallery</Button>
-              <Button variant="outlined" color='primary' startIcon={<PostAddIcon />} onClick={HandleAddSelectedPictures_ToTheEditor}>Insert To Post</Button>
-            
-            
+              {(UploadProgress==0 ||UploadProgress==100 )&&<Button variant="outlined" color='primary' startIcon={<OndemandVideoIcon/>} onClick={HandleAddVideoToGallery}>Add To  Video Gallery</Button>}
+              {(UploadProgress!=0&&UploadProgress!=100)&&<Button variant="outlined" color='warning' startIcon={<CancelIcon />} onClick={CancelImageUpload}>Cancel Video Upload</Button>}
+              
+              <Button variant="outlined" color='error' startIcon={<DeleteIcon />} onClick={HandleDeleteSelectedVideo}>Delete Video from Gallery</Button>
+              <Button variant="outlined" color='primary' startIcon={<PostAddIcon />} onClick={HandleAddSelectedVideo_ToTheEditor}>Insert Video To Post</Button>
+        </> 
+        }
 
         </DialogActions>
       </Dialog>
