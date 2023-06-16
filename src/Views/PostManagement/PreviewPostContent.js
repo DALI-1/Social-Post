@@ -16,14 +16,16 @@ import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import * as SearchLib from "../../libs/Facebook_Search"
 import MainCard from "../../components/UI/cards/MainCard"
+import LinearUncertainSpinner from "../../components/UI/SpinnerComps/LinearLoadingSpinner"
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
   const Preview=({TextCode})=> {
  
-
+console.log(TextCode)
   let ListOfPagePosts=React.useRef([])
 ListOfPagePosts.current=[]
+console.log(variables.PostGlobalVariables.POST_SelectedPageInfo)
 //We first iteratte through our pages so we added the required modifications
   variables.PostGlobalVariables.POST_SelectedPageInfo.map((Page)=>{
     let LocalText=TextCode
@@ -87,10 +89,47 @@ ListOfPagePosts.current=[]
 }
 export default function Content() {
   const { GlobalState, Dispatch } = React.useContext(AppContext);
-  const [DefaultPostText,setDefaultPostText]=React.useState("");
-  React.useEffect(()=>{
+  const [ReadyToDisplay, SetReadyToDisplay] = React.useState(false);
+  var DefaultPostText=React.useRef("Empty")
 
-    
+  async function InitializeData(){
+ 
+    //initializing the variables, so that old data from previous posts are not saved
+    variables.PostGlobalVariables.POST_AddedDynamicFields=[]
+    variables.PostGlobalVariables.POST_PatternsInfo=[]
+    variables.PostGlobalVariables.POST_SelectedPageIds=[]
+    variables.PostGlobalVariables.POST_AssetsTags=[]
+    variables.PostGlobalVariables.POST_Mentions=[]
+     variables.PostGlobalVariables.POST_SelectedPageInfo=[]
+     variables.PostGlobalVariables.POST_SelectedVideoThumbnail=""
+     variables.PostGlobalVariables.POST_SelectedVideoAssetsInfo=null
+     variables.PostGlobalVariables.POST_SelectedAssetsInfo=[]
+    //initializing the POST variables in /variables.js
+        //initializing Age
+        variables.PostGlobalVariables.POST_TargetedAgeRange.FromAge=""
+        variables.PostGlobalVariables.POST_TargetedAgeRange.ToAge=""
+        //Updating Gender
+        variables.PostGlobalVariables.POST_TargetedGenderId=3
+        //initializing Language
+        variables.PostGlobalVariables.POST_TargetedLanguages=[]
+        //initializing Caching LanguageOptionList
+        variables.PostGlobalVariables.POST_CachedLanguageOptions=[]
+          //initializing Location
+        variables.PostGlobalVariables.POST_TargetedLocations=[]
+        // initializing Caching LocationOptionList
+        variables.PostGlobalVariables.POST_CachedLocationOptions=[]
+          //initializing Regions
+        variables.PostGlobalVariables.POST_TargetedRegions=[]
+        // initializing Caching RegionOptionList
+        variables.PostGlobalVariables.POST_CachedRegionOptions=[]
+          //initializing Countries
+        variables.PostGlobalVariables.POST_TargetedCountries=[]
+        // initializing Caching CountriesoptionList
+        variables.PostGlobalVariables.POST_CachedCountryOptions=[]
+         //initializing Interests
+        variables.PostGlobalVariables.POST_TargetedInterests=[]
+        // initializing Caching InterestsoptionList
+        variables.PostGlobalVariables.POST_CachedInterestOptions=[]
 
     //--------NOTE: THE intialiazing should be done after the pages are loaded and configured properly to avoid early buggy clicks--------
     var JsonObject = {  
@@ -101,8 +140,8 @@ export default function Content() {
     process.env.REACT_APP_BACKENDURL + 
     process.env.REACT_APP_GETPOSTINFO;
   let UserToken = window.localStorage.getItem("AuthToken");
-  let APIResult = APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
-  APIResult.then((response) => {
+  var response = await APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
+
     if (response.errorCode == undefined) {
       if(response.successCode=="PostInfo_Reterived")
       {
@@ -113,6 +152,8 @@ export default function Content() {
       let Temp_Formated_DynamicFieldList=[]
       let ListOfPlatformPageID_ID=[]
                  //-------------------------------END NOTE--------------------//
+               
+    
       //------TASK:preparing selected pages,Temp_Formated_SelectedPagesList-----//
       response.result.pages.map((page)=>{
         Temp_Formated_SelectedPagesList=[...Temp_Formated_SelectedPagesList,{
@@ -128,7 +169,7 @@ export default function Content() {
       })
       variables.PostGlobalVariables.POST_SelectedPageIds=Temp_Formated_SelectedPagesList
       variables.PostGlobalVariables.POST_SelectedPageInfo=Temp_Formated_SelectedPagesList
-
+    
       //------END TASK-----//
 
       //------TASK:preparing  the dynamicfields & Patterns-----//
@@ -167,7 +208,7 @@ export default function Content() {
       })
       //Updating the Dynamicfield List with the formated one
        variables.PostGlobalVariables.POST_AddedDynamicFields=Temp_Formated_DynamicFieldList
-
+      
       //Calling the API to fetch the group patterns so we load the patterns by default and have our dynamic fields shown properly
       var JsonObject = {
         groupID: GlobalState.SelectedGroup.id,
@@ -175,13 +216,12 @@ export default function Content() {
         let JsonObjectToSend = JSON.stringify(JsonObject);
         let url2 =process.env.REACT_APP_BACKENDURL + process.env.REACT_APP_GETGROUPATTERNS;
         let UserToken = window.localStorage.getItem("AuthToken");
-        let APIResult = APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
-        APIResult.then((result) => {
+        let result = await APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
         if (result.ErrorCode == undefined) {
          //updating Patterns info, this will be used in the preview to replace the pattern values with their specific values
         variables.PostGlobalVariables.POST_PatternsInfo=result.result
         }
-        });
+       
 
       //------END TASK-----//
 
@@ -189,7 +229,9 @@ export default function Content() {
       
       let Temp_Formated_AssetsList=[]
       let Temp_Formated_TagsList=[]
-      response.result.usedAssets.map((Asset)=>{
+      let Temp_Formated_Video=null
+      let Temp_ThumbnailURL=""
+      response.result.usedAssets.filter((Asset)=>Asset.asset.assetType=="image/jpeg").map((Asset)=>{
         Temp_Formated_AssetsList=[...Temp_Formated_AssetsList,{
           "src":Asset.asset.resourceURL,
         "value":Asset.id,
@@ -221,9 +263,22 @@ export default function Content() {
          }
       })
       
+
+      //=============Handling the video=============//
+      
+      response.result.usedAssets.filter((Asset)=>Asset.asset.assetType=="video/mp4").map((Asset)=>{
+        Temp_Formated_Video=Asset.asset
+        if(Asset.thumbnail!=null)
+        {
+          Temp_ThumbnailURL=Asset.thumbnail.resourceURL
+        }
+      });
+      
+      variables.PostGlobalVariables.POST_SelectedVideoThumbnail=Temp_ThumbnailURL;
+      variables.PostGlobalVariables.POST_SelectedVideoAssetsInfo=Temp_Formated_Video;
       variables.PostGlobalVariables.POST_SelectedAssetsInfo=Temp_Formated_AssetsList
       variables.PostGlobalVariables.POST_AssetsTags=Temp_Formated_TagsList
-
+   
       
       //------END TASK-----//
 
@@ -239,6 +294,7 @@ export default function Content() {
             //Creating an empty mapping variable between the pattern and how the text should be shown to the user
             let MentionCode_Text=[]
             let Temp_FormatedMentions=[]
+            
             response.result.postMentions.map((mention)=>{
               //Filling the mapping variable here
               userIds.map((userid,index)=>{
@@ -260,14 +316,14 @@ export default function Content() {
             })
             variables.PostGlobalVariables.POST_Mentions=Temp_FormatedMentions
 
-            setDefaultPostText(Temp_PostText)
-           
+
+            DefaultPostText.current=Temp_PostText
         }
         //Case there is no mentions, just plain text
         else
         {
-          setDefaultPostText(response.result.postText)
-          
+
+          DefaultPostText.current=response.result.postText
         }
        
 
@@ -309,7 +365,9 @@ export default function Content() {
       {
         let Temp_FormatedInterests=[]
         let Temp_CachedInterests=[]
-        response.result.posT_Targeted_Interests.map((interest)=>{
+
+        var InterestPromises=response.result.posT_Targeted_Interests.map( async (interest)=>{
+          
           Temp_FormatedInterests=[...Temp_FormatedInterests,
           {
             "id": interest.id,
@@ -321,13 +379,14 @@ export default function Content() {
           "interest_PlatformId": interest.interest_PlatformId,
           "interest_Platform": interest.interest_Platform
           }]
+          
           //Getting the List of interests with the same name
-          let List_Of_Audience_Interests=SearchLib.Facebook_Get_Audience_Interests(interest.interest_Name)
+          let List_Of_Audience_Interests= await SearchLib.Facebook_Get_Audience_Interests(interest.interest_Name)
           //Filling the options list with the data, so that later it finds it and shows  it checked by default
-          List_Of_Audience_Interests.then((Result)=>{
-            if(Result.length!==0)
+               
+            if(List_Of_Audience_Interests.length!==0)
             {
-               Temp_CachedInterests= [...Temp_CachedInterests, ...Result].reduce((acc, curr) => {
+               Temp_CachedInterests= [...Temp_CachedInterests, ...List_Of_Audience_Interests].reduce((acc, curr) => {
                 const found = acc.find(item => item.id === curr.id);
                 if (!found) {
                   acc.push(curr);
@@ -335,9 +394,12 @@ export default function Content() {
                 return acc;
               }, [])     
             }
-          })
+          
   
          })
+         //Waiting for all the promises
+         await Promise.all(InterestPromises)
+
          variables.PostGlobalVariables.POST_CachedInterestOptions=Temp_CachedInterests
          variables.PostGlobalVariables.POST_TargetedInterests=Temp_FormatedInterests
       }
@@ -346,9 +408,10 @@ export default function Content() {
        //Case there is countries in the list
        if(response.result.posT_Targeted_Countries.length>0)
        {
+        
         let Temp_FormatedCountries=[]
         let Temp_CachedCountries=[]
-        response.result.posT_Targeted_Countries.map((country)=>{
+       var CountryPromises=response.result.posT_Targeted_Countries.map( async (country)=>{
           Temp_FormatedCountries=[...Temp_FormatedCountries,
           {
             "id": country.id,
@@ -357,12 +420,11 @@ export default function Content() {
             "country_PlatformCode": country.country_PlatformCode,
           }]
           //Getting the List of interests with the same name
-          let List_Of_Countries=SearchLib.Facebook_Get_Audience_Countries(country.country_Name)
+          let List_Of_Countries= await SearchLib.Facebook_Get_Audience_Countries(country.country_Name)
           //Filling the options list with the data, so that later it finds it and shows  it checked by default
-          List_Of_Countries.then((Result)=>{
-            if(Result.length!==0)
+            if(List_Of_Countries.length!==0)
             {
-             Temp_CachedCountries= [...Temp_CachedCountries, ...Result].reduce((acc, curr) => {
+             Temp_CachedCountries= [...Temp_CachedCountries, ...List_Of_Countries].reduce((acc, curr) => {
                 const found = acc.find(item => item.id === curr.id);
                 if (!found) {
                   acc.push(curr);
@@ -370,10 +432,12 @@ export default function Content() {
                 return acc;
               }, [])     
             }
-          })
+          
   
          })
         
+         //Waiting for all the countries to Finish
+         await Promise.all(CountryPromises)
          variables.PostGlobalVariables.POST_CachedCountryOptions=Temp_CachedCountries
          variables.PostGlobalVariables.POST_TargetedCountries=Temp_FormatedCountries
        }
@@ -382,9 +446,10 @@ export default function Content() {
        //Case there is Regions in the list
        if(response.result.posT_Targeted_Regions.length>0)
        {
+        
         let Temp_FormatedRegions=[]
         let Temp_CachedRegions=[]
-        response.result.posT_Targeted_Regions.map((region)=>{
+        var RegionPromises=response.result.posT_Targeted_Regions.map( async (region)=>{
          Temp_FormatedRegions=[...Temp_FormatedRegions,
           {
            "id": region.id,
@@ -394,13 +459,13 @@ export default function Content() {
            "region_PlatformId": region.region_PlatformId,
           }]
           //Getting the List of Regions with the same name
-          let List_Of_Regions=SearchLib.Facebook_Get_Audience_Regions([region.region_Country],region.region_Name)        
+          let List_Of_Regions=await SearchLib.Facebook_Get_Audience_Regions([region.region_Country],region.region_Name)        
           //Filling the options list with the data, so that later it finds it and shows  it checked by default
-          List_Of_Regions.then((Result)=>{
+
           
-            if(Result.length!==0)
+            if(List_Of_Regions.length!==0)
             {
-              Temp_CachedRegions= [...Temp_CachedRegions, ...Result].reduce((acc, curr) => {
+              Temp_CachedRegions= [...Temp_CachedRegions, ...List_Of_Regions].reduce((acc, curr) => {
                 const found = acc.find(item => item.id === curr.id);
                 if (!found) {
                   acc.push(curr);
@@ -409,19 +474,24 @@ export default function Content() {
               }, []) 
               
             }
-          })
+          
   
          })
+         //Waiting for REgion promises
+         await Promise.all(RegionPromises)
+         
          variables.PostGlobalVariables.POST_CachedRegionOptions=Temp_CachedRegions
          variables.PostGlobalVariables.POST_TargetedRegions=Temp_FormatedRegions
        }
         //Handling Locations
         //case there is targetted locations
-        if(response.result.posT_Targeted_Locations>0)
+        
+        
+        if(response.result.posT_Targeted_Locations.length>0)
         {
           let Temp_FormatedLocations=[]
           let Temp_CachedLocations=[]
-          response.result.posT_Targeted_Locations.map((Location)=>{
+         var LocationPromises=response.result.posT_Targeted_Locations.map(async(Location)=>{
            Temp_FormatedLocations=[...Temp_FormatedLocations,
             {
              "id": Location.id,
@@ -430,14 +500,14 @@ export default function Content() {
              "location_PlatformCode": Location.location_PlatformCode,
             }]
             //Getting the List of Regions with the same name
-
-            let List_Of_Locations=SearchLib.Facebook_Get_Audience_Locations([Location.location_Region],Location.location_Name)   
+   
+            let List_Of_Locations=await SearchLib.Facebook_Get_Audience_Locations([Location.location_Region],Location.location_Name)  
+             
             //Filling the options list with the data, so that later it finds it and shows  it checked by default
-            List_Of_Locations.then((Result)=>{
-            
-              if(Result.length!==0)
+
+              if(List_Of_Locations.length!==0)
               {
-               Temp_CachedLocations= [...Temp_CachedLocations, ...Result].reduce((acc, curr) => {
+               Temp_CachedLocations= [...Temp_CachedLocations, ...List_Of_Locations].reduce((acc, curr) => {
                   const found = acc.find(item => item.id === curr.id);
                   if (!found) {
                     acc.push(curr);
@@ -446,16 +516,18 @@ export default function Content() {
                 }, []) 
                 
               }
-            })
+           
     
            })
+           await Promise.all(LocationPromises)
            variables.PostGlobalVariables.POST_CachedLocationOptions=Temp_CachedLocations
            variables.PostGlobalVariables.POST_TargetedLocations=Temp_FormatedLocations
         }
       
       //------END TASK-----//
-
+      //-----------preparing the repeat options------------//
       //updating  post date
+  
       variables.PostGlobalVariables.EDITPOST_Default_PostDate=dayjs(response.result.postDate)
       //updating repeat option
       variables.PostGlobalVariables.EDITPOST_Default_RepeatPost=response.result.repeatPost
@@ -497,29 +569,48 @@ export default function Content() {
            break;
          default:
            variables.PostGlobalVariables.EDITPOST_Default_EndRepeatOption=2
-           variables.PostGlobalVariables.EDITPOST_Default_EndRepeatOnNbOfOccurences=response.result.endRepeatOnOccurence
-
-
-           
+           variables.PostGlobalVariables.EDITPOST_Default_EndRepeatOnNbOfOccurences=response.result.endRepeatOnOccurence   
        }
-     
-       
-       
-      } 
-      //-----------preparing the repeat options------------//
+      }
       //------END TASK-----//
 
       }
     }
-  });
-  },[])
+ 
+  }
+
+ //This function is executed only once and before the component renders
+  React.useLayoutEffect(()=>{
+    new Promise(async (resolve,reject)=>{
+      await InitializeData()
+        resolve()
+    }).then(()=>{
+      
+      SetReadyToDisplay(true)
+    })
+   },[])
+  if(ReadyToDisplay)
+  {
+
+  
   return (
     <>  
       
        <MainCard sx={{ width: "100%", height:"100%", m: 1, p: 2, textAlign: "center" }} style={{margin:"1rem",padding:"1rem",boxShadow: '0px 0px 10px 0px rgba(0, 0, 0, 0.2)'}}> 
-      <Preview  TextCode={DefaultPostText} />     
+    
+      {<Preview  TextCode={DefaultPostText.current} /> }   
     </MainCard>
 </>
   );
+  }
+  else
+{
+  return(<MainCard sx={{ width: "100%", height:"100%", m: 1, p: 2, textAlign: "center" }} style={{margin:"1rem",padding:"1rem",boxShadow: '0px 0px 10px 0px rgba(0, 0, 0, 0.2)'}}>
+
+  <strong>Loading the post preview, please wait.....</strong>
+  <LinearUncertainSpinner/>
+  
+      </MainCard>)
+}
 }
 

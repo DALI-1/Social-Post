@@ -640,7 +640,7 @@ const UploadVideo_To_FireBase=(ImageUrl)=>
         
              <Container style={{justifyContent: 'center',alignItems: 'center',margin:"1rem"}}>
               {/*This progress is to indicate the image upload */}
-            
+              {UploadProgress!=0&&UploadProgress!=100&&<strong>Uploading the Image, please wait...</strong>}
              {UploadProgress!=0&&UploadProgress!=100&& <LinearWithValueLabel ref={ProgressSpinnerRef} value={UploadProgress} />}
              {/*This progress is to indicate the Gallery intial load progress */}
              {AssetsLoading&&<LinearProgress />}
@@ -684,7 +684,7 @@ const UploadVideo_To_FireBase=(ImageUrl)=>
         </Accordion.Header>
         <Accordion.Body>
            {/*This progress is to indicate the image upload */}
-         
+         {UploadProgress!=0&&UploadProgress!=100&&<strong>Uploading the video, please wait...</strong>}
         {UploadProgress!=0&&UploadProgress!=100&& <LinearWithValueLabel style={{margin:"10px"}} ref={ProgressSpinnerRef} value={UploadProgress} />} 
         {VideoGalleryLoading&&<LinearProgress />}
         {VideoGalleryLoading==false&&<VideoInput width={400} height={300} setSelectedVideo_Local_URL={setSelectedVideo_Local_URL}/>}          

@@ -26,7 +26,7 @@ export default function FBPostBoxClone({Text,PageInfo}) {
       //----------------------------If the POST CONTAINS NO IMAGES-------------------------------//
     if(variables.PostGlobalVariables.POST_SelectedAssetsInfo.length==0)
     {
-           console.log(variables.PostGlobalVariables.POST_SelectedVideoAssetsInfo)
+
         if(variables.PostGlobalVariables.POST_SelectedVideoAssetsInfo!=null)
         {
 
@@ -52,7 +52,7 @@ export default function FBPostBoxClone({Text,PageInfo}) {
                 <div className='ClonePostContent'>
                 { ReactHtmlParser(Text) }
                         <video
-                 
+                  poster={variables.PostGlobalVariables.POST_SelectedVideoThumbnail}
                   height="100%"
                   width="100%"
                   controls
@@ -206,6 +206,7 @@ export default function FBPostBoxClone({Text,PageInfo}) {
                  height="100%"
                  width="100%"
                  controls
+                 poster={variables.PostGlobalVariables.POST_SelectedVideoThumbnail}
                  src={variables.PostGlobalVariables.POST_SelectedVideoAssetsInfo.resourceURL}
                    />
 

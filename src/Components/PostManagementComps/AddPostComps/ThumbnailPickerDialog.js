@@ -42,7 +42,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function AlertDialogSlide({SetShowThumbnailDialog,Video}) {
+export default function AlertDialogSlide({SetShowThumbnailDialog,Video,handleAssetSelectionChange}) {
 
   //=============================Thumbnail Picker States and variables==================================//
   const [SelectedTime,Set_SelectedTime]=React.useState(-1);
@@ -66,7 +66,6 @@ export default function AlertDialogSlide({SetShowThumbnailDialog,Video}) {
     Set_SelectedTime(0)
     //This event listener is gonna change the select time state which gonna request a frames update.
     VideoRef.current.addEventListener("seeked", (event) => {
-      console.log("Called")
       Set_SelectedTime(event.target.currentTime)
     });
   };
@@ -153,6 +152,7 @@ const  HandleSaveThumbnail=()=>{
     progress: undefined,
     theme: "light",
   });
+  handleAssetSelectionChange()
   handleClose()
 }
 

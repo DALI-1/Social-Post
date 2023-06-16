@@ -33,8 +33,9 @@ export default function VideoInput(props) {
         type="file"
         onChange={handleFileChange}
         accept=".mov,.mp4"
+        
       />
-<Button variant="outlined"  onClick={handleChoose} endIcon={<OndemandVideoIcon />} style={{width:"90%", margin:"10px"}}>Upload Video</Button>
+<Button variant="outlined"  onClick={handleChoose} endIcon={<OndemandVideoIcon />} style={{width:"90%", margin:"10px"}}>Add Video</Button>
   </div>
  
    <div className="VideoInput">

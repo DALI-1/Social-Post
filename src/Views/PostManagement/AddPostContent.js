@@ -139,7 +139,7 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
  //=========END NOTE========//
 //==========NOTE: This useeffect Updates the Side Preview========//
    React.useEffect(()=>{
-    console.log(VideoAssets)
+    
     variables.PostGlobalVariables.POST_SelectedVideoAssetsInfo=VideoAssets[0];
     handleAssetSelectionChange()
    },[VideoAssets])
@@ -967,7 +967,7 @@ const commonStyles = {
 };
 
 //here we will be making calls to the backened to retrieve the List Of Pages
-React.useEffect(()=>{
+React.useLayoutEffect(()=>{
 
 
  var JsonObject = {
@@ -1370,7 +1370,7 @@ const HandleImageTag=(()=>{
           {ShowAddTargetDialog&&<AddTargetDialog SetShowAddTargetDialog={SetShowAddTargetDialog}/>} 
           {ShowImageTagDialog&&<ImageTagDialog ShowImageTagDialog={ShowImageTagDialog} SetShowImageTagDialog={SetShowImageTagDialog} SelectedAssets={SelectedAssets}/>}
 
-          {ShowThumbnailPickerDialog&&<ThumbnailPicker SetShowThumbnailDialog={SetShowThumbnailDialog} Video={VideoAssets[0]} />}
+          {ShowThumbnailPickerDialog&&<ThumbnailPicker SetShowThumbnailDialog={SetShowThumbnailDialog} Video={VideoAssets[0]} handleAssetSelectionChange={handleAssetSelectionChange}/>}
             {/*-----------------------------End Of the Part that handles Dialog showing------------------------------------------*/}
           </div>
   )
@@ -1545,7 +1545,7 @@ export default function Content() {
     }
     
   }
-  React.useEffect(()=>{
+  React.useLayoutEffect(()=>{
     //initializing the variables, so that old data from previous posts are not saved
     variables.PostGlobalVariables.POST_AddedDynamicFields=[]
     variables.PostGlobalVariables.POST_PatternsInfo=[]
