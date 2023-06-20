@@ -34,6 +34,8 @@ import IconButton from '@mui/material/IconButton';
 import VideoInput from '../PostAssetsComps/VideoUploadComp/VideoInput';
 import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
 import VideoPicker from "../PostAssetsComps/VideoUploadComp/VideoPicker"
+import VideoIcon from "../../../Assets/video.png"
+import ImageIcon from "../../../Assets/Gallery.png"
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -620,7 +622,7 @@ const UploadVideo_To_FireBase=(ImageUrl)=>
         <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
             <Row>
               <Col md={4}>
-              <Avatar size="xl"  style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2F251-2518917_ui-system-apps-by-blackvariant-gallery-icon-png.png?alt=media&token=55c34a88-e987-4454-a944-4d7d69feec77" color="primary" zoomed/>
+              <Avatar size="xl"  style={{marginRight:"0.5rem"}} src={ImageIcon} color="primary" zoomed/>
               </Col>              
             </Row>
 
@@ -666,7 +668,7 @@ const UploadVideo_To_FireBase=(ImageUrl)=>
         <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
             <Row>
               <Col md={4}>
-              <Avatar size="xl"  style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2F251-2518917_ui-system-apps-by-blackvariant-gallery-icon-png.png?alt=media&token=55c34a88-e987-4454-a944-4d7d69feec77" color="primary" zoomed/>
+              <Avatar size="xl"  style={{marginRight:"0.5rem"}} src={VideoIcon} color="primary" zoomed/>
               </Col>              
             </Row>
 

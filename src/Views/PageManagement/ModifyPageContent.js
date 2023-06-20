@@ -35,6 +35,10 @@ import Container from 'react-bootstrap/Container';
 import IconButton from '@mui/material/IconButton';
 import Accordion from 'react-bootstrap/Accordion';
 import DeleteIcon from '@mui/icons-material/Delete';
+
+import PagePictureIcon from "../../Assets/Gallery.png"
+import PageIcon from "../../Assets/Page.png"
+import DeletePageIcon from "../../Assets/Delete.png"
 export default function Content() {
   let uploadTask = React.useRef(null);
   const [Associated_By_Page, setAssociated_By_Page] = React.useState([]);
@@ -320,11 +324,8 @@ export default function Content() {
         <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
             <Row>
               <Col>
-              <Avatar size="xl"  style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2F251-2518917_ui-system-apps-by-blackvariant-gallery-icon-png.png?alt=media&token=55c34a88-e987-4454-a944-4d7d69feec77" color="primary" zoomed/>
-              </Col>              
-            
-            
-            
+              <Avatar size="xl"  style={{marginRight:"0.5rem"}} src={PagePictureIcon} color="primary" zoomed/>
+              </Col>                        
             <Col>
                <p style={{marginTop:"1rem"}}>Page Picture</p>
               </Col>
@@ -400,9 +401,8 @@ export default function Content() {
         <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
             <Row>
               <Col>
-              <Avatar size="xl" squared style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2FSocialPost_PAGE_ICON.png?alt=media&token=c13966be-f386-42e9-a40f-12344d678e76" color="primary" zoomed/>
+              <Avatar size="xl" squared style={{marginRight:"0.5rem"}} src={PageIcon} color="primary" zoomed/>
               </Col>              
-            
             
             
             <Col>
@@ -492,10 +492,10 @@ export default function Content() {
         <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
             <Row>
               <Col>
-              <Avatar size="xl" squared style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2FSocialPost_PAGE_ICON.png?alt=media&token=c13966be-f386-42e9-a40f-12344d678e76" color="primary" zoomed/>
+              <Avatar size="xl" squared style={{marginRight:"0.5rem"}} src={PageIcon} color="primary" zoomed/>
               </Col>              
             
-            
+
             
             <Col>
                <p style={{marginTop:"1rem"}}>Page Associations</p>
@@ -558,11 +558,11 @@ export default function Content() {
         <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
             <Row>
               <Col>
-              <Avatar size="xl" style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2Fdelete-icon-14.png?alt=media&token=9caa2567-ef2d-40cd-b8ad-1d9b1e32635b" color="primary" zoomed/>
+              <Avatar size="xl" style={{marginRight:"0.5rem"}} src={DeletePageIcon} color="primary" zoomed/>
               </Col>              
             
             
-            
+
             <Col>
                <p style={{marginTop:"1rem"}}>Discard Page</p>
               </Col>

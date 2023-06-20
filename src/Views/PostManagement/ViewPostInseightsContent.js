@@ -255,7 +255,7 @@ setComments_Percentage(Total_RecentCommentValue*100)
     <Grid item xs={12} md={7} lg={12}>
         <Grid container alignItems="center" justifyContent="space-between">
             <Grid item>
-                <Typography variant="h5">Comments Performance</Typography>
+                <Typography variant="h5">Recent 5 Posts Comments Performance </Typography>
             </Grid>
             
         </Grid>
@@ -272,7 +272,7 @@ setComments_Percentage(Total_RecentCommentValue*100)
     <Grid item xs={12} md={5} lg={6}>
     <Grid container alignItems="center" justifyContent="space-between">
             <Grid item>
-                <Typography variant="h5">Likes Performance</Typography>
+                <Typography variant="h5">Recent 5 Posts Likes Performance</Typography>
             </Grid>
             
         </Grid>
@@ -288,7 +288,7 @@ setComments_Percentage(Total_RecentCommentValue*100)
         
     <Grid container alignItems="center" justifyContent="space-between">
             <Grid item>
-                <Typography variant="h5">Shares Performance</Typography>
+                <Typography variant="h5"> Recent 5 Posts Shares Performance</Typography>
             </Grid>
             
         </Grid>

@@ -73,7 +73,8 @@ export const PostTabs=
     ViewPostInseights:"ViewPostInseights",
     EditPost:"EditPostTab",
     PreviewPost:"PreviewPostTab",
-    ManagePostsTab:"ManagePostsTab"
+    ManagePostsTab:"ManagePostsTab",
+    SinglePostInseights:"SinglePostInseights"
 }
 
 
@@ -83,7 +84,8 @@ export const PostSelectedTabActions=
     SelectViewPostInseights:"SelectViewPostInseights",
     SelectEditPost:"SwitchToEditPost",
     SelectPreviewPost:"SwitchToPreviewPost",
-    SelectManagePosts:"SwitchToManagePostsTab"
+    SelectManagePosts:"SwitchToManagePostsTab",
+    SelectSinglePostInseights:"SelectSinglePostInseights",
 }
 
 

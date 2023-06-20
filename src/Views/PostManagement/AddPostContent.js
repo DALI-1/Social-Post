@@ -65,6 +65,8 @@ import ImageSearchIcon from '@mui/icons-material/ImageSearch';
 import ThumbnailPicker from "../../components/PostManagementComps/AddPostComps/ThumbnailPickerDialog"
 import {Upload_Thumbnail_Image} from "../../libs/FireBase"
 import {HeaderSpinnerActions}  from '../../variables/variables'
+import FacebookIcon from "../../Assets/Facebook.png"
+import InstagramIcon from "../../Assets/Instagram.png"
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 const iconSize = 48;
@@ -1149,7 +1151,10 @@ const HandleImageTag=(()=>{
             srcSet={option.PagePic}
             alt=""
           />
-          {option.label}          
+          {option.label}  
+
+          {option.PageType==1&&<img style={{margin:"10px"}} loading="lazy"width="35" height="20" src={FacebookIcon} srcSet={FacebookIcon}alt=""/>}
+          {option.PageType==2&&<img style={{margin:"10px"}} loading="lazy"width="20" height="20" src={InstagramIcon} srcSet={InstagramIcon}alt=""/>}
             </Box>
           )}}
           style={{ width: "auto" }}

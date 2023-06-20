@@ -37,6 +37,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container'; 
 import IconButton from '@mui/material/IconButton';
+import MentionIcon from "../../../Assets/mention.png"
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -188,7 +189,7 @@ export default function MentionDialog({SetShowAddMentionDialog,appendText,Remove
         <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
             <Row>
               <Col md={4}>
-              <Avatar size="xl"  style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2F99789adb-d585-443e-a28b-ff53d311e036.png?alt=media&token=ab57f950-f811-44a4-9994-60202ce59659" color="primary" zoomed/>
+              <Avatar size="xl"  style={{marginRight:"0.5rem"}} src={MentionIcon} color="primary" zoomed/>
               </Col>              
             </Row>
 

@@ -7,30 +7,11 @@ import { useTheme } from '@mui/material/styles';
 // third-party
 import ReactApexChart from 'react-apexcharts';
 
-// chart options
-const areaChartOptions = {
-    chart: {
-        height: 450,
-        type: 'area',
-        toolbar: {
-            show: false
-        }
-    },
-    dataLabels: {
-        enabled: false
-    },
-    stroke: {
-        curve: 'smooth',
-        width: 2
-    },
-    grid: {
-        strokeDashArray: 0
-    }
-};
 
 // ==============================|| INCOME AREA CHART ||============================== //
 
 const IncomeAreaChart = ({ slot,Type,Data}) => {
+  console.log(Data)
     const theme = useTheme();
     const { primary, secondary } = theme.palette.text;
     const line = theme.palette.divider;
@@ -38,7 +19,7 @@ const IncomeAreaChart = ({ slot,Type,Data}) => {
     var DefaultConfigurationValue=[]
     if(Type=="Comments")
     {
-      Data.postsInseights.map((post)=>{
+      Data.postsInseights.slice(0, 5).map((post)=>{
         let Post_CommentsY_Values=[]
         //We search for the Y values of the Comments inseights for the post
         post.inseightsInfo.map((Info)=>{
@@ -58,7 +39,7 @@ const IncomeAreaChart = ({ slot,Type,Data}) => {
     }
     if(Type=="Likes")
     {
-      Data.postsInseights.map((post)=>{
+      Data.postsInseights.slice(0, 5).map((post)=>{
         let Post_LikesY_Values=[]
         //We search for the Y values of the Comments inseights for the post
         post.inseightsInfo.map((Info)=>{
@@ -78,7 +59,7 @@ const IncomeAreaChart = ({ slot,Type,Data}) => {
     }
     if(Type=="Shares")
     {
-      Data.postsInseights.map((post)=>{
+      Data.postsInseights.slice(0, 5).map((post)=>{
         let Post_SharesY_Values=[]
         //We search for the Y values of the Comments inseights for the post
         post.inseightsInfo.map((Info)=>{
@@ -106,10 +87,7 @@ const IncomeAreaChart = ({ slot,Type,Data}) => {
           categories: DefaultConfigurationValue
         }
       });
-
-
     const [series, setSeries] = useState(DefaultStateValue);
-
     return <ReactApexChart options={options} series={series} type="area" height={450} />;
 };
 

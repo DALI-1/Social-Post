@@ -104,16 +104,8 @@
   color: #009be5;
   text-transform: none;
 }
-
-/*.css-zw3mfo-MuiModal-root-MuiDialog-root {
-  z-index: 1303 !important;
+/* To color insight numbers*/
+.MuiTypography-h3
+{
+  color:#009be5 !important;
 }
-
-.css-zw3mfo-MuiModal-root-MuiDialog-root {
-  z-index: 1400 !important;
-
-}*/
-
-/*div {
-  border: 1px solid black;
-}*/

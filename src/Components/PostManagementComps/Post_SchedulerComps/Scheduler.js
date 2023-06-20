@@ -27,6 +27,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import Box from '@mui/material/Box';
 import LinearProgress from '@mui/material/LinearProgress';
 import * as PermissionLib from "../../../libs/PermissionsChecker"
+import InsightsIcon from '@mui/icons-material/Insights';
 const TransitionLeft = React.forwardRef(function Transition(props, ref) {
   return <Slide  direction="left" ref={ref} {...props} />;
 });
@@ -164,6 +165,13 @@ const HandlePreviewPost=()=>
   Dispatch({ type: variables.PostSelectedTabActions.SelectPreviewPost });
   handleClose()
 }
+
+const HandlePostInsights=()=>
+{
+  variables.PostGlobalVariables.EDITPOST_SelectedPostID=postid
+  Dispatch({ type: variables.PostSelectedTabActions.SelectSinglePostInseights });
+  handleClose()
+}
 var PostisEditable=false
 data.map((post)=>{
   if(post.Id==postid)
@@ -191,6 +199,7 @@ return (
         <Button variant="outlined"color="primary" startIcon={<CancelIcon/>}  onClick={handleClose}>Cancel</Button>
         <Button variant="outlined"color="primary" startIcon={<VisibilityIcon/>}  onClick={HandlePreviewPost}>Preview Post</Button>
       {PostisEditable&&<Button variant="outlined"color="primary" startIcon={<EditIcon/>}   onClick={HandleModifyPost}>Modify Post</Button>}
+      {!PostisEditable&&<Button variant="outlined"color="warning" startIcon={<InsightsIcon/>}   onClick={HandlePostInsights}>View Post Insights</Button>}
       <Button variant="outlined"color="error" startIcon={<DeleteForeverIcon/>}  onClick={HandleDeletePost}>¨Delete Post</Button>
         </DialogActions>
       </Dialog>
@@ -367,6 +376,7 @@ const eventSettings = { dataSource: extend([], data, null, true), fields: fields
        </ScheduleComponent>
      {ModifyPostShow&&<ModifyDialog ModifyPostShow={ModifyPostShow} setModifyPostShow={setModifyPostShow} postid={SelectedPostID} setdata={setdata} data={data} DeletePostShow={DeletePostShow} setDeletePostShow={setDeletePostShow}/>}
      {DeletePostShow&&<DeleteConfirmDialog DeletePostShow={DeletePostShow} setDeletePostShow={setDeletePostShow} postid={SelectedPostID} setdata={setdata} data={data}/>}
+    
      </>
       
      );

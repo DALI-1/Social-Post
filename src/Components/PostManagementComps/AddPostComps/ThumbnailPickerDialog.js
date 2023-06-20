@@ -35,6 +35,7 @@ import Spinner from "../../UI/SpinnerComps/LoadingSpinner"
 import LinearSpinner from "../../UI/SpinnerComps/LinearLoadingSpinner"
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import FilterFramesIcon from '@mui/icons-material/FilterFrames';
 import {  toast } from "react-toastify";
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -167,7 +168,7 @@ const  HandleSaveThumbnail=()=>{
       >
         <AppBar sx={{ position: 'relative' }}>
           <Toolbar>
-              <SellIcon />
+              <FilterFramesIcon />
             <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
              Video Thumbnail
             </Typography>         

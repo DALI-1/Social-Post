@@ -26,6 +26,8 @@ import Fade from '@mui/material/Fade';
 import IconButton from '@mui/material/IconButton';
 import Accordion from 'react-bootstrap/Accordion';
 import { Avatar } from "@nextui-org/react";
+import GroupIcon from "../../Assets/Group.png"
+import GroupSecurityIcon from "../../Assets/Security.png"
 export default function Content() {
 
     const {GlobalState,Dispatch}=React.useContext(AppContext)
@@ -282,7 +284,7 @@ if(document.getElementById(RadioButton).checked)
         <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
             <Row>
               <Col>
-              <Avatar size="xl" style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2Fgroup-icon-png-15.png?alt=media&token=a5459dd5-4176-49bf-a4b7-95a559dd93cf" color="primary" zoomed/>
+              <Avatar size="xl" style={{marginRight:"0.5rem"}} src={GroupIcon} color="primary" zoomed/>
               </Col>              
             
             
@@ -333,7 +335,7 @@ if(document.getElementById(RadioButton).checked)
         <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
             <Row>
               <Col>
-              <Avatar size="xl" style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2FCyber-Security-Logo-PNG.png?alt=media&token=86492f23-f2b2-4786-ae38-06b922d017f6" color="primary" zoomed/>
+              <Avatar size="xl" style={{marginRight:"0.5rem"}} src={GroupSecurityIcon} color="primary" zoomed/>
               </Col>              
             
             

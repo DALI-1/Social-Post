@@ -12,7 +12,6 @@ import {AppContext} from "../../context/Context"
 import * as variables from "../../variables/variables"
 import {APIStatus,APIStatuses}  from '../../variables/variables';
 import { Avatar } from "@nextui-org/react";
-import AddUserLogo from '../../Assets/AddUser.png';
 import DropdownTreeSelect from 'react-dropdown-tree-select'
 import 'react-dropdown-tree-select/dist/styles.css'
 import IconButton from '@mui/material/IconButton';
@@ -30,7 +29,7 @@ import Container from 'react-bootstrap/Container';
 import MainCard from "../../components/UI/cards/MainCard"
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import {HeaderSpinnerActions,HeaderSpinner}  from '../../variables/variables'
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import AddUserIcon from "../../Assets/AddUser.png"
 export default function Content() {
 
     const {GlobalState,Dispatch}=React.useContext(AppContext)
@@ -321,7 +320,7 @@ React.useEffect(()=>{
         <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
             <Row>
               <Col md={4}>
-              <Avatar size="xl" style={{marginRight:"0.5rem"}} src={AddUserLogo} color="primary" zoomed/>
+              <Avatar size="xl" style={{marginRight:"0.5rem"}} src={AddUserIcon} color="primary" zoomed/>
               </Col>              
             </Row>
             

@@ -17,6 +17,7 @@ import Fade from '@mui/material/Fade';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container'; 
+import DynamicFieldIcon from "../../../Assets/Settings.png"
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -47,7 +48,7 @@ export default function AlertDialogSlide({SetShowDynamicFieldDialog,appendText,R
         <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
             <Row>
               <Col md={4}>
-              <Avatar size="xl" style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2Fhome-icon-Unrivalled-functionality.png?alt=media&token=3777def1-531d-40b6-baed-8c33e7ec466b" color="primary" zoomed/>
+              <Avatar size="xl" style={{marginRight:"0.5rem"}} src={DynamicFieldIcon} color="primary" zoomed/>
               </Col>              
             </Row>
 

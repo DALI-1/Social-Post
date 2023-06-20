@@ -33,6 +33,7 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import IconButton from '@mui/material/IconButton';
 import Fade from '@mui/material/Fade'; 
 import LocalesJSON from "../../../Data/Locales.json" 
+import TargetIcon from "../../../Assets/Target.png"
 const Locales=LocalesJSON
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -342,7 +343,7 @@ export default   function AlertDialogSlide({SetShowAddTargetDialog}) {
           <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
             <Row>
               <Col md={4}>
-              <Avatar size="xl" style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2Ftarget.png?alt=media&token=884b4ed1-5c08-494e-9ea7-a92cd85119ab" color="primary" zoomed/>
+              <Avatar size="xl" style={{marginRight:"0.5rem"}} src={TargetIcon} color="primary" zoomed/>
               </Col>
              
               
