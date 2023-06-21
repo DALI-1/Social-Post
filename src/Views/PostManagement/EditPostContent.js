@@ -1422,7 +1422,7 @@ export default function Content() {
       let Temp_Formated_TagsList=[]
       let Temp_Formated_Video=null
       let Temp_ThumbnailURL=""
-      response.result.usedAssets.filter((Asset)=>Asset.asset.assetType=="image/jpeg").map((Asset)=>{
+      response.result.usedAssets.filter((Asset)=>Asset.asset.assetType== "image/jpeg" || Asset.asset.assetType == "image/png" || Asset.asset.assetType == "image/webp" || Asset.asset.assetType == "image/gif").map((Asset)=>{
         Temp_Formated_AssetsList=[...Temp_Formated_AssetsList,{
           "src":Asset.asset.resourceURL,
         "value":Asset.id,
@@ -1457,7 +1457,7 @@ export default function Content() {
 
       //=============Handling the video=============//
       
-      response.result.usedAssets.filter((Asset)=>Asset.asset.assetType=="video/mp4").map((Asset)=>{
+      response.result.usedAssets.filter((Asset)=>Asset.asset.assetType=="video/mp4"||Asset.asset.assetType=="video/quicktime").map((Asset)=>{
         Temp_Formated_Video=Asset.asset
         if(Asset.thumbnail!=null)
         {

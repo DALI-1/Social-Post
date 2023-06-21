@@ -142,7 +142,7 @@ function Header(props) {
           <Tab
             label={
               <>
-                <BarChartIcon/> <p>Global Insights</p>
+                <BarChartIcon/> <p>General Insights</p>
               </>
             }
             onClick={() => {

@@ -314,7 +314,7 @@ React.useEffect(()=>{
             <MainCard>
 
 
-                <Accordion className='m-2' defaultActiveKey="0">
+                <Accordion className='m-2' defaultActiveKey="0" >
       <Accordion.Item eventKey="0">
         <Accordion.Header>
         <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
@@ -357,9 +357,17 @@ React.useEffect(()=>{
                       </div>
 
                       
-                      <div className="mb-3">
-                          <label className="small mb-1" htmlFor="inputEmailAddress">Email address</label>
+
+                      <div className="row gx-3 mb-3">
+                      <div className="col-md-6 ">
+                      <label className="small mb-1" htmlFor="inputEmailAddress">Email address</label>
                           <input ref={Email} className="form-control" name="email" id="inputEmailAddress" type="email" placeholder="Enter your email address" />
+                        </div> 
+                      <div className="col-md-6 ">
+                      <label className="small mb-1" htmlFor="inputPhone"> Groups </label>
+                              <DropdownTreeSelect  key={"DropDownList"} data={GroupsDropDownList} onChange={onChange} onAction={onAction} onNodeToggle={onNodeToggle} />
+                      </div> 
+                      
                       </div>
                       
                       <div className="row gx-3 mb-3">
@@ -378,12 +386,6 @@ React.useEffect(()=>{
                           
                           
                       </div>
-
-                      <div className="mb-3">
-                      <label className="small mb-1" htmlFor="inputPhone"> Groups </label>
-                              <DropdownTreeSelect key={"DropDownList"} data={GroupsDropDownList} onChange={onChange} onAction={onAction} onNodeToggle={onNodeToggle} />
-                      </div>
-                     
                       <div className="d-flex justify-content-center">
                       <Button variant="outlined" ClassName="form-control m-1"color='primary' type="submit" startIcon={<PersonAddIcon />}>Add User To Group.</Button>
                       </div>
