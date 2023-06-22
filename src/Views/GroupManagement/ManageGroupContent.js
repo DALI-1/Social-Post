@@ -50,6 +50,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import { Avatar } from "@nextui-org/react";
+import GroupIcon from "../../Assets/Group.png"
 export function AlertDialog(props) {
   const [open, setOpen] = React.useState(true);
   const {GlobalState,Dispatch}=React.useContext(AppContext)
@@ -438,7 +439,7 @@ export default function Content() {
         <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
             <Row>
               <Col>
-              <Avatar size="xl" style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2Fgroup-icon-png-15.png?alt=media&token=a5459dd5-4176-49bf-a4b7-95a559dd93cf" color="primary" zoomed/>
+              <Avatar size="xl" style={{marginRight:"0.5rem"}} src={GroupIcon} color="primary" zoomed/>
               </Col>              
             
             
@@ -564,7 +565,7 @@ export default function Content() {
         <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
             <Row>
               <Col>
-              <Avatar size="xl" style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2Fgroup-icon-png-15.png?alt=media&token=a5459dd5-4176-49bf-a4b7-95a559dd93cf" color="primary" zoomed/>
+              <Avatar size="xl" style={{marginRight:"0.5rem"}} src={GroupIcon} color="primary" zoomed/>
               </Col>              
             
             

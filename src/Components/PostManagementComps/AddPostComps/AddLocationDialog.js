@@ -20,6 +20,7 @@ import Container from 'react-bootstrap/Container';
 import IconButton from '@mui/material/IconButton';
 import CancelIcon from '@mui/icons-material/Cancel';
 import SaveIcon from '@mui/icons-material/Save';
+import LocationDialog from "../../../Assets/location.png"
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -65,7 +66,7 @@ export default function AlertDialogSlide({SetShowAddLocationDialog}) {
         <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
             <Row>
               <Col md={4}>
-              <Avatar size="xl"  style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2Feps10-blue-pin-point-or-location-solid-icon-for-website-ui-and-mobile-isolated-on-white-background-free-vector.webp?alt=media&token=96e803ed-888f-404f-835d-9ad0013c95a2" color="primary" zoomed/>
+              <Avatar size="xl"  style={{marginRight:"0.5rem"}} src={LocationDialog} color="primary" zoomed/>
               </Col>              
             </Row>
 

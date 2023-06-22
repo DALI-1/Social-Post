@@ -26,6 +26,8 @@ import Container from 'react-bootstrap/Container';
 import IconButton from '@mui/material/IconButton';
 import Accordion from 'react-bootstrap/Accordion';
 import SaveIcon from '@mui/icons-material/Save';
+import ProfileInfoIcon from "../../Assets/Profile.png"
+import ProfileImage from "../../Assets/Gallery.png"
 export default function Content() {
 
     const {GlobalState,Dispatch}=React.useContext(AppContext)
@@ -308,11 +310,11 @@ export default function Content() {
         <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
             <Row>
               <Col>
-              <Avatar size="xl" style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2F950771.png?alt=media&token=0c02747d-8ede-4696-9333-86d9c9e47f7f" color="primary" zoomed/>
+              <Avatar size="xl" style={{marginRight:"0.5rem"}} src={ProfileInfoIcon} color="primary" zoomed/>
               </Col>              
             
             
-            
+
             <Col>
                <p style={{marginTop:"1rem"}}>Profile Basic Informations</p>
               </Col>
@@ -385,10 +387,10 @@ export default function Content() {
         <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
             <Row>
               <Col>
-              <Avatar size="xl" style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2F251-2518917_ui-system-apps-by-blackvariant-gallery-icon-png.png?alt=media&token=55c34a88-e987-4454-a944-4d7d69feec77" color="primary" zoomed/>
+              <Avatar size="xl" style={{marginRight:"0.5rem"}} src={ProfileImage} color="primary" zoomed/>
               </Col>              
             
-            
+
             
             <Col>
                <p style={{marginTop:"1rem"}}>Profile Picture</p>

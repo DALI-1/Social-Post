@@ -19,6 +19,7 @@ import { Avatar } from "@nextui-org/react";
 import EditIcon from "@mui/icons-material/Edit";
 import BarChartIcon from '@mui/icons-material/BarChart';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import InsightsIcon from '@mui/icons-material/Insights';
 function Header(props) {
   
   const { onDrawerToggle } = props;
@@ -47,6 +48,9 @@ function Header(props) {
       SetTabMenu(2);
     }
     if (GlobalState.PostSelectedTab == variables.PostTabs.PreviewPost) {
+      SetTabMenu(2);
+    }
+    if (GlobalState.PostSelectedTab == variables.PostTabs.SinglePostInseights) {
       SetTabMenu(2);
     }
   }, [GlobalState]);
@@ -138,7 +142,7 @@ function Header(props) {
           <Tab
             label={
               <>
-                <BarChartIcon/> <p>View Insights</p>
+                <BarChartIcon/> <p>General Insights</p>
               </>
             }
             onClick={() => {
@@ -184,6 +188,20 @@ function Header(props) {
               }}
             />
           )}
+
+         {GlobalState.PostSelectedTab == variables.PostTabs.SinglePostInseights && (
+            <Tab
+              label={
+                <>
+                  <InsightsIcon /> <p>Post Insights</p>
+                </>
+              }
+              onClick={() => {
+                Dispatch({ type: variables.PostSelectedTabActions.SelectSinglePostInseights });
+              }}
+            />
+          )}
+
         </Tabs>
       </AppBar>
       {GlobalState.HeadSpinner && <LinearLoadingSpinner />}

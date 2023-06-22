@@ -35,6 +35,7 @@ import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container'; 
 import Accordion from 'react-bootstrap/Accordion';
 import SaveIcon from '@mui/icons-material/Save';
+import ModifyUserIcon from "../../Assets/Settings.png"
 export default function Content() {
 
     const {GlobalState,Dispatch}=React.useContext(AppContext)
@@ -219,7 +220,7 @@ export default function Content() {
         <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
             <Row>
               <Col md={4}>
-              <Avatar size="xl" style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2Fhome-icon-Unrivalled-functionality.png?alt=media&token=3777def1-531d-40b6-baed-8c33e7ec466b" color="primary" zoomed/>
+              <Avatar size="xl" style={{marginRight:"0.5rem"}} src={ModifyUserIcon} color="primary" zoomed/>
               </Col>              
             </Row>
             

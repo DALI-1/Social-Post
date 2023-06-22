@@ -35,6 +35,9 @@ import Fade from '@mui/material/Fade';
 import IconButton from '@mui/material/IconButton';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import Accordion from 'react-bootstrap/Accordion';
+import GroupIcon from "../../Assets/Group.png"
+import GroupSecurityIcon from "../../Assets/Security.png"
+import DeleteGroupIcon from "../../Assets/Delete.png"
 export function AlertDialog(props) {
   const [open, setOpen] = React.useState(true);
   const {GlobalState,Dispatch}=React.useContext(AppContext)
@@ -778,7 +781,7 @@ const HandleChangeName=()=>{
     <>
         
         <Row>
-         
+
            
             <Col>
             <MainCard>
@@ -788,7 +791,7 @@ const HandleChangeName=()=>{
         <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
             <Row>
               <Col>
-              <Avatar size="xl" style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2FCyber-Security-Logo-PNG.png?alt=media&token=86492f23-f2b2-4786-ae38-06b922d017f6" color="primary" zoomed/>
+              <Avatar size="xl" style={{marginRight:"0.5rem"}} src={GroupSecurityIcon} color="primary" zoomed/>
               </Col>              
             
             
@@ -1006,10 +1009,10 @@ const HandleChangeName=()=>{
         <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
             <Row>
               <Col>
-              <Avatar size="xl" style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2Fgroup-icon-png-15.png?alt=media&token=a5459dd5-4176-49bf-a4b7-95a559dd93cf" color="primary" zoomed/>
+              <Avatar size="xl" style={{marginRight:"0.5rem"}} src={GroupIcon} color="primary" zoomed/>
               </Col>              
             
-            
+
             
             <Col>
                <p style={{marginTop:"1rem"}}>Group Relocation</p>
@@ -1064,10 +1067,10 @@ const HandleChangeName=()=>{
         <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
             <Row>
               <Col>
-              <Avatar size="xl" style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2Fgroup-icon-png-15.png?alt=media&token=a5459dd5-4176-49bf-a4b7-95a559dd93cf" color="primary" zoomed/>
+              <Avatar size="xl" style={{marginRight:"0.5rem"}} src={GroupIcon} color="primary" zoomed/>
               </Col>              
             
-            
+
             
             <Col>
                <p style={{marginTop:"1rem"}}> Group Informations</p>
@@ -1112,10 +1115,9 @@ const HandleChangeName=()=>{
         <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
             <Row>
               <Col>
-              <Avatar size="xl" style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2Fdelete-icon-14.png?alt=media&token=9caa2567-ef2d-40cd-b8ad-1d9b1e32635b" color="primary" zoomed/>
+              <Avatar size="xl" style={{marginRight:"0.5rem"}} src={DeleteGroupIcon} color="primary" zoomed/>
               </Col>              
-            
-            
+          
             
             <Col>
                <p style={{marginTop:"1rem"}}>Delete Group</p>

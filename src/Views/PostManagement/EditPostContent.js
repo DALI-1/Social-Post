@@ -43,7 +43,8 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import CircularProgress from '@mui/material/CircularProgress';
 import ImageDeleter from "../../components/PostManagementComps/PostAssetsComps/Post_ImageSelector"
-
+import ImageSearchIcon from '@mui/icons-material/ImageSearch';
+import ThumbnailPicker from "../../components/PostManagementComps/AddPostComps/ThumbnailPickerDialog"
 import DeleteIcon from '@mui/icons-material/Delete';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import Filter1Icon from '@mui/icons-material/Filter1';
@@ -63,11 +64,17 @@ import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 import FaceRetouchingNaturalIcon from '@mui/icons-material/FaceRetouchingNatural';
 import { renderToStaticMarkup } from 'react-dom/server';
 import MainCard from "../../components/UI/cards/MainCard"
+import {Upload_Thumbnail_Image} from "../../libs/FireBase"
+import {HeaderSpinnerActions}  from '../../variables/variables'
+import LinearUncertainSpinner from "../../components/UI/SpinnerComps/LinearLoadingSpinner"
+import FacebookIcon from "../../Assets/Facebook.png"
+import InstagramIcon from "../../Assets/Instagram.png"
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 const iconSize = 48;
 const iconColor = 'blue'
 export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelectionChange,handleAssetSelectionChange,DefaultPostText},ref)=> {
+
   //--------------------Variables specific the posting options------------------------------//
   const editorRef =React.useRef(null)
   const Post_DateInput=React.useRef(variables.PostGlobalVariables.EDITPOST_Default_PostDate)
@@ -121,11 +128,30 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
    const [SelectedAssets,SetSelectedAssets]=React.useState([])
    const [ShowImageTagDialog,SetShowImageTagDialog]=React.useState(false)
    const [InfoTag,SetInfoTag]=React.useState(false)
+   var DefaultvideoValue=[]
+
+   if(variables.PostGlobalVariables.POST_SelectedVideoAssetsInfo!=null && variables.PostGlobalVariables.POST_SelectedVideoAssetsInfo!=undefined)
+   {
+    DefaultvideoValue=[...DefaultvideoValue,variables.PostGlobalVariables.POST_SelectedVideoAssetsInfo]
+   }
+    const [VideoAssets,SetVideoAssets]=React.useState(DefaultvideoValue)
+ 
+   const [ShowThumbnailPickerDialog,SetShowThumbnailDialog]=React.useState(false)
    //----------------------------------------End of Variables related to the Options, DynamicField, Assets, mentions--------------------///
-   React.useEffect(()=>{
-    variables.PostGlobalVariables.POST_SelectedAssetsInfo=Assets
-    handleAssetSelectionChange()
-   },[Assets])
+
+
+    //==========NOTE: This useeffect Updates the Side Preview========//
+    React.useEffect(()=>{
+      variables.PostGlobalVariables.POST_SelectedAssetsInfo=Assets
+      handleAssetSelectionChange()
+     },[Assets])
+   //=========END NOTE========//
+  //==========NOTE: This useeffect Updates the Side Preview========//
+     React.useEffect(()=>{
+      variables.PostGlobalVariables.POST_SelectedVideoAssetsInfo=VideoAssets[0];
+      handleAssetSelectionChange()
+     },[VideoAssets])
+  //=========END NOTE========//
 
 
 
@@ -196,7 +222,7 @@ export const FirstPane=React.forwardRef(({handleEditorChange,handlePageSelection
   })
 //-----------intiliazing the images by the selection
  
-const HandlePostSchedule=(()=>{
+const HandlePostSchedule=( async()=>{
 
   let EditorContent=editorRef.current.getContent()
   let Post_Date=Post_DateInput.current
@@ -226,16 +252,25 @@ const HandlePostSchedule=(()=>{
       {
 
         var AssetsList=[]
+        var VideoAssetsList=[]
 
         Assets.map((Asset)=>{
           AssetsList=[...AssetsList,{ 
             assetID: Asset.AssetId
           }]
         })
+
+        VideoAssets.map( (Asset)=>{      
+          VideoAssetsList=[...VideoAssetsList,{ 
+            asset_ID: Asset.id,
+            thumbnailURL:"NotUploadedYet"
+          }]
+                  
+        })
        
-        if(AssetsList.length==0 &&INSTAGRAM_Page_Exist_InSelection_Flag)
+        if(AssetsList.length==0 &&VideoAssetsList.length==0 &&INSTAGRAM_Page_Exist_InSelection_Flag)
         {
-          toast.info("You cannot create an Instagram Post without at least having picture added to it", {
+          toast.info("You cannot create an Instagram Post without at least having picture or a video added to it", {
             position: "bottom-left",
             autoClose: 5000,
             hideProgressBar: false,
@@ -248,6 +283,36 @@ const HandlePostSchedule=(()=>{
         }
         else
         {
+
+          //==============NOTE: Here we gonna upload the Thumbnail=============//
+          VideoAssetsList=[]
+          const promises=VideoAssets.map(async (Asset)=>{    
+            let ThumbnailURL="No_Thumbnail_Specified"
+            if(variables.PostGlobalVariables.POST_SelectedVideoThumbnail!=""&&!variables.PostGlobalVariables.POST_SelectedVideoThumbnail.includes("firebasestorage"))
+            {
+              toast.warning("Saving your post, please wait...", {
+                position: "bottom-left", 
+                autoClose: 4000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+              });
+              ThumbnailURL=await Upload_Thumbnail_Image(variables.PostGlobalVariables.POST_SelectedVideoThumbnail)
+            }    
+              VideoAssetsList=[...VideoAssetsList,{ 
+                asset_ID: Asset.id,
+                thumbnailURL:ThumbnailURL
+              }]
+                      
+            })
+  
+            await Promise.all(promises);
+
+            //==============END NOTE=============//
+
           let ReFormatedTargetedLanguages=[]
           let ReFormatedTargetedLocations=[]
           let ReFormatedTargetedRegions=[]
@@ -325,6 +390,7 @@ const HandlePostSchedule=(()=>{
             postDate: Post_DateInput.current,
             listOfPages:ListOfPages,
             listOfAssets: AssetsList,
+            listOfVideoAssets: VideoAssetsList,
             listOfTags:variables.PostGlobalVariables.POST_AssetsTags,
             listOfDynamicFields: variables.PostGlobalVariables.POST_AddedDynamicFields,
 
@@ -338,7 +404,7 @@ const HandlePostSchedule=(()=>{
             targeted_Locations: ReFormatedTargetedLocations,
             targeted_Languages: ReFormatedTargetedLanguages,
             targeted_Interests: ReFormatedTargetedInterests,
-         };  
+         }; 
         let JsonObjectToSend = JSON.stringify(JsonObject);
         let url2 =
           process.env.REACT_APP_BACKENDURL + 
@@ -350,6 +416,7 @@ const HandlePostSchedule=(()=>{
             if(result.successCode=="Post_Edited")
             {
     
+             
               toast.success("Post Informations saved!", {
                 position: "bottom-left",
                 autoClose: 5000,
@@ -371,6 +438,7 @@ const HandlePostSchedule=(()=>{
       }
       else
       {
+       
         toast.info("You cannot create a post without associating at least one page", {
           position: "bottom-left",
           autoClose: 5000,
@@ -386,6 +454,7 @@ const HandlePostSchedule=(()=>{
     }
     else
     {
+      
       toast.info("You cannot create a post with an empty content", {
         position: "bottom-left",
         autoClose: 5000,
@@ -402,6 +471,7 @@ const HandlePostSchedule=(()=>{
   }
   else
   {
+   
     toast.info("Post date for scheduled Posts cannot be empty, use Post Now instead if you don't want to specify the Post date", {
       position: "bottom-left",
       autoClose: 5000,
@@ -658,13 +728,11 @@ function appendText(Text) {
   editorRef.current.execCommand('mceInsertContent', false, Text+" ")
 }
 
-//Old Version of AppenedAssets, it ads them directly to the HTML
-/*function AppenedAsset(Asset)
-{
-  editorRef.current.execCommand('mceInsertContent', false,Asset) 
-}*/
+
+
 function AppenedAsset(NewAssetsList)
 {  
+  SetVideoAssets([])
   let localNewAssetsList=[...Assets]
   NewAssetsList.map((Asset)=>{
     //We just adding unique randomlly generated ID for the picture since the Assets can use the same image multiple times
@@ -674,6 +742,13 @@ function AppenedAsset(NewAssetsList)
   SetAssets(localNewAssetsList)
 }
 
+
+function AppenedVideoAsset(SelectedVideo)
+{  //Clearing the Images 
+  SetAssets([])
+  SetVideoAssets(SelectedVideo)
+  
+}
 
 
 //This is used to Remove the Dynamic Field  text from TinyMCEEditor in case the Dynamic FIeld is deleted
@@ -806,7 +881,9 @@ const HandleImageTag=(()=>{
             srcSet={option.PagePic}
             alt=""
           />
-          {option.label}          
+          {option.label} 
+          {option.PageType==1&&<img style={{margin:"10px"}} loading="lazy"width="35" height="20" src={FacebookIcon} srcSet={FacebookIcon}alt=""/>}
+          {option.PageType==2&&<img style={{margin:"10px"}} loading="lazy"width="20" height="20" src={InstagramIcon} srcSet={InstagramIcon}alt=""/>}         
             </Box>
           )}}
           style={{ width: "auto" }}
@@ -841,22 +918,57 @@ const HandleImageTag=(()=>{
             {Assets.length!=0&&
                     <Accordion className='m-2' defaultActiveKey="0" style={{boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)'}}>
                     <Accordion.Item eventKey="0">
-                      <Accordion.Header>Selected Assets</Accordion.Header>
+                      <Accordion.Header>Selected Images </Accordion.Header>
                       <Accordion.Body>
                         {SelectedAssets.length>0&& <div style={{  float: "right"}}>
                           {/*This Gonna tag ppl in the pictures */}
-      <IconButton color="primary" aria-label="Tag" size="large" onClick={HandleImageTag} >
-        <LocalOfferIcon fontSize="inherit" />
-      </IconButton>
-                          
-                          <IconButton color="error" aria-label="delete" size="large" onClick={HandleAssetUnAssign}>
-        <DeleteIcon fontSize="inherit" />
-      </IconButton>
-      
-      </div>
+                  <IconButton color="primary" aria-label="Tag" size="large" onClick={HandleImageTag} >
+                    <LocalOfferIcon fontSize="inherit" />
+                  </IconButton>
+                                      
+                                      <IconButton color="error" aria-label="delete" size="large" onClick={HandleAssetUnAssign}>
+                    <DeleteIcon fontSize="inherit" />
+                  </IconButton>
+                  
+                  </div>
                         }
                        
                       <ImageDeleter Gallery={Assets} SetSelectedAssets={SetSelectedAssets} />
+                      </Accordion.Body>
+                    </Accordion.Item>
+              
+                   
+                  </Accordion> 
+            
+            }
+
+
+            {VideoAssets.length!=0&&
+                    <Accordion className='m-2' defaultActiveKey="0" style={{boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)'}}>
+                    <Accordion.Item eventKey="0">
+                      <Accordion.Header>Selected Video</Accordion.Header>
+                      <Accordion.Body>
+                      <div style={{  float: "right"}}>
+                      
+                      <IconButton color="primary" aria-label="Tag" size="large" onClick={()=>{SetShowThumbnailDialog(true)}} >
+                  <ImageSearchIcon fontSize="inherit" />
+                </IconButton>
+                                    
+                                    <IconButton color="error" aria-label="delete" size="large" onClick={()=>{SetVideoAssets([])}}>
+                  <DeleteIcon fontSize="inherit" />
+                </IconButton>
+                </div>
+                          {VideoAssets.map((vid,index)=>{
+
+                            return(
+                      <video
+                      key={index}
+                      height="100%"
+                      width="100%"
+                      controls
+                      src={vid.resourceURL}
+                        />
+                     )})}
                       </Accordion.Body>
                     </Accordion.Item>
               
@@ -987,11 +1099,12 @@ const HandleImageTag=(()=>{
             </Container>
             {/*-----------------------------This Part here handles Dialog showing------------------------------------------*/}
           {ShowAddMentionDialog&&<AddMentionDialog SetShowAddMentionDialog={SetShowAddMentionDialog} appendText={appendText} RemoveMentionedUserText={RemoveMentionedUserText}/>}
-          {ShowAssetsDialog&&<AddAssetsDialog AppenedAsset={AppenedAsset} SetShowAssetsDialog={SetShowAssetsDialog}/>}
+          {ShowAssetsDialog&&<AddAssetsDialog AppenedAsset={AppenedAsset} AppenedVideoAsset={AppenedVideoAsset} SetShowAssetsDialog={SetShowAssetsDialog}/>}
           {ShowDynamicFieldDialog&&<AddDynamicFieldDialog appendText={appendText} RemoveDynamicFieldText={RemoveDynamicFieldText} SetShowDynamicFieldDialog={SetShowDynamicFieldDialog}/>} 
           {ShowAddLocationDialog&&<AddLocationDialog SetShowAddLocationDialog={SetShowAddLocationDialog}/>}
           {ShowAddTargetDialog&&<AddTargetDialog SetShowAddTargetDialog={SetShowAddTargetDialog}/>} 
           {ShowImageTagDialog&&<ImageTagDialog ShowImageTagDialog={ShowImageTagDialog} SetShowImageTagDialog={SetShowImageTagDialog} SelectedAssets={SelectedAssets}/>}
+          {ShowThumbnailPickerDialog&&<ThumbnailPicker SetShowThumbnailDialog={SetShowThumbnailDialog} Video={VideoAssets[0]} handleAssetSelectionChange={handleAssetSelectionChange} />}
             {/*-----------------------------End Of the Part that handles Dialog showing------------------------------------------*/}
           </div>
   )
@@ -1131,9 +1244,11 @@ ListOfPagePosts.current=[]
     </div>
   )
 })
-export default   function Content() {
+export default function Content() {
   const { GlobalState, Dispatch } = React.useContext(AppContext);
-  const [DefaultPostText,setDefaultPostText]=React.useState();
+  const [ReadyToDisplay, SetReadyToDisplay] = React.useState(false);
+  var DefaultPostText=React.useRef("Empty")
+  
   const FirstPaneRef=React.useRef(null)
   const SecondPaneRef=React.useRef(null)
    //Preview Related
@@ -1167,10 +1282,45 @@ export default   function Content() {
     }
     
   }
- 
-  React.useEffect(()=>{
 
-    
+   async function InitializeData(){
+ 
+    //initializing the variables, so that old data from previous posts are not saved
+    variables.PostGlobalVariables.POST_AddedDynamicFields=[]
+    variables.PostGlobalVariables.POST_PatternsInfo=[]
+    variables.PostGlobalVariables.POST_SelectedPageIds=[]
+    variables.PostGlobalVariables.POST_AssetsTags=[]
+    variables.PostGlobalVariables.POST_Mentions=[]
+     variables.PostGlobalVariables.POST_SelectedPageInfo=[]
+     variables.PostGlobalVariables.POST_SelectedVideoThumbnail=""
+     variables.PostGlobalVariables.POST_SelectedVideoAssetsInfo=null
+     variables.PostGlobalVariables.POST_SelectedAssetsInfo=[]
+    //initializing the POST variables in /variables.js
+        //initializing Age
+        variables.PostGlobalVariables.POST_TargetedAgeRange.FromAge=""
+        variables.PostGlobalVariables.POST_TargetedAgeRange.ToAge=""
+        //Updating Gender
+        variables.PostGlobalVariables.POST_TargetedGenderId=3
+        //initializing Language
+        variables.PostGlobalVariables.POST_TargetedLanguages=[]
+        //initializing Caching LanguageOptionList
+        variables.PostGlobalVariables.POST_CachedLanguageOptions=[]
+          //initializing Location
+        variables.PostGlobalVariables.POST_TargetedLocations=[]
+        // initializing Caching LocationOptionList
+        variables.PostGlobalVariables.POST_CachedLocationOptions=[]
+          //initializing Regions
+        variables.PostGlobalVariables.POST_TargetedRegions=[]
+        // initializing Caching RegionOptionList
+        variables.PostGlobalVariables.POST_CachedRegionOptions=[]
+          //initializing Countries
+        variables.PostGlobalVariables.POST_TargetedCountries=[]
+        // initializing Caching CountriesoptionList
+        variables.PostGlobalVariables.POST_CachedCountryOptions=[]
+         //initializing Interests
+        variables.PostGlobalVariables.POST_TargetedInterests=[]
+        // initializing Caching InterestsoptionList
+        variables.PostGlobalVariables.POST_CachedInterestOptions=[]
 
     //--------NOTE: THE intialiazing should be done after the pages are loaded and configured properly to avoid early buggy clicks--------
     var JsonObject = {  
@@ -1181,8 +1331,8 @@ export default   function Content() {
     process.env.REACT_APP_BACKENDURL + 
     process.env.REACT_APP_GETPOSTINFO;
   let UserToken = window.localStorage.getItem("AuthToken");
-  let APIResult = APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
-  APIResult.then((response) => {
+  var response = await APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
+
     if (response.errorCode == undefined) {
       if(response.successCode=="PostInfo_Reterived")
       {
@@ -1257,13 +1407,12 @@ export default   function Content() {
         let JsonObjectToSend = JSON.stringify(JsonObject);
         let url2 =process.env.REACT_APP_BACKENDURL + process.env.REACT_APP_GETGROUPATTERNS;
         let UserToken = window.localStorage.getItem("AuthToken");
-        let APIResult = APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
-        APIResult.then((result) => {
+        let result = await APILib.CALL_API_With_JWTToken(url2, JsonObjectToSend, UserToken);
         if (result.ErrorCode == undefined) {
          //updating Patterns info, this will be used in the preview to replace the pattern values with their specific values
         variables.PostGlobalVariables.POST_PatternsInfo=result.result
         }
-        });
+       
 
       //------END TASK-----//
 
@@ -1271,7 +1420,9 @@ export default   function Content() {
       
       let Temp_Formated_AssetsList=[]
       let Temp_Formated_TagsList=[]
-      response.result.usedAssets.map((Asset)=>{
+      let Temp_Formated_Video=null
+      let Temp_ThumbnailURL=""
+      response.result.usedAssets.filter((Asset)=>Asset.asset.assetType== "image/jpeg" || Asset.asset.assetType == "image/png" || Asset.asset.assetType == "image/webp" || Asset.asset.assetType == "image/gif").map((Asset)=>{
         Temp_Formated_AssetsList=[...Temp_Formated_AssetsList,{
           "src":Asset.asset.resourceURL,
         "value":Asset.id,
@@ -1303,6 +1454,19 @@ export default   function Content() {
          }
       })
       
+
+      //=============Handling the video=============//
+      
+      response.result.usedAssets.filter((Asset)=>Asset.asset.assetType=="video/mp4"||Asset.asset.assetType=="video/quicktime").map((Asset)=>{
+        Temp_Formated_Video=Asset.asset
+        if(Asset.thumbnail!=null)
+        {
+          Temp_ThumbnailURL=Asset.thumbnail.resourceURL
+        }
+      });
+      
+      variables.PostGlobalVariables.POST_SelectedVideoThumbnail=Temp_ThumbnailURL;
+      variables.PostGlobalVariables.POST_SelectedVideoAssetsInfo=Temp_Formated_Video;
       variables.PostGlobalVariables.POST_SelectedAssetsInfo=Temp_Formated_AssetsList
       variables.PostGlobalVariables.POST_AssetsTags=Temp_Formated_TagsList
    
@@ -1321,6 +1485,7 @@ export default   function Content() {
             //Creating an empty mapping variable between the pattern and how the text should be shown to the user
             let MentionCode_Text=[]
             let Temp_FormatedMentions=[]
+            
             response.result.postMentions.map((mention)=>{
               //Filling the mapping variable here
               userIds.map((userid,index)=>{
@@ -1342,12 +1507,14 @@ export default   function Content() {
             })
             variables.PostGlobalVariables.POST_Mentions=Temp_FormatedMentions
 
-            setDefaultPostText(Temp_PostText)
+
+            DefaultPostText.current=Temp_PostText
         }
         //Case there is no mentions, just plain text
         else
         {
-          setDefaultPostText(response.result.postText)
+
+          DefaultPostText.current=response.result.postText
         }
        
 
@@ -1389,7 +1556,9 @@ export default   function Content() {
       {
         let Temp_FormatedInterests=[]
         let Temp_CachedInterests=[]
-        response.result.posT_Targeted_Interests.map((interest)=>{
+
+        var InterestPromises=response.result.posT_Targeted_Interests.map( async (interest)=>{
+          
           Temp_FormatedInterests=[...Temp_FormatedInterests,
           {
             "id": interest.id,
@@ -1401,13 +1570,14 @@ export default   function Content() {
           "interest_PlatformId": interest.interest_PlatformId,
           "interest_Platform": interest.interest_Platform
           }]
+          
           //Getting the List of interests with the same name
-          let List_Of_Audience_Interests=SearchLib.Facebook_Get_Audience_Interests(interest.interest_Name)
+          let List_Of_Audience_Interests= await SearchLib.Facebook_Get_Audience_Interests(interest.interest_Name)
           //Filling the options list with the data, so that later it finds it and shows  it checked by default
-          List_Of_Audience_Interests.then((Result)=>{
-            if(Result.length!==0)
+               
+            if(List_Of_Audience_Interests.length!==0)
             {
-               Temp_CachedInterests= [...Temp_CachedInterests, ...Result].reduce((acc, curr) => {
+               Temp_CachedInterests= [...Temp_CachedInterests, ...List_Of_Audience_Interests].reduce((acc, curr) => {
                 const found = acc.find(item => item.id === curr.id);
                 if (!found) {
                   acc.push(curr);
@@ -1415,9 +1585,12 @@ export default   function Content() {
                 return acc;
               }, [])     
             }
-          })
+          
   
          })
+         //Waiting for all the promises
+         await Promise.all(InterestPromises)
+
          variables.PostGlobalVariables.POST_CachedInterestOptions=Temp_CachedInterests
          variables.PostGlobalVariables.POST_TargetedInterests=Temp_FormatedInterests
       }
@@ -1426,9 +1599,10 @@ export default   function Content() {
        //Case there is countries in the list
        if(response.result.posT_Targeted_Countries.length>0)
        {
+        
         let Temp_FormatedCountries=[]
         let Temp_CachedCountries=[]
-        response.result.posT_Targeted_Countries.map((country)=>{
+       var CountryPromises=response.result.posT_Targeted_Countries.map( async (country)=>{
           Temp_FormatedCountries=[...Temp_FormatedCountries,
           {
             "id": country.id,
@@ -1437,12 +1611,11 @@ export default   function Content() {
             "country_PlatformCode": country.country_PlatformCode,
           }]
           //Getting the List of interests with the same name
-          let List_Of_Countries=SearchLib.Facebook_Get_Audience_Countries(country.country_Name)
+          let List_Of_Countries= await SearchLib.Facebook_Get_Audience_Countries(country.country_Name)
           //Filling the options list with the data, so that later it finds it and shows  it checked by default
-          List_Of_Countries.then((Result)=>{
-            if(Result.length!==0)
+            if(List_Of_Countries.length!==0)
             {
-             Temp_CachedCountries= [...Temp_CachedCountries, ...Result].reduce((acc, curr) => {
+             Temp_CachedCountries= [...Temp_CachedCountries, ...List_Of_Countries].reduce((acc, curr) => {
                 const found = acc.find(item => item.id === curr.id);
                 if (!found) {
                   acc.push(curr);
@@ -1450,10 +1623,12 @@ export default   function Content() {
                 return acc;
               }, [])     
             }
-          })
+          
   
          })
         
+         //Waiting for all the countries to Finish
+         await Promise.all(CountryPromises)
          variables.PostGlobalVariables.POST_CachedCountryOptions=Temp_CachedCountries
          variables.PostGlobalVariables.POST_TargetedCountries=Temp_FormatedCountries
        }
@@ -1462,9 +1637,10 @@ export default   function Content() {
        //Case there is Regions in the list
        if(response.result.posT_Targeted_Regions.length>0)
        {
+        
         let Temp_FormatedRegions=[]
         let Temp_CachedRegions=[]
-        response.result.posT_Targeted_Regions.map((region)=>{
+        var RegionPromises=response.result.posT_Targeted_Regions.map( async (region)=>{
          Temp_FormatedRegions=[...Temp_FormatedRegions,
           {
            "id": region.id,
@@ -1474,13 +1650,13 @@ export default   function Content() {
            "region_PlatformId": region.region_PlatformId,
           }]
           //Getting the List of Regions with the same name
-          let List_Of_Regions=SearchLib.Facebook_Get_Audience_Regions([region.region_Country],region.region_Name)        
+          let List_Of_Regions=await SearchLib.Facebook_Get_Audience_Regions([region.region_Country],region.region_Name)        
           //Filling the options list with the data, so that later it finds it and shows  it checked by default
-          List_Of_Regions.then((Result)=>{
+
           
-            if(Result.length!==0)
+            if(List_Of_Regions.length!==0)
             {
-              Temp_CachedRegions= [...Temp_CachedRegions, ...Result].reduce((acc, curr) => {
+              Temp_CachedRegions= [...Temp_CachedRegions, ...List_Of_Regions].reduce((acc, curr) => {
                 const found = acc.find(item => item.id === curr.id);
                 if (!found) {
                   acc.push(curr);
@@ -1489,19 +1665,24 @@ export default   function Content() {
               }, []) 
               
             }
-          })
+          
   
          })
+         //Waiting for REgion promises
+         await Promise.all(RegionPromises)
+         
          variables.PostGlobalVariables.POST_CachedRegionOptions=Temp_CachedRegions
          variables.PostGlobalVariables.POST_TargetedRegions=Temp_FormatedRegions
        }
         //Handling Locations
         //case there is targetted locations
-        if(response.result.posT_Targeted_Locations>0)
+        
+        
+        if(response.result.posT_Targeted_Locations.length>0)
         {
           let Temp_FormatedLocations=[]
           let Temp_CachedLocations=[]
-          response.result.posT_Targeted_Locations.map((Location)=>{
+         var LocationPromises=response.result.posT_Targeted_Locations.map(async(Location)=>{
            Temp_FormatedLocations=[...Temp_FormatedLocations,
             {
              "id": Location.id,
@@ -1511,14 +1692,13 @@ export default   function Content() {
             }]
             //Getting the List of Regions with the same name
    
-            let List_Of_Locations=SearchLib.Facebook_Get_Audience_Locations([Location.location_Region],Location.location_Name)  
+            let List_Of_Locations=await SearchLib.Facebook_Get_Audience_Locations([Location.location_Region],Location.location_Name)  
              
             //Filling the options list with the data, so that later it finds it and shows  it checked by default
-            List_Of_Locations.then((Result)=>{
-            
-              if(Result.length!==0)
+
+              if(List_Of_Locations.length!==0)
               {
-               Temp_CachedLocations= [...Temp_CachedLocations, ...Result].reduce((acc, curr) => {
+               Temp_CachedLocations= [...Temp_CachedLocations, ...List_Of_Locations].reduce((acc, curr) => {
                   const found = acc.find(item => item.id === curr.id);
                   if (!found) {
                     acc.push(curr);
@@ -1527,15 +1707,16 @@ export default   function Content() {
                 }, []) 
                 
               }
-            })
+           
     
            })
+           await Promise.all(LocationPromises)
            variables.PostGlobalVariables.POST_CachedLocationOptions=Temp_CachedLocations
            variables.PostGlobalVariables.POST_TargetedLocations=Temp_FormatedLocations
         }
       
       //------END TASK-----//
-
+      //-----------preparing the repeat options------------//
       //updating  post date
   
       variables.PostGlobalVariables.EDITPOST_Default_PostDate=dayjs(response.result.postDate)
@@ -1579,40 +1760,37 @@ export default   function Content() {
            break;
          default:
            variables.PostGlobalVariables.EDITPOST_Default_EndRepeatOption=2
-           variables.PostGlobalVariables.EDITPOST_Default_EndRepeatOnNbOfOccurences=response.result.endRepeatOnOccurence
-
-
-           
+           variables.PostGlobalVariables.EDITPOST_Default_EndRepeatOnNbOfOccurences=response.result.endRepeatOnOccurence   
        }
-     
-       
-       
       }
-      
-    
-   
-
-  
-      
-      //-----------preparing the repeat options------------//
-
-
       //------END TASK-----//
 
       }
     }
-  });
-  },[])
-  
+ 
+  }
+
+ //This function is executed only once and before the component renders
+  React.useLayoutEffect(()=>{
+    new Promise(async (resolve,reject)=>{
+      await InitializeData()
+        resolve()
+    }).then(()=>{
+      
+      SetReadyToDisplay(true)
+    })
+   },[])
 
 
+if(ReadyToDisplay)
+{
   return (
     <>  
        <MainCard sx={{ width: "100%", height:"100%", m: 1, p: 2, textAlign: "center" }} style={{margin:"1rem",padding:"1rem",boxShadow: '0px 0px 10px 0px rgba(0, 0, 0, 0.2)'}}>
 
 <SplitterComponent id="splitter" height="100%" width="100%" separatorSize={5} >
    <PanesDirective>
-   <PaneDirective  min='50%' content={()=>{return(<FirstPane ref={FirstPaneRef} handleAssetSelectionChange={handleAssetSelectionChange}  handleEditorChange={handleEditorChange} handlePageSelectionChange={handlePageSelectionChange} DefaultPostText={DefaultPostText} />)}} />
+   <PaneDirective  min='50%' content={()=>{return(<FirstPane ref={FirstPaneRef} handleAssetSelectionChange={handleAssetSelectionChange}  handleEditorChange={handleEditorChange} handlePageSelectionChange={handlePageSelectionChange} DefaultPostText={DefaultPostText.current}  />)}} />
    <PaneDirective min='20%' content={()=>{return(<SecondPane  ref={SecondPaneRef} SamplePreview={SamplePreview} LivePreview={LivePreview} TextCode={TextCode} />)}} />
      
    </PanesDirective>
@@ -1622,5 +1800,15 @@ export default   function Content() {
     </MainCard>
 </>
   );
+}else
+{
+  return(<MainCard sx={{ width: "100%", height:"100%", m: 1, p: 2, textAlign: "center" }} style={{margin:"1rem",padding:"1rem",boxShadow: '0px 0px 10px 0px rgba(0, 0, 0, 0.2)'}}>
+
+  <strong>Loading the post data.....</strong>
+  <LinearUncertainSpinner/>
+  
+      </MainCard>)
+}
+
 }
 

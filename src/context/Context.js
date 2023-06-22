@@ -83,7 +83,11 @@ const reducer=(GlobalState,action)=>
                     }
 
 
-
+                    case variables.PostSelectedTabActions.SelectSinglePostInseights:
+                        {
+                           
+                      return({...GlobalState,PostSelectedTab:variables.PostTabs.SinglePostInseights})
+                        }
 
                         //Page Tab Actions
 

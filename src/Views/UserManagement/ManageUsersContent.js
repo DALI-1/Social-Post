@@ -45,7 +45,7 @@ import GroupRemoveIcon from '@mui/icons-material/GroupRemove';
 import * as PermissionLib from "../../libs/PermissionsChecker"
 import MainCard from "../../components/UI/cards/MainCard"
 import { Avatar } from "@nextui-org/react";
-
+import ModifyUserIcon from "../../Assets/Settings.png"
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import Fade from '@mui/material/Fade'; 
 import Accordion from 'react-bootstrap/Accordion';
@@ -333,7 +333,7 @@ return (
         <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
             <Row>
               <Col md={4}>
-              <Avatar size="xl" style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2Fhome-icon-Unrivalled-functionality.png?alt=media&token=3777def1-531d-40b6-baed-8c33e7ec466b" color="primary" zoomed/>
+              <Avatar size="xl" style={{marginRight:"0.5rem"}} src={ModifyUserIcon} color="primary" zoomed/>
               </Col>              
             </Row>
             
@@ -621,7 +621,7 @@ return (
         <Container style={{display:"flex",justifyContent:"left",alignItems:"center"}}>
             <Row>
               <Col md={4}>
-              <Avatar size="xl" style={{marginRight:"0.5rem"}} src="https://firebasestorage.googleapis.com/v0/b/socialpost-58454.appspot.com/o/PlatformsLogo%2Fhome-icon-Unrivalled-functionality.png?alt=media&token=3777def1-531d-40b6-baed-8c33e7ec466b" color="primary" zoomed/>
+              <Avatar size="xl" style={{marginRight:"0.5rem"}} src={ModifyUserIcon} color="primary" zoomed/>
               </Col>              
             </Row>
             

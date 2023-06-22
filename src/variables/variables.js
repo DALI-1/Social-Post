@@ -73,7 +73,8 @@ export const PostTabs=
     ViewPostInseights:"ViewPostInseights",
     EditPost:"EditPostTab",
     PreviewPost:"PreviewPostTab",
-    ManagePostsTab:"ManagePostsTab"
+    ManagePostsTab:"ManagePostsTab",
+    SinglePostInseights:"SinglePostInseights"
 }
 
 
@@ -83,7 +84,8 @@ export const PostSelectedTabActions=
     SelectViewPostInseights:"SelectViewPostInseights",
     SelectEditPost:"SwitchToEditPost",
     SelectPreviewPost:"SwitchToPreviewPost",
-    SelectManagePosts:"SwitchToManagePostsTab"
+    SelectManagePosts:"SwitchToManagePostsTab",
+    SelectSinglePostInseights:"SelectSinglePostInseights",
 }
 
 
@@ -295,7 +297,8 @@ export var PostGlobalVariables=
     POST_CachedInterestOptions:[],
     POST_TargetedLanguages:[],
     POST_CachedLanguageOptions:[],
-
+    POST_SelectedVideoThumbnail:"",
+    POST_SelectedVideoAssetsInfo:null,
     //These EDIT values are used by the EDIT, they are the default values that the post should have
     EDITPOST_SelectedPostID:null,
     EDITPOST_Default_PostDate:dayjs(new Date()),
