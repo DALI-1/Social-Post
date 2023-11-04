@@ -36,9 +36,9 @@ import IconButton from '@mui/material/IconButton';
 import Accordion from 'react-bootstrap/Accordion';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-import PagePictureIcon from "../../Assets/Gallery.png"
-import PageIcon from "../../Assets/Page.png"
-import DeletePageIcon from "../../Assets/Delete.png"
+import PagePictureIcon from "../../assets/gallery_Icon.png"
+import PageIcon from "../../assets/page_Icon.png"
+import DeletePageIcon from "../../assets/delete_Icon.png"
 export default function Content() {
   let uploadTask = React.useRef(null);
   const [Associated_By_Page, setAssociated_By_Page] = React.useState([]);

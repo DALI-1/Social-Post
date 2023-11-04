@@ -35,9 +35,9 @@ import Fade from '@mui/material/Fade';
 import IconButton from '@mui/material/IconButton';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import Accordion from 'react-bootstrap/Accordion';
-import GroupIcon from "../../Assets/Group.png"
-import GroupSecurityIcon from "../../Assets/Security.png"
-import DeleteGroupIcon from "../../Assets/Delete.png"
+import GroupIcon from "../../assets/group_Icon.png"
+import GroupSecurityIcon from "../../assets/security_Icon.png"
+import DeleteGroupIcon from "../../assets/delete_Icon.png"
 export function AlertDialog(props) {
   const [open, setOpen] = React.useState(true);
   const {GlobalState,Dispatch}=React.useContext(AppContext)

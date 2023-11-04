@@ -5,7 +5,7 @@ import LoginPage from './Views/Authentification/Sign_In';
 import RegisterPage from './Views/Authentification/Sign_up';
 import IndexPage from './Views/PageLayout/PageLayout';
 import ChangePW from './Views/Authentification/ChangePassword';
-
+import React from 'react';
 
 
 function App() {

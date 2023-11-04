@@ -34,8 +34,8 @@ import IconButton from '@mui/material/IconButton';
 import VideoInput from '../PostAssetsComps/VideoUploadComp/VideoInput';
 import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
 import VideoPicker from "../PostAssetsComps/VideoUploadComp/VideoPicker"
-import VideoIcon from "../../../Assets/video.png"
-import ImageIcon from "../../../Assets/Gallery.png"
+import VideoIcon from "../../../assets/video_Icon.png"
+import ImageIcon from "../../../assets/gallery_Icon.png"
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });

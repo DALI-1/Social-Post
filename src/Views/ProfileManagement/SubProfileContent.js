@@ -14,9 +14,6 @@ import * as variables from "../../variables/variables"
 import {APIStatus,APIStatuses}  from '../../variables/variables';
 import { Avatar } from "@nextui-org/react";
 import MainCard from "../../components/UI/cards/MainCard"
-import DeleteIcon from '@mui/icons-material/Delete';
-import CancelIcon from '@mui/icons-material/Cancel';
-import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import Tooltip from '@mui/material/Tooltip';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import Fade from '@mui/material/Fade'; 
@@ -26,8 +23,8 @@ import Container from 'react-bootstrap/Container';
 import IconButton from '@mui/material/IconButton';
 import Accordion from 'react-bootstrap/Accordion';
 import SaveIcon from '@mui/icons-material/Save';
-import ProfileInfoIcon from "../../Assets/Profile.png"
-import ProfileImage from "../../Assets/Gallery.png"
+import ProfileInfoIcon from "../../assets/profile_Icon.png"
+import ProfileImage from "../../assets/gallery_Icon.png"
 export default function Content() {
 
     const {GlobalState,Dispatch}=React.useContext(AppContext)

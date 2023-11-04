@@ -13,7 +13,7 @@ import {
   MDBIcon,
 } from 'mdb-react-ui-kit';
 import { useTheme } from '@mui/material/styles';
-import logo from '../../Assets/SocialPost-Logo.png';
+import logo from '../../assets/sp_logo_large.png';
 import { CALLAPI } from '../../libs/APIAccessAndVerification';
 import { toast } from 'react-toastify';
 import { APIStatus, APIStatuses } from '../../variables/variables';

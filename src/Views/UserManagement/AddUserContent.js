@@ -16,9 +16,6 @@ import DropdownTreeSelect from 'react-dropdown-tree-select'
 import 'react-dropdown-tree-select/dist/styles.css'
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
-import DeleteIcon from '@mui/icons-material/Delete';
-import CancelIcon from '@mui/icons-material/Cancel';
-import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import Accordion from 'react-bootstrap/Accordion';
 import Tooltip from '@mui/material/Tooltip';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
@@ -29,7 +26,7 @@ import Container from 'react-bootstrap/Container';
 import MainCard from "../../components/UI/cards/MainCard"
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import {HeaderSpinnerActions,HeaderSpinner}  from '../../variables/variables'
-import AddUserIcon from "../../Assets/AddUser.png"
+import AddUserIcon from "../../assets/addUser_Icon.png"
 export default function Content() {
 
     const {GlobalState,Dispatch}=React.useContext(AppContext)

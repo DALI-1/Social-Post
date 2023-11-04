@@ -30,7 +30,7 @@
     
     width: 10%;
     height: 20%;
-    background-image: url("../../../Assets/ImagePicker/Checkbox.png");
+    background-image: url("../../../assets/ImagePicker/checked_Icon.png");
     background-size: cover;
     opacity: 1;
     z-index: 1000;

@@ -50,7 +50,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import { Avatar } from "@nextui-org/react";
-import GroupIcon from "../../Assets/Group.png"
+import GroupIcon from "../../assets/group_Icon.png"
 export function AlertDialog(props) {
   const [open, setOpen] = React.useState(true);
   const {GlobalState,Dispatch}=React.useContext(AppContext)

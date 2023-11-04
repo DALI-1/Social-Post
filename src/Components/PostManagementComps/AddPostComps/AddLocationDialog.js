@@ -20,7 +20,7 @@ import Container from 'react-bootstrap/Container';
 import IconButton from '@mui/material/IconButton';
 import CancelIcon from '@mui/icons-material/Cancel';
 import SaveIcon from '@mui/icons-material/Save';
-import LocationDialog from "../../../Assets/location.png"
+import LocationDialog from "../../../assets/location_Icon.png"
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });

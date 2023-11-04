@@ -67,8 +67,8 @@ import MainCard from "../../components/UI/cards/MainCard"
 import {Upload_Thumbnail_Image} from "../../libs/FireBase"
 import {HeaderSpinnerActions}  from '../../variables/variables'
 import LinearUncertainSpinner from "../../components/UI/SpinnerComps/LinearLoadingSpinner"
-import FacebookIcon from "../../Assets/Facebook.png"
-import InstagramIcon from "../../Assets/Instagram.png"
+import FacebookIcon from "../../assets/facebook_Icon.png"
+import InstagramIcon from "../../assets/instagram_Icon.png"
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 const iconSize = 48;

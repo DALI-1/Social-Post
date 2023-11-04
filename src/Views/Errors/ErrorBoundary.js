@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import "./ErrorBoundary.css"
-import logo from '../../Assets/SocialPost-Logo.png'
+import logo from '../../assets/sp_logo_large.png'
 class ErrorBoundary extends Component {
   constructor(props) {
     super(props);

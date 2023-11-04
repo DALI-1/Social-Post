@@ -12,7 +12,7 @@ import {
 import LoadingSpinner from '../../components/UI/SpinnerComps/LoadingSpinner';
 
 import { PasswordRecovery } from './PasswordRecovery';
-import logo from '../../Assets/SocialPost-Logo.png';
+import logo from '../../assets/sp_logo_large.png';
 import { toast } from 'react-toastify';
 import { CALLAPI } from '../../libs/APIAccessAndVerification';
 function App() {

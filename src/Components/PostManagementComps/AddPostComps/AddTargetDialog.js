@@ -33,7 +33,7 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import IconButton from '@mui/material/IconButton';
 import Fade from '@mui/material/Fade'; 
 import LocalesJSON from "../../../Data/Locales.json" 
-import TargetIcon from "../../../Assets/Target.png"
+import TargetIcon from "../../../assets/target_Icon.png"
 const Locales=LocalesJSON
 
 const Transition = React.forwardRef(function Transition(props, ref) {
