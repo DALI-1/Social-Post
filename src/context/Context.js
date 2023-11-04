@@ -1,7 +1,7 @@
 import { useReducer,createContext } from "react";
 import * as variables from "../variables/variables"
 export const AppContext=createContext(null);
-
+import React from "react";
 
 
 const reducer=(GlobalState,action)=>

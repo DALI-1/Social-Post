@@ -1,4 +1,9 @@
 {
+    "settings": {
+        "react": {
+          "version": "18.0"
+        }
+      },
     "env": {
         "browser": true,
         "es2021": true

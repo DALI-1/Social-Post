@@ -114,27 +114,27 @@ export default function Content() {
   return (
     
       
-        <div class="row">
-            <div class="col-lg-8">
+        <div className="row">
+            <div className="col-lg-8">
             
                 <MainCard class="card mb-4">
                     <div className='m-2'>Change Password</div>
-                    <div class="card-body">
+                    <div className="card-body">
                         <form onSubmit={HandleSub}>
                             
-                            <div class="mb-3">
-                                <label class="small mb-1" htmlFor="currentPassword">Current Password</label>
-                                <input ref={OldPassword} class="form-control" id="currentPassword" type="password" name="cPassword" placeholder="Enter current password" required/>
+                            <div className="mb-3">
+                                <label className="small mb-1" htmlFor="currentPassword">Current Password</label>
+                                <input ref={OldPassword} className="form-control" id="currentPassword" type="password" name="cPassword" placeholder="Enter current password" required/>
                             </div>
                             
-                            <div class="mb-3">
-                                <label class="small mb-1" htmlFor="newPassword">New Password</label>
-                                <input ref={NewPassword} class="form-control" id="newPassword" name="nPassword" type="password" placeholder="Enter new password"/>
+                            <div className="mb-3">
+                                <label className="small mb-1" htmlFor="newPassword">New Password</label>
+                                <input ref={NewPassword} className="form-control" id="newPassword" name="nPassword" type="password" placeholder="Enter new password"/>
                             </div>
                             
-                            <div class="mb-3">
-                                <label class="small mb-1" htmlFor="confirmPassword">Confirm Password</label>
-                                <input ref={NewPasswordC} class="form-control" id="confirmPassword" name="nPasswordC" type="password" placeholder="Confirm new password"/>
+                            <div className="mb-3">
+                                <label className="small mb-1" htmlFor="confirmPassword">Confirm Password</label>
+                                <input ref={NewPasswordC} className="form-control" id="confirmPassword" name="nPasswordC" type="password" placeholder="Confirm new password"/>
                             </div>
                             <div className="d-flex justify-content-center">
 <Button variant="outlined" color='primary' type="submit" startIcon={<LockResetIcon />}>Change Password </Button>
@@ -145,55 +145,55 @@ export default function Content() {
                 
                 <MainCard class="card mb-4">
                     <div className='m-2'>Security Preferences</div>
-                    <div class="card-body">
+                    <div className="card-body">
                        
-                        <h5 class="mb-1">Account Privacy</h5>
-                        <p class="small text-muted">By setting your account to private, your profile information and posts will not be visible to users outside of your user groups.</p>
+                        <h5 className="mb-1">Account Privacy</h5>
+                        <p className="small text-muted">By setting your account to private, your profile information and posts will not be visible to users outside of your user groups.</p>
                         <form>
-                            <div class="form-check">
-                                <input class="form-check-input" id="radioPrivacy1" type="radio" name="radioPrivacy" />
-                                <label class="form-check-label" htmlFor="radioPrivacy1">Public (posts are available to all users)</label>
+                            <div className="form-check">
+                                <input className="form-check-input" id="radioPrivacy1" type="radio" name="radioPrivacy" />
+                                <label className="form-check-label" htmlFor="radioPrivacy1">Public (posts are available to all users)</label>
                             </div>
-                            <div class="form-check">
-                                <input class="form-check-input" id="radioPrivacy2" type="radio" name="radioPrivacy"/>
-                                <label class="form-check-label" htmlFor="radioPrivacy2">Private (posts are available to only users in your groups)</label>
+                            <div className="form-check">
+                                <input className="form-check-input" id="radioPrivacy2" type="radio" name="radioPrivacy"/>
+                                <label className="form-check-label" htmlFor="radioPrivacy2">Private (posts are available to only users in your groups)</label>
                             </div>
                         </form>
-                        <hr class="my-4"/>
+                        <hr className="my-4"/>
                        
-                        <h5 class="mb-1">Data Sharing</h5>
-                        <p class="small text-muted">Sharing usage data can help us to improve our products and better serve our users as they navigation through our application. When you agree to share usage data with us, crash reports and usage analytics will be automatically sent to our development team for investigation.</p>
+                        <h5 className="mb-1">Data Sharing</h5>
+                        <p className="small text-muted">Sharing usage data can help us to improve our products and better serve our users as they navigation through our application. When you agree to share usage data with us, crash reports and usage analytics will be automatically sent to our development team for investigation.</p>
                         <form>
-                            <div class="form-check">
-                                <input class="form-check-input" id="radioUsage1" type="radio" name="radioUsage" />
-                                <label class="form-check-label" htmlFor="radioUsage1">Yes, share data and crash reports with app developers</label>
+                            <div className="form-check">
+                                <input className="form-check-input" id="radioUsage1" type="radio" name="radioUsage" />
+                                <label className="form-check-label" htmlFor="radioUsage1">Yes, share data and crash reports with app developers</label>
                             </div>
-                            <div class="form-check">
-                                <input class="form-check-input" id="radioUsage2" type="radio" name="radioUsage"/>
-                                <label class="form-check-label" htmlFor="radioUsage2">No, limit my data sharing with app developers</label>
+                            <div className="form-check">
+                                <input className="form-check-input" id="radioUsage2" type="radio" name="radioUsage"/>
+                                <label className="form-check-label" htmlFor="radioUsage2">No, limit my data sharing with app developers</label>
                             </div>
                         </form>
                     </div>
                 </MainCard>
             </div>
-            <div class="col-lg-4">
+            <div className="col-lg-4">
                 
                 <MainCard class="card mb-4">
                     <div className='m-2'>Two-Factor Authentication</div>
-                    <div class="card-body">
+                    <div className="card-body">
                         <p>Add another level of security to your account by enabling two-factor authentication. We will send you a text message to verify your login attempts on unrecognized devices and browsers.</p>
                         <form>
-                            <div class="form-check">
-                                <input class="form-check-input" id="twoFactorOn" type="radio" name="twoFactor" />
-                                <label class="form-check-label" htmlFor="twoFactorOn">On</label>
+                            <div className="form-check">
+                                <input className="form-check-input" id="twoFactorOn" type="radio" name="twoFactor" />
+                                <label className="form-check-label" htmlFor="twoFactorOn">On</label>
                             </div>
-                            <div class="form-check">
-                                <input class="form-check-input" id="twoFactorOff" type="radio" name="twoFactor"/>
-                                <label class="form-check-label" htmlFor="twoFactorOff">Off</label>
+                            <div className="form-check">
+                                <input className="form-check-input" id="twoFactorOff" type="radio" name="twoFactor"/>
+                                <label className="form-check-label" htmlFor="twoFactorOff">Off</label>
                             </div>
-                            <div class="mt-3">
-                                <label class="small mb-1" for="twoFactorSMS">SMS Number</label>
-                                <input class="form-control" id="twoFactorSMS" type="tel" placeholder="Enter a phone number" />
+                            <div className="mt-3">
+                                <label className="small mb-1" htmlFor="twoFactorSMS">SMS Number</label>
+                                <input className="form-control" id="twoFactorSMS" type="tel" placeholder="Enter a phone number" />
                             </div>
                         </form>
                     </div>
@@ -201,9 +201,9 @@ export default function Content() {
               
                 <MainCard class="card mb-4">
                     <div className='m-2'>Delete Account</div>
-                    <div class="card-body">
+                    <div className="card-body">
                         <p>Deleting your account is a permanent action and cannot be undone. If you are sure you want to delete your account, select the button below.</p>
-                        <button class="btn btn-danger-soft text-danger" type="button">I understand, delete my account</button>
+                        <button className="btn btn-danger-soft text-danger" type="button">I understand, delete my account</button>
                     </div>
                 </MainCard>
             </div>

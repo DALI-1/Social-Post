@@ -182,7 +182,7 @@ const  HandleSaveThumbnail=()=>{
           
             {!HiddenVideoLoaded&&<Spinner/>}
           {HiddenVideoLoaded&&<video
-          crossorigin="anonymous"
+          crossOrigin="anonymous"
           id="Selected_VideoID"
           ref={VideoRef}
           height="50%"
@@ -196,7 +196,7 @@ const  HandleSaveThumbnail=()=>{
            
          {/*==========NOTE: This is a hidden video used to iteratte through frames without showing that the user========== */}
          <video
-          crossorigin="anonymous"
+          crossOrigin="anonymous"
           id="Selected_VideoID2"
           ref={Hidden_VideoRef}
           height="100%"
@@ -235,9 +235,9 @@ const  HandleSaveThumbnail=()=>{
                 <LinearSpinner/>
               </div>:
               <>
-              {Frames.map((Local_frameurl)=>{
+              {Frames.map((Local_frameurl,index)=>{
             return(
-              <Col xs={4} md={2}>
+              <Col key={index} xs={4} md={2}>
             {SelectedThumbnail==Local_frameurl?
             <div className='ThumbnailSelectBox' style={{border:"5px solid #009be5"}} onClick={()=>{Set_SelectedThumbnail(Local_frameurl)}}>
             <img className='ThumbnailSelectBoxImage' src={Local_frameurl}/>

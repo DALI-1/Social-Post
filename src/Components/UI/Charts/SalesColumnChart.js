@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
-
+import React from 'react';
 // third-party
 import ReactApexChart from 'react-apexcharts';
 

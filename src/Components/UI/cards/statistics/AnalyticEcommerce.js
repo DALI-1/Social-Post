@@ -5,10 +5,9 @@ import { Box, Chip, Grid, Stack, Typography } from '@mui/material';
 
 // project import
 import MainCard from '../../cards/MainCard'
-
+import React from 'react';
 // assets
 import { RiseOutlined, FallOutlined } from '@ant-design/icons';
-
 // ==============================|| STATISTICS - ECOMMERCE CARD  ||============================== //
 
 const AnalyticEcommerce = ({ color, title, count, percentage, isLoss, extra }) => (

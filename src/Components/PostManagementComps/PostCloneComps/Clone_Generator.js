@@ -62,12 +62,12 @@ export default function FBPostBoxClone({Text,PageInfo}) {
                 <br></br>
                 <hr/>
                 <div className='ClonePostFooter'>
-                <div class="social-icons">
+                <div className="social-icons">
                   <Container>
                     <Row>
-                      <Col > <Button  style={{color:"#666"}} startIcon={<i class="fa fa-thumbs-up"style={{color:"#666"}}></i>}>Like</Button></Col>
-                      <Col > <Button style={{color:"#666"}} startIcon={<i class="fa fa-comment"style={{color:"#666"}}></i>}>Comment</Button></Col>
-                      <Col> <Button style={{color:"#666"}}  startIcon={<i class="fa fa-share" style={{color:"#666"}}></i>}>Share</Button></Col>
+                      <Col > <Button  style={{color:"#666"}} startIcon={<i className="fa fa-thumbs-up"style={{color:"#666"}}></i>}>Like</Button></Col>
+                      <Col > <Button style={{color:"#666"}} startIcon={<i className="fa fa-comment"style={{color:"#666"}}></i>}>Comment</Button></Col>
+                      <Col> <Button style={{color:"#666"}}  startIcon={<i className="fa fa-share" style={{color:"#666"}}></i>}>Share</Button></Col>
                     </Row>
                   </Container>
             </div>
@@ -106,12 +106,12 @@ export default function FBPostBoxClone({Text,PageInfo}) {
                 <br></br>
                 <hr/>
                 <div className='ClonePostFooter'>
-                <div class="social-icons">
+                <div className="social-icons">
                   <Container>
                     <Row>
-                      <Col > <Button  style={{color:"#666"}} startIcon={<i class="fa fa-thumbs-up"style={{color:"#666"}}></i>}>Like</Button></Col>
-                      <Col > <Button style={{color:"#666"}} startIcon={<i class="fa fa-comment"style={{color:"#666"}}></i>}>Comment</Button></Col>
-                      <Col> <Button style={{color:"#666"}}  startIcon={<i class="fa fa-share" style={{color:"#666"}}></i>}>Share</Button></Col>
+                      <Col > <Button  style={{color:"#666"}} startIcon={<i className="fa fa-thumbs-up"style={{color:"#666"}}></i>}>Like</Button></Col>
+                      <Col > <Button style={{color:"#666"}} startIcon={<i className="fa fa-comment"style={{color:"#666"}}></i>}>Comment</Button></Col>
+                      <Col> <Button style={{color:"#666"}}  startIcon={<i className="fa fa-share" style={{color:"#666"}}></i>}>Share</Button></Col>
                     </Row>
                   </Container>
             </div>
@@ -157,12 +157,12 @@ export default function FBPostBoxClone({Text,PageInfo}) {
             <br></br>
             <hr/>
             <div className='ClonePostFooter'>
-            <div class="social-icons">
+            <div className="social-icons">
               <Container>
                 <Row>
-                  <Col > <Button  style={{color:"#666"}} startIcon={<i class="fa fa-thumbs-up"style={{color:"#666"}}></i>}>Like</Button></Col>
-                  <Col > <Button style={{color:"#666"}} startIcon={<i class="fa fa-comment"style={{color:"#666"}}></i>}>Comment</Button></Col>
-                  <Col> <Button style={{color:"#666"}}  startIcon={<i class="fa fa-share" style={{color:"#666"}}></i>}>Share</Button></Col>
+                  <Col > <Button  style={{color:"#666"}} startIcon={<i className="fa fa-thumbs-up"style={{color:"#666"}}></i>}>Like</Button></Col>
+                  <Col > <Button style={{color:"#666"}} startIcon={<i className="fa fa-comment"style={{color:"#666"}}></i>}>Comment</Button></Col>
+                  <Col> <Button style={{color:"#666"}}  startIcon={<i className="fa fa-share" style={{color:"#666"}}></i>}>Share</Button></Col>
                 </Row>
               </Container>
         </div>
@@ -189,17 +189,17 @@ export default function FBPostBoxClone({Text,PageInfo}) {
             <MainCard style={{ boxShadow: '2px 2px 5px rgba(0, 0, 0, 0.3)' }}
              sx={{ width: '100%', m: 1,p:2 ,textAlign: "center" }}>
               
-              <div class="post">
-        <div class="header">
+              <div className="post">
+        <div className="header">
           <img src={PageInfo.PagePic} alt="Profile Picture"/>
-          <div class="user-info">
+          <div className="user-info">
             <h2>{PageInfo.label}</h2>
             
           </div>
-          <i class="fas fa-ellipsis-h"></i>
+          <i className="fas fa-ellipsis-h"></i>
         </div>
         <br></br>
-        <div class="image" style={{width:"100%",height:"100%"}}>
+        <div className="image" style={{width:"100%",height:"100%"}}>
          
         <video
                  
@@ -211,18 +211,18 @@ export default function FBPostBoxClone({Text,PageInfo}) {
                    />
 
         </div>
-        <div class="actions">
-          <div class="left">
-            <i class="far fa-heart"></i>
-            <i class="far fa-comment"></i>
-            <i class="far fa-paper-plane"></i>
+        <div className="actions">
+          <div className="left">
+            <i className="far fa-heart"></i>
+            <i className="far fa-comment"></i>
+            <i className="far fa-paper-plane"></i>
           </div>
-          <div class="right">
-            <i class="far fa-bookmark"></i>
+          <div className="right">
+            <i className="far fa-bookmark"></i>
           </div>
         </div>
         <br></br>
-        <div class="caption">
+        <div className="caption">
           <p>{ ReactHtmlParser(Text) }</p>
           
         </div>
@@ -239,31 +239,31 @@ export default function FBPostBoxClone({Text,PageInfo}) {
             <MainCard style={{ boxShadow: '2px 2px 5px rgba(0, 0, 0, 0.3)' }}
              sx={{ width: '100%', m: 1,p:2 ,textAlign: "center" }}>
               
-              <div class="post">
-        <div class="header">
+              <div className="post">
+        <div className="header">
           <img src={PageInfo.PagePic} alt="Profile Picture"/>
-          <div class="user-info">
+          <div className="user-info">
             <h2>{PageInfo.label}</h2>
             
           </div>
-          <i class="fas fa-ellipsis-h"></i>
+          <i className="fas fa-ellipsis-h"></i>
         </div>
         <br></br>
-        <div class="image" style={{width:"100%",height:"100%"}}>
+        <div className="image" style={{width:"100%",height:"100%"}}>
           <img src="https://via.placeholder.com/300x300" style={{width:"100%"}} alt="Post Image"/>
         </div>
-        <div class="actions">
-          <div class="left">
-            <i class="far fa-heart"></i>
-            <i class="far fa-comment"></i>
-            <i class="far fa-paper-plane"></i>
+        <div className="actions">
+          <div className="left">
+            <i className="far fa-heart"></i>
+            <i className="far fa-comment"></i>
+            <i className="far fa-paper-plane"></i>
           </div>
-          <div class="right">
-            <i class="far fa-bookmark"></i>
+          <div className="right">
+            <i className="far fa-bookmark"></i>
           </div>
         </div>
         <br></br>
-        <div class="caption">
+        <div className="caption">
           <p>{ ReactHtmlParser(Text) }</p>
           
         </div>
@@ -283,17 +283,17 @@ export default function FBPostBoxClone({Text,PageInfo}) {
         <MainCard style={{ boxShadow: '2px 2px 5px rgba(0, 0, 0, 0.3)' }}
          sx={{ width: '100%',m: 1,p:2 ,textAlign: "center",display:"inline-block" }}>
           
-          <div  class="post">
-    <div class="header">
+          <div  className="post">
+    <div className="header">
       <img src={PageInfo.PagePic}   loading="lazy" alt="Profile Picture"/>
-      <div class="user-info">
+      <div className="user-info">
         <h2>{PageInfo.label}</h2>
         
       </div>
-      <i class="fas fa-ellipsis-h"></i>
+      <i className="fas fa-ellipsis-h"></i>
     </div>
     <br></br>
-    <div class="image">
+    <div className="image">
     <Carousel
     autoPlay={true}
     changeOnFirstRender={true}
@@ -305,24 +305,24 @@ export default function FBPostBoxClone({Text,PageInfo}) {
       }
   }} >
     
-      {variables.PostGlobalVariables.POST_SelectedAssetsInfo.map((Asset)=>{
-       return(<img loading="lazy" src={Asset.src} alt="Post Image"/>
+      {variables.PostGlobalVariables.POST_SelectedAssetsInfo.map((Asset,index)=>{
+       return(<img loading="lazy" key={index} src={Asset.src} alt="Post Image"/>
         )
       })}   
         </Carousel>
     </div>
-    <div class="actions">
-      <div class="left">
-        <i class="far fa-heart"></i>
-        <i class="far fa-comment"></i>
-        <i class="far fa-paper-plane"></i>
+    <div className="actions">
+      <div className="left">
+        <i className="far fa-heart"></i>
+        <i className="far fa-comment"></i>
+        <i className="far fa-paper-plane"></i>
       </div>
-      <div class="right">
-        <i class="far fa-bookmark"></i>
+      <div className="right">
+        <i className="far fa-bookmark"></i>
       </div>
     </div>
     <br></br>
-    <div class="caption">
+    <div className="caption">
       <p>{ ReactHtmlParser(Text) }</p>
     </div>
     <br></br>
