@@ -7,9 +7,7 @@ import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import '@progress/kendo-theme-default/dist/all.css';
 import { ToastContainer} from 'react-toastify';
-import { ChakraBaseProvider, extendBaseTheme } from '@chakra-ui/react'
 import {GlobalContext} from "./context/Context"
-import chakraTheme from '@chakra-ui/theme'
 import { registerLicense,li } from '@syncfusion/ej2-base';
 import ErrorBoundary from './Views/Errors/ErrorBoundary';
 //scheduler styles
@@ -27,13 +25,7 @@ import "@syncfusion/ej2-react-grids/styles/bootstrap.css";
 import 'react-toastify/dist/ReactToastify.css';
 //this is for the add post splitter
 import '@syncfusion/ej2-layouts/styles/bootstrap.css';
-const { Button } = chakraTheme.components
 const root = ReactDOM.createRoot(document.getElementById('root'));
-const theme = extendBaseTheme({
-  components: {
-    Button,
-  },
-})
 // Registering Syncfusion license key
 registerLicense(process.env.REACT_APP_SYNCFUSIONLICENSEKEY);
 
