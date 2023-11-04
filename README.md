@@ -1,70 +1,116 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Introduction
+Social Post is a web application that allows campaigns to handle, schedule their posts within Facebook and Instagram, it provides a way to create posts dynamically with variables, thumbnails, Dynamic fields within a group system where multiple people can work together in a single campaign, see the post insights, schedule posts, add,edit, pages and so on...
+This app contains six major sections
+1. Authentification
+2. Group Management
+3. Page Management
+4. Profile Management
+5. Post Management
+6. User Management
 
-## Available Scripts
+##Tools
+The front-end of this project was built using React 18, Material UI, Syncfusion, MDB-React, Bootstrap Kendo UI,
+The back-end of this project was built using ASP .NET Core 6, SQL Server and Service worker.
 
-In the project directory, you can run:
+##Getting Started
+For the front-end, start first by installing Node JS [`Node Download Link`](https://nodejs.org/en/download/current)
+And then download or clone the git repo, after doing so simply install the dependencies (Make sure to include --force)
+```bash
+npm install --force
+```
+After finishing the download, create a new .env file (this gonna contain keys for this app)
+If you wanna add HTTPS to the app and add your own certificates, in the ssl folder, put your own cert.pm and key.pm and set the HTTPS to True in the env.
+For the rest, Kendo UI, get your license  from Kendo UI and puts it inside the Licenses folder and for MetaAPP Key, go create a new application Meta
+[`Meta Link`](https://developers.facebook.com/async/registration/dialog/?src=default) and get your Meta App key from there,
+same for TinyMceAPI key and Syncfusion, get your own keys from their websites and put them here for them to work with the app, for the rest, these are just the api paths for the backened, change them if you modified the backened or added a new api.
+```bash
 
-### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+HTTPS=false 
+SSL_CRT_FILE=./ssl/cert.pem 
+SSL_KEY_FILE=./ssl/key.pem
+KENDO_UI_LICENSE=./kendo-ui-license.txt
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+REACT_APP_METAAPPKEY=YourMetaAppKey
+REACT_APP_METAAPP_APPSCOPES=email,pages_manage_cta,pages_show_list,instagram_basic,instagram_content_publish,pages_read_engagement,pages_read_engagement,pages_manage_metadata,pages_manage_metadata,pages_read_user_content,pages_manage_posts,pages_manage_engagement,public_profile
+REACT_APP_METAAPP_APPFIELDS=birthday,first_name,last_name,id,email,picture
+         
+REACT_APP_TINYMCEJWTAPIKEY=YourTinyMCEJWTKEY
+REACT_APP_SYNCFUSIONLICENSEKEY=YourSyncFusionLicenseKey
 
-### `npm test`
+REACT_APP_FRONTENDURL=https://localhost:3000
+REACT_APP_BACKENDURL=https://localhost:7297
+REACT_APP_REGISTERAPINAME=/api/Auth/register
+REACT_APP_LOGINAPINAME=/api/Auth/login
+REACT_APP_FORGOTPWAPINAME=/api/Auth/ForgotPW
+REACT_APP_CHANGEPWAPINAME=/api/Auth/ChangePW
+REACT_APP_CHANGEPERSONALINFO=/api/User/ChangeUserBasicInformations
+REACT_APP_CHANGEUSERIMAGE=/api/User/ChangeUserImage
+REACT_APP_CHANGEPW=/api/User/ChangeUserPass
+REACT_APP_CREATESUBGROUP=/api/Group/CreateSubGroup
+REACT_APP_GETGROUPINFO=/api/Group/GetGroupInfo
+REACT_APP_MOVEGROUP=/api/Group/MoveGroup
+REACT_APP_CHANGEGROUPPERMISSION=/api/Group/ChangePermission
+REACT_APP_CHANGEGROUPNAME=/api/Group/ChangeGroupName
+REACT_APP_DELETEGROUP=/api/Group/DeleteGroup
+REACT_APP_GETSLAVEUSERS=/api/User/GetSlaveUsers
+REACT_APP_CREATESLAVEUSER=/api/User/CreateSlaveUser
+REACT_APP_GETUSERINFOBYID=/api/User/GetUserInfoByID
+REACT_APP_ADDUSERSTOGROUPS=/api/User/AddUsersToGroups
+REACT_APP_REMOVEUSERSFROMGROUPS=/api/User/RemoveUsersFromGroups
+REACT_APP_EDITSLAVEUSERINFO=/api/User/EDITSLAVEUSERINFO
+REACT_APP_REMOVEUSERS=/api/User/RemoveUsers
+REACT_APP_ADDINSTAGRAMPAGE=/api/Page/AddInstagramPage
+REACT_APP_ADDFACEBOOKPAGE=/api/Page/AddFacebookPage
+REACT_APP_GETGROUPPAGES=/api/Page/GetGroupPages
+REACT_APP_DELETEPAGES=/api/Page/DeletePages
+REACT_APP_GETPAGEASSOCIATIONS=/api/Page/GetAssociatedPageInformations
+REACT_APP_GETPAGEINFO=/api/Page/GetPageInformations
+REACT_APP_GETFBCATEGORIES=/api/Page/GetAllPagesCategories
+REACT_APP_GETAPPPLATFORMS=/api/Platform/GetAppPlatforms
+REACT_APP_UPDATEPAGEINFO=/api/Page/UpdatePageInfo
+REACT_APP_UPDATEPAGEPICTURE=/api/Page/UpdatePagePicture
+REACT_APP_ADDPATTERN=/api/Pattern/AddPatternToGroup
+REACT_APP_REMOVEPATTERN=/api/Pattern/DeletePattern
+REACT_APP_GETGROUPATTERNS=/api/Pattern/GetGroupPatterns
+REACT_APP_ADDPOST=/api/Post/AddPost
+REACT_APP_EDITPOST=/api/Post/EditPost
+REACT_APP_MODIFYPOST=/api/Post/ModifyPost
+REACT_APP_DELETEPOST=/api/Post/DeletePost
+REACT_APP_GETGROUPPOSTS=/api/Post/GetGroupPosts
+REACT_APP_GETOPTIMALPUBLISHDATE=/api/Inseights/GetOptimalPublishDate
+REACT_APP_GETPOSTSINSEIGHTS=/api/Inseights/GetPostsInseights
+REACT_APP_GETSINGLEPOSTINSEIGHTS=/api/Inseights/GetSinglePostInsights
+REACT_APP_ADDASSET=/api/Asset/AddAsset
+REACT_APP_ASSIGNTHUMBNAIL=/api/Asset/AssignVideoThumbnail
+REACT_APP_DELETEGROUPASSET=/api/Asset/DeleteAsset
+REACT_APP_GETGROUPASSETS=/api/Asset/GetGroupAssets
+REACT_APP_GETGROUPVIDEOASSETS=/api/Asset/GetGroupVideoAssets
+REACT_APP_GETPLATFORMACCOUNTS=/api/Platform//GetAllPlatformAccounts
+REACT_APP_GETTAGABLEPLATFORMACCOUNTS=/api/Platform/GetTagalePlatformAccounts
+REACT_APP_GETMENTIONABLEPLATFORMACCOUNTS=/api/Platform/GetMentionablePlatformAccounts
+REACT_APP_GETPOSTINFO=/api/Post/GetPostInfoByID
+REACT_APP_GETPAGEPLATFORMID=/api/Page/GetPagePlatformID
+REACT_APP_SEARCHLOCATION=/api/Search/SearchFBLocation
+REACT_APP_SEARCHCOUNTRY=/api/Search/SearchFBCountry
+REACT_APP_SEARCHREGION=/api/Search/SearchFBRegion
+REACT_APP_SEARCHINTEREST=/api/Search/SearchFBInterest
+REACT_APP_GETPERSONALINFO=/api/User/GetUserInfo
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Now after adding the .env file, simply start your app with
 
-### `npm run build`
+for Development:
+```bash
+npm start
+```
+for Production
+```bash
+npm run build
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+##Pictures
+Coming..
+##LearnMore
+Comming...
