@@ -7,10 +7,8 @@ import {
   MDBContainer,
   MDBRow,
   MDBCol,
-  MDBCard,
   MDBCardBody,
   MDBInput,
-  MDBIcon,
 } from 'mdb-react-ui-kit';
 import { useTheme } from '@mui/material/styles';
 import logo from '../../assets/sp_logo_large.png';

@@ -132,12 +132,12 @@ function Header(props) {
       <AppBar component="div" position="static" elevation={0} sx={{ zIndex: 0 }}>
         <Tabs  value={TabMenu} textColor="inherit">
          
-           <Tab  label={<><TuneIcon/> <p>Manage Group</p></>}  onClick={(e)=>{Dispatch({type:GroupSelectedTabActions.SelectManageGroup})
+           <Tab  label={<><TuneIcon/> <p>Manage Group</p></>}  onClick={()=>{Dispatch({type:GroupSelectedTabActions.SelectManageGroup})
            SetTabMenu(0)
          }}/>
         
      
-          {GlobalState.GroupSelectedTab===GroupTabs.AddGroup&&<Tab  label={<><GroupAddIcon/> <p>Add SubGroup</p></>}  onClick={(e)=>{Dispatch({type:GroupSelectedTabActions.SelectAddGroup})
+          {GlobalState.GroupSelectedTab===GroupTabs.AddGroup&&<Tab  label={<><GroupAddIcon/> <p>Add SubGroup</p></>}  onClick={()=>{Dispatch({type:GroupSelectedTabActions.SelectAddGroup})
           SetTabMenu(1)
         }}/>}
      

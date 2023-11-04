@@ -266,7 +266,7 @@ if(document.getElementById(RadioButton).checked)
                            
                             Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner})                  
       })
-      .catch((error)=>{
+      .catch(()=>{
   
         Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner}) 
       })

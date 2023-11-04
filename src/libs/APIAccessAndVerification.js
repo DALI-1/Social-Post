@@ -1,12 +1,12 @@
 
 import { APIStatuses } from '../variables/variables';
-import {ServerInternalError,ServerConnectionLostError,UnAuthorized}from "../Exceptions/Exceptions" ;
+import {ServerInternalError,ServerConnectionLostError,UnAuthorized}from "../exceptions/Exceptions" ;
 import  {APIStatus}from "../variables/variables"
 import {toast } from 'react-toastify';
 //This is an Async method which will call our API, url is the API path, data is the json data, the format should follow our DTO format in the backend
 export  const  CALLAPI = async (url,data)=>
   {
-   
+    
     try {
       const response = await fetch(url,{
         method: "POST",
@@ -16,7 +16,7 @@ export  const  CALLAPI = async (url,data)=>
         },
         body: data
       })
-      .catch((e)=>{
+      .catch(()=>{
         //Throwing the Connection Lost Exception
         throw new ServerConnectionLostError()
       });
@@ -110,7 +110,7 @@ export  const  CALLAPI = async (url,data)=>
         },
         body: data
       })
-      .catch((e)=>{
+      .catch(()=>{
         //Throwing the Connection Lost Exception
         console.log("DEVELOPER: "+response)
         throw new ServerConnectionLostError()
@@ -216,7 +216,7 @@ export  const  CALLAPI = async (url,data)=>
         },
         body: data
       })
-      .catch((e)=>{
+      .catch(()=>{
         //Throwing the Connection Lost Exception
         throw new ServerConnectionLostError()
       });
@@ -303,7 +303,7 @@ export  const  CALLAPI = async (url,data)=>
         }
         
       })
-      .catch((e)=>{
+      .catch(()=>{
         //Throwing the Connection Lost Exception
         throw new ServerConnectionLostError()
       });

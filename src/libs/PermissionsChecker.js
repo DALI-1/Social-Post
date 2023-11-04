@@ -1,8 +1,4 @@
 
-import { APIStatuses } from '../variables/variables';
-import {ServerInternalError,ServerConnectionLostError}from "../Exceptions/Exceptions" ;
-import  {APIStatus}from "../variables/variables"
-import {toast } from 'react-toastify';
 import * as variables from "../variables/variables"
 import {AppContext} from "../context/Context"
 import * as React from 'react';

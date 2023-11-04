@@ -71,7 +71,7 @@ export const PasswordRecovery = (props) => {
                 'Th956W69Ljmfmz7sP'
               )
               .then(
-                (result) => {
+                () => {
                   toast.success('A link was sent to your Email successfully!', {
                     position: 'bottom-left',
                     autoClose: 5000,

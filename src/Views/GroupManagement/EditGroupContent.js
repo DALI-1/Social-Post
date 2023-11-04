@@ -28,7 +28,6 @@ import MoveDownIcon from '@mui/icons-material/MoveDown';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CancelIcon from '@mui/icons-material/Cancel';
 import SecurityIcon from '@mui/icons-material/Security';
-import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import Tooltip from '@mui/material/Tooltip';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import Fade from '@mui/material/Fade'; 
@@ -238,7 +237,7 @@ export default function Content() {
              {
                 return (
                   <>
-                    {subGroups.map((group,index) => 
+                    {subGroups.map((group) => 
 
                     {
                       CheckboxList.current=[...CheckboxList.current,{"CheckboxID":"GROUP"+group.id}]

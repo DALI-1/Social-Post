@@ -5,7 +5,6 @@ import {
   MDBCol,
   MDBRow,
   MDBBtn,
-  MDBIcon,
   MDBInput,
   MDBCheckbox,
 } from 'mdb-react-ui-kit';
@@ -132,7 +131,7 @@ function App() {
       }
       if (UserAuthentificated.current === true)
         window.location.replace('/index');
-    }).catch((error) => {
+    }).catch(() => {
       toast.error(
         'Contact Dev team, there is an internal error within the server',
         {
@@ -166,29 +165,6 @@ function App() {
         </MDBCol>
 
         <MDBCol col="4" md="6">
-          {/* 
-          <div className="d-flex flex-row align-items-center justify-content-center">
-
-            <p className="lead fw-normal mb-0 me-3">Sign in with</p>
-
-            <MDBBtn floating size='md' tag='a' className='me-2'>
-              <MDBIcon fab icon='facebook-f' />
-            </MDBBtn>
-
-            <MDBBtn floating size='md' tag='a'  className='me-2'>
-              <MDBIcon fab icon='twitter' />
-            </MDBBtn>
-
-            <MDBBtn floating size='md' tag='a'  className='me-2'>
-              <MDBIcon fab icon='linkedin-in' />
-            </MDBBtn>
-
-          </div>
-            
-          <div className="divider d-flex align-items-center my-4">
-            <p className="text-center fw-bold mx-3 mb-0">Or</p>
-          </div>
-          */}
           <form onSubmit={handlesubmit}>
             <MDBInput
               wrapperClass="m-4"
@@ -240,7 +216,7 @@ function App() {
               </div>
               <div className="d-flex justify-content-center mb-4"></div>
               <p className="small fw-bold mt-2 pt-1 mb-2">
-                Don't have an account?{' '}
+                Dont have an account?{' '}
                 <a href="/Register" style={{ color: '#3b71ca' }}>
                   Register
                 </a>

@@ -8,8 +8,8 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import '@progress/kendo-theme-default/dist/all.css';
 import { ToastContainer} from 'react-toastify';
 import {GlobalContext} from "./context/Context"
-import { registerLicense,li } from '@syncfusion/ej2-base';
-import ErrorBoundary from './Views/Errors/ErrorBoundary';
+import { registerLicense } from '@syncfusion/ej2-base';
+import ErrorBoundary from './views/Errors/ErrorBoundary';
 //scheduler styles
 import "@syncfusion/ej2-base/styles/bootstrap.css";
 import "@syncfusion/ej2-buttons/styles/bootstrap.css";
