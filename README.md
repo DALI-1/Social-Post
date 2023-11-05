@@ -17,7 +17,7 @@ The front-end of this project was developed using a stack that includes React 18
 On the other hand, the back-end of the project was built using ASP .NET Core 6, which serves as the backbone for the application's logic and functionality. It interfaces with a SQL Server database to manage data, and it also utilizes a Service Worker for improved performance and offline capabilities.
 
 ## Getting Started
-For the front-end, start first by installing Node JS [`Node Download Link`](https://nodejs.org/en/download/current)
+1. front-end, start first by installing Node JS [`Node Download Link`](https://nodejs.org/en/download/current)
 And then download or clone the git repo, after doing so simply install the dependencies (Make sure to include --force)
 ```bash
 npm install --force
@@ -112,6 +112,137 @@ for Production
 ```bash
 npm run build
 ```
+
+## Setting up the Back-end
+
+- Visual Studio
+1. Next, make sure to download and install Visual Studio. You can find the download link for Visual Studio [here](https://visualstudio.microsoft.com/fr/).
+
+2. After installing Visual Studio, open the project located inside the "Server" folder (Make sure that you install ASP.net Core from the Visual Studio Installer)
+
+3. Customize your run configuration to execute the following three folders: SocialPostBackEnd, SocialPost_PlatformAccountService, SocialPost_Scheduler_Service, and SocialPost_PlatformAccountsManager_Service.
+
+- Visual Studio Code:
+1. Start by installing the .NET 6.0 SDK and ASP.NET Core Runtime 6.0.2. You can download them from the official links:
+   - [.NET 6.0 SDK & Runtime Download Link](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
+   
+2. ensure that the .NET SDK is installed globally on your computer, and its SDK path is included in the environment variables. You can check if .NET is correctly set up by running the following command in your terminal:
+
+```bash
+dotnet --info
+```
+3. if it shows  the dotnet infos, go to each folder (SocialPostBackEnd, SocialPost_PlatformAccountService, SocialPost_Scheduler_Service) and run it seperatly using the terminal with 
+
+ ```bash
+dotnet run --project SocialPostBackEnd.csproj
+```
+
+ ```bash
+dotnet run --project SocialPost_PlatformAccountService.csproj
+```
+ ```bash
+dotnet run --project SocialPost_Scheduler_Service.csproj
+```
+
+- Configuration
+
+  Now after you managed to get the projects starting, you need to update the appsettings.json with the proper keys for your app to be working correctly, the format for each project should be like this
+  
+  - SocialPostBackEnd 's appsettings.json
+
+    
+
+                  ```bash
+                  {
+                    "ConnectionStrings": {
+                      "DefaultConnection": "YourSQLServerConnectionString",
+                      "MetaAppID": "YourMetaAppID",
+                      "MetaAppCode": "YourMetaAppCode",
+                      "MetaAppScopes": "email, pages_manage_cta, pages_show_list, instagram_basic, instagram_manage_comments, instagram_manage_insights, instagram_content_publish, instagram_manage_messages, pages_read_engagement,       pages_manage_metadata, pages_manage_posts, public_profile"
+                    },
+                    "AppSettings": {
+                      "Token": "YourEncryptionSecretKey"
+                    },
+                    "Logging": {
+                      "LogLevel": {
+                        "Default": "Information",
+                        "Microsoft.AspNetCore": "Warning"
+                      }
+                    },
+                    "AllowedHosts": "*",
+                    "InseightsConstants": {
+                      "SharesImportanceConstant": "2",
+                      "LikesImportanceConstant": "1",
+                      "CommentsImportanceConstant": "3"
+                    },
+                    "EmailJSConstants": {
+                      "serviceId": "YourEmailJSServiceId",
+                      "templateId": "yourEmailTemplateId",
+                      "userId": "YourEmailJsUserId",
+                      "accessToken": "YourEmailJSAccessTooken",
+                      "emailJSUrl": "https://api.emailjs.com/api/v1.0/email/send"
+                    }
+                  }
+                  ```
+     
+  - SocialPost_PlatformAccountService 's appsettings.json   
+
+                    ```bash
+                      {
+                    "Logging": {
+                      "LogLevel": {
+                        "Default": "Information",
+                        "Microsoft.Hosting.Lifetime": "Information"
+                      }
+                    },
+                    "ConnectionStrings": {
+                      "DefaultConnection": "YourSQLServerConnectionString",
+                      "MetaAppID": "yourMetaAppId",
+                      "MetaAppCode": "YourMetaAppCode",
+                      "MetaAppScopes": "email, pages_manage_cta, pages_show_list, instagram_basic, instagram_manage_comments, instagram_manage_insights, instagram_content_publish, instagram_manage_messages, pages_read_engagement, pages_manage_metadata, pages_manage_posts, public_profile"
+                  
+                    },
+                    "ServiceConfig": {
+                      "ServiceRepeatCheckDelay": "3600000",
+                      "ServiceRepeatDelayAfterMetaAppLimit": "1000",
+                      "CustomDetailedLogging": "true",
+                      "StartDelay": "300000"
+                  
+                    }
+                  
+                  }
+
+                  ```
+  - SocialPost_Scheduler_Service 's appsettings.json
+
+    
+                    ```bash
+                  {
+                    "Logging": {
+                      "LogLevel": {
+                        "Default": "Information",
+                        "Microsoft.Hosting.Lifetime": "Information"
+                      }
+                    },
+                    "ConnectionStrings": {
+                      "DefaultConnection": "yourSQLServerConnectionString"
+                    },
+                    "ServiceConfig": {
+                      "ServiceRepeatCheckDelay": "3600000",
+                      "CustomDetailedLogging": "true",
+                      "Video_Publish_RetryLimit": "100",
+                      "Video_Publish_Retry_WaitTime": "15"
+                    },
+                    "EmailJSConstants": {
+                      "serviceId": "YourEMAILJSServiceId",
+                      "templateId": "YourEmailJSTemplateId",
+                      "userId": "YourUserId",
+                      "accessToken": "YourEmailJSAccessToken",
+                      "emailJSUrl": "https://api.emailjs.com/api/v1.0/email/send"
+                    }
+                  }
+
+                  ```
 
 ## Pictures
 <details>
