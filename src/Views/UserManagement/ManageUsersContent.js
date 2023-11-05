@@ -45,7 +45,7 @@ import GroupRemoveIcon from '@mui/icons-material/GroupRemove';
 import * as PermissionLib from "../../libs/PermissionsChecker"
 import MainCard from "../../components/UI/cards/MainCard"
 import { Avatar } from "@nextui-org/react";
-import ModifyUserIcon from "../../Assets/Settings.png"
+import ModifyUserIcon from "../../assets/settings_Icon.png"
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import Fade from '@mui/material/Fade'; 
 import Accordion from 'react-bootstrap/Accordion';

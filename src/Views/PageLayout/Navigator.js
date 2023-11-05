@@ -10,7 +10,7 @@ import ListItemText from '@mui/material/ListItemText';
 import HomeIcon from '@mui/icons-material/Home';
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 import LoginIcon from '@mui/icons-material/Login';
-import logo from '../../Assets/SocialPost-Logo.png';
+import logo from '../../assets/sp_logo_large.png';
 import { MDBDropdown, MDBDropdownMenu, MDBDropdownToggle, MDBDropdownItem } from 'mdb-react-ui-kit';
 import {AppContext} from "../../context/Context"
 import { NavigatorTabs,NavigatorSelectedTabActions} from '../../variables/variables';

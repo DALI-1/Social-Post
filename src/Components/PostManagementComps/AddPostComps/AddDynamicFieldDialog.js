@@ -17,7 +17,7 @@ import Fade from '@mui/material/Fade';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container'; 
-import DynamicFieldIcon from "../../../Assets/Settings.png"
+import DynamicFieldIcon from "../../../assets/settings_Icon.png"
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });

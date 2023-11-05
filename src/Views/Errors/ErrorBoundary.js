@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import "./ErrorBoundary.css"
-import logo from '../../Assets/SocialPost-Logo.png'
+import logo from '../../assets/sp_logo_large.png'
 class ErrorBoundary extends Component {
   constructor(props) {
     super(props);
     this.state = { hasError: false };
   }
 
-  static getDerivedStateFromError(error) {
+  static getDerivedStateFromError() {
     // Update state to display fallback UI
     return { hasError: true };
   }
@@ -47,7 +47,7 @@ class ErrorBoundary extends Component {
 </div>
 
 <h1>Unfortunately, something has gone wrong.</h1>
-<p>We're unable to fulfill your request. Rest assured we have been notified and are looking into the issue. Please refresh your browser. If the error continues, please contact our <a href="http://mcause.us/supportticket">support team</a>.</p>
+<p>We re unable to fulfill your request. Rest assured we have been notified and are looking into the issue. Please refresh your browser. If the error continues, please contact our <a href="http://mcause.us/supportticket">support team</a>.</p>
 </div>
       )
     }

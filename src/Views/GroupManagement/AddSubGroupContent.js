@@ -26,8 +26,8 @@ import Fade from '@mui/material/Fade';
 import IconButton from '@mui/material/IconButton';
 import Accordion from 'react-bootstrap/Accordion';
 import { Avatar } from "@nextui-org/react";
-import GroupIcon from "../../Assets/Group.png"
-import GroupSecurityIcon from "../../Assets/Security.png"
+import GroupIcon from "../../assets/group_Icon.png"
+import GroupSecurityIcon from "../../assets/security_Icon.png"
 export default function Content() {
 
     const {GlobalState,Dispatch}=React.useContext(AppContext)
@@ -266,7 +266,7 @@ if(document.getElementById(RadioButton).checked)
                            
                             Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner})                  
       })
-      .catch((error)=>{
+      .catch(()=>{
   
         Dispatch({type:HeaderSpinnerActions.TurnOffRequestSpinner}) 
       })

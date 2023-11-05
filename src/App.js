@@ -1,19 +1,17 @@
 
 import './App.css';
 import {BrowserRouter as Router,Route,Routes} from "react-router-dom";
-import LoginPage from './Views/Authentification/Sign_In';
-import RegisterPage from './Views/Authentification/Sign_up';
-import IndexPage from './Views/PageLayout/PageLayout';
-import ChangePW from './Views/Authentification/ChangePassword';
-
+import LoginPage from './views/Authentification/Sign_In';
+import RegisterPage from './views/Authentification/Sign_up';
+import IndexPage from './views/PageLayout/PageLayout';
+import ChangePW from './views/Authentification/ChangePassword';
+import React from 'react';
 
 
 function App() {
   return (
     <Router>
-       
-
-    <Routes>
+           <Routes>
     <Route exact path="/Login" element={<LoginPage/>}/>
     <Route exact path="/Register" element={<RegisterPage/>}/>
     <Route exact path="/index" element={<IndexPage/>}/>

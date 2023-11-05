@@ -37,7 +37,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container'; 
 import IconButton from '@mui/material/IconButton';
-import MentionIcon from "../../../Assets/mention.png"
+import MentionIcon from "../../../assets/mention_Icon.png"
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 const Transition = React.forwardRef(function Transition(props, ref) {

@@ -28,16 +28,15 @@ import MoveDownIcon from '@mui/icons-material/MoveDown';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CancelIcon from '@mui/icons-material/Cancel';
 import SecurityIcon from '@mui/icons-material/Security';
-import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import Tooltip from '@mui/material/Tooltip';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import Fade from '@mui/material/Fade'; 
 import IconButton from '@mui/material/IconButton';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import Accordion from 'react-bootstrap/Accordion';
-import GroupIcon from "../../Assets/Group.png"
-import GroupSecurityIcon from "../../Assets/Security.png"
-import DeleteGroupIcon from "../../Assets/Delete.png"
+import GroupIcon from "../../assets/group_Icon.png"
+import GroupSecurityIcon from "../../assets/security_Icon.png"
+import DeleteGroupIcon from "../../assets/delete_Icon.png"
 export function AlertDialog(props) {
   const [open, setOpen] = React.useState(true);
   const {GlobalState,Dispatch}=React.useContext(AppContext)
@@ -238,7 +237,7 @@ export default function Content() {
              {
                 return (
                   <>
-                    {subGroups.map((group,index) => 
+                    {subGroups.map((group) => 
 
                     {
                       CheckboxList.current=[...CheckboxList.current,{"CheckboxID":"GROUP"+group.id}]

@@ -6,13 +6,13 @@ import { Avatar } from "@nextui-org/react";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
-import CommenetIMG from "../../Assets/InsightsIcons/CommentIcon.png"
-import ShareIMG from "../../Assets/InsightsIcons/ShareIcon.png"
-import LikeIMG from "../../Assets/InsightsIcons/LikeIcon.png"
+import CommenetIMG from "../../assets/InsightsIcons/comment_Icon.png"
+import ShareIMG from "../../assets/InsightsIcons/share_Icon.png"
+import LikeIMG from "../../assets/InsightsIcons/like_Icon.png"
 
-import CommenetIMG2 from "../../Assets/InsightsIcons/Comment2.png"
-import ShareIMG2 from "../../Assets/InsightsIcons/Share2.png"
-import LikeIMG2 from "../../Assets/InsightsIcons/Like2.png"
+import CommenetIMG2 from "../../assets/InsightsIcons/comment_Icon_2.png"
+import ShareIMG2 from "../../assets/InsightsIcons/share_Icon_2.png"
+import LikeIMG2 from "../../assets/InsightsIcons/like_Icon_2.png"
 const StatsComponent = ({ label,Count,type, color }) => {
   const [animated, setAnimated] = useState(false);
 

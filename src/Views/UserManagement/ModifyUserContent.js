@@ -35,7 +35,7 @@ import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container'; 
 import Accordion from 'react-bootstrap/Accordion';
 import SaveIcon from '@mui/icons-material/Save';
-import ModifyUserIcon from "../../Assets/Settings.png"
+import ModifyUserIcon from "../../assets/settings_Icon.png"
 export default function Content() {
 
     const {GlobalState,Dispatch}=React.useContext(AppContext)
