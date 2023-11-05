@@ -1,17 +1,20 @@
+![SocialPost](https://imgur.com/NtyRgI2.png)
 
 ## Introduction
-Social Post is a web application that allows campaigns to handle, schedule their posts within Facebook and Instagram, it provides a way to create posts dynamically with variables, thumbnails, Dynamic fields within a group system where multiple people can work together in a single campaign, see the post insights, schedule posts, add,edit, pages and so on...
-This app contains six major sections
+
+Social Post is a web application designed for campaign management on Facebook and Instagram. It offers comprehensive features that empower users to efficiently handle and schedule their social media posts. With Social Post, users can create dynamic posts with customizable variables, thumbnails, and dynamic fields. The application also provides a collaborative environment through a group system, allowing multiple team members to work together on a single campaign. Users can gain insights into post performance, schedule posts, and manage pages, among other functionalities. Social Post is divided into six major sections to facilitate these operations.
+
 1. Authentification
-2. Group Management
-3. Page Management
-4. Profile Management
-5. Post Management
-6. User Management
+2. Group management
+3. Page management
+4. Profile management
+5. Post management
+6. User management
 
 ##Tools
-The front-end of this project was built using React 18, Material UI, Syncfusion, MDB-React, Bootstrap Kendo UI,
-The back-end of this project was built using ASP .NET Core 6, SQL Server and Service worker.
+The front-end of this project was developed using a stack that includes React 18, Material UI, Syncfusion, MDB-React, and Bootstrap Kendo UI. These technologies collectively provide a dynamic and visually appealing user interface.
+
+On the other hand, the back-end of the project was built using ASP .NET Core 6, which serves as the backbone for the application's logic and functionality. It interfaces with a SQL Server database to manage data, and it also utilizes a Service Worker for improved performance and offline capabilities.
 
 ##Getting Started
 For the front-end, start first by installing Node JS [`Node Download Link`](https://nodejs.org/en/download/current)
@@ -110,7 +113,93 @@ for Production
 npm run build
 ```
 
-##Pictures
-Coming..
-##LearnMore
-Comming...
+## Pictures
+<details>
+<summary>Authentification</summary>
+
+![Login Page](https://i.imgur.com/lJm5HFI.png)
+![Register Page](https://imgur.com/6B1Dysb.png)
+![recovery](https://imgur.com/xNx1odH.png)
+![recoverymail](https://imgur.com/nFPvws2.png)
+</details>
+
+<details>
+<summary>Post management</summary>
+
+![schedule](https://i.imgur.com/dL7fDsK.png)
+![addpost](https://imgur.com/RvgatjB.png)
+![addpost2](https://imgur.com/IBQFIhS.png)
+![emoji](https://imgur.com/B882qHL.png)
+![dynamicfield](https://imgur.com/9ydCd5N.png)
+![dynamicfield2](https://imgur.com/MSRpRmI.png)
+![filter](https://imgur.com/iNTxp9h.png)
+![gallery](https://imgur.com/uo5y3eB.png)
+![gallery2](https://imgur.com/J1IRLAt.png)
+![thumbnail](https://imgur.com/EJLUuMU.png)
+![postperformance](https://imgur.com/mdLWnrL.png)
+![postperformance2](https://imgur.com/bf3yydg.png)
+
+</details>
+
+<details>
+<summary>Group management</summary>
+
+![grouplist](https://imgur.com/FxQcsTM.png)
+![editgroup](https://imgur.com/wiKnaYp.png)
+
+</details>
+
+<details>
+<summary>User management</summary>
+         
+![userslist](https://imgur.com/PGsjcFA.png)
+![userslist](https://imgur.com/UlQPbFR.png)    
+
+</details>
+
+<details>
+<summary>Page management</summary>
+         
+![pagelist](https://imgur.com/4ql8Dab.png)
+![addpage1](https://imgur.com/pZSDYWb.png)
+![addpage2](https://imgur.com/oX1NXyR.png)
+![editpage](https://imgur.com/y1Q2733.png)
+
+</details>
+
+<details>
+<summary>Profile management</summary>
+         
+![profileedit](https://imgur.com/bmHukEL.png)
+![profileedit2](https://imgur.com/uKqPuvg.png)   
+
+</details>
+
+## LearnMore
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+
+To learn React, check out the [React documentation](https://reactjs.org/).
+
+### Code Splitting
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+
+### Analyzing the Bundle Size
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+
+### Making a Progressive Web App
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+
+### Advanced Configuration
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+
+### Deployment
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+
+### `npm run build` fails to minify
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
