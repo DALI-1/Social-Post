@@ -770,7 +770,7 @@ const TargetIcon=renderToStaticMarkup(<PodcastsIcon size={iconSize} color={iconC
 const MentionIcon= renderToStaticMarkup(<FaceRetouchingNaturalIcon size={iconSize} color={iconColor} />);
 const DynamicFIeldIcon=renderToStaticMarkup(<DynamicFeedIcon size={iconSize} color={iconColor} />);
 const AssetsIcon=renderToStaticMarkup(<CollectionsSharpIcon size={iconSize} color={iconColor} />);
-
+const [EditorIsNotReady,Set_EditorIsNotReady]=React.useState(true);
 const HandleAddMention = () => {
     SetShowAddMentionDialog(true)
     
@@ -1172,16 +1172,25 @@ const HandleImageTag=(()=>{
      
     </Accordion>           
        
+    
+    
            <div  style={{boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',margin:"0.5rem"}}>
-           
+          
+      
+      
            <Editor
           onInit={(evt, editor) => editorRef.current = editor}
            key={"Editor"}
            onEditorChange={handleEditorChange}
           apiKey={process.env.REACT_APP_TINYMCEJWTAPIKEY}
           init={init}
+          onPostRender={()=>{Set_EditorIsNotReady(false)}}
+          
         />
-           
+            {EditorIsNotReady&&<div>
+                 <p>Loading the Editor....</p>  
+              <LinearIndeterminate />
+              </div>}
             </div>
             
             {Assets.length!=0&&
