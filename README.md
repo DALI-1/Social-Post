@@ -11,12 +11,12 @@ Social Post is a web application designed for campaign management on Facebook an
 5. Post management
 6. User management
 
-##Tools
+## Tools
 The front-end of this project was developed using a stack that includes React 18, Material UI, Syncfusion, MDB-React, and Bootstrap Kendo UI. These technologies collectively provide a dynamic and visually appealing user interface.
 
 On the other hand, the back-end of the project was built using ASP .NET Core 6, which serves as the backbone for the application's logic and functionality. It interfaces with a SQL Server database to manage data, and it also utilizes a Service Worker for improved performance and offline capabilities.
 
-##Getting Started
+## Getting Started
 For the front-end, start first by installing Node JS [`Node Download Link`](https://nodejs.org/en/download/current)
 And then download or clone the git repo, after doing so simply install the dependencies (Make sure to include --force)
 ```bash
