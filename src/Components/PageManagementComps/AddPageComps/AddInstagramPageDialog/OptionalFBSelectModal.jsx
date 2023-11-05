@@ -117,7 +117,7 @@ export default function PagesDialog(props) {
             <br></br>
             <strong>
               Note: The Association between the pages is not gonna modify
-              anything, it's just logical and for you to know which Instagram
+              anything, it&apos;s just logical and for you to know which Instagram
               page is related to which Facebook Page.
             </strong>
           </DialogContentText>
