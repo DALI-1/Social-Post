@@ -131,31 +131,31 @@ npm run build
 ```bash
 dotnet --info
 ```
-3. if it shows  the dotnet infos, go to each folder (SocialPostBackEnd, SocialPost_PlatformAccountService, SocialPost_Scheduler_Service) and run it seperatly using the terminal with 
+3. if it shows  the dotnet infos, go to each folder (SocialPost, AccountsService, SchedulerService) and run it seperatly using the terminal with 
 
  ```bash
-dotnet run --project SocialPostBackEnd.csproj
+ dotnet run --project SocialPost.csproj
 ```
 
  ```bash
-dotnet run --project SocialPost_PlatformAccountService.csproj
+dotnet run --project AccountsService.csproj
 ```
  ```bash
-dotnet run --project SocialPost_Scheduler_Service.csproj
+dotnet run --project ScheduleService.csproj
 ```
 
 - Configuration
 
   Now after you managed to get the projects starting, you need to update the appsettings.json with the proper keys for your app to be working correctly, the format for each project should be like this
   
-  - SocialPostBackEnd 's appsettings.json
+  - SocialPost 's appsettings.json
 
     
 
                   ```bash
                   {
                     "ConnectionStrings": {
-                      "DefaultConnection": "YourSQLServerConnectionString",
+                      "DefaultConnection": ""Server=yourSQLServerName;Database=yourDBName;Integrated Security=True;"",
                       "MetaAppID": "YourMetaAppID",
                       "MetaAppCode": "YourMetaAppCode",
                       "MetaAppScopes": "email, pages_manage_cta, pages_show_list, instagram_basic, instagram_manage_comments, instagram_manage_insights, instagram_content_publish, instagram_manage_messages, pages_read_engagement,       pages_manage_metadata, pages_manage_posts, public_profile"
@@ -185,7 +185,7 @@ dotnet run --project SocialPost_Scheduler_Service.csproj
                   }
                   ```
      
-  - SocialPost_PlatformAccountService 's appsettings.json   
+  - AccountService 's appsettings.json   
 
                     ```bash
                       {
@@ -196,7 +196,7 @@ dotnet run --project SocialPost_Scheduler_Service.csproj
                       }
                     },
                     "ConnectionStrings": {
-                      "DefaultConnection": "YourSQLServerConnectionString",
+                      "DefaultConnection": "Server=yourSQLServerName;Database=yourDBName;Integrated Security=True;",
                       "MetaAppID": "yourMetaAppId",
                       "MetaAppCode": "YourMetaAppCode",
                       "MetaAppScopes": "email, pages_manage_cta, pages_show_list, instagram_basic, instagram_manage_comments, instagram_manage_insights, instagram_content_publish, instagram_manage_messages, pages_read_engagement, pages_manage_metadata, pages_manage_posts, public_profile"
@@ -213,7 +213,7 @@ dotnet run --project SocialPost_Scheduler_Service.csproj
                   }
 
                   ```
-  - SocialPost_Scheduler_Service 's appsettings.json
+  - SchedulerService 's appsettings.json
 
     
                     ```bash
@@ -225,7 +225,7 @@ dotnet run --project SocialPost_Scheduler_Service.csproj
                       }
                     },
                     "ConnectionStrings": {
-                      "DefaultConnection": "yourSQLServerConnectionString"
+                      "DefaultConnection": ""Server=yourSQLServerName;Database=yourDBName;Integrated Security=True;""
                     },
                     "ServiceConfig": {
                       "ServiceRepeatCheckDelay": "3600000",
